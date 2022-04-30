@@ -35,8 +35,8 @@ TEST_F(Given_an_empty_graph_and_an_empty_mst, K_spanning_tree_yields_empty_graph
 {
     const auto clustered = k_spanning_tree(*graph, 10, algo);
 
-    ASSERT_EQ(boost::num_vertices(*graph), 0);
-    ASSERT_EQ(boost::num_edges(*graph), 0);
+    ASSERT_EQ(boost::num_vertices(clustered), 0);
+    ASSERT_EQ(boost::num_edges(clustered), 0);
 }
 
 } // namespace GV::Clustering::Tests
