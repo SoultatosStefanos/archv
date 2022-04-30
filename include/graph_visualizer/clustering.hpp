@@ -22,10 +22,10 @@ auto k_spanning_tree(const Graph& g, unsigned k) -> Graph
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
 
+    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+
     static_assert(std::is_invocable_r_v<Graph, MSTAlgo, Graph>, "expected MST algorithm");
     static_assert(std::is_invocable_r_v<bool, Compare, Edge, Edge>, "cannot compare edges");
-
-    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
 
     assert(k >= 1 && "cannot form negative clusters"); // k is actually the number of clusters
 
