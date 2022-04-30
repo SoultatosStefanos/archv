@@ -11,8 +11,12 @@
 #include <boost/graph/betweenness_centrality.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <cassert>
+#include <type_traits>
+#include <unordered_map>
 
 namespace GV::Clustering {
+
+// TODO Optimize away copies, make automatic test cases
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
 // a Minimum Spanning Tree algorithm and an edge descriptor (less-than) Compare function
@@ -24,6 +28,7 @@ auto k_spanning_tree(const Graph& g, unsigned k, MSTAlgo find_mst, Compare cmp =
 
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
 
+    static_assert(std::is_trivially_copyable_v<MSTAlgo>);
     static_assert(std::is_invocable_r_v<Graph, MSTAlgo, Graph>, "expected MST algorithm");
     static_assert(std::is_invocable_r_v<bool, Compare, Edge, Edge>, "cannot compare edges");
 
@@ -46,9 +51,43 @@ auto k_spanning_tree(const Graph& g, unsigned k, MSTAlgo find_mst, Compare cmp =
     return mst;
 }
 
-// template <typename Graph, typename Done>
-// void shared_nearest_neighbour(Graph& g, Done done) // TODO
-// {}
+// Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
+// τ, a Shared Nearest Neighbour algorithm, and Hash/Pred functions
+template <typename Graph, typename SNNAlgo,
+          typename Hash = std::hash<typename boost::graph_traits<Graph>::edge_iterator>,
+          typename Pred = std::equal_to<typename boost::graph_traits<Graph>::edge_iterator>>
+auto shared_nearest_neighbour(Graph g, unsigned threshold, SNNAlgo find_snn) -> Graph
+{
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+
+    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+    using EdgeIterator = typename boost::graph_traits<Graph>::edge_iterator;
+    using SNNWeight = decltype(threshold);
+    using SNNMap = std::unordered_map<EdgeIterator, SNNWeight, Hash, Pred>;
+
+    static_assert(std::is_trivially_copyable_v<SNNAlgo>);
+    static_assert(std::is_trivially_copyable_v<EdgeIterator>);
+    static_assert(std::is_trivially_copyable_v<Hash>);
+    static_assert(std::is_trivially_copyable_v<Pred>);
+    static_assert(std::is_invocable_r_v<SNNMap, SNNAlgo, Graph>, "expected SNN algorithm");
+
+#ifndef NDEBUG
+    const auto original = g; // cache original on debug builds
+#endif
+
+    auto snn_map = find_snn(g);
+    assert(snn_map.size() == boost::num_edges(g));
+
+    const auto& [first, last] = boost::edges(g);
+    for (auto iter = first; iter != last; ++iter) {
+        assert(snn_map.contains(iter));
+        if (snn_map[iter] < threshold) boost::remove_edge(*iter, g);
+    }
+
+    assert(boost::num_edges(g) <= boost::num_edges(original));
+    assert(boost::num_vertices(g) == boost::num_vertices(original));
+    return g;
+}
 
 // template <typename Graph, typename Done>
 // auto betweenness_centrality_based(const Graph& g, Done done)

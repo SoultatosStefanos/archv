@@ -1,5 +1,4 @@
 set(FILES 
-  clustering_tests.cpp
   tests.cpp
 )
 
