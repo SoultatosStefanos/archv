@@ -1,4 +1,7 @@
-set(FILES clustering.hpp)
+set(FILES 
+	clustering.hpp
+	graph_visualizer.hpp
+)
 set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
