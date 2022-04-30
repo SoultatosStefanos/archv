@@ -11,7 +11,6 @@
 #include <boost/graph/betweenness_centrality.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <cassert>
-#include <type_traits>
 
 namespace GV::Clustering {
 
@@ -20,6 +19,8 @@ template <typename Graph, typename MSTAlgo,
 auto k_spanning_tree(const Graph& g, unsigned k) -> Graph
 {
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
 
     static_assert(std::is_invocable_r_v<Graph, MSTAlgo, Graph>);
     static_assert(std::is_invocable_r_v<bool, Compare, Edge, Edge>);
