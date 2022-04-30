@@ -16,9 +16,9 @@ namespace GV::Clustering {
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
 // a Minimum Spanning Tree algorithm and an edge descriptor (less-than) Compare function
-template <typename MSTAlgo, typename Graph,
+template <typename Graph, typename MSTAlgo,
           typename Compare = std::less<typename boost::graph_traits<Graph>::edge_descriptor>>
-auto k_spanning_tree(const Graph& g, unsigned k) -> Graph
+auto k_spanning_tree(const Graph& g, unsigned k, MSTAlgo find_mst, Compare cmp = Compare{}) -> Graph
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
 
@@ -29,12 +29,12 @@ auto k_spanning_tree(const Graph& g, unsigned k) -> Graph
 
     assert(k >= 1 && "cannot form negative clusters"); // k is actually the number of clusters
 
-    auto mst = MSTAlgo{}(g);
+    auto mst = find_mst(g);
 
     const auto iters = k - 1;
     for (decltype(k) i = 0; i < iters; ++i) {
         const auto& [first, last] = boost::edges(mst);
-        const auto iter = std::min_element(first, last, Compare{});
+        const auto iter = std::min_element(first, last, cmp);
 
         if (iter == last) break; // cannot extract more edges
 

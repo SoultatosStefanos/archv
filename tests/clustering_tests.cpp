@@ -28,11 +28,12 @@ protected:
     void SetUp() override { graph = std::make_unique<Graph>(); }
 
     std::unique_ptr<Graph> graph;
+    MSTFinder algo;
 };
 
 TEST_F(Given_an_empty_graph_and_an_empty_mst, K_spanning_tree_yields_empty_graph)
 {
-    const auto clustered = k_spanning_tree<MSTFinder>(*graph, 10);
+    const auto clustered = k_spanning_tree(*graph, 10, algo);
 
     ASSERT_EQ(boost::num_vertices(*graph), 0);
     ASSERT_EQ(boost::num_edges(*graph), 0);
