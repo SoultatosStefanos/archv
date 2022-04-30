@@ -1,4 +1,4 @@
-set(FILES )
+set(FILES clustering.hpp)
 set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})

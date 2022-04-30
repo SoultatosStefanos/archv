@@ -1,4 +1,4 @@
-set(FILES )
+set(FILES tests.cpp)
 
 set(TESTS ${PROJECT_NAME}_tests)
 set(TESTS_LIBS gtest)
