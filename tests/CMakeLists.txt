@@ -1,7 +1,7 @@
 set(FILES )
 
 set(TESTS ${PROJECT_NAME}_tests)
-set(TESTS_LIBS )
+set(TESTS_LIBS gtest)
 
 add_executable(${TESTS} ${FILES})
 target_link_libraries(${TESTS} PRIVATE ${PROJECT_NAME} ${TESTS_LIBS})
