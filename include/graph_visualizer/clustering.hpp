@@ -13,14 +13,16 @@
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <cassert>
+#include <concepts>
 #include <type_traits>
 #include <unordered_map>
 
 namespace GV::Clustering {
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
-// a Minimum Spanning Tree algorithm and an edge weight property map
+// a Minimum Spanning Tree algorithm, and an edge-weight read write property map
 template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
+requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
 void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
@@ -37,10 +39,9 @@ void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMa
     const auto iters = k - 1;
     for (decltype(k) i = 0; i < iters; ++i) {
         const auto& [first, last] = boost::edges(g);
-        const auto iter
-            = std::max_element(first, last, [&edge_weight](const auto& lhs, const auto& rhs) {
-                  return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
-              });
+        const auto iter = std::max_element(first, last, [&](const auto& lhs, const auto& rhs) {
+            return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
+        });
 
         if (iter == last) return; // cannot extract more edges
 
@@ -51,16 +52,14 @@ void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMa
 // Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
 // τ, a Shared Nearest Neighbour algorithm, and an edge-weight read write property map
 template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
+requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
 void shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn, EdgeWeightMap edge_weight,
                               typename boost::property_traits<EdgeWeightMap>::value_type threshold)
 {
-    using EdgeWeight = typename boost::property_traits<EdgeWeightMap>::value_type;
-
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap>) );
 
     static_assert(std::is_trivially_copyable_v<SNNAlgorithm>);
-    static_assert(std::is_trivially_copyable_v<EdgeWeight>);
     static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
     static_assert(std::is_invocable_v<SNNAlgorithm, MutableGraph, EdgeWeightMap>);
 
