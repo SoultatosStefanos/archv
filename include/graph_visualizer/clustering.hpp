@@ -30,11 +30,11 @@ void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMa
 
     static_assert(std::is_trivially_copyable_v<MSTAlgorithm>);
     static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
-    static_assert(std::is_invocable_v<MSTAlgorithm, MutableGraph>);
+    static_assert(std::is_invocable_r_v<MutableGraph, MSTAlgorithm, MutableGraph>);
 
     assert(k >= 1 && "cannot form negative clusters");
 
-    mst(g);
+    g = mst(g);
 
     const auto iters = k - 1;
     for (decltype(k) i = 0; i < iters; ++i) {
