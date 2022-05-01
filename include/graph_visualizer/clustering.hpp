@@ -25,8 +25,10 @@ template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
 requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
 void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
 {
+    using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
+
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap, Edge>) );
 
     static_assert(std::is_trivially_copyable_v<MSTAlgorithm>);
     static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
@@ -56,8 +58,10 @@ requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::va
 void shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn, EdgeWeightMap edge_weight,
                               typename boost::property_traits<EdgeWeightMap>::value_type threshold)
 {
+    using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
+
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap, Edge>) );
 
     static_assert(std::is_trivially_copyable_v<SNNAlgorithm>);
     static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
