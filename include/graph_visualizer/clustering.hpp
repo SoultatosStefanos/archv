@@ -19,37 +19,33 @@
 namespace GV::Clustering {
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
-// a Minimum Spanning Tree algorithm and an edge descriptor (less-than) Compare function
-template <typename Graph, typename MSTAlgo,
-          typename Compare = std::less<typename boost::graph_traits<Graph>::edge_descriptor>>
-auto k_spanning_tree(const Graph& g, unsigned k, MSTAlgo find_mst, Compare cmp = Compare{}) -> Graph
+// a Minimum Spanning Tree algorithm and an edge weight property map
+template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
+void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
 {
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap>) );
 
-    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+    static_assert(std::is_trivially_copyable_v<MSTAlgorithm>);
+    static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
+    static_assert(std::is_invocable_v<MSTAlgorithm, MutableGraph>);
 
-    static_assert(std::is_trivially_copyable_v<MSTAlgo>);
-    static_assert(std::is_trivially_copyable_v<Compare>);
-    static_assert(std::is_invocable_r_v<Graph, MSTAlgo, Graph>, "expected MST algorithm");
-    static_assert(std::is_invocable_r_v<bool, Compare, Edge, Edge>, "cannot compare edges");
+    assert(k >= 1 && "cannot form negative clusters");
 
-    assert(k >= 1 && "cannot form negative clusters"); // k is actually the number of clusters
-
-    auto mst = find_mst(g);
+    mst(g);
 
     const auto iters = k - 1;
     for (decltype(k) i = 0; i < iters; ++i) {
-        const auto& [first, last] = boost::edges(mst);
-        const auto iter = std::min_element(first, last, cmp);
+        const auto& [first, last] = boost::edges(g);
+        const auto iter
+            = std::max_element(first, last, [&edge_weight](const auto& lhs, const auto& rhs) {
+                  return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
+              });
 
-        if (iter == last) break; // cannot extract more edges
+        if (iter == last) return; // cannot extract more edges
 
-        boost::remove_edge(*iter, mst);
+        boost::remove_edge(*iter, g);
     }
-
-    assert(boost::num_edges(mst) <= boost::num_edges(g));
-    assert(boost::num_vertices(mst) == boost::num_vertices(g));
-    return mst;
 }
 
 // Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
