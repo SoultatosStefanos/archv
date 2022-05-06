@@ -19,11 +19,11 @@
 
 namespace GV::Clustering {
 
-// k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
-// a Minimum Spanning Tree algorithm, and an edge-weight read write property map
+namespace Details {
+
 template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
 requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
-void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
+void k_spanning_tree_impl(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
 
@@ -49,6 +49,26 @@ void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMa
 
         boost::remove_edge(*iter, g);
     }
+}
+
+} // namespace Details
+
+// k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
+// a Minimum Spanning Tree algorithm, and an edge-weight read write property map
+template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
+requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
+inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst,
+                            EdgeWeightMap edge_weight)
+{
+    Details::k_spanning_tree_impl(g, k, mst, edge_weight);
+}
+
+// k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
+// a Minimum Spanning Tree algorithm, and an edge-weight read write property map
+template <typename MutableGraph, typename MSTAlgorithm>
+inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst)
+{
+    Details::k_spanning_tree_impl(g, k, mst, boost::get(boost::edge_weight, g));
 }
 
 // Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
