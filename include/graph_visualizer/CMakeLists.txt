@@ -1,6 +1,7 @@
 set(FILES 
 	clustering.hpp
 	graph_visualizer.hpp
+	random.hpp
 )
 set(SUBDIRECTORIES )
 

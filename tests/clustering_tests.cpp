@@ -1,9 +1,12 @@
 #include "graph_visualizer/clustering.hpp"
+#include "graph_visualizer/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
 
 namespace GV::Clustering::Tests {
+
+using namespace Random;
 
 struct Vertex {
     int label;
@@ -19,9 +22,10 @@ TEST(K_spanning_tree, Empty_yields_empty)
 {
     Graph initial;
     Graph expected = initial; // empty
+    auto k = urandom(1, 10);
 
     Clustering::k_spanning_tree(
-        initial, 3, [](const auto& g) { return g; }, boost::get(&Edge::weight, initial));
+        initial, k, [](const auto& g) { return g; }, boost::get(&Edge::weight, initial));
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }

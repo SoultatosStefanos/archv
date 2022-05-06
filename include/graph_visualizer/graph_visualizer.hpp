@@ -4,3 +4,4 @@
 #pragma once
 
 #include "clustering.hpp"
+#include "random.hpp"
