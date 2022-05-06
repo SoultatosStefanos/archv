@@ -8,17 +8,20 @@ namespace GV::Clustering::Tests {
 
 using namespace Random;
 
-struct Vertex {
-    int label;
+class K_spanning_tree_tests : public testing::Test {
+protected:
+    struct Vertex {
+        int label;
+    };
+
+    struct Edge {
+        int weight;
+    };
+
+    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
 };
 
-struct Edge {
-    int weight;
-};
-
-using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
-
-TEST(K_spanning_tree, Empty_yields_empty)
+TEST_F(K_spanning_tree_tests, Empty_yields_empty)
 {
     Graph initial;
     Graph expected = initial; // empty
@@ -30,7 +33,7 @@ TEST(K_spanning_tree, Empty_yields_empty)
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
 
-TEST(K_spanning_tree, Clustering_given_mst)
+TEST_F(K_spanning_tree_tests, Clustering_given_mst)
 {
     constexpr auto k = 3;
 
