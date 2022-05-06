@@ -28,6 +28,7 @@ TEST_F(K_spanning_tree_tests, Empty_yields_empty)
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
 
+// see docs/Graph_Cluster_Analysis.pdf
 TEST_F(K_spanning_tree_tests, Clustering_given_mst)
 {
     constexpr auto k = 3;
@@ -80,6 +81,7 @@ TEST_F(K_spanning_tree_tests, Clustering_given_mst)
     ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
+// see docs/Graph_Cluster_Analysis.pdf
 TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
 {
     constexpr auto k = 3;

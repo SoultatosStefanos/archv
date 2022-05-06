@@ -64,7 +64,7 @@ inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst,
 }
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
-// a Minimum Spanning Tree algorithm, and an edge-weight read write property map
+// and a Minimum Spanning Tree algorithm
 template <typename MutableGraph, typename MSTAlgorithm>
 inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst)
 {
