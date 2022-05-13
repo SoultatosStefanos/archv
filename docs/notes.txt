@@ -1,6 +1,15 @@
-TODOs
+DONE
 
 	CLUSTERING
+
+		K Spanning Tree	
+
+		Shared Nearest Neighbour
+
+
+TODOs
+
+	CLUSTERING		
 
 		Higly Connected Components
 
