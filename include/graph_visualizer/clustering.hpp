@@ -71,12 +71,13 @@ inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst)
     Details::k_spanning_tree_impl(g, k, mst, boost::get(boost::edge_weight, g));
 }
 
-// Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
-// τ, a Shared Nearest Neighbour algorithm, and an edge-weight read write property map
+namespace Details {
+
 template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
 requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
-void shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn, EdgeWeightMap edge_weight,
-                              typename boost::property_traits<EdgeWeightMap>::value_type threshold)
+void shared_nearest_neighbour_impl(
+    MutableGraph& g, SNNAlgorithm snn,
+    typename boost::property_traits<EdgeWeightMap>::value_type threshold, EdgeWeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
 
@@ -92,6 +93,31 @@ void shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn, EdgeWeightMap e
     const auto& [first, last] = boost::edges(g);
     for (auto iter = first; iter != last; ++iter)
         if (boost::get(edge_weight, *iter) < threshold) boost::remove_edge(*iter, g);
+}
+
+} // namespace Details
+
+// Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
+// τ, a Shared Nearest Neighbour algorithm, and an edge-weight read write property map
+template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
+requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
+inline void
+shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn,
+                         typename boost::property_traits<EdgeWeightMap>::value_type threshold,
+                         EdgeWeightMap edge_weight)
+{
+    Details::shared_nearest_neighbour_impl(g, snn, threshold, edge_weight);
+}
+
+// Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
+// τ, and a Shared Nearest Neighbour algorithm
+template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
+requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
+inline void
+shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn,
+                         typename boost::property_traits<EdgeWeightMap>::value_type threshold)
+{
+    Details::shared_nearest_neighbour_impl(g, snn, threshold, boost::get(boost::edge_weight, g));
 }
 
 // template <typename MutableGraph>

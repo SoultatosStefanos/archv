@@ -131,4 +131,30 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
     ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
+class Shared_nearest_neighbour_tests : public testing::Test {
+protected:
+    struct Vertex {
+        unsigned id{0};
+    };
+
+    struct Edge {
+        int weight;
+    };
+
+    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
+};
+
+TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
+{
+    Graph initial;
+    Graph expected = initial; // empty
+    const auto threshold = urandom(1, 10);
+
+    Clustering::shared_nearest_neighbour(
+        initial, [](const auto& g, auto) { return g; }, threshold,
+        boost::get(&Edge::weight, initial));
+
+    ASSERT_TRUE(boost::isomorphism(initial, expected));
+}
+
 } // namespace GV::Clustering::Tests
