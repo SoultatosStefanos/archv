@@ -151,9 +151,7 @@ TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
     Graph expected = initial; // empty
     const auto threshold = urandom(1, 10);
 
-    shared_nearest_neighbour_clustering(
-        initial, threshold, [](const auto& g, auto map) { shared_nearest_neighbour(g, map); },
-        boost::get(&Edge::weight, initial));
+    shared_nearest_neighbour_clustering(initial, threshold, boost::get(&Edge::weight, initial));
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
@@ -197,28 +195,25 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_given_snn)
     WeightStorage weight_storage;
     WeightMap weight_map{weight_storage};
 
-    shared_nearest_neighbour_clustering(
-        actual, threshold,
-        [](const auto& g, auto map) {
-            using EdgeIter = boost::graph_traits<Graph>::edge_iterator;
-            using EdgIters = std::vector<EdgeIter>;
+    shared_nearest_neighbour_clustering(actual, threshold, weight_map, [](const auto& g, auto map) {
+        using EdgeIter = boost::graph_traits<Graph>::edge_iterator;
+        using EdgIters = std::vector<EdgeIter>;
 
-            EdgIters iters;
-            iters.reserve(boost::num_edges(g));
+        EdgIters iters;
+        iters.reserve(boost::num_edges(g));
 
-            auto [first, last] = boost::edges(g);
-            for (auto iter = first; iter != last; ++iter) iters.push_back(iter);
+        auto [first, last] = boost::edges(g);
+        for (auto iter = first; iter != last; ++iter) iters.push_back(iter);
 
-            boost::put(map, *iters[0], 2);
-            boost::put(map, *iters[1], 2);
-            boost::put(map, *iters[2], 2);
-            boost::put(map, *iters[3], 2);
-            boost::put(map, *iters[4], 2);
-            boost::put(map, *iters[5], 3);
-            boost::put(map, *iters[6], 1);
-            boost::put(map, *iters[7], 1);
-        },
-        weight_map);
+        boost::put(map, *iters[0], 2);
+        boost::put(map, *iters[1], 2);
+        boost::put(map, *iters[2], 2);
+        boost::put(map, *iters[3], 2);
+        boost::put(map, *iters[4], 2);
+        boost::put(map, *iters[5], 3);
+        boost::put(map, *iters[6], 1);
+        boost::put(map, *iters[7], 1);
+    });
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
@@ -262,9 +257,7 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
     WeightStorage weight_storage;
     WeightMap weight_map{weight_storage};
 
-    shared_nearest_neighbour_clustering(
-        actual, threshold, [](const auto& g, auto map) { shared_nearest_neighbour(g, map); },
-        weight_map);
+    shared_nearest_neighbour_clustering(actual, threshold, weight_map);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
