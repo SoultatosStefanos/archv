@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "minimum_spanning_tree.hpp"
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <cassert>

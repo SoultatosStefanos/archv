@@ -1,4 +1,4 @@
-#include "graph_visualizer/clustering/kst_clustering.hpp"
+#include "graph_visualizer/clustering/k_spanning_tree_clustering.hpp"
 #include "graph_visualizer/utils/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -113,19 +113,7 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    k_spanning_tree_clustering(g, k, [](const auto& g) {
-        using VertexDescriptor = Graph::vertex_descriptor;
-        using PredecessorMap = std::vector<VertexDescriptor>;
-
-        PredecessorMap p_map(boost::num_vertices(g));
-        boost::prim_minimum_spanning_tree(g, &p_map[0]);
-
-        Graph mst;
-        for (decltype(p_map.size()) i = 0; i < p_map.size(); ++i)
-            if (p_map[i] != i) boost::add_edge(i, p_map[i], mst);
-
-        return mst;
-    });
+    k_spanning_tree_clustering(g, k, prim_minimum_spanning_tree<Graph>);
 
     ASSERT_TRUE(boost::isomorphism(g, expected));
 }

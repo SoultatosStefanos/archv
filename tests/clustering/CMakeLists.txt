@@ -1,6 +1,6 @@
 set(FILES
-	kst_clustering_tests.cpp
-	snn_clustering_tests.cpp
+	k_spanning_tree_clustering_tests.cpp
+	shared_nearest_neighbour_clustering_tests.cpp
 )
 set(SUBDIRECTORIES )
 

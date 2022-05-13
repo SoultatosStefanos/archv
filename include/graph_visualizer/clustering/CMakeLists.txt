@@ -1,8 +1,9 @@
 set(FILES 
 	clustering.hpp
-	kst_clustering.hpp
-	snn_clustering.hpp
-	snn.hpp
+	k_spanning_tree_clustering.hpp
+	minimum_spanning_tree.hpp
+	shared_nearest_neighbour_clustering.hpp
+	shared_nearest_neighbour.hpp
 )
 set(SUBDIRECTORIES )
 

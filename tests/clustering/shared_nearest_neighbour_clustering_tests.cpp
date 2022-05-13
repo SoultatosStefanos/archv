@@ -1,4 +1,5 @@
-#include "graph_visualizer/clustering/snn_clustering.hpp"
+#include "graph_visualizer/clustering/shared_nearest_neighbour.hpp"
+#include "graph_visualizer/clustering/shared_nearest_neighbour_clustering.hpp"
 #include "graph_visualizer/utils/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -28,7 +29,8 @@ TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
     Graph expected = initial; // empty
     const auto threshold = urandom(1, 10);
 
-    shared_nearest_neighbour_clustering(initial, threshold, boost::get(&Edge::weight, initial));
+    shared_nearest_neighbour_clustering(initial, threshold, boost::get(&Edge::weight, initial),
+                                        [](const auto&, auto) {});
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
@@ -134,7 +136,8 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
     WeightStorage weight_storage;
     WeightMap weight_map{weight_storage};
 
-    shared_nearest_neighbour_clustering(actual, threshold, weight_map);
+    shared_nearest_neighbour_clustering(actual, threshold, weight_map,
+                                        shared_nearest_neighbour<Graph, WeightMap>);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
