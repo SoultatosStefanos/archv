@@ -94,9 +94,12 @@ void shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn, EdgeWeightMap e
         if (boost::get(edge_weight, *iter) < threshold) boost::remove_edge(*iter, g);
 }
 
-// template <typename Graph, typename Done>
-// void higly_connected_components(Graph& g, Done done) // TODO
-// {}
+// template <typename MutableGraph>
+// void higly_connected_components(MutableGraph& g) // TODO
+// {
+//     BOOST_CONCEPT_ASSERT((VertexListGraphConcept<MutableGraph>) );
+//     BOOST_CONCEPT_ASSERT((IncidenceGraphConcept<MutableGraph>) );
+// }
 
 // template <typename Graph, typename Done>
 // void maximum_clique_enumeration(Graph& g, Done done) // TODO

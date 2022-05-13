@@ -27,7 +27,7 @@ auto urandom(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<
     using dist_t = std::conditional_t<std::is_integral_v<T>, std::uniform_int_distribution<T>,
                                       std::uniform_real_distribution<T>>;
 
-    thread_local static dist_t dist{min, max};
+    dist_t dist{min, max};
     return static_cast<T>(dist(rng()));
 }
 
