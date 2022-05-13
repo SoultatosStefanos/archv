@@ -21,17 +21,17 @@ namespace GV::Clustering {
 
 namespace Details {
 
-template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
-requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
-void k_spanning_tree_impl(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWeightMap edge_weight)
+template <typename MutableGraph, typename MSTAlgorithm, typename WeightMap>
+requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
+void k_spanning_tree_impl(MutableGraph& g, unsigned k, MSTAlgorithm mst, WeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap, Edge>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 
     static_assert(std::is_trivially_copyable_v<MSTAlgorithm>);
-    static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
+    static_assert(std::is_trivially_copyable_v<WeightMap>);
     static_assert(std::is_invocable_r_v<MutableGraph, MSTAlgorithm, MutableGraph>);
 
     assert(k >= 1 && "cannot form negative clusters");
@@ -55,10 +55,9 @@ void k_spanning_tree_impl(MutableGraph& g, unsigned k, MSTAlgorithm mst, EdgeWei
 
 // k-Spanning Tree clustering algorithm implementation, given a boost graph, the number of clusters,
 // a Minimum Spanning Tree algorithm, and an edge-weight read write property map
-template <typename MutableGraph, typename MSTAlgorithm, typename EdgeWeightMap>
-requires std::equality_comparable<typename boost::property_traits<EdgeWeightMap>::value_type>
-inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst,
-                            EdgeWeightMap edge_weight)
+template <typename MutableGraph, typename MSTAlgorithm, typename WeightMap>
+requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
+inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst, WeightMap edge_weight)
 {
     Details::k_spanning_tree_impl(g, k, mst, edge_weight);
 }
@@ -73,20 +72,20 @@ inline void k_spanning_tree(MutableGraph& g, unsigned k, MSTAlgorithm mst)
 
 namespace Details {
 
-template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
-requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
-void shared_nearest_neighbour_impl(
-    MutableGraph& g, SNNAlgorithm snn,
-    typename boost::property_traits<EdgeWeightMap>::value_type threshold, EdgeWeightMap edge_weight)
+template <typename MutableGraph, typename SNNAlgorithm, typename WeightMap>
+requires std::totally_ordered<typename boost::property_traits<WeightMap>::value_type>
+void shared_nearest_neighbour_impl(MutableGraph& g, SNNAlgorithm snn,
+                                   typename boost::property_traits<WeightMap>::value_type threshold,
+                                   WeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<EdgeWeightMap, Edge>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 
     static_assert(std::is_trivially_copyable_v<SNNAlgorithm>);
-    static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
-    static_assert(std::is_invocable_v<SNNAlgorithm, MutableGraph, EdgeWeightMap>);
+    static_assert(std::is_trivially_copyable_v<WeightMap>);
+    static_assert(std::is_invocable_v<SNNAlgorithm, MutableGraph, WeightMap>);
 
     snn(g, edge_weight); // fill edge weights map
 
@@ -108,23 +107,23 @@ void shared_nearest_neighbour_impl(
 
 // Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
 // τ, a Shared Nearest Neighbour algorithm, and an edge-weight read write property map
-template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
-requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
+template <typename MutableGraph, typename SNNAlgorithm, typename WeightMap>
+requires std::totally_ordered<typename boost::property_traits<WeightMap>::value_type>
 inline void
 shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn,
-                         typename boost::property_traits<EdgeWeightMap>::value_type threshold,
-                         EdgeWeightMap edge_weight)
+                         typename boost::property_traits<WeightMap>::value_type threshold,
+                         WeightMap edge_weight)
 {
     Details::shared_nearest_neighbour_impl(g, snn, threshold, edge_weight);
 }
 
 // Shared Nearest Neighbour clustering algorithm implementation, given a boost graph, the threshold
 // τ, and a Shared Nearest Neighbour algorithm
-template <typename MutableGraph, typename SNNAlgorithm, typename EdgeWeightMap>
-requires std::totally_ordered<typename boost::property_traits<EdgeWeightMap>::value_type>
+template <typename MutableGraph, typename SNNAlgorithm, typename WeightMap>
+requires std::totally_ordered<typename boost::property_traits<WeightMap>::value_type>
 inline void
 shared_nearest_neighbour(MutableGraph& g, SNNAlgorithm snn,
-                         typename boost::property_traits<EdgeWeightMap>::value_type threshold)
+                         typename boost::property_traits<WeightMap>::value_type threshold)
 {
     Details::shared_nearest_neighbour_impl(g, snn, threshold, boost::get(boost::edge_weight, g));
 }
