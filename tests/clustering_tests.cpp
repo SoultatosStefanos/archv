@@ -1,4 +1,5 @@
 #include "graph_visualizer/clustering.hpp"
+#include "graph_visualizer/clustering/snn_clustering.hpp"
 #include "graph_visualizer/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -150,8 +151,9 @@ TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
     Graph expected = initial; // empty
     const auto threshold = urandom(1, 10);
 
-    Clustering::shared_nearest_neighbour(
-        initial, [](const auto&, auto) {}, threshold, boost::get(&Edge::weight, initial));
+    shared_nearest_neighbour_clustering(
+        initial, threshold, [](const auto& g, auto map) { shared_nearest_neighbour(g, map); },
+        boost::get(&Edge::weight, initial));
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
@@ -195,8 +197,8 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_given_snn)
     WeightStorage weight_storage;
     WeightMap weight_map{weight_storage};
 
-    Clustering::shared_nearest_neighbour(
-        actual,
+    shared_nearest_neighbour_clustering(
+        actual, threshold,
         [](const auto& g, auto map) {
             using EdgeIter = boost::graph_traits<Graph>::edge_iterator;
             using EdgIters = std::vector<EdgeIter>;
@@ -216,7 +218,7 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_given_snn)
             boost::put(map, *iters[6], 1);
             boost::put(map, *iters[7], 1);
         },
-        threshold, weight_map);
+        weight_map);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
@@ -260,29 +262,9 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
     WeightStorage weight_storage;
     WeightMap weight_map{weight_storage};
 
-    Clustering::shared_nearest_neighbour(
-        actual,
-        [](const auto& g, auto map) {
-            auto [first, last] = boost::edges(g);
-
-            for (auto iter = first; iter != last; ++iter) {
-                using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
-                using Vertices = std::vector<Vertex>;
-
-                const auto& u = boost::source(*iter, g);
-                const auto& [u_vertices_begin, u_vertices_end] = boost::adjacent_vertices(u, g);
-
-                const auto& v = boost::target(*iter, g);
-                const auto& [v_vertices_begin, v_vertices_end] = boost::adjacent_vertices(v, g);
-
-                Vertices intersection;
-                std::set_intersection(u_vertices_begin, u_vertices_end, v_vertices_begin,
-                                      v_vertices_end, std::back_inserter(intersection));
-
-                boost::put(map, *iter, intersection.size());
-            }
-        },
-        threshold, weight_map);
+    shared_nearest_neighbour_clustering(
+        actual, threshold, [](const auto& g, auto map) { shared_nearest_neighbour(g, map); },
+        weight_map);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }

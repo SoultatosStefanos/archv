@@ -1,9 +1,7 @@
 set(FILES 
-	clustering.hpp
-	graph_visualizer.hpp
-	random.hpp
+	snn_clustering.hpp
 )
-set(SUBDIRECTORIES clustering)
+set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
