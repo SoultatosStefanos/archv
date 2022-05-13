@@ -1,5 +1,5 @@
 #include "graph_visualizer/clustering/snn_clustering.hpp"
-#include "graph_visualizer/random.hpp"
+#include "graph_visualizer/utils/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
@@ -7,7 +7,7 @@
 
 namespace GV::Clustering::Tests {
 
-using namespace GV::Random;
+using namespace GV::Utils;
 
 class Shared_nearest_neighbour_tests : public testing::Test {
 protected:

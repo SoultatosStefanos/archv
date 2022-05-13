@@ -1,5 +1,5 @@
 #include "graph_visualizer/clustering/kst_clustering.hpp"
-#include "graph_visualizer/random.hpp"
+#include "graph_visualizer/utils/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
@@ -7,7 +7,7 @@
 
 namespace GV::Clustering::Tests {
 
-using namespace Random;
+using namespace Utils;
 
 class K_spanning_tree_tests : public testing::Test {
 protected:

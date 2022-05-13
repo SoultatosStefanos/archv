@@ -1,7 +1,8 @@
 set(FILES 
-	graph_visualizer.hpp
+	random.hpp
+	utils.hpp
 )
-set(SUBDIRECTORIES clustering utils)
+set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

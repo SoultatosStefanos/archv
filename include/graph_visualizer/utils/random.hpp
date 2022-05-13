@@ -7,7 +7,7 @@
 #include <limits>
 #include <random>
 
-namespace GV::Random {
+namespace GV::Utils {
 
 // Seeded rng
 template <typename Seed = std::random_device>
@@ -31,4 +31,4 @@ auto urandom(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<
     return static_cast<T>(dist(rng()));
 }
 
-} // namespace GV::Random
+} // namespace GV::Misc
