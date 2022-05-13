@@ -221,4 +221,70 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_given_snn)
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
+// see docs/Graph_Cluster_Analysis.pdf
+TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
+{
+    constexpr auto threshold = 3;
+
+    Graph actual;
+
+    auto v0 = boost::add_vertex({0}, actual);
+    auto v1 = boost::add_vertex({1}, actual);
+    auto v2 = boost::add_vertex({2}, actual);
+    auto v3 = boost::add_vertex({3}, actual);
+    auto v4 = boost::add_vertex({4}, actual);
+
+    boost::add_edge(v0, v1, actual);
+    boost::add_edge(v0, v2, actual);
+    boost::add_edge(v0, v3, actual);
+    boost::add_edge(v1, v2, actual);
+    boost::add_edge(v1, v3, actual);
+    boost::add_edge(v3, v2, actual);
+    boost::add_edge(v3, v4, actual);
+    boost::add_edge(v4, v2, actual);
+
+    Graph expected;
+
+    boost::add_vertex({0}, expected);
+    boost::add_vertex({1}, expected);
+    auto vv2 = boost::add_vertex({2}, expected);
+    auto vv3 = boost::add_vertex({3}, expected);
+    boost::add_vertex({4}, expected);
+
+    boost::add_edge(vv3, vv2, expected);
+
+    using WeightStorage
+        = std::map<boost::graph_traits<Graph>::edge_descriptor, decltype(Edge::weight)>;
+    using WeightMap = boost::associative_property_map<WeightStorage>;
+
+    WeightStorage weight_storage;
+    WeightMap weight_map{weight_storage};
+
+    Clustering::shared_nearest_neighbour(
+        actual,
+        [](const auto& g, auto map) {
+            auto [first, last] = boost::edges(g);
+
+            for (auto iter = first; iter != last; ++iter) {
+                using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
+                using Vertices = std::vector<Vertex>;
+
+                const auto& u = boost::source(*iter, g);
+                const auto& [u_vertices_begin, u_vertices_end] = boost::adjacent_vertices(u, g);
+
+                const auto& v = boost::target(*iter, g);
+                const auto& [v_vertices_begin, v_vertices_end] = boost::adjacent_vertices(v, g);
+
+                Vertices intersection;
+                std::set_intersection(u_vertices_begin, u_vertices_end, v_vertices_begin,
+                                      v_vertices_end, std::back_inserter(intersection));
+
+                boost::put(map, *iter, intersection.size());
+            }
+        },
+        threshold, weight_map);
+
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
+}
+
 } // namespace GV::Clustering::Tests
