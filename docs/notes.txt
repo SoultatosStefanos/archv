@@ -2,9 +2,9 @@ DONE
 
 	CLUSTERING
 
-		K Spanning Tree	
+		K Spanning Tree	-> Minimum test coverage
 
-		Shared Nearest Neighbour
+		Shared Nearest Neighbour -> Minimum test coverage
 
 
 TODOs

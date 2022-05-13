@@ -67,7 +67,7 @@ inline void shared_nearest_neighbour_clustering(
 {
     Details::shared_nearest_neighbour_clustering_impl(
         g, [](const auto& g, auto edge_weight) { shared_nearest_neighbour(g, edge_weight); },
-        threshold, edge_weight);
+        threshold, edge_weight); // NOTE: use of lambda cause of multiple function overloads
 }
 
 // Generic Shared Nearest Neighbour Clustering algorithm, with default boost edge_weight property
@@ -86,6 +86,7 @@ inline void shared_nearest_neighbour_clustering(MutableGraph& g, boost::edge_wei
 {
     Details::shared_nearest_neighbour_clustering_impl(
         g, [](const auto& g, auto edge_weight) { shared_nearest_neighbour(g, edge_weight); });
+    // NOTE: use of lambda cause of multiple function overloads
 }
 
 } // namespace GV::Clustering
