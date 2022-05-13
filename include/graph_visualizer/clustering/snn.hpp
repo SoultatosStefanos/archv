@@ -46,7 +46,7 @@ void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
 
 } // namespace Details
 
-// Generic Shared Nearest Neighbour algorithm
+// Generic Shared Nearest Neighbour algorithm, the default one
 // O(V * E)
 template <typename Graph, typename WeightMap>
 requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
@@ -55,7 +55,8 @@ inline void shared_nearest_neighbour(const Graph& g, WeightMap edge_weight)
     Details::shared_nearest_neighbour_impl(g, edge_weight);
 }
 
-// Generic Shared Nearest Neighbour algorithm, with default boost edge_weight property
+// Generic Shared Nearest Neighbour algorithm, the default one with default boost edge_weight
+// property
 // O(V * E)
 template <typename Graph>
 inline void shared_nearest_neighbour(const Graph& g)
