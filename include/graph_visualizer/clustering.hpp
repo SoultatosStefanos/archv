@@ -88,11 +88,20 @@ void shared_nearest_neighbour_impl(
     static_assert(std::is_trivially_copyable_v<EdgeWeightMap>);
     static_assert(std::is_invocable_v<SNNAlgorithm, MutableGraph, EdgeWeightMap>);
 
-    snn(g, edge_weight);
+    snn(g, edge_weight); // fill edge weights map
 
-    const auto& [first, last] = boost::edges(g);
-    for (auto iter = first; iter != last; ++iter)
-        if (boost::get(edge_weight, *iter) < threshold) boost::remove_edge(*iter, g);
+    do {
+        const auto& [first, last] = boost::edges(g);
+
+        const auto iter = std::find_if(first, last, [edge_weight, threshold](auto edge) {
+            return boost::get(edge_weight, edge) < threshold;
+        });
+
+        if (iter == last) break; // did not find any edge weights bellow the threshold
+
+        boost::remove_edge(*iter, g);
+    }
+    while (true);
 }
 
 } // namespace Details
