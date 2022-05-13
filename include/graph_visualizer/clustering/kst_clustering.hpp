@@ -13,9 +13,9 @@ namespace GV::Clustering {
 
 namespace Details {
 
-template <typename MutableGraph, typename MSTAlgorithm, typename WeightMap>
+template <typename MutableGraph, typename MinimumSpanningTree, typename WeightMap>
 requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
-void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MSTAlgorithm mst,
+void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MinimumSpanningTree mst,
                                      WeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
@@ -23,9 +23,9 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MSTAlgorithm m
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 
-    static_assert(std::is_trivially_copyable_v<MSTAlgorithm>);
+    static_assert(std::is_trivially_copyable_v<MinimumSpanningTree>);
     static_assert(std::is_trivially_copyable_v<WeightMap>);
-    static_assert(std::is_invocable_r_v<MutableGraph, MSTAlgorithm, MutableGraph>);
+    static_assert(std::is_invocable_r_v<MutableGraph, MinimumSpanningTree, MutableGraph>);
 
     assert(k >= 1 && "cannot form negative clusters");
 
@@ -47,17 +47,19 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MSTAlgorithm m
 } // namespace Details
 
 // Generic k-Spanning Tree clustering algorithm
-template <typename MutableGraph, typename MSTAlgorithm, typename WeightMap>
+// O(MST + k * (E * V + E) / V )
+template <typename MutableGraph, typename MinimumSpanningTree, typename WeightMap>
 requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
 inline void k_spanning_tree_clustering(MutableGraph& g, unsigned k, WeightMap edge_weight,
-                                       MSTAlgorithm mst)
+                                       MinimumSpanningTree mst)
 {
     Details::k_spanning_tree_clustering_impl(g, k, mst, edge_weight);
 }
 
 // Generic k-Spanning Tree clustering algorithm, with default boost edge_weight property
-template <typename MutableGraph, typename MSTAlgorithm>
-inline void k_spanning_tree_clustering(MutableGraph& g, unsigned k, MSTAlgorithm mst)
+// O(MST + k * (E * V + E) / V )
+template <typename MutableGraph, typename MinimumSpanningTree>
+inline void k_spanning_tree_clustering(MutableGraph& g, unsigned k, MinimumSpanningTree mst)
 {
     Details::k_spanning_tree_clustering_impl(g, k, mst, boost::get(boost::edge_weight, g));
 }
