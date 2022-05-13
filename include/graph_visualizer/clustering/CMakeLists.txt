@@ -1,5 +1,8 @@
 set(FILES 
+	clustering.hpp
+	kst_clustering.hpp
 	snn_clustering.hpp
+	snn.hpp
 )
 set(SUBDIRECTORIES )
 

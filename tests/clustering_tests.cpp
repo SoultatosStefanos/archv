@@ -1,9 +1,9 @@
-#include "graph_visualizer/clustering.hpp"
-#include "graph_visualizer/clustering/snn_clustering.hpp"
+#include "graph_visualizer/clustering/clustering.hpp"
 #include "graph_visualizer/random.hpp"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
+#include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/property_map/vector_property_map.hpp>
 #include <map>
 
@@ -24,7 +24,7 @@ TEST_F(K_spanning_tree_tests, Empty_yields_empty)
     Graph expected = initial; // empty
     const auto k = urandom(1, 10);
 
-    Clustering::k_spanning_tree(initial, k, [](const auto& g) { return g; });
+    k_spanning_tree_clustering(initial, k, [](const auto& g) { return g; });
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
@@ -62,7 +62,7 @@ TEST_F(K_spanning_tree_tests, Clustering_given_mst)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    Clustering::k_spanning_tree(g, k, [](const auto&) {
+    k_spanning_tree_clustering(g, k, [](const auto&) {
         Graph mst;
 
         auto v1 = boost::add_vertex({1}, mst);
@@ -115,7 +115,7 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    Clustering::k_spanning_tree(g, k, [](const auto& g) {
+    k_spanning_tree_clustering(g, k, [](const auto& g) {
         using VertexDescriptor = Graph::vertex_descriptor;
         using PredecessorMap = std::vector<VertexDescriptor>;
 

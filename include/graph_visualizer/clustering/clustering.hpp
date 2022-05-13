@@ -3,5 +3,6 @@
 
 #pragma once
 
-#include "clustering/clustering.hpp"
-#include "random.hpp"
+#include "kst_clustering.hpp"
+#include "snn.hpp"
+#include "snn_clustering.hpp"
