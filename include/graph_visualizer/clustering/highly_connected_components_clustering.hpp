@@ -50,7 +50,7 @@ inline auto edge_connectivity(const MinCutEdgeSet& min_cut_edges)
 template <typename Graph, typename ParityMap>
 auto divide(const Graph& g, ParityMap parity)
 {
-    using Parity = std::pair<Graph, Graph>;
+    using Partition = std::pair<Graph, Graph>;
 
     Graph first, second;
 
@@ -70,7 +70,7 @@ auto divide(const Graph& g, ParityMap parity)
     assert(!boost::isomorphism(g, merge(first, second)));
     assert(boost::num_edges(g) > boost::num_edges(first) + boost::num_edges(second));
     assert(boost::num_vertices(g) == boost::num_vertices(first) + boost::num_vertices(second));
-    return Parity{first, second};
+    return Partition{first, second};
 }
 
 template <typename MutableGraph, typename MinimumCut, typename ParityMap>
