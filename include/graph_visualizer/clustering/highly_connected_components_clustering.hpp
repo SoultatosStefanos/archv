@@ -63,7 +63,6 @@ auto divide(const Graph& g, ParityMap parity)
         const auto src = boost::source(*iter, g);
         const auto trgt = boost::target(*iter, g);
 
-        // FIXME
         if (boost::get(parity, src) == boost::get(parity, trgt)) { // same parity
             if (boost::get(parity, src) == true) // could be false, doesn't matter
                 boost::add_edge(src, trgt, first);
@@ -100,7 +99,8 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
 
     const auto min_cut_edges = Details::min_cut_edge_set(g, parity);
 
-    // recursion break condition
+    // recursion break conditions
+    if (Details::edge_connectivity(min_cut_edges) == 0) return;
     if (Details::edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return;
 
     auto partition = Details::divide(g, parity);
