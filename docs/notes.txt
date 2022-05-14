@@ -6,12 +6,12 @@ DONE
 
 		Shared Nearest Neighbour -> Minimum test coverage
 
+		Higly Connected Components -> Minimum test coverage
+
 
 TODOs
 
 	CLUSTERING		
-
-		Higly Connected Components
 
 		Maximum Clique Enumeration
 
