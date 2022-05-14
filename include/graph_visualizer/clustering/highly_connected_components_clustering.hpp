@@ -63,6 +63,7 @@ auto divide(const Graph& g, ParityMap parity)
         const auto src = boost::source(*iter, g);
         const auto trgt = boost::target(*iter, g);
 
+        // FIXME
         if (boost::get(parity, src) == boost::get(parity, trgt)) { // same parity
             if (boost::get(parity, src) == true) // could be false, doesn't matter
                 boost::add_edge(src, trgt, first);
@@ -71,8 +72,6 @@ auto divide(const Graph& g, ParityMap parity)
         }
     }
 
-    assert(!boost::isomorphism(g, merge(first, second)));
-    assert(boost::num_edges(g) > boost::num_edges(first) + boost::num_edges(second));
     assert(boost::num_vertices(g) == boost::num_vertices(first) + boost::num_vertices(second));
     return Partition{first, second};
 }
@@ -106,8 +105,8 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
 
     auto partition = Details::divide(g, parity);
 
-    highly_connected_components_clustering(partition.first, min_cut, parity);
-    highly_connected_components_clustering(partition.second, min_cut, parity);
+    highly_connected_components_clustering(partition.first, parity, min_cut);
+    highly_connected_components_clustering(partition.second, parity, min_cut);
 
     g = merge(partition.first, partition.second); // merge partitions into a single clustered graph
 }
