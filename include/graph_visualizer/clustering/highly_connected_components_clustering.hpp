@@ -73,10 +73,12 @@ auto divide(const Graph& g, ParityMap parity)
     return Partition{first, second};
 }
 
+} // namespace Details
+
+// Generic Highly Connected Componentes Clustering algorithm
 template <typename MutableGraph, typename MinimumCut, typename ParityMap>
 requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
-void highly_connected_components_clustering_impl(MutableGraph& g, MinimumCut min_cut,
-                                                 ParityMap parity)
+void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, MinimumCut min_cut)
 {
     using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
     using ParityKey = typename boost::property_traits<ParityMap>::key_type;
@@ -93,35 +95,16 @@ void highly_connected_components_clustering_impl(MutableGraph& g, MinimumCut min
 
     min_cut(g, parity); // fill parity map
 
-    const auto min_cut_edges = min_cut_edge_set(g, parity);
+    const auto min_cut_edges = Details::min_cut_edge_set(g, parity);
 
-    if (edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return; // break recursion
+    if (Details::edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return;
 
-    auto partition = divide(g, parity);
+    auto partition = Details::divide(g, parity);
 
     highly_connected_components_clustering_impl(partition.first, min_cut, parity);
     highly_connected_components_clustering_impl(partition.second, min_cut, parity);
 
     g = merge(partition.first, partition.second); // merge partitions into a single clustered graph
-}
-
-} // namespace Details
-
-// Generic Highly Connected Componentes Clustering algorithm
-template <typename MutableGraph, typename MinimumCut, typename ParityMap>
-requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
-inline void highly_connected_components_clustering(MutableGraph& g, ParityMap parity,
-                                                   MinimumCut min_cut)
-{
-    Details::highly_connected_components_clustering_impl(g, parity, min_cut);
-}
-
-// Generic Highly Connected Componentes Clustering algorithm, with dummy parity map
-template <typename MutableGraph, typename MinimumCut>
-requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
-inline void highly_connected_components_clustering(MutableGraph& g, MinimumCut min_cut)
-{
-    Details::highly_connected_components_clustering_impl(g, boost::dummy_property_map{}, min_cut);
 }
 
 } // namespace GV::Clustering
