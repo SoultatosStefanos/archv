@@ -3,8 +3,11 @@
 
 #pragma once
 
+#include "merge.hpp"
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/copy.hpp>
+#include <boost/graph/isomorphism.hpp>
 #include <cassert>
 #include <concepts>
 #include <type_traits>
@@ -12,11 +15,11 @@
 
 namespace GV::Clustering {
 
-namespace Details {
-
-template <typename MutableGraph, typename MinimumCut, typename EdgeConnectivity, typename Merge>
-void highly_connected_components_clustering_impl(MutableGraph& g, MinimumCut min_cut,
-                                                 EdgeConnectivity ec, Merge merge)
+// Generic Highly Connected Componentes Clustering algorithm
+// O(MinimumCut + EdgeConnectivity + V + E)
+template <typename MutableGraph, typename MinimumCut, typename EdgeConnectivity>
+void highly_connected_components_clustering(MutableGraph& g, MinimumCut min_cut,
+                                            EdgeConnectivity ec)
 {
     using Partition = std::pair<MutableGraph, MutableGraph>;
     using EdgesNum = typename boost::graph_traits<MutableGraph>::edges_size_type;
@@ -25,30 +28,19 @@ void highly_connected_components_clustering_impl(MutableGraph& g, MinimumCut min
 
     static_assert(std::is_trivially_copyable_v<MinimumCut>);
     static_assert(std::is_trivially_copyable_v<EdgeConnectivity>);
-    static_assert(std::is_trivially_copyable_v<Merge>);
     static_assert(std::is_invocable_r_v<Partition, MinimumCut, MutableGraph>);
     static_assert(std::is_invocable_r_v<EdgesNum, EdgeConnectivity, MutableGraph, Partition>);
-    static_assert(std::is_invocable_r_v<MutableGraph, Merge, MutableGraph, MutableGraph>);
 
-    auto partition = min_cut(g);
+    auto partition = minimum_cut(g);
 
-    if (ec(g, partition) > (boost::num_vertices(g) / 2)) return; // break recursion
+    assert(boost::isomorphism(g, merge(partition.first, partition.second)));
 
-    highly_connected_components_clustering_impl(partition.first, min_cut, ec);
-    highly_connected_components_clustering_impl(partition.second, min_cut, ec);
+    if (edge_connectivity(g, partition) > (boost::num_vertices(g) / 2)) return; // break recursion
+
+    highly_connected_components_clustering_impl(partition.first, minimum_cut, edge_connectivity);
+    highly_connected_components_clustering_impl(partition.second, minimum_cut, edge_connectivity);
 
     g = merge(partition.first, partition.second);
 }
-
-} // namespace Details
-
-template <typename MutableGraph, typename MinimumCut, typename EdgeConnectivity, typename Merge>
-inline void highly_connected_components_clustering(MutableGraph& g, MinimumCut min_cut,
-                                                   EdgeConnectivity ec, Merge merge)
-{
-    Details::highly_connected_components_clustering_impl(g, min_cut, ec, merge);
-}
-
-// TODO More
 
 } // namespace GV::Clustering
