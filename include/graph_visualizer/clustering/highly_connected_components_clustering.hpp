@@ -53,28 +53,28 @@ inline auto edge_connectivity(const MinCutEdgeSet& min_cut_edges)
 }
 
 // Divide graph into two disconnected subgraphs, using parity map
-template <typename Graph, typename ParityMap>
-auto divide(const Graph& g, ParityMap parity) // FIXME inserts vertices multiple times
+template <typename Graph, typename ParityMap, typename MinCutEdgeSet>
+auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges)
 {
     using Partition = std::pair<Graph, Graph>;
+    using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
+    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+    using Filtered
+        = boost::filtered_graph<Graph, std::function<bool(Edge)>, std::function<bool(Vertex)>>;
+
+    Filtered first_view{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+                        [parity](auto vertex) { return boost::get(parity, vertex) == true; }};
+
+    Filtered second_view{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+                         [parity](auto vertex) { return boost::get(parity, vertex) == false; }};
 
     Graph first, second;
 
-    const auto& [begin, end] = boost::edges(g);
-    for (auto iter = begin; iter != end; ++iter) {
-        const auto src = boost::source(*iter, g);
-        const auto trgt = boost::target(*iter, g);
-
-        if (boost::get(parity, src) == boost::get(parity, trgt)) { // same parity
-            if (boost::get(parity, src) == true) // could be false, doesn't matter
-                boost::add_edge(src, trgt, first);
-            else
-                boost::add_edge(src, trgt, second);
-        }
-    }
+    boost::copy_graph(first_view, first);
+    boost::copy_graph(second_view, second);
 
     assert(boost::num_vertices(g) == boost::num_vertices(first) + boost::num_vertices(second));
-    return Partition{first, second};
+    return Partition{std::move(first), std::move(second)};
 }
 
 } // namespace Details
@@ -105,7 +105,7 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
     if (Details::edge_connectivity(min_cut_edges) == 0) return;
     if (Details::edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return;
 
-    auto partition = Details::divide(g, parity);
+    auto partition = Details::divide(g, parity, min_cut_edges);
 
     highly_connected_components_clustering(partition.first, parity, min_cut);
     highly_connected_components_clustering(partition.second, parity, min_cut);

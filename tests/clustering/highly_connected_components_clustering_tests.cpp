@@ -5,6 +5,8 @@
 #include <boost/graph/isomorphism.hpp>
 #include <map>
 
+// NOTE: Ignore intelli
+
 namespace GV::Clustering::Tests {
 
 using namespace GV::Utils;
