@@ -62,14 +62,16 @@ auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges
     using Filtered
         = boost::filtered_graph<Graph, std::function<bool(Edge)>, std::function<bool(Vertex)>>;
 
-    Filtered first_view{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+    const auto keep_uncut_edges
+        = [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); };
+
+    Filtered first_view{g, keep_uncut_edges, // filter for vertices in 'true' parity
                         [parity](auto vertex) { return boost::get(parity, vertex) == true; }};
 
-    Filtered second_view{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+    Filtered second_view{g, keep_uncut_edges, // filter for vertices in 'false' parity
                          [parity](auto vertex) { return boost::get(parity, vertex) == false; }};
 
     Graph first, second;
-
     boost::copy_graph(first_view, first);
     boost::copy_graph(second_view, second);
 
