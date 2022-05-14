@@ -99,11 +99,15 @@ TEST_F(Highly_connected_components_tests, Clustering_given_min_cut)
         using VertexIter = boost::graph_traits<Graph>::vertex_iterator;
         using VertexIters = std::vector<VertexIter>;
 
+        if (boost::num_vertices(g) != 9) return; // in recursion, nothing to set for hardcoded cut
+
         VertexIters iters;
         iters.reserve(boost::num_vertices(g));
+        assert(boost::num_vertices(g) == 9);
 
         auto [first, last] = boost::vertices(g);
         for (auto iter = first; iter != last; ++iter) iters.push_back(iter);
+        assert(iters.size() == 9);
 
         boost::put(parity, *iters[0], true);
         boost::put(parity, *iters[1], true);
