@@ -11,17 +11,29 @@ using namespace GV::Utils;
 
 class Highly_connected_components_tests : public testing::Test {
 protected:
-    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                        boost::property<boost::vertex_distance_t, int>,
-                                        boost::property<boost::edge_weight_t, int>>;
+    struct Vertex {
+        int label{0};
+    };
+
+    struct Edge {
+        int weight{0};
+    };
+
+    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
 };
 
 TEST_F(Highly_connected_components_tests, Empty_yields_empty)
 {
+    using ParityStorage = std::map<boost::graph_traits<Graph>::vertex_descriptor, bool>;
+    using ParityMap = boost::associative_property_map<ParityStorage>;
+
     Graph initial;
     Graph expected;
 
-    // highly_connected_components_clustering(initial, [](const auto&, auto) {});
+    ParityStorage parity_storage;
+    ParityMap parity_map{parity_storage};
+
+    highly_connected_components_clustering(initial, parity_map, [](const auto&, auto) {});
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }

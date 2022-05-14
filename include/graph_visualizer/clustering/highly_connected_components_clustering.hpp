@@ -33,8 +33,12 @@ auto min_cut_edge_set(const Graph& g, ParityMap parity)
         const auto src = boost::source(*iter, g);
         const auto trgt = boost::target(*iter, g);
 
-        if (boost::get(parity, src) != boost::get(parity, trgt)) // different parity
-            edges.insert(boost::edge(src, trgt));
+        if (boost::get(parity, src) != boost::get(parity, trgt)) { // different parity
+            const auto [edge, res] = boost::edge(src, trgt, g);
+            assert(res && "could not get edge");
+
+            edges.insert(edge);
+        }
     }
 
     return edges;
@@ -97,12 +101,13 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
 
     const auto min_cut_edges = Details::min_cut_edge_set(g, parity);
 
+    // recursion break condition
     if (Details::edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return;
 
     auto partition = Details::divide(g, parity);
 
-    highly_connected_components_clustering_impl(partition.first, min_cut, parity);
-    highly_connected_components_clustering_impl(partition.second, min_cut, parity);
+    highly_connected_components_clustering(partition.first, min_cut, parity);
+    highly_connected_components_clustering(partition.second, min_cut, parity);
 
     g = merge(partition.first, partition.second); // merge partitions into a single clustered graph
 }
