@@ -20,13 +20,12 @@ protected:
     };
 
     using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
+    using ParityStorage = std::map<boost::graph_traits<Graph>::vertex_descriptor, bool>;
+    using ParityMap = boost::associative_property_map<ParityStorage>;
 };
 
 TEST_F(Highly_connected_components_tests, Empty_yields_empty)
 {
-    using ParityStorage = std::map<boost::graph_traits<Graph>::vertex_descriptor, bool>;
-    using ParityMap = boost::associative_property_map<ParityStorage>;
-
     Graph initial;
     Graph expected;
 

@@ -18,6 +18,8 @@ namespace GV::Clustering {
 
 namespace Details {
 
+// TODO Could optimize by only traversing edges once
+
 // Returns the minimum set of edges needed to disconnect the map
 template <typename Graph, typename ParityMap>
 requires std::totally_ordered<typename boost::graph_traits<Graph>::edge_descriptor>
