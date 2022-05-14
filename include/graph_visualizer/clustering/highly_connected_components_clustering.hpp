@@ -7,9 +7,11 @@
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/copy.hpp>
+#include <boost/graph/filtered_graph.hpp>
 #include <boost/graph/isomorphism.hpp>
 #include <cassert>
 #include <concepts>
+#include <functional>
 #include <set>
 #include <type_traits>
 #include <utility>
@@ -17,8 +19,6 @@
 namespace GV::Clustering {
 
 namespace Details {
-
-// TODO Could optimize by only traversing edges once
 
 // Returns the minimum set of edges needed to disconnect the map
 template <typename Graph, typename ParityMap>
@@ -54,7 +54,7 @@ inline auto edge_connectivity(const MinCutEdgeSet& min_cut_edges)
 
 // Divide graph into two disconnected subgraphs, using parity map
 template <typename Graph, typename ParityMap>
-auto divide(const Graph& g, ParityMap parity)
+auto divide(const Graph& g, ParityMap parity) // FIXME inserts vertices multiple times
 {
     using Partition = std::pair<Graph, Graph>;
 
