@@ -1,0 +1,18 @@
+DONE
+
+	CLUSTERING
+
+		K Spanning Tree	-> Minimum test coverage
+
+		Shared Nearest Neighbour -> Minimum test coverage
+
+		Higly Connected Components -> Minimum test coverage
+
+
+TODOs
+
+	CLUSTERING		
+
+		Maximum Clique Enumeration
+
+		Kernel K Means

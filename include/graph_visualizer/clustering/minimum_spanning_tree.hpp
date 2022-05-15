@@ -17,7 +17,7 @@ namespace Details {
 template <typename Graph, typename PredecessorMap>
 auto prim_minimum_spanning_tree_impl(const Graph& g, PredecessorMap p_map) -> Graph
 {
-    using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
+    using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using PredecessorMapValue = typename boost::property_traits<PredecessorMap>::value_type;
 
     BOOST_CONCEPT_ASSERT((boost::VertexListGraphConcept<Graph>) );
@@ -53,7 +53,7 @@ auto prim_minimum_spanning_tree(const Graph& g, PredecessorMap p_map) -> Graph
 template <typename Graph>
 auto prim_minimum_spanning_tree(const Graph& g) -> Graph
 {
-    using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
+    using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using PredecessorMap = std::vector<Vertex>;
 
     PredecessorMap p_map(boost::num_vertices(g));

@@ -18,7 +18,7 @@ requires std::equality_comparable<typename boost::property_traits<WeightMap>::va
 void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
-    using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
+    using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Vertices = std::vector<Vertex>;
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
