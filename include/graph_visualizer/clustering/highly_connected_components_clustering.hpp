@@ -75,6 +75,7 @@ auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges
     boost::copy_graph(first_view, first);
     boost::copy_graph(second_view, second);
 
+    assert(boost::num_edges(g) >= boost::num_edges(first) + boost::num_edges(second));
     assert(boost::num_vertices(g) == boost::num_vertices(first) + boost::num_vertices(second));
     return Partition{first, second};
 }
