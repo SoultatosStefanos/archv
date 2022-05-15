@@ -59,6 +59,8 @@ void copy_clique(const Clique& clique, MutableGraph& g)
 
 } // namespace Details
 
+// TODO maybe refactor into a generic maximal_clique that takes as input a visit function
+
 // Generic maximal clique Bron and Kerbosch algorithm
 // Currently only returns one maximal clique
 template <typename Graph>
