@@ -45,6 +45,8 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MinimumSpannin
 
     assert(k >= 1 && "cannot form negative clusters");
 
+    if (boost::num_edges(g) == 0) return; // early exit
+
     mst(g, p_map); // fill predecessor map
 
     retain_mst(g, p_map);

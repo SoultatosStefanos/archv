@@ -100,6 +100,8 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
     static_assert(std::is_same_v<ParityValue, bool>);
     static_assert(std::is_invocable_v<MinimumCut, MutableGraph, ParityMap>);
 
+    if (boost::num_edges(g) == 0) return; // early exit
+
     min_cut(g, parity); // fill parity map
 
     const auto min_cut_edges = Details::min_cut_edge_set(g, parity);

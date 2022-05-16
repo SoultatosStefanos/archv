@@ -29,6 +29,8 @@ void shared_nearest_neighbour_clustering_impl(
     static_assert(std::is_trivially_copyable_v<ProximityMap>);
     static_assert(std::is_trivially_copyable_v<Proximity>);
 
+    if (boost::num_edges(g) == 0) return; // early exit
+
     shared_nearest_neighbour(g, edge_proximity); // fill edge weights map
 
     do {

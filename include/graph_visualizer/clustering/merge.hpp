@@ -16,7 +16,7 @@ inline auto merge(const Graph& g1, const Graph& g2) -> Graph
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
 
-    Graph g{g2};
+    Graph g{g2}; // g += g2
     boost::copy_graph(g1, g); // g += g1
 
     return g;
