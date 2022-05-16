@@ -5,7 +5,6 @@ set(FILES
 	maximal_clique_enumeration_clustering.hpp
 	maximal_clique_enumeration.hpp
 	merge.hpp
-	minimum_spanning_tree.hpp
 	shared_nearest_neighbour_clustering.hpp
 	shared_nearest_neighbour.hpp
 )
