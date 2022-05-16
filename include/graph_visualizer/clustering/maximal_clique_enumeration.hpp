@@ -61,10 +61,10 @@ void copy_clique(const Clique& clique, MutableGraph& g)
 
 // TODO maybe refactor into a generic maximal_clique that takes as input a visit function
 
-// Generic maximal clique Bron and Kerbosch algorithm
+// Generic maximal clique algorithm
 // Currently only returns one maximal clique
-template <typename Graph>
-auto bron_kerbosch_maximal_clique(const Graph& g) -> Graph
+template <typename Graph, typename VisitCliques>
+auto maximal_clique(const Graph& g, VisitCliques visit_all_cliques) -> Graph
 {
     using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Clique = std::deque<Vertex>;
@@ -72,8 +72,11 @@ auto bron_kerbosch_maximal_clique(const Graph& g) -> Graph
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
 
+    static_assert(std::is_trivially_copy_assignable_v<VisitCliques>);
+    static_assert(std::is_invocable_v<VisitCliques, Graph, CliqueMap>);
+
     CliqueMap map;
-    boost::bron_kerbosch_all_cliques(g, Details::fill_clique_map(map));
+    visit_all_cliques(g, Details::fill_clique_map(map));
 
     const auto& maximal_clique = std::rbegin(map); // clique with largest size (key)
 
@@ -83,6 +86,14 @@ auto bron_kerbosch_maximal_clique(const Graph& g) -> Graph
     assert(boost::num_vertices(res) <= boost::num_vertices(g));
     assert(boost::num_edges(res) <= boost::num_edges(g));
     return res;
+}
+
+// Generic maximal clique Bron and Kerbosch algorithm
+// Currently only returns one maximal clique
+template <typename Graph>
+inline auto bron_kerbosch_maximal_clique(const Graph& g) -> Graph
+{
+    return maximal_clique(g, boost::bron_kerbosch_all_cliques<g, Details::CliqueKeeperVisitor>);
 }
 
 } // namespace GV::Clustering
