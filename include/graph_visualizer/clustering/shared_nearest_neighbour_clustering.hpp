@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "shared_nearest_neighbour.hpp"
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <cassert>
@@ -13,22 +14,22 @@ namespace GV::Clustering {
 
 namespace Details {
 
-template <typename MutableGraph, typename SharedNearestNeighbour, typename WeightMap>
+template <typename MutableGraph, typename WeightMap>
 requires std::totally_ordered<typename boost::property_traits<WeightMap>::value_type>
 void shared_nearest_neighbour_clustering_impl(
-    MutableGraph& g, SharedNearestNeighbour snn,
-    typename boost::property_traits<WeightMap>::value_type threshold, WeightMap edge_weight)
+    MutableGraph& g, typename boost::property_traits<WeightMap>::value_type threshold,
+    WeightMap edge_weight)
 {
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
+    using Weight = typename boost::property_traits<WeightMap>::value_type;
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 
-    static_assert(std::is_trivially_copyable_v<SharedNearestNeighbour>);
     static_assert(std::is_trivially_copyable_v<WeightMap>);
-    static_assert(std::is_invocable_v<SharedNearestNeighbour, MutableGraph, WeightMap>);
+    static_assert(std::is_trivially_copyable_v<Weight>);
 
-    snn(g, edge_weight); // fill edge weights map
+    shared_nearest_neighbour(g, edge_weight); // fill edge weights map
 
     do {
         const auto& [first, last] = boost::edges(g);
@@ -47,23 +48,22 @@ void shared_nearest_neighbour_clustering_impl(
 } // namespace Details
 
 // Generic Shared Nearest Neighbour Clustering algorithm
-// O(SNN + E^2 / V)
-template <typename MutableGraph, typename SharedNearestNeighbour, typename WeightMap>
+// O(V * E + E^2 / V)
+template <typename MutableGraph, typename WeightMap>
 requires std::totally_ordered<typename boost::property_traits<WeightMap>::value_type>
 inline void shared_nearest_neighbour_clustering(
     MutableGraph& g, typename boost::property_traits<WeightMap>::value_type threshold,
-    WeightMap edge_weight, SharedNearestNeighbour snn)
+    WeightMap edge_weight)
 {
-    Details::shared_nearest_neighbour_clustering_impl(g, snn, threshold, edge_weight);
+    Details::shared_nearest_neighbour_clustering_impl(g, threshold, edge_weight);
 }
 
 // Generic Shared Nearest Neighbour Clustering algorithm, with default boost edge_weight property
-// O(SNN + E^2 / V)
-template <typename MutableGraph, typename SharedNearestNeighbour>
-inline void shared_nearest_neighbour_clustering(MutableGraph& g, boost::edge_weight_t threshold,
-                                                SharedNearestNeighbour snn)
+// O(V * E + E^2 / V)
+template <typename MutableGraph>
+inline void shared_nearest_neighbour_clustering(MutableGraph& g, boost::edge_weight_t threshold)
 {
-    Details::shared_nearest_neighbour_clustering_impl(g, snn, threshold,
+    Details::shared_nearest_neighbour_clustering_impl(g, threshold,
                                                       boost::get(boost::edge_weight, g));
 }
 

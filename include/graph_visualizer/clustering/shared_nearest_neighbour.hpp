@@ -26,14 +26,14 @@ void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
 
     static_assert(std::is_trivially_copyable_v<WeightMap>);
 
-    auto [first, last] = boost::edges(g);
+    const auto& [first, last] = boost::edges(g);
 
     // for each edge (u, v), u -> v
     for (auto iter = first; iter != last; ++iter) {
-        const auto& u = boost::source(*iter, g);
+        const auto u = boost::source(*iter, g);
         const auto& [u_vertices_begin, u_vertices_end] = boost::adjacent_vertices(u, g);
 
-        const auto& v = boost::target(*iter, g);
+        const auto v = boost::target(*iter, g);
         const auto& [v_vertices_begin, v_vertices_end] = boost::adjacent_vertices(v, g);
 
         Vertices intersection;
@@ -46,7 +46,7 @@ void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
 
 } // namespace Details
 
-// Generic Shared Nearest Neighbour algorithm, the default one
+// Generic Shared Nearest Neighbour algorithm
 // O(V * E)
 template <typename Graph, typename WeightMap>
 requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
@@ -55,8 +55,7 @@ inline void shared_nearest_neighbour(const Graph& g, WeightMap edge_weight)
     Details::shared_nearest_neighbour_impl(g, edge_weight);
 }
 
-// Generic Shared Nearest Neighbour algorithm, the default one with default boost edge_weight
-// property
+// Generic Shared Nearest Neighbour algorithm, with default boost edge_weight property
 // O(V * E)
 template <typename Graph>
 inline void shared_nearest_neighbour(const Graph& g)
