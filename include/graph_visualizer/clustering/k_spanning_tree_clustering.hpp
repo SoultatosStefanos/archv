@@ -35,6 +35,8 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MinimumSpannin
     const auto iters = k - 1;
     for (decltype(k) i = 0; i < iters; ++i) {
         const auto& [first, last] = boost::edges(g);
+
+        // get edge with max weight
         const auto iter = std::max_element(first, last, [&](const auto& lhs, const auto& rhs) {
             return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
         });

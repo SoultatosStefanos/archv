@@ -11,20 +11,20 @@
 
 namespace GV::Clustering {
 
-namespace Details {
-
-template <typename Graph, typename WeightMap>
-requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
-void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
+// Generic Shared Nearest Neighbour algorithm
+// O(V * E)
+template <typename Graph, typename ProximityMap>
+requires std::equality_comparable<typename boost::property_traits<ProximityMap>::value_type>
+void shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
 {
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
     using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Vertices = std::vector<Vertex>;
 
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
+    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
-    static_assert(std::is_trivially_copyable_v<WeightMap>);
+    static_assert(std::is_trivially_copyable_v<ProximityMap>);
 
     const auto& [first, last] = boost::edges(g);
 
@@ -40,27 +40,8 @@ void shared_nearest_neighbour_impl(const Graph& g, WeightMap edge_weight)
         std::set_intersection(u_vertices_begin, u_vertices_end, v_vertices_begin, v_vertices_end,
                               std::back_inserter(intersection));
 
-        boost::put(edge_weight, *iter, intersection.size());
+        boost::put(edge_proximity, *iter, intersection.size());
     }
-}
-
-} // namespace Details
-
-// Generic Shared Nearest Neighbour algorithm
-// O(V * E)
-template <typename Graph, typename WeightMap>
-requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
-inline void shared_nearest_neighbour(const Graph& g, WeightMap edge_weight)
-{
-    Details::shared_nearest_neighbour_impl(g, edge_weight);
-}
-
-// Generic Shared Nearest Neighbour algorithm, with default boost edge_weight property
-// O(V * E)
-template <typename Graph>
-inline void shared_nearest_neighbour(const Graph& g)
-{
-    Details::shared_nearest_neighbour_impl(g, boost::get(boost::edge_weight, g));
 }
 
 } // namespace GV::Clustering

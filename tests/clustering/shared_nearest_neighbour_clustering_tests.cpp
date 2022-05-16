@@ -21,6 +21,8 @@ protected:
     };
 
     using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
+    using ProximityStorage = std::map<boost::graph_traits<Graph>::edge_descriptor, std::size_t>;
+    using ProximitytMap = boost::associative_property_map<ProximityStorage>;
 };
 
 TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
@@ -29,7 +31,10 @@ TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
     Graph expected = initial; // empty
     const auto threshold = urandom(1, 10);
 
-    shared_nearest_neighbour_clustering(initial, threshold, boost::get(&Edge::weight, initial));
+    ProximityStorage proximity;
+    ProximitytMap edge_proximity{proximity};
+
+    shared_nearest_neighbour_clustering(initial, threshold, edge_proximity);
 
     ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
@@ -66,14 +71,10 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
 
     boost::add_edge(vv3, vv2, expected);
 
-    using WeightStorage
-        = std::map<boost::graph_traits<Graph>::edge_descriptor, decltype(Edge::weight)>;
-    using WeightMap = boost::associative_property_map<WeightStorage>;
+    ProximityStorage proximity;
+    ProximitytMap edge_proximity{proximity};
 
-    WeightStorage weight_storage;
-    WeightMap weight_map{weight_storage};
-
-    shared_nearest_neighbour_clustering(actual, threshold, weight_map);
+    shared_nearest_neighbour_clustering(actual, threshold, edge_proximity);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
