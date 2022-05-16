@@ -22,7 +22,7 @@ protected:
 
     using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
     using ProximityStorage = std::map<boost::graph_traits<Graph>::edge_descriptor, std::size_t>;
-    using ProximitytMap = boost::associative_property_map<ProximityStorage>;
+    using ProximityMap = boost::associative_property_map<ProximityStorage>;
 };
 
 TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
@@ -32,7 +32,7 @@ TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
     const auto threshold = urandom(1, 10);
 
     ProximityStorage proximity;
-    ProximitytMap edge_proximity{proximity};
+    ProximityMap edge_proximity{proximity};
 
     shared_nearest_neighbour_clustering(initial, threshold, edge_proximity);
 
@@ -72,7 +72,7 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
     boost::add_edge(vv3, vv2, expected);
 
     ProximityStorage proximity;
-    ProximitytMap edge_proximity{proximity};
+    ProximityMap edge_proximity{proximity};
 
     shared_nearest_neighbour_clustering(actual, threshold, edge_proximity);
 
