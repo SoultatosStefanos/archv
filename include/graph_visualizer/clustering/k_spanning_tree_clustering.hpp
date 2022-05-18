@@ -34,7 +34,7 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MinimumSpannin
     using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
 
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
+    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<PredecessorMap, Vertex>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 

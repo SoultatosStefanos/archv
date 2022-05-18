@@ -23,7 +23,7 @@ void shared_nearest_neighbour_clustering_impl(
     using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
     using Proximity = typename boost::property_traits<ProximityMap>::value_type;
 
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
+    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
     static_assert(std::is_trivially_copyable_v<ProximityMap>);

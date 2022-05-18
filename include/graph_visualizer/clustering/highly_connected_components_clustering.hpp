@@ -12,6 +12,7 @@
 #include <cassert>
 #include <concepts>
 #include <functional>
+#include <map>
 #include <set>
 #include <type_traits>
 #include <utility>
@@ -35,14 +36,11 @@ auto min_cut_edge_set(const Graph& g, ParityMap parity)
         const auto src = boost::source(*iter, g);
         const auto trgt = boost::target(*iter, g);
 
-        if (boost::get(parity, src) != boost::get(parity, trgt)) { // different parity
-            const auto [edge, res] = boost::edge(src, trgt, g);
-            assert(res && "could not get edge");
-
-            edges.insert(edge);
-        }
+        if (boost::get(parity, src) != boost::get(parity, trgt)) // different parity
+            edges.insert(boost::edge(src, trgt, g).first);
     }
 
+    assert(edges.size() <= boost::num_edges(g));
     return edges;
 }
 
@@ -52,49 +50,47 @@ inline auto edge_connectivity(const MinCutEdgeSet& min_cut_edges)
     return min_cut_edges.size(); // EC = | MinCutEdgeSet |
 }
 
-// Make graph filtered view given parity
+// Make graph filtered view given parity map and partition (true or false vertex set)
 template <typename Graph, typename ParityMap, typename MinCutEdgeSet>
-auto make_view(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges, bool when)
+inline auto make_parity(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges,
+                        bool partition)
 {
     using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
-    using Filtered
-        = boost::filtered_graph<Graph, std::function<bool(Edge)>, std::function<bool(Vertex)>>;
+    using EdgePred = std::function<bool(Edge)>;
+    using VertexPred = std::function<bool(Vertex)>;
+    using Filtered = boost::filtered_graph<Graph, EdgePred, VertexPred>;
 
-    return Filtered{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
-                    [parity, when](auto vertex) { return boost::get(parity, vertex) == when; }};
+    return Filtered{
+        g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+        [parity, partition](auto vertex) { return boost::get(parity, vertex) == partition; }};
 }
 
 // Divide graph into two disconnected subgraphs, using parity map
 template <typename Graph, typename ParityMap, typename MinCutEdgeSet>
-auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges)
+inline auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges)
 {
     using Partition = std::pair<Graph, Graph>;
 
-    const auto first_view = make_view(g, parity, min_cut_edges, true);
-    const auto second_view = make_view(g, parity, min_cut_edges, false);
-
     Partition p;
-    boost::copy_graph(first_view, p.first);
-    boost::copy_graph(second_view, p.second);
+    boost::copy_graph(make_parity(g, parity, min_cut_edges, true), p.first);
+    boost::copy_graph(make_parity(g, parity, min_cut_edges, false), p.second);
 
     assert(boost::num_edges(g) >= boost::num_edges(p.first) + boost::num_edges(p.second));
     assert(boost::num_vertices(g) == boost::num_vertices(p.first) + boost::num_vertices(p.second));
     return p;
 }
 
-} // namespace Details
-
-// Generic Highly Connected Componentes Clustering algorithm
 template <typename MutableGraph, typename MinimumCut, typename ParityMap>
 requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
-void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, MinimumCut min_cut)
+void highly_connected_components_clustering_impl(MutableGraph& g, ParityMap parity,
+                                                 MinimumCut min_cut)
 {
     using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
     using ParityKey = typename boost::property_traits<ParityMap>::key_type;
     using ParityValue = typename boost::property_traits<ParityMap>::value_type;
 
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<MutableGraph>) );
+    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ParityMap, Vertex>) );
 
     static_assert(std::is_trivially_copyable_v<MinimumCut>);
@@ -103,22 +99,46 @@ void highly_connected_components_clustering(MutableGraph& g, ParityMap parity, M
     static_assert(std::is_same_v<ParityValue, bool>);
     static_assert(std::is_invocable_v<MinimumCut, MutableGraph, ParityMap>);
 
-    if (boost::num_edges(g) == 0) return; // early exit
+    if (boost::num_edges(g) == 0 or boost::num_vertices(g) < 2) return; // early exit
 
     min_cut(g, parity); // fill parity map
 
-    const auto min_cut_edges = Details::min_cut_edge_set(g, parity);
+    const auto min_cut_edges = min_cut_edge_set(g, parity);
+    assert(edge_connectivity(min_cut_edges) != 0);
 
-    // recursion break conditions
-    if (Details::edge_connectivity(min_cut_edges) == 0) return;
-    if (Details::edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return;
+    if (edge_connectivity(min_cut_edges) > boost::num_vertices(g) / 2) return; // break recursion
 
-    auto partition = Details::divide(g, parity, min_cut_edges);
+    auto [g1, g2] = divide(g, parity, min_cut_edges);
 
-    highly_connected_components_clustering(partition.first, parity, min_cut);
-    highly_connected_components_clustering(partition.second, parity, min_cut);
+    highly_connected_components_clustering_impl(g1, parity, min_cut);
+    highly_connected_components_clustering_impl(g2, parity, min_cut);
 
-    g = merge(partition.first, partition.second); // merge partitions into a single clustered graph
+    g = merge(g1, g2); // merge partition into a single clustered graph
+}
+
+} // namespace Details
+
+// Generic Highly Connected Componentes Clustering algorithm
+template <typename MutableGraph, typename MinimumCut, typename ParityMap>
+requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
+inline void highly_connected_components_clustering(MutableGraph& g, ParityMap parity,
+                                                   MinimumCut min_cut)
+{
+    Details::highly_connected_components_clustering_impl(g, parity, min_cut);
+}
+
+// Generic Highly Connected Componentes Clustering algorithm, given parity storage as an std map
+template <typename MutableGraph, typename MinimumCut>
+requires std::totally_ordered<typename boost::graph_traits<MutableGraph>::edge_descriptor>
+inline void highly_connected_components_clustering(MutableGraph& g, MinimumCut min_cut)
+{
+    using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
+    using ParityStorage = std::map<Vertex, bool>;
+    using ParityMap = boost::associative_property_map<ParityStorage>;
+
+    ParityStorage parity_storage;
+    ParityMap parity_map{parity_storage};
+    Details::highly_connected_components_clustering_impl(g, parity_map, min_cut);
 }
 
 } // namespace GV::Clustering
