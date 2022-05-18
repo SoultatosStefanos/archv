@@ -8,11 +8,11 @@ DONE
 
 		Higly Connected Components -> Minimum test coverage
 
+		Maximum Clique Enumeration -> Minimum test coverage
+
 
 TODOs
 
 	CLUSTERING		
-
-		Maximum Clique Enumeration
 
 		Kernel K Means

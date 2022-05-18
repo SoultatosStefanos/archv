@@ -36,24 +36,31 @@ inline auto fill_clique_map(typename CliqueKeeperVisitor<Clique, Graph>::CliqueS
     return CliqueKeeperVisitor<Clique, Graph>{map};
 }
 
-// Removes all edges outside all maximal cliques
-template <typename Clique, typename MutableGraph>
-void retain_maximal_cliques(
-    MutableGraph& g,
-    const typename Details::CliqueKeeperVisitor<Clique, MutableGraph>::CliqueSizeMap& map)
+// Returns true if a clique contains a vertex
+template <typename Clique, typename Vertex>
+inline auto contains_vertex(const Clique& clique, Vertex vertex)
 {
-    const auto maximal_clique_size = (*std::rbegin(map)).first;
-    const auto [maximal_cliques_begin, maximal_cliques_end] = map.equal_range(maximal_clique_size);
+    return std::find(std::begin(clique), std::end(clique), vertex) != std::end(clique);
+}
 
-    for (const auto& pair : boost::make_iterator_range(maximal_cliques_begin, maximal_cliques_end))
+// Returns true if a clique contains an edge
+template <typename Graph, typename Clique, typename Edge>
+inline auto contains_edge(const Graph& g, const Clique& clique, Edge edge)
+{
+    return contains_vertex(clique, boost::source(edge, g))
+           and contains_vertex(clique, boost::target(edge, g));
+}
+
+// Removes all edges outside all maximal cliques
+template <typename MutableGraph, typename CliqueSizeMap>
+void retain_maximal_cliques(MutableGraph& g, const CliqueSizeMap& map)
+{
+    const auto maximal_size = (*std::rbegin(map)).first;
+    const auto [cliques_begin, cliques_end] = map.equal_range(maximal_size);
+
+    for (const auto& pair : boost::make_iterator_range(cliques_begin, cliques_end))
         boost::remove_edge_if(
-            [&maximal = pair.second, &g](auto edge) {
-                return std::find(std::begin(maximal), std::end(maximal), boost::source(edge, g))
-                           == std::end(maximal)
-                       or std::find(std::begin(maximal), std::end(maximal), boost::target(edge, g))
-                              == std::end(maximal);
-            },
-            g);
+            [&maximal = pair.second, &g](auto e) { return !contains_edge(g, maximal, e); }, g);
 }
 
 } // namespace Details
@@ -77,7 +84,7 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
     CliqueMap map;
     visit_cliques(g, Details::fill_clique_map<Clique, MutableGraph>(map));
 
-    Details::retain_maximal_cliques<Clique, MutableGraph>(g, map);
+    Details::retain_maximal_cliques(g, map);
 }
 
 } // namespace GV::Clustering
