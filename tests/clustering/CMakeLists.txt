@@ -1,6 +1,7 @@
 set(FILES
 	highly_connected_components_clustering_tests.cpp
 	k_spanning_tree_clustering_tests.cpp
+	maximal_clique_enumeration_clustering_tests.cpp
 	merge_tests.cpp
 	shared_nearest_neighbour_clustering_tests.cpp
 )

@@ -42,12 +42,15 @@ void retain_maximal_cliques(
     MutableGraph& g,
     const typename Details::CliqueKeeperVisitor<Clique, MutableGraph>::CliqueSizeMap& map)
 {
-    const auto max_size = std::rbegin(map).first;
-    for (auto maximal : map.equal_range(max_size))
+    const auto max_size = (*std::rbegin(map)).first;
+    const auto [first, second] = map.equal_range(max_size);
+    for (const auto& pair : boost::make_iterator_range(first, second))
         boost::remove_edge_if(
-            [&maximal, &g](auto edge) {
-                return !maximal.contains(boost::source(edge, g))
-                       or !maximal.contains(boost::target(edge, g));
+            [&maximal = pair.second, &g](auto edge) {
+                return std::find(std::begin(maximal), std::end(maximal), boost::source(edge, g))
+                           == std::end(maximal)
+                       or std::find(std::begin(maximal), std::end(maximal), boost::target(edge, g))
+                              == std::end(maximal);
             },
             g);
 }
@@ -67,10 +70,12 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
     static_assert(std::is_trivially_copyable_v<VisitCliques>);
     static_assert(std::is_invocable_v<VisitCliques, MutableGraph, CliqueMap>);
 
-    CliqueMap map;
-    visit_cliques(g, Details::fill_clique_map(map));
+    if (boost::num_edges(g) == 0) return; // early exit
 
-    Details::retain_maximal_cliques(g, map);
+    CliqueMap map;
+    visit_cliques(g, Details::fill_clique_map<Clique, MutableGraph>(map));
+
+    Details::retain_maximal_cliques<Clique, MutableGraph>(g, map);
 }
 
 } // namespace GV::Clustering
