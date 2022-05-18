@@ -17,23 +17,25 @@ namespace GV::Clustering {
 
 namespace Details {
 
-template <typename Clique, typename Graph>
-struct CliqueKeeperVisitor {
-    using CliqueSizeMap = std::multimap<std::size_t, Clique>;
+template <typename CliqueMap>
+struct CliqueMapInserter {
+    explicit CliqueMapInserter(CliqueMap& map): cliques{map} {}
 
-    explicit CliqueKeeperVisitor(CliqueSizeMap& map): cliques{map} {}
-
-    void clique(const Clique& p, const Graph&) { cliques.insert({p.size(), p}); }
+    template <typename Clique, typename Graph>
+    inline void clique(const Clique& p, const Graph&)
+    {
+        cliques.insert({p.size(), p});
+    }
 
 private:
-    CliqueSizeMap& cliques;
+    CliqueMap& cliques;
 };
 
 // Convenience factory
-template <typename Clique, typename Graph>
-inline auto fill_clique_map(typename CliqueKeeperVisitor<Clique, Graph>::CliqueSizeMap& map)
+template <typename CliqueMap>
+inline auto clique_map_inserter(CliqueMap& map)
 {
-    return CliqueKeeperVisitor<Clique, Graph>{map};
+    return CliqueMapInserter<CliqueMap>{map};
 }
 
 // Returns true if a clique contains a vertex
@@ -71,18 +73,18 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
 {
     using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
     using Clique = std::deque<Vertex>;
-    using CliqueMap = typename Details::CliqueKeeperVisitor<Clique, MutableGraph>::CliqueSizeMap;
+    using CliqueMap = std::multimap<std::size_t, Clique>;
 
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
 
     static_assert(std::is_trivially_copyable_v<VisitCliques>);
-    static_assert(std::is_invocable_v<VisitCliques, MutableGraph,
-                                      Details::CliqueKeeperVisitor<Clique, MutableGraph>>);
+    static_assert(
+        std::is_invocable_v<VisitCliques, MutableGraph, Details::CliqueMapInserter<CliqueMap>>);
 
     if (boost::num_edges(g) == 0) return; // early exit
 
     CliqueMap map;
-    visit_cliques(g, Details::fill_clique_map<Clique, MutableGraph>(map));
+    visit_cliques(g, Details::clique_map_inserter(map));
 
     Details::retain_maximal_cliques(g, map);
 }
