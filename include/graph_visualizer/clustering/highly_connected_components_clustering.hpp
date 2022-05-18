@@ -52,32 +52,35 @@ inline auto edge_connectivity(const MinCutEdgeSet& min_cut_edges)
     return min_cut_edges.size(); // EC = | MinCutEdgeSet |
 }
 
-// Divide graph into two disconnected subgraphs, using parity map
+// Make graph filtered view given parity
 template <typename Graph, typename ParityMap, typename MinCutEdgeSet>
-auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges)
+auto make_view(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges, bool when)
 {
-    using Partition = std::pair<Graph, Graph>;
     using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
     using Filtered
         = boost::filtered_graph<Graph, std::function<bool(Edge)>, std::function<bool(Vertex)>>;
 
-    const auto keep_uncut_edges
-        = [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); };
+    return Filtered{g, [&min_cut_edges](auto edge) { return !min_cut_edges.contains(edge); },
+                    [parity, when](auto vertex) { return boost::get(parity, vertex) == when; }};
+}
 
-    Filtered first_view{g, keep_uncut_edges, // filter for vertices in 'true' parity
-                        [parity](auto vertex) { return boost::get(parity, vertex) == true; }};
+// Divide graph into two disconnected subgraphs, using parity map
+template <typename Graph, typename ParityMap, typename MinCutEdgeSet>
+auto divide(const Graph& g, ParityMap parity, const MinCutEdgeSet& min_cut_edges)
+{
+    using Partition = std::pair<Graph, Graph>;
 
-    Filtered second_view{g, keep_uncut_edges, // filter for vertices in 'false' parity
-                         [parity](auto vertex) { return boost::get(parity, vertex) == false; }};
+    const auto first_view = make_view(g, parity, min_cut_edges, true);
+    const auto second_view = make_view(g, parity, min_cut_edges, false);
 
-    Graph first, second;
-    boost::copy_graph(first_view, first);
-    boost::copy_graph(second_view, second);
+    Partition p;
+    boost::copy_graph(first_view, p.first);
+    boost::copy_graph(second_view, p.second);
 
-    assert(boost::num_edges(g) >= boost::num_edges(first) + boost::num_edges(second));
-    assert(boost::num_vertices(g) == boost::num_vertices(first) + boost::num_vertices(second));
-    return Partition{first, second};
+    assert(boost::num_edges(g) >= boost::num_edges(p.first) + boost::num_edges(p.second));
+    assert(boost::num_vertices(g) == boost::num_vertices(p.first) + boost::num_vertices(p.second));
+    return p;
 }
 
 } // namespace Details
