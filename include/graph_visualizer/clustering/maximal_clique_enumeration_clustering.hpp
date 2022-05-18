@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/bron_kerbosch_all_cliques.hpp>
 #include <boost/graph/filtered_graph.hpp>
 #include <cassert>
 #include <concepts>
