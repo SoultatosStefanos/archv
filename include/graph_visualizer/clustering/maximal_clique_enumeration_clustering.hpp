@@ -17,14 +17,15 @@ namespace GV::Clustering {
 
 namespace Details {
 
+// NOTE: use of custom output iterator to comply with boost vistor.clique() api
 template <typename CliqueMap>
-struct CliqueMapInserter {
-    explicit CliqueMapInserter(CliqueMap& map): cliques{map} {}
+struct CliqueMapInsertIter {
+    explicit CliqueMapInsertIter(CliqueMap& map): cliques{map} {}
 
     template <typename Clique, typename Graph>
     inline void clique(const Clique& p, const Graph&)
     {
-        cliques.insert({p.size(), p});
+        cliques.insert({p.size(), p}); // map each clique with its size
     }
 
 private:
@@ -35,7 +36,7 @@ private:
 template <typename CliqueMap>
 inline auto clique_map_inserter(CliqueMap& map)
 {
-    return CliqueMapInserter<CliqueMap>{map};
+    return CliqueMapInsertIter<CliqueMap>{map};
 }
 
 // Returns true if a clique contains a vertex
@@ -58,11 +59,11 @@ template <typename MutableGraph, typename CliqueSizeMap>
 void retain_maximal_cliques(MutableGraph& g, const CliqueSizeMap& map)
 {
     const auto maximal_size = (*std::rbegin(map)).first;
-    const auto [cliques_begin, cliques_end] = map.equal_range(maximal_size);
+    const auto [maximal_cliques_begin, maximal_cliques_end] = map.equal_range(maximal_size);
 
-    for (const auto& pair : boost::make_iterator_range(cliques_begin, cliques_end))
+    for (const auto& pair : boost::make_iterator_range(maximal_cliques_begin, maximal_cliques_end))
         boost::remove_edge_if(
-            [&maximal = pair.second, &g](auto e) { return !contains_edge(g, maximal, e); }, g);
+            [&clique = pair.second, &g](auto e) { return !contains_edge(g, clique, e); }, g);
 }
 
 } // namespace Details
@@ -79,7 +80,7 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
 
     static_assert(std::is_trivially_copyable_v<VisitCliques>);
     static_assert(
-        std::is_invocable_v<VisitCliques, MutableGraph, Details::CliqueMapInserter<CliqueMap>>);
+        std::is_invocable_v<VisitCliques, MutableGraph, Details::CliqueMapInsertIter<CliqueMap>>);
 
     if (boost::num_edges(g) == 0) return; // early exit
 
