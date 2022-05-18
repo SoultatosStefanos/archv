@@ -42,9 +42,10 @@ void retain_maximal_cliques(
     MutableGraph& g,
     const typename Details::CliqueKeeperVisitor<Clique, MutableGraph>::CliqueSizeMap& map)
 {
-    const auto max_size = (*std::rbegin(map)).first;
-    const auto [first, second] = map.equal_range(max_size);
-    for (const auto& pair : boost::make_iterator_range(first, second))
+    const auto maximal_clique_size = (*std::rbegin(map)).first;
+    const auto [maximal_cliques_begin, maximal_cliques_end] = map.equal_range(maximal_clique_size);
+
+    for (const auto& pair : boost::make_iterator_range(maximal_cliques_begin, maximal_cliques_end))
         boost::remove_edge_if(
             [&maximal = pair.second, &g](auto edge) {
                 return std::find(std::begin(maximal), std::end(maximal), boost::source(edge, g))
