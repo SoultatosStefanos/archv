@@ -23,7 +23,7 @@ struct CliqueKeeperVisitor {
 
     explicit CliqueKeeperVisitor(CliqueSizeMap& map): cliques{map} {}
 
-    void clique(const Clique& p, const Graph&) { cliques[p.size()] = p; }
+    void clique(const Clique& p, const Graph&) { cliques.insert({p.size(), p}); }
 
 private:
     CliqueSizeMap& cliques;
@@ -69,7 +69,8 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
 
     static_assert(std::is_trivially_copyable_v<VisitCliques>);
-    static_assert(std::is_invocable_v<VisitCliques, MutableGraph, CliqueMap>);
+    static_assert(std::is_invocable_v<VisitCliques, MutableGraph,
+                                      Details::CliqueKeeperVisitor<Clique, MutableGraph>>);
 
     if (boost::num_edges(g) == 0) return; // early exit
 
