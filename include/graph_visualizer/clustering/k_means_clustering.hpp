@@ -51,6 +51,7 @@ inline void reiterate_clustering_with_means(const Graph& g, DistanceMatrix matri
                                             const Centroids& centroids, CentroidMap clusters)
 {}
 
+// FIXME
 template <typename MutableGraph, typename Generate, typename WeightMap,
           typename AllPairsShortestPaths, typename DistanceMatrix, typename CentroidMap>
 void k_means_clustering_impl(MutableGraph& g, unsigned k, unsigned epochs, Generate rand,

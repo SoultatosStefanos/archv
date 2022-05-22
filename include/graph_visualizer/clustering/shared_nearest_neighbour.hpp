@@ -24,21 +24,19 @@ void shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
-    const auto& [first, last] = boost::edges(g);
-
     // for each edge (u, v), u -> v
-    for (auto iter = first; iter != last; ++iter) {
-        const auto u = boost::source(*iter, g);
-        const auto& [u_vertices_begin, u_vertices_end] = boost::adjacent_vertices(u, g);
+    for (const auto [begin, end] = boost::edges(g);
+         auto edge : boost::make_iterator_range(begin, end)) {
+        const auto u = boost::source(edge, g);
+        const auto [ubegin, uend] = boost::adjacent_vertices(u, g);
 
-        const auto v = boost::target(*iter, g);
-        const auto& [v_vertices_begin, v_vertices_end] = boost::adjacent_vertices(v, g);
+        const auto v = boost::target(edge, g);
+        const auto [vbegin, vend] = boost::adjacent_vertices(v, g);
 
         Vertices intersection;
-        std::set_intersection(u_vertices_begin, u_vertices_end, v_vertices_begin, v_vertices_end,
-                              std::back_inserter(intersection));
+        std::set_intersection(ubegin, uend, vbegin, vend, std::back_inserter(intersection));
 
-        boost::put(edge_proximity, *iter, intersection.size());
+        boost::put(edge_proximity, edge, intersection.size());
     }
 }
 
