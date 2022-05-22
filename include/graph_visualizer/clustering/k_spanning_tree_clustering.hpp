@@ -38,9 +38,6 @@ void k_spanning_tree_clustering_impl(MutableGraph& g, unsigned k, MinimumSpannin
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<PredecessorMap, Vertex>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<WeightMap, Edge>) );
 
-    static_assert(std::is_trivially_copyable_v<MinimumSpanningTree>);
-    static_assert(std::is_trivially_copyable_v<PredecessorMap>);
-    static_assert(std::is_trivially_copyable_v<WeightMap>);
     static_assert(std::is_invocable_v<MinimumSpanningTree, MutableGraph, PredecessorMap>);
 
     assert(k >= 1 && "cannot form negative clusters");

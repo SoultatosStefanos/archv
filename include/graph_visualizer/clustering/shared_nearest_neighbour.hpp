@@ -24,8 +24,6 @@ void shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
     BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
-    static_assert(std::is_trivially_copyable_v<ProximityMap>);
-
     const auto& [first, last] = boost::edges(g);
 
     // for each edge (u, v), u -> v

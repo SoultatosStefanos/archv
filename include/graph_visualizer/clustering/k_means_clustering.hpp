@@ -68,11 +68,6 @@ void k_means_clustering_impl(MutableGraph& g, unsigned k, unsigned epochs, Gener
     BOOST_CONCEPT_ASSERT((boost::BasicMatrixConcept<DistanceMatrix, Vertex, Weight>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<CentroidMap, Vertex>) );
 
-    static_assert(std::is_trivially_copy_assignable_v<Generate>);
-    static_assert(std::is_trivially_copy_assignable_v<WeightMap>);
-    static_assert(std::is_trivially_copy_assignable_v<AllPairsShortestPaths>);
-    static_assert(std::is_trivially_copy_assignable_v<DistanceMatrix>);
-    static_assert(std::is_trivially_copy_assignable_v<CentroidMap>);
     static_assert(std::is_same_v<Centroid, Vertex>);
     static_assert(std::is_invocable_r_v<VertexIter, Generate, VertexIter, VertexIter>);
     static_assert(std::is_invocable_v<AllPairsShortestPaths, MutableGraph, DistanceMatrix>);

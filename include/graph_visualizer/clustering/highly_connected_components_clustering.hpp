@@ -93,8 +93,6 @@ void highly_connected_components_clustering_impl(MutableGraph& g, ParityMap pari
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ParityMap, Vertex>) );
 
-    static_assert(std::is_trivially_copyable_v<MinimumCut>);
-    static_assert(std::is_trivially_copyable_v<ParityMap>);
     static_assert(std::is_same_v<ParityKey, Vertex>);
     static_assert(std::is_same_v<ParityValue, bool>);
     static_assert(std::is_invocable_v<MinimumCut, MutableGraph, ParityMap>);

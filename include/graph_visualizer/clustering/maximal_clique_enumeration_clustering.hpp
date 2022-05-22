@@ -78,7 +78,6 @@ inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques 
 
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
 
-    static_assert(std::is_trivially_copyable_v<VisitCliques>);
     static_assert(
         std::is_invocable_v<VisitCliques, MutableGraph, Details::CliqueMapInsertIter<CliqueMap>>);
 
