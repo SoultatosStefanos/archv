@@ -6,7 +6,7 @@
 #include <boost/graph/filtered_graph.hpp>
 #include <functional>
 
-namespace Clustering {
+namespace GV::Clustering {
 
 template <typename Graph>
 using EdgePred = std::function<bool(typename boost::graph_traits<Graph>::edge_descriptor)>;
@@ -17,7 +17,7 @@ using VertexPred = std::function<bool(typename boost::graph_traits<Graph>::verte
 template <typename Graph>
 using Filtered = boost::filtered_graph<Graph, EdgePred<Graph>, VertexPred<Graph>>;
 
-// Convenience fuactory for type deduction
+// Convenience factory for type deduction
 template <typename Graph>
 inline auto make_filtered(
     const Graph& g, const EdgePred<Graph>& edges = [](auto) { return true; },
@@ -26,4 +26,4 @@ inline auto make_filtered(
     return Filtered<Graph>{g, edges, vertices};
 }
 
-} // namespace Clustering
+} // namespace GV::Clustering

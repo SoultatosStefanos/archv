@@ -25,8 +25,7 @@ void shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
     BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
     // for each edge (u, v), u -> v
-    for (const auto [begin, end] = boost::edges(g);
-         auto edge : boost::make_iterator_range(begin, end)) {
+    for (auto edge : boost::make_iterator_range(boost::edges(g))) {
         const auto u = boost::source(edge, g);
         const auto [ubegin, uend] = boost::adjacent_vertices(u, g);
 
