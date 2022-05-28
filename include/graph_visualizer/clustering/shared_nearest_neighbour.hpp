@@ -17,12 +17,13 @@ template <typename Graph, typename ProximityMap>
 requires std::equality_comparable<typename boost::property_traits<ProximityMap>::value_type>
 void shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
 {
-    using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((
+        boost::ReadWritePropertyMapConcept<ProximityMap,
+                                           typename boost::graph_traits<Graph>::edge_descriptor>) );
+
     using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Vertices = std::vector<Vertex>;
-
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
 
     // for each edge (u, v), u -> v
     for (auto edge : boost::make_iterator_range(boost::edges(g))) {

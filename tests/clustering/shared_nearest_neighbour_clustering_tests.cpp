@@ -28,15 +28,13 @@ protected:
 TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
 {
     Graph initial;
-    Graph expected = initial; // empty
     const auto threshold = urandom(1, 10);
 
     ProximityStorage proximity;
     ProximityMap edge_proximity{proximity};
 
-    shared_nearest_neighbour_clustering(initial, threshold, edge_proximity);
-
-    ASSERT_TRUE(boost::isomorphism(initial, expected));
+    ASSERT_TRUE(boost::isomorphism(
+        initial, shared_nearest_neighbour_clustering(initial, threshold, edge_proximity)));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -74,9 +72,8 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
     ProximityStorage proximity;
     ProximityMap edge_proximity{proximity};
 
-    shared_nearest_neighbour_clustering(actual, threshold, edge_proximity);
-
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(boost::isomorphism(
+        shared_nearest_neighbour_clustering(actual, threshold, edge_proximity), expected));
 }
 
 } // namespace GV::Clustering::Tests

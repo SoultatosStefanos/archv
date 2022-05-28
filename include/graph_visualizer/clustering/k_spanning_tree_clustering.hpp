@@ -47,7 +47,7 @@ auto k_spanning_tree_clustering_impl(const Graph& g, unsigned k,
     MSTEdges mst_edges;
     minimum_spanning_tree(g, std::inserter(mst_edges, std::begin(mst_edges)));
 
-    for (decltype(k) i = 0, iters = k - 1; i < iters; ++i) {
+    for (decltype(k) i = 0, iters = k - 1; i < iters; ++i) { // remove max edge from mst k-1 times
         const auto iter = std::max_element(
             std::begin(mst_edges), std::end(mst_edges), [edge_weight](auto lhs, auto rhs) {
                 return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);

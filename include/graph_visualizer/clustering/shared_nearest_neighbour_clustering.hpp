@@ -15,62 +15,51 @@ namespace GV::Clustering {
 
 namespace Details {
 
-// TODO Make pure
-template <typename MutableGraph, typename ProximityMap>
+template <typename Graph, typename ProximityMap>
 requires std::totally_ordered<typename boost::property_traits<ProximityMap>::value_type>
-void shared_nearest_neighbour_clustering_impl(
-    MutableGraph& g, typename boost::property_traits<ProximityMap>::value_type threshold,
-    ProximityMap edge_proximity)
+auto shared_nearest_neighbour_clustering_impl(
+    const Graph& g, typename boost::property_traits<ProximityMap>::value_type threshold,
+    ProximityMap edge_proximity) -> Filtered<Graph>
 {
-    using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
-    using Proximity = typename boost::property_traits<ProximityMap>::value_type;
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((
+        boost::ReadWritePropertyMapConcept<ProximityMap,
+                                           typename boost::graph_traits<Graph>::edge_descriptor>) );
 
-    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
-    BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<ProximityMap, Edge>) );
-
-    if (boost::num_edges(g) == 0) return; // early exit
+    if (boost::num_edges(g) == 0) return make_filtered(g); // early exit
 
     shared_nearest_neighbour(g, edge_proximity); // fill edge weights map
 
-    do {
-        const auto& [first, last] = boost::edges(g);
-
-        const auto iter = std::find_if(first, last, [edge_proximity, threshold](auto edge) {
-            return boost::get(edge_proximity, edge) < threshold;
-        });
-
-        if (iter == last) break; // did not find any edge weights bellow the threshold
-
-        boost::remove_edge(*iter, g);
-    }
-    while (true);
+    return make_filtered(g, [edge_proximity, threshold](auto edge) {
+        return boost::get(edge_proximity, edge) >= threshold;
+    });
 }
 
 } // namespace Details
 
 // Generic Shared Nearest Neighbour Clustering algorithm
 // O(V * E + E^2 / V)
-template <typename MutableGraph, typename ProximityMap>
+template <typename Graph, typename ProximityMap>
 requires std::totally_ordered<typename boost::property_traits<ProximityMap>::value_type>
-inline void shared_nearest_neighbour_clustering(
-    MutableGraph& g, typename boost::property_traits<ProximityMap>::value_type threshold,
+inline auto shared_nearest_neighbour_clustering(
+    const Graph& g, typename boost::property_traits<ProximityMap>::value_type threshold,
     ProximityMap edge_proximity)
 {
-    Details::shared_nearest_neighbour_clustering_impl(g, threshold, edge_proximity);
+    return Details::shared_nearest_neighbour_clustering_impl(g, threshold, edge_proximity);
 }
 
 // Generic Shared Nearest Neighbour Clustering algorithm, with default boost iterator_property_map
 // represented as an std::vector (efficient for graphs with vecS internal storage)
 // Space Optimization
 // O(V * E + E^2 / V)
-template <typename MutableGraph>
-inline void shared_nearest_neighbour_clustering(MutableGraph& g, std::size_t threshold)
+template <typename Graph>
+inline auto shared_nearest_neighbour_clustering(const Graph& g, std::size_t threshold)
 {
     using Proximity = std::size_t;
     using ProximityStorage = std::vector<Proximity>;
 
     ProximityStorage edge_proximity(boost::num_edges(g));
-    Details::shared_nearest_neighbour_clustering_impl(
+    return Details::shared_nearest_neighbour_clustering_impl(
         g, threshold,
         boost::make_iterator_property_map(std::begin(edge_proximity),
                                           boost::get(boost::edge_index, g)));
