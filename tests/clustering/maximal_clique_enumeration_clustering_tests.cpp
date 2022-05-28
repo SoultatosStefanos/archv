@@ -19,11 +19,9 @@ protected:
 TEST_F(Maximal_clique_enumeration_tests, Empty_yields_empty)
 {
     Graph initial;
-    Graph expected;
 
-    maximum_clique_enumeration_clustering(initial, [](const auto&, const auto&) {});
-
-    ASSERT_TRUE(boost::isomorphism(initial, expected));
+    ASSERT_TRUE(boost::isomorphism(
+        initial, maximum_clique_enumeration_clustering(initial, [](const auto&, const auto&) {})));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -61,11 +59,12 @@ TEST_F(Maximal_clique_enumeration_tests, Custering_with_bron_kerbosh)
     boost::add_edge(vv6, vv7, expected);
     boost::add_edge(vv7, vv8, expected);
 
-    maximum_clique_enumeration_clustering(g, [](const auto& g, const auto& visitor) {
-        boost::bron_kerbosch_all_cliques(g, visitor);
-    });
+    const auto actual
+        = maximum_clique_enumeration_clustering(g, [](const auto& g, const auto& visitor) {
+              boost::bron_kerbosch_all_cliques(g, visitor);
+          });
 
-    ASSERT_TRUE(boost::isomorphism(g, expected));
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
 } // namespace GV::Clustering::Tests

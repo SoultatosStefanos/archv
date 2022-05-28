@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "filtered_graph.hpp"
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/filtered_graph.hpp>
@@ -54,39 +55,36 @@ inline auto contains_edge(const Graph& g, const Clique& clique, Edge edge)
            and contains_vertex(clique, boost::target(edge, g));
 }
 
-// Removes all edges outside all maximal cliques
-template <typename MutableGraph, typename CliqueSizeMap>
-void retain_maximal_cliques(MutableGraph& g, const CliqueSizeMap& map)
-{
-    const auto maximal_size = (*std::rbegin(map)).first;
-    const auto [maximal_cliques_begin, maximal_cliques_end] = map.equal_range(maximal_size);
-
-    for (const auto& pair : boost::make_iterator_range(maximal_cliques_begin, maximal_cliques_end))
-        boost::remove_edge_if(
-            [&clique = pair.second, &g](auto e) { return !contains_edge(g, clique, e); }, g);
-}
-
 } // namespace Details
 
 // A generic maximal clique enumeration clustering algorithm
-template <typename MutableGraph, typename VisitCliques> // TODO Make pure
-inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques visit_cliques)
+template <typename Graph, typename VisitCliques>
+auto maximum_clique_enumeration_clustering(const Graph& g, VisitCliques visit_cliques)
+    -> Filtered<Graph>
 {
-    using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
+    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<Graph>) );
+
+    using Vertex = typename boost::graph_traits<Graph>::vertex_descriptor;
     using Clique = std::deque<Vertex>;
     using CliqueMap = std::multimap<std::size_t, Clique>;
 
-    BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
-
     static_assert(
-        std::is_invocable_v<VisitCliques, MutableGraph, Details::CliqueMapInsertIter<CliqueMap>>);
+        std::is_invocable_v<VisitCliques, Graph, Details::CliqueMapInsertIter<CliqueMap>>);
 
-    if (boost::num_edges(g) == 0) return; // early exit
+    if (boost::num_edges(g) == 0) return make_filtered(g); // early exit
 
     CliqueMap map;
     visit_cliques(g, Details::clique_map_inserter(map));
 
-    Details::retain_maximal_cliques(g, map);
+    // Keep edges that reside inside any maximal clique
+    return make_filtered(g, [&g, clique_map = std::move(map)](auto e) {
+        const auto max_size = (*std::rbegin(clique_map)).first;
+        const auto [max_cliques_begin, max_cliques_end] = clique_map.equal_range(max_size);
+
+        return std::any_of(max_cliques_begin, max_cliques_end, [&g, e](const auto& clique_by_size) {
+            return Details::contains_edge(g, clique_by_size.second, e);
+        });
+    });
 }
 
 } // namespace GV::Clustering
