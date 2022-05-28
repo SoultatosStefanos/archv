@@ -6,9 +6,9 @@ DONE
 
 		Shared Nearest Neighbour -> Minimum test coverage
 
-		Higly Connected Components -> Minimum test coverage
+		Strong Components -> Minimum test coverage
 
-		Maximum Clique Enumeration -> Minimum test coverage
+		Maximal Clique Enumeration -> Minimum test coverage
 
 
 TODOs
