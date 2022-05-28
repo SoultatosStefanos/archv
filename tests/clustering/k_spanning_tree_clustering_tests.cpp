@@ -61,10 +61,22 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    k_spanning_tree_clustering(
-        g, k, [](const auto& g, auto p_map) { boost::prim_minimum_spanning_tree(g, p_map); });
+    const auto actual = k_spanning_tree_clustering(g, k, [](const auto& g, auto out) {
+        using Vertex = Graph::vertex_descriptor;
+        using PredecessorMap = std::vector<Vertex>;
 
-    ASSERT_TRUE(boost::isomorphism(g, expected));
+        PredecessorMap p(boost::num_vertices(g));
+        boost::prim_minimum_spanning_tree(g, &p[0]);
+
+        for (std::size_t u = 0; u != p.size(); ++u)
+            if (u != p[u]) {
+                auto [e, res] = boost::edge(p[u], u, g);
+                assert(res);
+                out = e;
+            }
+    });
+
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -100,16 +112,10 @@ TEST_F(K_spanning_tree_tests, Clustering_with_kruskal_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    k_spanning_tree_clustering(g, k, [](const auto& g, auto p_map) {
-        using Edge = typename boost::graph_traits<Graph>::edge_descriptor;
+    const auto actual = k_spanning_tree_clustering(
+        g, k, [](const auto& g, auto out) { boost::kruskal_minimum_spanning_tree(g, out); });
 
-        std::vector<Edge> mst;
-        boost::kruskal_minimum_spanning_tree(g, std::back_inserter(mst));
-
-        for (auto edge : mst) boost::put(p_map, boost::source(edge, g), boost::target(edge, g));
-    });
-
-    ASSERT_TRUE(boost::isomorphism(g, expected));
+    ASSERT_TRUE(boost::isomorphism(expected, actual));
 }
 
 } // namespace GV::Clustering::Tests

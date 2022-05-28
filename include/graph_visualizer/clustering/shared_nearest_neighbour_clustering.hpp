@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "filtered_graph.hpp"
 #include "shared_nearest_neighbour.hpp"
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
@@ -14,6 +15,7 @@ namespace GV::Clustering {
 
 namespace Details {
 
+// TODO Make pure
 template <typename MutableGraph, typename ProximityMap>
 requires std::totally_ordered<typename boost::property_traits<ProximityMap>::value_type>
 void shared_nearest_neighbour_clustering_impl(

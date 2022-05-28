@@ -1,5 +1,6 @@
 set(FILES 
 	clustering.hpp
+	filtered_graph.hpp
 	strong_components_clustering.hpp
 	k_spanning_tree_clustering.hpp
 	maximal_clique_enumeration_clustering.hpp

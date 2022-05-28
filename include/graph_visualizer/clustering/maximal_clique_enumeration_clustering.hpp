@@ -69,7 +69,7 @@ void retain_maximal_cliques(MutableGraph& g, const CliqueSizeMap& map)
 } // namespace Details
 
 // A generic maximal clique enumeration clustering algorithm
-template <typename MutableGraph, typename VisitCliques>
+template <typename MutableGraph, typename VisitCliques> // TODO Make pure
 inline void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques visit_cliques)
 {
     using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
