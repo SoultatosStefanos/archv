@@ -11,3 +11,11 @@ DONE
 		Maximal Clique Enumeration -> Minimum test coverage
 
 		Edge Betweeness Centrality -> Boost
+
+TODOS
+
+	CLUSTERING
+
+		Louvain method
+
+		Layered Label Propagation
