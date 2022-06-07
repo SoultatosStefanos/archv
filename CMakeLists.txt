@@ -14,9 +14,9 @@ endif()
 
 add_library(${PROJECT_NAME} )
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
-set(SUBDIRECTORIES external include src tests)
+set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

@@ -1,4 +1,4 @@
-#include "graph_visualizer/clustering/strong_components_clustering.hpp"
+#include "clustering/strong_components_clustering.hpp"
 #include "utility.hpp"
 
 #include "gmock/gmock.h"

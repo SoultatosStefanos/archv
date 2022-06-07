@@ -1,4 +1,4 @@
-#include "graph_visualizer/clustering/maximal_clique_enumeration_clustering.hpp"
+#include "clustering/maximal_clique_enumeration_clustering.hpp"
 #include "utility.hpp"
 
 #include "gmock/gmock.h"

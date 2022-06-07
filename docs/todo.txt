@@ -10,9 +10,4 @@ DONE
 
 		Maximal Clique Enumeration -> Minimum test coverage
 
-
-TODOs
-
-	CLUSTERING		
-
-		Kernel K Means
+		Edge Betweeness Centrality -> Boost

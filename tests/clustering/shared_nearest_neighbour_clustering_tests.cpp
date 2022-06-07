@@ -1,4 +1,4 @@
-#include "graph_visualizer/clustering/shared_nearest_neighbour_clustering.hpp"
+#include "clustering/shared_nearest_neighbour_clustering.hpp"
 #include "utility.hpp"
 
 #include "gmock/gmock.h"

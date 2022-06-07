@@ -1,7 +1,7 @@
-set(FILES 
-	link.cpp
+set(FILES link.cpp)
+set(SUBDIRECTORIES 
+	clustering
 )
-set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
