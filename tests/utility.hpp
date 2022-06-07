@@ -1,13 +1,15 @@
-// Contains random generator utilities
+// Contains testing utilities
 // Soultatos Stefanos 2021
 
-#pragma once
+#ifndef TESTS_UTILITY_HPP
+#define TESTS_UTILITY_HPP
 
 #include <concepts>
 #include <limits>
 #include <random>
 
-namespace GV::Utils {
+namespace Utility
+{
 
 // Seeded rng
 template <typename Seed = std::random_device>
@@ -24,11 +26,14 @@ concept arithmetic = std::is_arithmetic<T>::value;
 template <arithmetic T>
 auto urandom(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max())
 {
-    using dist_t = std::conditional_t<std::is_integral_v<T>, std::uniform_int_distribution<T>,
+    using dist_t = std::conditional_t<std::is_integral_v<T>,
+                                      std::uniform_int_distribution<T>,
                                       std::uniform_real_distribution<T>>;
 
     dist_t dist{min, max};
     return static_cast<T>(dist(rng()));
 }
 
-} // namespace GV::Misc
+} // namespace Utility
+
+#endif // TESTS_UTILITY_HPP

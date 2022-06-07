@@ -1,26 +1,31 @@
 #include "graph_visualizer/clustering/strong_components_clustering.hpp"
-#include "graph_visualizer/utils/random.hpp"
+#include "utility.hpp"
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
 
-namespace GV::Clustering::Tests {
+namespace
+{
 
-using namespace GV::Utils;
+using namespace Clustering;
+using namespace Utility;
 
-class Highly_connected_components_tests : public testing::Test {
+class Highly_connected_components_tests : public testing::Test
+{
 protected:
     using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS>;
 };
 
 TEST_F(Highly_connected_components_tests, Empty_yields_empty)
 {
-    Graph g;
+    Graph g, expected;
 
     std::vector<int> c(boost::num_vertices(g));
-    ASSERT_TRUE(boost::isomorphism(
-        g, strong_components_clustering(g, boost::make_iterator_property_map(
-                                               c.begin(), boost::get(boost::vertex_index, g)))));
+    strong_components_clustering(
+        g, boost::make_iterator_property_map(c.begin(), boost::get(boost::vertex_index, g)));
+
+    ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
 // see https://www.boost.org/doc/libs/1_65_0/libs/graph/example/strong_components.cpp
@@ -28,7 +33,8 @@ TEST_F(Highly_connected_components_tests, Clustering)
 {
     Graph g;
 
-    for (auto i = 0; i < 10; ++i) boost::add_vertex(g);
+    for (auto i = 0; i < 10; ++i)
+        boost::add_vertex(g);
 
     boost::add_edge(0, 1, g);
     boost::add_edge(0, 5, g);
@@ -50,7 +56,8 @@ TEST_F(Highly_connected_components_tests, Clustering)
 
     Graph expected;
 
-    for (auto i = 0; i < 10; ++i) boost::add_vertex(expected);
+    for (auto i = 0; i < 10; ++i)
+        boost::add_vertex(expected);
 
     boost::add_edge(0, 1, expected);
     boost::add_edge(0, 7, expected);
@@ -66,10 +73,10 @@ TEST_F(Highly_connected_components_tests, Clustering)
     boost::add_edge(8, 2, expected);
 
     std::vector<int> c(boost::num_vertices(g));
-    ASSERT_TRUE(boost::isomorphism(
-        expected,
-        strong_components_clustering(
-            g, boost::make_iterator_property_map(c.begin(), boost::get(boost::vertex_index, g)))));
+    strong_components_clustering(
+        g, boost::make_iterator_property_map(c.begin(), boost::get(boost::vertex_index, g)));
+
+    ASSERT_TRUE(boost::isomorphism(expected, g));
 }
 
-} // namespace GV::Clustering::Tests
+} // namespace

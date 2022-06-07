@@ -1,7 +1,9 @@
 set(FILES 
 	graph_visualizer.hpp
 )
-set(SUBDIRECTORIES clustering utils)
+set(SUBDIRECTORIES 
+	clustering
+)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

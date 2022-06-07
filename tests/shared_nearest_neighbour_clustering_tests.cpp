@@ -1,22 +1,27 @@
-#include "graph_visualizer/clustering/shared_nearest_neighbour.hpp"
 #include "graph_visualizer/clustering/shared_nearest_neighbour_clustering.hpp"
-#include "graph_visualizer/utils/random.hpp"
+#include "utility.hpp"
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
 #include <map>
 
-namespace GV::Clustering::Tests {
+namespace
+{
 
-using namespace GV::Utils;
+using namespace Clustering;
+using namespace Utility;
 
-class Shared_nearest_neighbour_tests : public testing::Test {
+class Shared_nearest_neighbour_tests : public testing::Test
+{
 protected:
-    struct Vertex {
+    struct Vertex
+    {
         int label{0};
     };
 
-    struct Edge {
+    struct Edge
+    {
         int weight{0};
     };
 
@@ -27,14 +32,14 @@ protected:
 
 TEST_F(Shared_nearest_neighbour_tests, Empty_yields_empty)
 {
-    Graph initial;
+    Graph initial, expected;
     const auto threshold = urandom(1, 10);
 
     ProximityStorage proximity;
     ProximityMap edge_proximity{proximity};
+    shared_nearest_neighbour_clustering(initial, threshold, edge_proximity);
 
-    ASSERT_TRUE(boost::isomorphism(
-        initial, shared_nearest_neighbour_clustering(initial, threshold, edge_proximity)));
+    ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -71,9 +76,9 @@ TEST_F(Shared_nearest_neighbour_tests, Clustering_computing_snn)
 
     ProximityStorage proximity;
     ProximityMap edge_proximity{proximity};
+    shared_nearest_neighbour_clustering(actual, threshold, edge_proximity);
 
-    ASSERT_TRUE(boost::isomorphism(
-        shared_nearest_neighbour_clustering(actual, threshold, edge_proximity), expected));
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
-} // namespace GV::Clustering::Tests
+} // namespace

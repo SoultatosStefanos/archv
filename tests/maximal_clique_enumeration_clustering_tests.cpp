@@ -1,27 +1,34 @@
 #include "graph_visualizer/clustering/maximal_clique_enumeration_clustering.hpp"
-#include "graph_visualizer/utils/random.hpp"
+#include "utility.hpp"
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/bron_kerbosch_all_cliques.hpp>
 #include <boost/graph/isomorphism.hpp>
 
-namespace GV::Clustering::Tests {
+namespace
+{
 
-using namespace Utils;
+using namespace Clustering;
+using namespace Utility;
 
-class Maximal_clique_enumeration_tests : public testing::Test {
+class Maximal_clique_enumeration_tests : public testing::Test
+{
 protected:
-    using Graph
-        = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-                                boost::property<boost::vertex_distance_t, int>, boost::no_property>;
+    using Graph = boost::adjacency_list<boost::vecS,
+                                        boost::vecS,
+                                        boost::undirectedS,
+                                        boost::property<boost::vertex_distance_t, int>,
+                                        boost::no_property>;
 };
 
 TEST_F(Maximal_clique_enumeration_tests, Empty_yields_empty)
 {
-    Graph initial;
+    Graph initial, expected;
 
-    ASSERT_TRUE(boost::isomorphism(
-        initial, maximum_clique_enumeration_clustering(initial, [](const auto&, const auto&) {})));
+    maximum_clique_enumeration_clustering(initial, [](const auto&, const auto&) {});
+
+    ASSERT_TRUE(boost::isomorphism(initial, expected));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -59,12 +66,11 @@ TEST_F(Maximal_clique_enumeration_tests, Custering_with_bron_kerbosh)
     boost::add_edge(vv6, vv7, expected);
     boost::add_edge(vv7, vv8, expected);
 
-    const auto actual
-        = maximum_clique_enumeration_clustering(g, [](const auto& g, const auto& visitor) {
-              boost::bron_kerbosch_all_cliques(g, visitor);
-          });
+    maximum_clique_enumeration_clustering(g, [](const auto& g, const auto& visitor) {
+        boost::bron_kerbosch_all_cliques(g, visitor);
+    });
 
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
-} // namespace GV::Clustering::Tests
+} // namespace

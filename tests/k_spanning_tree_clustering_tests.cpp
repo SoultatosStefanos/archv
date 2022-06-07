@@ -1,18 +1,24 @@
 #include "graph_visualizer/clustering/k_spanning_tree_clustering.hpp"
-#include "graph_visualizer/utils/random.hpp"
+#include "utility.hpp"
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 
-namespace GV::Clustering::Tests {
+namespace
+{
 
-using namespace Utils;
+using namespace Clustering;
+using namespace Utility;
 
-class K_spanning_tree_tests : public testing::Test {
+class K_spanning_tree_tests : public testing::Test
+{
 protected:
-    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
+    using Graph = boost::adjacency_list<boost::vecS,
+                                        boost::vecS,
+                                        boost::undirectedS,
                                         boost::property<boost::vertex_distance_t, int>,
                                         boost::property<boost::edge_weight_t, int>>;
 };
@@ -61,7 +67,7 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    const auto actual = k_spanning_tree_clustering(g, k, [](const auto& g, auto out) {
+    k_spanning_tree_clustering(g, k, [](const auto& g, auto out) {
         using Vertex = Graph::vertex_descriptor;
         using PredecessorMap = std::vector<Vertex>;
 
@@ -69,14 +75,15 @@ TEST_F(K_spanning_tree_tests, Clustering_with_prims_algorithm)
         boost::prim_minimum_spanning_tree(g, &p[0]);
 
         for (std::size_t u = 0; u != p.size(); ++u)
-            if (u != p[u]) {
+            if (u != p[u])
+            {
                 auto [e, res] = boost::edge(p[u], u, g);
                 assert(res);
                 out = e;
             }
     });
 
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
 // see docs/Graph_Cluster_Analysis.pdf
@@ -112,10 +119,10 @@ TEST_F(K_spanning_tree_tests, Clustering_with_kruskal_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    const auto actual = k_spanning_tree_clustering(
+    k_spanning_tree_clustering(
         g, k, [](const auto& g, auto out) { boost::kruskal_minimum_spanning_tree(g, out); });
 
-    ASSERT_TRUE(boost::isomorphism(expected, actual));
+    ASSERT_TRUE(boost::isomorphism(expected, g));
 }
 
-} // namespace GV::Clustering::Tests
+} // namespace
