@@ -21,9 +21,7 @@ TEST_F(Highly_connected_components_tests, Empty_yields_empty)
 {
     Graph g, expected;
 
-    std::vector<int> c(boost::num_vertices(g));
-    strong_components_clustering(
-        g, boost::make_iterator_property_map(c.begin(), boost::get(boost::vertex_index, g)));
+    strong_components_clustering(g);
 
     ASSERT_TRUE(boost::isomorphism(g, expected));
 }
@@ -72,9 +70,7 @@ TEST_F(Highly_connected_components_tests, Clustering)
     boost::add_edge(8, 7, expected);
     boost::add_edge(8, 2, expected);
 
-    std::vector<int> c(boost::num_vertices(g));
-    strong_components_clustering(
-        g, boost::make_iterator_property_map(c.begin(), boost::get(boost::vertex_index, g)));
+    strong_components_clustering(g);
 
     ASSERT_TRUE(boost::isomorphism(expected, g));
 }

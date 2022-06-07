@@ -11,7 +11,6 @@
 namespace Utility
 {
 
-// Seeded rng
 template <typename Seed = std::random_device>
 auto rng() -> auto&
 {
@@ -22,7 +21,7 @@ auto rng() -> auto&
 template <typename T>
 concept arithmetic = std::is_arithmetic<T>::value;
 
-// Random arithmetic generator, using uniform distribution
+// Random arithmetic generator, using uniform distribution.
 template <arithmetic T>
 auto urandom(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max())
 {
