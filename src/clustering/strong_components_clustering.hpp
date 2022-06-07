@@ -55,9 +55,9 @@ inline void strong_components_clustering(MutableGraph& g, ComponentMap comp)
 template <typename MutableGraph>
 inline void strong_components_clustering(MutableGraph& g)
 {
-    using ComponentMap = std::vector<int>;
+    using ComponentStorage = std::vector<int>;
 
-    ComponentMap c(boost::num_vertices(g));
+    ComponentStorage c(boost::num_vertices(g));
     Details::strong_components_clustering_impl(
         g, boost::make_iterator_property_map(std::begin(c), boost::get(boost::vertex_index, g)));
 }
