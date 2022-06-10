@@ -12,6 +12,7 @@ BraceWrapping:
   AfterStruct: true
   AfterClass: true
   SplitEmptyFunction: false
+  SplitEmptyNamespace: false
   AfterControlStatement: true
   AfterFunction: true
   AfterUnion: true
@@ -20,7 +21,7 @@ BraceWrapping:
 
 
 AlwaysBreakTemplateDeclarations: true
-BreakConstructorInitializersBeforeComma: true
+BreakConstructorInitializersBeforeComma: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline

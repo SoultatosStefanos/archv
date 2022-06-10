@@ -70,7 +70,7 @@ void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques visit_c
 
     const auto max_size = (*std::rbegin(cliques)).first;
     for (const auto& [size, clique] : boost::make_iterator_range(cliques.equal_range(max_size)))
-        boost::remove_edge_if([&g, &clique](auto e) { return !contains_edge(g, clique, e); }, g);
+        boost::remove_edge_if([&g, &c = clique](auto e) { return !contains_edge(g, c, e); }, g);
 }
 
 } // namespace Clustering

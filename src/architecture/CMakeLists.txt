@@ -1,9 +1,10 @@
-set(FILES )
-set(SUBDIRECTORIES 
-	architecture
-	clustering
-	visualization
+set(FILES 
+	architecture.hpp
+	graph_generation.hpp
+	graph_generation.cpp
+	graph.hpp
 )
+set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

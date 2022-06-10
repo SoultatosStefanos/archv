@@ -1,1 +1,1 @@
-Checks: '-*,performance-*,bugprone-*,cppcoreguidelines-*'
+Checks: '-*,performance-*'

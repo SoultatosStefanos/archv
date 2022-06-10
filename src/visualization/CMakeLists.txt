@@ -1,9 +1,5 @@
-set(FILES )
-set(SUBDIRECTORIES 
-	architecture
-	clustering
-	visualization
-)
+set(FILES  )
+set(SUBDIRECTORIES )
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
