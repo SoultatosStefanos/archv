@@ -25,8 +25,13 @@ protected:
         int weight{0};
     };
 
-    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
-    using ProximityStorage = std::map<boost::graph_traits<Graph>::edge_descriptor, std::size_t>;
+    using Graph = boost::adjacency_list<boost::vecS,
+                                        boost::vecS,
+                                        boost::undirectedS,
+                                        Vertex,
+                                        Edge>;
+    using ProximityStorage =
+        std::map<boost::graph_traits<Graph>::edge_descriptor, std::size_t>;
     using ProximityMap = boost::associative_property_map<ProximityStorage>;
 };
 

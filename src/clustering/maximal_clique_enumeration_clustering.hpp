@@ -8,13 +8,15 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <cassert>
 #include <map>
+#include <ranges>
 
 namespace Clustering
 {
 
-namespace Details
+namespace Impl
 {
-    // NOTE: Use of custom output iterator to comply with boost vistor.clique() api.
+    // NOTE: Use of custom output iterator to comply with boost vistor.clique()
+    // api.
     template <typename CliqueMap>
     struct CliqueMapInsertIter
     {
@@ -45,32 +47,39 @@ namespace Details
     template <typename Graph, typename Clique, typename Edge>
     inline auto contains_edge(const Graph& g, const Clique& c, Edge e)
     {
-        return contains_vertex(c, boost::source(e, g)) and contains_vertex(c, boost::target(e, g));
+        return contains_vertex(c, boost::source(e, g)) and
+               contains_vertex(c, boost::target(e, g));
     }
 
-} // namespace Details
+} // namespace Impl
 
 template <typename MutableGraph, typename VisitCliques>
-void maximum_clique_enumeration_clustering(MutableGraph& g, VisitCliques visit_cliques)
+void maximum_clique_enumeration_clustering(MutableGraph& g,
+                                           VisitCliques visit_cliques)
 {
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
 
-    using Vertex = typename boost::graph_traits<MutableGraph>::vertex_descriptor;
+    using Vertex =
+        typename boost::graph_traits<MutableGraph>::vertex_descriptor;
     using Clique = std::deque<Vertex>;
     using CliqueMap = std::multimap<std::size_t, Clique>;
-    using namespace Details;
 
-    static_assert(std::is_invocable_v<VisitCliques, MutableGraph, CliqueMapInsertIter<CliqueMap>>);
+    static_assert(std::is_invocable_v<VisitCliques,
+                                      MutableGraph,
+                                      Impl::CliqueMapInsertIter<CliqueMap>>);
 
     if (boost::num_edges(g) == 0)
         return;
 
     CliqueMap cliques;
-    visit_cliques(g, clique_map_inserter(cliques));
+    visit_cliques(g, Impl::clique_map_inserter(cliques));
 
     const auto max_size = (*std::rbegin(cliques)).first;
-    for (const auto& [size, clique] : boost::make_iterator_range(cliques.equal_range(max_size)))
-        boost::remove_edge_if([&g, &c = clique](auto e) { return !contains_edge(g, c, e); }, g);
+    for (const auto& [size, clique] :
+         boost::make_iterator_range(cliques.equal_range(max_size)))
+        boost::remove_edge_if(
+            [&g, &c = clique](auto e) { return !Impl::contains_edge(g, c, e); },
+            g);
 }
 
 } // namespace Clustering

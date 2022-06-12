@@ -1,6 +1,5 @@
-// Contains the basic building blocks (structures) and their dependencies graph for the visualized
-// architecture.
-// Soultatos Stefanos 2022
+// Contains the basic building blocks (structures) and their dependencies graph
+// for the visualized architecture. Soultatos Stefanos 2022
 
 #ifndef ARCHITECTURE_GRAPH_HPP
 #define ARCHITECTURE_GRAPH_HPP
@@ -15,7 +14,8 @@
 namespace Architecture
 {
 
-// NOTE: No invariants to establish, to avoid syntax coupling as much as possible.
+// NOTE: No invariants to establish, to avoid syntax coupling as much as
+// possible.
 
 struct Symbol
 {
@@ -97,8 +97,11 @@ static_assert(std::is_aggregate_v<Method>);
 static_assert(std::is_aggregate_v<Structure>);
 static_assert(std::is_aggregate_v<Dependency>);
 
-using Graph =
-    boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, Structure, Dependency>;
+using Graph = boost::adjacency_list<boost::vecS,
+                                    boost::vecS,
+                                    boost::directedS,
+                                    Structure,
+                                    Dependency>;
 
 } // namespace Architecture
 

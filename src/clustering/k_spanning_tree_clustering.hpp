@@ -1,4 +1,4 @@
-// Contains a geneic k-Spanning Tree algorithm
+// Contains a generic k-Spanning Tree algorithm
 // Soultatos Stefanos 2022
 
 #ifndef CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP
@@ -12,34 +12,40 @@
 namespace Clustering
 {
 
-namespace Details
+namespace Impl
 {
     struct EdgeHash
     {
         template <typename Edge>
         auto operator()(Edge e) const -> auto
         {
-            return std::hash<uint64_t>{}(reinterpret_cast<uint64_t>(e.get_property()));
+            return std::hash{}(reinterpret_cast<uint64_t>(e.get_property()));
         }
     };
 
-    template <typename MutableGraph, typename MinimumSpanningTree, typename WeightMap>
-    requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
+    template <typename MutableGraph,
+              typename MinimumSpanningTree,
+              typename WeightMap>
+    requires std::equality_comparable<
+        typename boost::property_traits<WeightMap>::value_type>
     void k_spanning_tree_clustering_impl(MutableGraph& g,
                                          unsigned k,
                                          MinimumSpanningTree mst,
                                          WeightMap edge_weight)
     {
         BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
-        BOOST_CONCEPT_ASSERT((boost::ReadWritePropertyMapConcept<
-                              WeightMap,
-                              typename boost::graph_traits<MutableGraph>::edge_descriptor>) );
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadWritePropertyMapConcept<
+                WeightMap,
+                typename boost::graph_traits<MutableGraph>::edge_descriptor>) );
 
-        using Edge = typename boost::graph_traits<MutableGraph>::edge_descriptor;
+        using Edge =
+            typename boost::graph_traits<MutableGraph>::edge_descriptor;
         using MSTEdges = std::unordered_set<Edge, EdgeHash>;
 
-        static_assert(
-            std::is_invocable_v<MinimumSpanningTree, MutableGraph, std::insert_iterator<MSTEdges>>);
+        static_assert(std::is_invocable_v<MinimumSpanningTree,
+                                          MutableGraph,
+                                          std::insert_iterator<MSTEdges>>);
 
         assert(k >= 1 && "cannot form negative clusters");
 
@@ -51,10 +57,13 @@ namespace Details
 
         for (decltype(k) i = 0, iters = k - 1; i < iters; ++i)
         {
-            const auto iter = std::max_element(
-                std::begin(mst_edges), std::end(mst_edges), [edge_weight](auto lhs, auto rhs) {
-                    return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
-                });
+            const auto iter =
+                std::max_element(std::begin(mst_edges),
+                                 std::end(mst_edges),
+                                 [edge_weight](auto lhs, auto rhs) {
+                                     return boost::get(edge_weight, lhs) <
+                                            boost::get(edge_weight, rhs);
+                                 });
 
             if (iter == std::end(mst_edges))
                 break;
@@ -62,25 +71,31 @@ namespace Details
             mst_edges.erase(iter);
         }
 
-        boost::remove_edge_if([&mst_edges](auto e) { return !mst_edges.contains(e); }, g);
+        boost::remove_edge_if(
+            [&mst_edges](auto e) { return !mst_edges.contains(e); }, g);
     }
 
-} // namespace Details
+} // namespace Impl
 
-template <typename MutableGraph, typename MinimumSpanningTree, typename WeightMap>
-requires std::equality_comparable<typename boost::property_traits<WeightMap>::value_type>
+template <typename MutableGraph,
+          typename MinimumSpanningTree,
+          typename WeightMap>
+requires std::equality_comparable<
+    typename boost::property_traits<WeightMap>::value_type>
 inline void k_spanning_tree_clustering(MutableGraph& g,
                                        unsigned k,
                                        WeightMap edge_weight,
                                        MinimumSpanningTree mst)
 {
-    Details::k_spanning_tree_clustering_impl(g, k, mst, edge_weight);
+    Impl::k_spanning_tree_clustering_impl(g, k, mst, edge_weight);
 }
 
 template <typename MutableGraph, typename MinimumSpanningTree>
-inline void k_spanning_tree_clustering(MutableGraph& g, unsigned k, MinimumSpanningTree mst)
+inline void
+k_spanning_tree_clustering(MutableGraph& g, unsigned k, MinimumSpanningTree mst)
 {
-    Details::k_spanning_tree_clustering_impl(g, k, mst, boost::get(boost::edge_weight, g));
+    Impl::k_spanning_tree_clustering_impl(
+        g, k, mst, boost::get(boost::edge_weight, g));
 }
 
 } // namespace Clustering

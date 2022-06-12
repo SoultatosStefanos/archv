@@ -16,11 +16,12 @@ using namespace Utility;
 class K_spanning_tree_tests : public testing::Test
 {
 protected:
-    using Graph = boost::adjacency_list<boost::vecS,
-                                        boost::vecS,
-                                        boost::undirectedS,
-                                        boost::property<boost::vertex_distance_t, int>,
-                                        boost::property<boost::edge_weight_t, int>>;
+    using Graph =
+        boost::adjacency_list<boost::vecS,
+                              boost::vecS,
+                              boost::undirectedS,
+                              boost::property<boost::vertex_distance_t, int>,
+                              boost::property<boost::edge_weight_t, int>>;
 };
 
 TEST_F(K_spanning_tree_tests, Empty_yields_empty)
@@ -119,8 +120,9 @@ TEST_F(K_spanning_tree_tests, Clustering_with_kruskal_algorithm)
     boost::add_edge(vv1, vv3, {2}, expected);
     boost::add_edge(vv3, vv4, {2}, expected);
 
-    k_spanning_tree_clustering(
-        g, k, [](const auto& g, auto out) { boost::kruskal_minimum_spanning_tree(g, out); });
+    k_spanning_tree_clustering(g, k, [](const auto& g, auto out) {
+        boost::kruskal_minimum_spanning_tree(g, out);
+    });
 
     ASSERT_TRUE(boost::isomorphism(expected, g));
 }

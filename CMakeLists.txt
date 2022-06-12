@@ -16,6 +16,10 @@ add_library(${PROJECT_NAME} )
 
 target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
+set(JSONCPP_LIBS libjsoncpp.so)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC ${JSONCPP_LIBS})
+
 set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})

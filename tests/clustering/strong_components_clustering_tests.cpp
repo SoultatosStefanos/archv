@@ -14,7 +14,8 @@ using namespace Utility;
 class Highly_connected_components_tests : public testing::Test
 {
 protected:
-    using Graph = boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS>;
+    using Graph =
+        boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS>;
 };
 
 TEST_F(Highly_connected_components_tests, Empty_yields_empty)
@@ -26,7 +27,8 @@ TEST_F(Highly_connected_components_tests, Empty_yields_empty)
     ASSERT_TRUE(boost::isomorphism(g, expected));
 }
 
-// see https://www.boost.org/doc/libs/1_65_0/libs/graph/example/strong_components.cpp
+// see
+// https://www.boost.org/doc/libs/1_65_0/libs/graph/example/strong_components.cpp
 TEST_F(Highly_connected_components_tests, Clustering)
 {
     Graph g;

@@ -13,7 +13,7 @@
 namespace Clustering
 {
 
-namespace Details
+namespace Impl
 {
     template <typename MutableGraph, typename ComponentMap>
     void strong_components_clustering_impl(MutableGraph& g, ComponentMap comp)
@@ -23,10 +23,12 @@ namespace Details
         BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
         BOOST_CONCEPT_ASSERT((boost::WritablePropertyMapConcept<
                               ComponentMap,
-                              typename boost::graph_traits<MutableGraph>::vertex_descriptor>) );
+                              typename boost::graph_traits<
+                                  MutableGraph>::vertex_descriptor>) );
 
-        static_assert(
-            std::is_same_v<typename boost::property_traits<ComponentMap>::value_type, int>);
+        static_assert(std::is_same_v<
+                      typename boost::property_traits<ComponentMap>::value_type,
+                      int>);
 
         if (boost::num_edges(g) == 0)
             return;
@@ -44,12 +46,12 @@ namespace Details
             g);
     }
 
-} // namespace Details
+} // namespace Impl
 
 template <typename MutableGraph, typename ComponentMap>
 inline void strong_components_clustering(MutableGraph& g, ComponentMap comp)
 {
-    Details::strong_components_clustering_impl(g, comp);
+    Impl::strong_components_clustering_impl(g, comp);
 }
 
 template <typename MutableGraph>
@@ -58,8 +60,10 @@ inline void strong_components_clustering(MutableGraph& g)
     using ComponentStorage = std::vector<int>;
 
     ComponentStorage c(boost::num_vertices(g));
-    Details::strong_components_clustering_impl(
-        g, boost::make_iterator_property_map(std::begin(c), boost::get(boost::vertex_index, g)));
+    Impl::strong_components_clustering_impl(
+        g,
+        boost::make_iterator_property_map(std::begin(c),
+                                          boost::get(boost::vertex_index, g)));
 }
 
 } // namespace Clustering
