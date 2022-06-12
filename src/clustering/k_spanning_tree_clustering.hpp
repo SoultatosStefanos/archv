@@ -19,7 +19,8 @@ namespace Impl
         template <typename Edge>
         auto operator()(Edge e) const -> auto
         {
-            return std::hash{}(reinterpret_cast<uint64_t>(e.get_property()));
+            return std::hash<uint64_t>{}(
+                reinterpret_cast<uint64_t>(e.get_property()));
         }
     };
 
