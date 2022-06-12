@@ -30,6 +30,9 @@ struct Symbol
     Namespace name_space;
     SourceLocation source;
     AccessSpecifier access;
+
+    auto operator==(const Symbol&) const -> bool = default;
+    auto operator!=(const Symbol&) const -> bool = default;
 };
 
 struct Definition : Symbol
@@ -37,6 +40,9 @@ struct Definition : Symbol
     using Type = std::optional<ID>; // Optional for primitives.
 
     Type type;
+
+    auto operator==(const Definition&) const -> bool = default;
+    auto operator!=(const Definition&) const -> bool = default;
 };
 
 struct Method : Symbol
@@ -61,6 +67,9 @@ struct Method : Symbol
     Count lines{0};
     Depth max_scope{0};
     bool is_virtual{false};
+
+    auto operator==(const Method&) const -> bool = default;
+    auto operator!=(const Method&) const -> bool = default;
 };
 
 struct Structure : Symbol
@@ -80,6 +89,9 @@ struct Structure : Symbol
     Nested nested;
     Friends friends;
     TemplateArguments template_args;
+
+    auto operator==(const Structure&) const -> bool = default;
+    auto operator!=(const Structure&) const -> bool = default;
 };
 
 struct Dependency
@@ -89,6 +101,9 @@ struct Dependency
 
     Type type;
     Cardinality cardinality;
+
+    auto operator==(const Dependency&) const -> bool = default;
+    auto operator!=(const Dependency&) const -> bool = default;
 };
 
 static_assert(std::is_aggregate_v<Symbol>);

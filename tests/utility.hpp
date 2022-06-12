@@ -23,7 +23,8 @@ concept arithmetic = std::is_arithmetic<T>::value;
 
 // Random arithmetic generator, using uniform distribution.
 template <arithmetic T>
-auto urandom(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max())
+auto urandom(T min = std::numeric_limits<T>::min(),
+             T max = std::numeric_limits<T>::max())
 {
     using dist_t = std::conditional_t<std::is_integral_v<T>,
                                       std::uniform_int_distribution<T>,

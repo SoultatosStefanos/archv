@@ -39,16 +39,17 @@ namespace Impl
     }
 
     template <typename Clique, typename Vertex>
-    inline auto contains_vertex(const Clique& c, Vertex v)
+    inline auto clique_contains_vertex(const Clique& c, Vertex v) -> bool
     {
         return std::find(std::begin(c), std::end(c), v) != std::end(c);
     }
 
     template <typename Graph, typename Clique, typename Edge>
-    inline auto contains_edge(const Graph& g, const Clique& c, Edge e)
+    inline auto
+    is_enclosed_within_clique(const Graph& g, const Clique& c, Edge e) -> bool
     {
-        return contains_vertex(c, boost::source(e, g)) and
-               contains_vertex(c, boost::target(e, g));
+        return clique_contains_vertex(c, boost::source(e, g)) and
+               clique_contains_vertex(c, boost::target(e, g));
     }
 
 } // namespace Impl
@@ -74,11 +75,14 @@ void maximum_clique_enumeration_clustering(MutableGraph& g,
     CliqueMap cliques;
     visit_cliques(g, Impl::clique_map_inserter(cliques));
 
-    const auto max_size = (*std::rbegin(cliques)).first;
+    const auto max_clique_size = (*std::rbegin(cliques)).first;
+    const auto max_cliques_range = cliques.equal_range(max_clique_size);
     for (const auto& [size, clique] :
-         boost::make_iterator_range(cliques.equal_range(max_size)))
+         boost::make_iterator_range(max_cliques_range))
         boost::remove_edge_if(
-            [&g, &c = clique](auto e) { return !Impl::contains_edge(g, c, e); },
+            [&g, &c = clique](auto e) {
+                return !Impl::is_enclosed_within_clique(g, c, e);
+            },
             g);
 }
 

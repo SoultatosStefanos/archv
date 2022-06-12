@@ -15,6 +15,17 @@ namespace Clustering
 
 namespace Impl
 {
+
+    template <typename Graph, typename ComponentMap>
+    inline auto is_shared_across_components(
+        const Graph& g,
+        typename boost::graph_traits<Graph>::edge_descriptor e,
+        ComponentMap comp) -> bool
+    {
+        return boost::get(comp, boost::source(e, g)) !=
+               boost::get(comp, boost::target(e, g));
+    }
+
     template <typename MutableGraph, typename ComponentMap>
     void strong_components_clustering_impl(MutableGraph& g, ComponentMap comp)
     {
@@ -40,8 +51,7 @@ namespace Impl
                 assert(boost::get(comp, boost::source(e, g)) < num);
                 assert(boost::get(comp, boost::target(e, g)) < num);
 
-                return boost::get(comp, boost::source(e, g)) !=
-                       boost::get(comp, boost::target(e, g));
+                return is_shared_across_components(g, e, comp);
             },
             g);
     }

@@ -19,10 +19,19 @@ namespace Impl
         template <typename Edge>
         auto operator()(Edge e) const -> auto
         {
-            return std::hash<uint64_t>{}(
-                reinterpret_cast<uint64_t>(e.get_property()));
+            using Val = uint64_t;
+            return std::hash<Val>{}(reinterpret_cast<Val>(e.get_property()));
         }
     };
+
+    template <typename EdgeIterator, typename WeightMap>
+    inline auto
+    max_weighted(EdgeIterator first, EdgeIterator last, WeightMap edge_weight)
+    {
+        return std::max_element(first, last, [edge_weight](auto lhs, auto rhs) {
+            return boost::get(edge_weight, lhs) < boost::get(edge_weight, rhs);
+        });
+    }
 
     template <typename MutableGraph,
               typename MinimumSpanningTree,
@@ -56,15 +65,11 @@ namespace Impl
         MSTEdges mst_edges;
         mst(g, std::inserter(mst_edges, std::begin(mst_edges)));
 
-        for (decltype(k) i = 0, iters = k - 1; i < iters; ++i)
+        const auto iters = k - 1;
+        for (decltype(k) i = 0; i < iters; ++i)
         {
-            const auto iter =
-                std::max_element(std::begin(mst_edges),
-                                 std::end(mst_edges),
-                                 [edge_weight](auto lhs, auto rhs) {
-                                     return boost::get(edge_weight, lhs) <
-                                            boost::get(edge_weight, rhs);
-                                 });
+            const auto iter = max_weighted(
+                std::begin(mst_edges), std::end(mst_edges), edge_weight);
 
             if (iter == std::end(mst_edges))
                 break;

@@ -25,10 +25,10 @@ namespace
     requires std::invocable<Function,
                             std::decay_t<Json::String>,
                             std::decay_t<Json::Value>>
-    void visit(const Json::Value& val, Function f)
+    void visit(const Json::Value& val, Function visitor)
     {
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
-            f(iter.name(), *iter);
+            visitor(iter.name(), *iter);
     }
 
 } // namespace
