@@ -17,12 +17,25 @@ namespace Architecture
 // NOTE: No invariants to establish, to avoid syntax coupling as much as
 // possible.
 
+struct SourceLocation
+{
+    using File = std::string;
+    using Line = int;
+    using Col = int;
+
+    File file;
+    Line line;
+    Col col;
+
+    auto operator==(const SourceLocation&) const -> bool = default;
+    auto operator!=(const SourceLocation&) const -> bool = default;
+};
+
 struct Symbol
 {
     using ID = std::string;
     using Name = std::string;
     using Namespace = std::string;
-    using SourceLocation = std::experimental::source_location;
     using AccessSpecifier = std::string;
 
     ID id;
