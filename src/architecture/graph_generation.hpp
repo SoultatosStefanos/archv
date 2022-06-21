@@ -6,13 +6,12 @@
 
 #include "graph.hpp"
 
-#include <istream>
+#include <string_view>
 
 namespace Architecture
 {
 
-using JsonArchive = std::istream;
-void generate_graph(Graph& g, JsonArchive& from);
+void generate_graph(Graph& g, const std::string_view json_fpath);
 
 } // namespace Architecture
 
