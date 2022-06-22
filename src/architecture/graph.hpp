@@ -1,12 +1,11 @@
 // Contains the basic building blocks (structures) and their dependencies graph
-// for the visualized architecture. Soultatos Stefanos 2022
+// for the visualized architecture.
+// Soultatos Stefanos 2022
 
 #ifndef ARCHITECTURE_GRAPH_HPP
 #define ARCHITECTURE_GRAPH_HPP
 
 #include <boost/graph/adjacency_list.hpp>
-#include <experimental/source_location>
-#include <optional>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -48,31 +47,39 @@ struct Symbol
     auto operator!=(const Symbol&) const -> bool = default;
 };
 
-struct Definition : Symbol
+struct Definition
 {
-    using Type = std::optional<ID>; // Optional for primitives.
+    using ID = Symbol::ID;
+    using FullType = std::string;
+    using Type = std::string;
 
+    Symbol symbol;
+    FullType full_type;
     Type type;
 
     auto operator==(const Definition&) const -> bool = default;
     auto operator!=(const Definition&) const -> bool = default;
 };
 
-struct Method : Symbol
+struct Method
 {
+    using ID = Symbol::ID;
     using Type = std::string;
-    using ReturnType = std::optional<ID>; // Optional for void.
-    using Arguments = std::vector<Definition>;
-    using Definitions = std::vector<Definition>;
-    using TemplateArguments = std::vector<ID>;
+    using ReturnType = std::string;
+    using References = std::vector<ID>;
+
+    template <typename T>
+    using Composites = std::vector<T>;
+
     using Count = int;
     using Depth = int;
 
+    Symbol symbol;
     Type type;
     ReturnType return_type;
-    Arguments arguments;
-    Definitions definitions;
-    TemplateArguments template_args;
+    Composites<Definition>  arguments;
+    Composites<Definition>  definitions;
+    References template_args;
     Count literals{0};
     Count statements{0};
     Count branches{0};
@@ -85,23 +92,23 @@ struct Method : Symbol
     auto operator!=(const Method&) const -> bool = default;
 };
 
-struct Structure : Symbol
+struct Structure
 {
+    using ID = Symbol::ID;
     using Type = std::string;
-    using Methods = std::vector<Method>;
-    using Fields = std::vector<Definition>;
-    using Bases = std::vector<ID>;
-    using Nested = std::vector<Structure>;
-    using Friends = std::vector<ID>;
-    using TemplateArguments = std::vector<ID>;
+    using References = std::vector<ID>;
 
+    template <typename T>
+    using Composites = std::vector<T>;
+
+    Symbol symbol;
     Type type;
-    Methods methods;
-    Fields fields;
-    Bases bases;
-    Nested nested;
-    Friends friends;
-    TemplateArguments template_args;
+    Composites<Method> methods;
+    Composites<Definition> fields;
+    References bases;
+    Composites<Structure> nested;
+    References friends;
+    References template_args;
 
     auto operator==(const Structure&) const -> bool = default;
     auto operator!=(const Structure&) const -> bool = default;
@@ -125,11 +132,20 @@ static_assert(std::is_aggregate_v<Method>);
 static_assert(std::is_aggregate_v<Structure>);
 static_assert(std::is_aggregate_v<Dependency>);
 
+static_assert(std::is_default_constructible_v<Structure>);
+static_assert(std::is_default_constructible_v<Dependency>);
+
+using VertexProperty = Structure;
+using EdgeProperty = Dependency;
+
 using Graph = boost::adjacency_list<boost::vecS,
                                     boost::vecS,
                                     boost::directedS,
-                                    Structure,
-                                    Dependency>;
+                                    VertexProperty,
+                                    EdgeProperty>;
+
+using Vertex = Graph::vertex_descriptor;
+using Edge = Graph::edge_descriptor;
 
 } // namespace Architecture
 

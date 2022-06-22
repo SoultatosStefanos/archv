@@ -6,12 +6,12 @@
 
 #include "graph.hpp"
 
-#include <string_view>
+#include <jsoncpp/json/json.h>
 
 namespace Architecture
 {
 
-void generate_graph(Graph& g, const std::string_view json_fpath);
+void generate_graph(Graph& g, const Json::Value& root);
 
 } // namespace Architecture
 

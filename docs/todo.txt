@@ -12,6 +12,8 @@ DONE
 
 		Edge Betweeness Centrality -> Boost
 
+	GRAPH GENERATION
+
 TODOS
 
 	CLUSTERING
