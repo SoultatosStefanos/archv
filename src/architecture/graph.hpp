@@ -23,8 +23,8 @@ struct SourceLocation
     using Col = int;
 
     File file;
-    Line line;
-    Col col;
+    Line line{-1};
+    Col col{-1};
 
     auto operator==(const SourceLocation&) const -> bool = default;
     auto operator!=(const SourceLocation&) const -> bool = default;
@@ -41,7 +41,7 @@ struct Symbol
     Name name;
     Namespace name_space;
     SourceLocation source;
-    AccessSpecifier access;
+    AccessSpecifier access{"unknown"};
 
     auto operator==(const Symbol&) const -> bool = default;
     auto operator!=(const Symbol&) const -> bool = default;
@@ -77,15 +77,15 @@ struct Method
     Symbol symbol;
     Type type;
     ReturnType return_type;
-    Composites<Definition>  arguments;
-    Composites<Definition>  definitions;
+    Composites<Definition> arguments;
+    Composites<Definition> definitions;
     References template_args;
-    Count literals{0};
-    Count statements{0};
-    Count branches{0};
-    Count loops{0};
-    Count lines{0};
-    Depth max_scope{0};
+    Count literals{-1};
+    Count statements{-1};
+    Count branches{-1};
+    Count loops{-1};
+    Count lines{-1};
+    Depth max_scope{-1};
     bool is_virtual{false};
 
     auto operator==(const Method&) const -> bool = default;
@@ -120,7 +120,7 @@ struct Dependency
     using Cardinality = int;
 
     Type type;
-    Cardinality cardinality;
+    Cardinality cardinality{-1};
 
     auto operator==(const Dependency&) const -> bool = default;
     auto operator!=(const Dependency&) const -> bool = default;
