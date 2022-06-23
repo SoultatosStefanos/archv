@@ -1,4 +1,4 @@
-set(FILES 
+set(FILES
   tests.cpp
   utility.hpp
 )
@@ -9,7 +9,8 @@ set(TESTS_LIBS gtest gmock)
 add_executable(${TESTS} ${FILES})
 target_link_libraries(${TESTS} PRIVATE ${PROJECT_NAME} ${TESTS_LIBS})
 
-set(SUBDIRECTORIES 
+set(SUBDIRECTORIES
+  architecture
   clustering
 )
 

@@ -4,12 +4,25 @@
 #ifndef TESTS_UTILITY_HPP
 #define TESTS_UTILITY_HPP
 
+#include <cassert>
 #include <concepts>
+#include <experimental/source_location>
+#include <filesystem>
 #include <limits>
 #include <random>
+#include <string_view>
 
 namespace Utility
 {
+
+// Resolve path from source location. (Useful for out of source builds.)
+inline auto resolve_path(const std::string_view to,
+                         const std::experimental::source_location from =
+                             std::experimental::source_location::current())
+{
+    return std::filesystem::absolute(from.file_name()).parent_path() /
+           std::filesystem::path{to};
+}
 
 template <typename Seed = std::random_device>
 auto rng() -> auto&
