@@ -11,14 +11,28 @@
 namespace Architecture
 {
 
+constexpr auto error_msg{"invalid json archive"};
+
 namespace // jsoncpp utils
 {
     // Safe json access.
     inline auto get(const Json::Value& val, const char* at)
     {
         assert(at);
-        assert(val.isMember(at));
+        if (!val.isMember(at))
+            throw InvalidJsonArchive{error_msg};
+
         return val[at];
+    }
+
+    // Safe json value type conversion
+    template <typename T>
+    inline auto as(const Json::Value& val) -> T
+    {
+        if (!val.is<T>())
+            throw InvalidJsonArchive{error_msg};
+
+        return val.as<T>();
     }
 
     // Traverse json objects with ids.
@@ -28,7 +42,9 @@ namespace // jsoncpp utils
                             std::decay_t<Json::Value>>
     void for_each_object(const Json::Value& val, BinaryOperation visitor)
     {
-        assert(!val.isArray());
+        if (val.isArray())
+            throw InvalidJsonArchive{error_msg};
+
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
     }
@@ -44,9 +60,9 @@ namespace // deserializers, read directly from json
         using Line = SourceLocation::Line;
         using Col = SourceLocation::Col;
 
-        loc.file = get(val, "file").as<File>();
-        loc.line = get(val, "line").as<Line>();
-        loc.col = get(val, "col").as<Col>();
+        loc.file = as<File>(get(val, "file"));
+        loc.line = as<Line>(get(val, "line"));
+        loc.col = as<Col>(get(val, "col"));
     }
 
     inline void deserialize_definition(const Json::Value& val, Definition& def)
@@ -55,10 +71,10 @@ namespace // deserializers, read directly from json
         using FullType = Definition::FullType;
         using Type = Definition::Type;
 
-        def.symbol.name = get(val, "name").as<Name>();
+        def.symbol.name = as<Name>(get(val, "name"));
         deserialize_source_location(get(val, "src_info"), def.symbol.source);
-        def.full_type = get(val, "full_type").as<FullType>();
-        def.type = get(val, "type").as<Type>();
+        def.full_type = as<FullType>(get(val, "full_type"));
+        def.type = as<Type>(get(val, "type"));
     }
 
     inline void
@@ -68,7 +84,7 @@ namespace // deserializers, read directly from json
         using AccessSpecifier = Symbol::AccessSpecifier;
 
         deserialize_definition(val, def);
-        def.symbol.access = get(val, "access").as<AccessSpecifier>();
+        def.symbol.access = as<AccessSpecifier>(get(val, "access"));
     }
 
     void deserialize_method(const Json::Value& val, Method& m)
@@ -79,17 +95,17 @@ namespace // deserializers, read directly from json
         using Depth = Method::Depth;
         using Type = Method::Type;
 
-        m.symbol.access = get(val, "access").as<AccessSpecifier>();
-        m.branches = get(val, "branches").as<Count>();
-        m.lines = get(val, "lines").as<Count>();
-        m.literals = get(val, "literals").as<Count>();
-        m.loops = get(val, "loops").as<Count>();
-        m.max_scope = get(val, "max_scope").as<Depth>();
-        m.type = get(val, "method_type").as<Type>();
-        m.symbol.name = get(val, "name").as<Name>();
+        m.symbol.access = as<AccessSpecifier>(get(val, "access"));
+        m.branches = as<Count>(get(val, "branches"));
+        m.lines = as<Count>(get(val, "lines"));
+        m.literals = as<Count>(get(val, "literals"));
+        m.loops = as<Count>(get(val, "loops"));
+        m.max_scope = as<Depth>(get(val, "max_scope"));
+        m.type = as<Type>(get(val, "method_type"));
+        m.symbol.name = as<Name>(get(val, "name"));
         deserialize_source_location(get(val, "src_info"), m.symbol.source);
-        m.statements = get(val, "statements").as<Count>();
-        m.is_virtual = get(val, "virtual").asBool();
+        m.statements = as<Count>(get(val, "statements"));
+        m.is_virtual = as<bool>(get(val, "virtual"));
     }
 
     inline void deserialize_structure(const Json::Value& val, Structure& s)
@@ -98,9 +114,9 @@ namespace // deserializers, read directly from json
         using Namespace = Symbol::Namespace;
         using Type = Structure::Type;
 
-        s.symbol.name = get(val, "name").as<Name>();
-        s.symbol.name_space = get(val, "namespace").as<Namespace>();
-        s.type = get(val, "structure_type").as<Type>();
+        s.symbol.name = as<Name>(get(val, "name"));
+        s.symbol.name_space = as<Namespace>(get(val, "namespace"));
+        s.type = as<Type>(get(val, "structure_type"));
         deserialize_source_location(get(val, "src_info"), s.symbol.source);
     }
 
@@ -108,14 +124,9 @@ namespace // deserializers, read directly from json
     {
         using Cardinality = Dependency::Cardinality;
 
-        for_each_object(
-            get(val, "types"),
-            [&dep, i = 0](const auto& id, const Json::Value& val) mutable {
-                assert(i++ == 0 && "expected only one object");
-
-                dep.type = id;
-                dep.cardinality = val.as<Cardinality>();
-            });
+        const auto iter = std::begin(get(val, "types"));
+        dep.type = iter.name();
+        dep.cardinality = as<Cardinality>(*iter);
     }
 
 } // namespace
@@ -139,14 +150,13 @@ namespace // readers
     template <typename Container>
     inline void get_references(const Json::Value& val, Container& data)
     {
-        assert(val.isArray());
+        if (!val.isArray())
+            throw InvalidJsonArchive{error_msg};
+
         std::transform(std::begin(val),
                        std::end(val),
                        std::back_inserter(data),
-                       [](const auto& v) {
-                           assert(v.isString());
-                           return v.asString();
-                       });
+                       [](const auto& v) { return as<std::string>(v); });
     }
 
     inline auto read_field(const Structure& owner,
@@ -249,7 +259,6 @@ namespace // graph builders
 
     void add_edges(const Json::Value& val, Graph& g, const VertexCache& cache)
     {
-        assert(val.isArray());
         for (const auto& v : val)
         {
             const auto from = get(v, "from").asString();
