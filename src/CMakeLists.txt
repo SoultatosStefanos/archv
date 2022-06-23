@@ -1,5 +1,5 @@
-set(FILES )
-set(SUBDIRECTORIES 
+set(FILES)
+set(SUBDIRECTORIES
 	architecture
 	clustering
 	visualization

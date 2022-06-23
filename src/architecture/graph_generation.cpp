@@ -11,8 +11,6 @@
 namespace Architecture
 {
 
-constexpr auto error_msg{"invalid json archive"};
-
 namespace // jsoncpp utils
 {
     // Safe json access.
@@ -20,7 +18,8 @@ namespace // jsoncpp utils
     {
         assert(at);
         if (!val.isMember(at))
-            throw InvalidJsonArchive{error_msg};
+            throw InvalidJsonArchive{"json value not found: " +
+                                     std::string(at)};
 
         return val[at];
     }
@@ -30,7 +29,7 @@ namespace // jsoncpp utils
     inline auto as(const Json::Value& val) -> T
     {
         if (!val.is<T>())
-            throw InvalidJsonArchive{error_msg};
+            throw InvalidJsonArchive{"invalid json value type"};
 
         return val.as<T>();
     }
@@ -42,8 +41,11 @@ namespace // jsoncpp utils
                             std::decay_t<Json::Value>>
     void for_each_object(const Json::Value& val, BinaryOperation visitor)
     {
+        if (val.isNull())
+            return;
+
         if (val.isArray())
-            throw InvalidJsonArchive{error_msg};
+            throw InvalidJsonArchive{"invalid json value array type"};
 
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
@@ -150,8 +152,11 @@ namespace // readers
     template <typename Container>
     inline void get_references(const Json::Value& val, Container& data)
     {
+        if (val.isNull())
+            return;
+
         if (!val.isArray())
-            throw InvalidJsonArchive{error_msg};
+            throw InvalidJsonArchive{"invalid json value non array type"};
 
         std::transform(std::begin(val),
                        std::end(val),
@@ -218,7 +223,7 @@ namespace // readers
 
         deserialize_structure(val, s);
 
-        get_composites(get(val, "nested"), s.nested, read_structure);
+        get_composites(get(val, "contains"), s.nested, read_structure);
 
         get_composites(get(val, "fields"),
                        s.fields,

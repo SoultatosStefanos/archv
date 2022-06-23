@@ -1,0 +1,320 @@
+{
+	"dependencies" : 
+	[
+		{
+			"from" : "CS::CS_1::class_A",
+			"to" : "CS::CS_1::class_B",
+			"types" : 
+			{
+				"ClassField" : 1
+			}
+		},
+		{
+			"from" : "CS::CS_1::class_X",
+			"to" : "CS::CS_1::class_B",
+			"types" : 
+			{
+				"Inherit" : 1
+			}
+		},
+		{
+			"from" : "CS::CS_1::class_X",
+			"to" : "CS::CS_1::class_A",
+			"types" : 
+			{
+				"Inherit" : 1
+			}
+		}
+	],
+	"sources" : 
+	[
+		"classes_simple.cpp"
+	],
+	"structures" : 
+	{
+		"CS::CS_1::class_A" : 
+		{
+			"bases" : null,
+			"contains" : null,
+			"fields" : 
+			{
+				"CS::CS_1::class_A::b" : 
+				{
+					"access" : "private",
+					"full_type" : "class CS::CS_1::class_B",
+					"name" : "b",
+					"src_info" : 
+					{
+						"col" : 29,
+						"file" : "classes_simple.cpp",
+						"line" : 23
+					},
+					"type" : "CS::CS_1::class_B"
+				}
+			},
+			"friends" : null,
+			"methods" : 
+			{
+				"CS::CS_1::class_A::class_A(class CS::CS_1::class_A &&)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_A",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 23
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				}
+			},
+			"name" : "class_A",
+			"namespace" : "CS::CS_1::",
+			"nested_parent" : null,
+			"src_info" : 
+			{
+				"col" : 11,
+				"file" : "classes_simple.cpp",
+				"line" : 23
+			},
+			"structure_type" : "Class",
+			"template_args" : null,
+			"template_parent" : null
+		},
+		"CS::CS_1::class_B" : 
+		{
+			"bases" : null,
+			"contains" : null,
+			"fields" : 
+			{
+				"CS::CS_1::class_B::b" : 
+				{
+					"access" : "private",
+					"full_type" : "class CS::CS_1::class_B *",
+					"name" : "b",
+					"src_info" : 
+					{
+						"col" : 29,
+						"file" : "classes_simple.cpp",
+						"line" : 22
+					},
+					"type" : "CS::CS_1::class_B"
+				}
+			},
+			"friends" : null,
+			"methods" : 
+			{
+				"CS::CS_1::class_B::class_B(class CS::CS_1::class_B &&)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_B",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 22
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				},
+				"CS::CS_1::class_B::class_B(const class CS::CS_1::class_B &)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_B",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 22
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				},
+				"CS::CS_1::class_B::class_B(void) noexcept" : 
+				{
+					"access" : "public",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_B",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 22
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				},
+				"CS::CS_1::class_B::~class_B(void)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Destructor_Trivial",
+					"name" : "~class_B",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 22
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				}
+			},
+			"name" : "class_B",
+			"namespace" : "CS::CS_1::",
+			"nested_parent" : null,
+			"src_info" : 
+			{
+				"col" : 11,
+				"file" : "classes_simple.cpp",
+				"line" : 22
+			},
+			"structure_type" : "Class",
+			"template_args" : null,
+			"template_parent" : null
+		},
+		"CS::CS_1::class_X" : 
+		{
+			"bases" : 
+			[
+				"CS::CS_1::class_B",
+				"CS::CS_1::class_A"
+			],
+			"contains" : null,
+			"fields" : null,
+			"friends" : null,
+			"methods" : 
+			{
+				"CS::CS_1::class_X::class_X(class CS::CS_1::class_X &&)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_X",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 25
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				},
+				"CS::CS_1::class_X::class_X(const class CS::CS_1::class_X &)" : 
+				{
+					"access" : "unknown",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_X",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 25
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				},
+				"CS::CS_1::class_X::class_X(void) noexcept" : 
+				{
+					"access" : "public",
+					"args" : null,
+					"branches" : 0,
+					"definitions" : null,
+					"lines" : 0,
+					"literals" : 0,
+					"loops" : 0,
+					"max_scope" : 0,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_X",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 25
+					},
+					"statements" : 0,
+					"template_args" : null,
+					"virtual" : false
+				}
+			},
+			"name" : "class_X",
+			"namespace" : "CS::CS_1::",
+			"nested_parent" : null,
+			"src_info" : 
+			{
+				"col" : 11,
+				"file" : "classes_simple.cpp",
+				"line" : 25
+			},
+			"structure_type" : "Class",
+			"template_args" : null,
+			"template_parent" : null
+		}
+	}
+}

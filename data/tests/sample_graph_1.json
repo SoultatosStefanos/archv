@@ -1,0 +1,135 @@
+{
+	"dependencies" : null,
+	"sources" : 
+	[
+		"classes_simple.cpp"
+	],
+	"structures" : 
+	{
+		"CS::CS_1::class_A" : 
+		{
+			"bases" : 
+			[ 
+				"std::runtime_error" 
+			],
+			"contains" : 
+			{
+				"CS::CS_1::class_A::Foo" :
+				{
+					"bases" : null,
+					"contains": null,
+					"fields" : null,
+					"friends" : null,
+					"methods" : null,
+					"name" : "Foo",
+					"namespace" : "CS::CS_1",
+					"nested": null,
+					"nested_parent" : null,
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 423
+					},
+					"structure_type" : "Class",
+					"template_args" : null,
+					"template_parent" : null
+				}
+			},
+			"fields" : 
+			{
+				"CS::CS_1::class_A::b" : 
+				{
+					"access" : "private",
+					"full_type" : "class CS::CS_1::class_B",
+					"name" : "b",
+					"src_info" : 
+					{
+						"col" : 29,
+						"file" : "classes_simple.cpp",
+						"line" : 23
+					},
+					"type" : "CS::CS_1::class_B"
+				}
+			},
+			"friends" : 
+			[
+				"std::map"
+			],
+			"methods" : 
+			{
+				"CS::CS_1::class_A::class_A(class CS::CS_1::class_A &&)" : 
+				{
+					"access" : "public",
+					"args" : 
+					{
+						"b" : 
+						{
+							"full_type" : "friends::B",
+							"name" : "b",
+							"src_info" : 
+							{
+								"col" : 23,
+								"file" : "friends.cpp",
+								"line" : 58
+							},
+							"type" : "friends::B"
+						}
+					},
+					"branches" : 10,
+					"definitions" : 
+					{
+						"x" : 
+						{
+							"full_type" : "friends::B",
+							"name" : "x",
+							"src_info" : 
+							{
+								"col" : 23,
+								"file" : "friends.cpp",
+								"line" : 58
+							},
+							"type" : "friends::B"
+						}
+					},
+					"lines" : 20,
+					"literals" : 30,
+					"loops" : 40,
+					"max_scope" : 50,
+					"method_type" : "Constructor_Trivial",
+					"name" : "class_A",
+					"ret_type" : "void",
+					"src_info" : 
+					{
+						"col" : 11,
+						"file" : "classes_simple.cpp",
+						"line" : 23
+					},
+					"statements" : 60,
+					"template_args" : 
+					[
+						"bool",
+						"int",
+						"char"
+					],
+					"virtual" : true
+				}
+			},
+			"name" : "class_A",
+			"namespace" : "CS::CS_1::",
+			"nested_parent" : "std::vector",
+			"src_info" : 
+			{
+				"col" : 11,
+				"file" : "classes_simple.cpp",
+				"line" : 23
+			},
+			"structure_type" : "Class",
+			"template_args" : 
+			[
+				"int"
+			],
+			"template_parent" : "std::basic_string<wchar>"
+		}
+	}
+}

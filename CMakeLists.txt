@@ -6,13 +6,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(graph_visualizer CXX)
 
-if (MSVC)
+if(MSVC)
   add_compile_options(/W4 /WX)
 else()
-  add_compile_options(-Wall -Wextra -pedantic )
+  add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-add_library(${PROJECT_NAME} )
+add_library(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
@@ -23,5 +23,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${JSONCPP_LIBS})
 set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
-	add_subdirectory(${VAR})
+  add_subdirectory(${VAR})
 endforeach()
