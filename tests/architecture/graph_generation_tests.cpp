@@ -1,4 +1,5 @@
 #include "architecture/graph_generation.hpp"
+#include "architecture/graph_output.hpp"
 #include "utility.hpp"
 
 #include "gmock/gmock.h"
@@ -129,7 +130,11 @@ TEST(Generate_graph, Sample_graph_1)
 
     generate_graph(actual, root);
 
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(boost::isomorphism(actual, expected))
+        << "\n\nActual:\n"
+        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << "\n\nExpected:\n"
+        << dump([&expected](auto& os) { output_graph(os, expected); });
 }
 
 } // namespace

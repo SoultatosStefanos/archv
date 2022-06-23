@@ -8,6 +8,7 @@
 #include <concepts>
 #include <experimental/source_location>
 #include <filesystem>
+#include <iostream>
 #include <limits>
 #include <random>
 #include <string_view>
@@ -45,6 +46,31 @@ auto urandom(T min = std::numeric_limits<T>::min(),
 
     dist_t dist{min, max};
     return static_cast<T>(dist(rng()));
+}
+
+namespace Impl
+{
+    template <typename OutputFunc>
+    struct StreamProxy
+    {
+        OutputFunc out;
+    };
+
+    template <typename OutputFunc>
+    inline auto operator<<(std::ostream& os,
+                           const StreamProxy<OutputFunc>& proxy) -> auto&
+    {
+        proxy.out(os);
+        return os;
+    }
+
+} // namespace Impl
+
+// Dumps output info to an output stream. (Useful with gtest.)
+template <typename OutputFunc>
+inline auto dump(OutputFunc f)
+{
+    return Impl::StreamProxy<OutputFunc>{f};
 }
 
 } // namespace Utility
