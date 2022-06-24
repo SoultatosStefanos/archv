@@ -11,8 +11,6 @@
 namespace Architecture
 {
 
-// TODO Add nested classes as vertices
-
 namespace // jsoncpp utils
 {
     // Safe json access.
@@ -130,9 +128,16 @@ namespace // deserializers, read directly from json
     {
         using Cardinality = Dependency::Cardinality;
 
-        const auto iter = std::begin(get(val, "types"));
-        dep.type = iter.name();
-        dep.cardinality = as<Cardinality>(*iter);
+        for_each_object(get(val, "types"),
+                        [i = 0, &dep](const auto& id, const auto& val) mutable {
+                            if (i++ > 0)
+                                throw InvalidJsonArchive{
+                                    "expected exactly one json 'types' value "
+                                    "on each dependency"};
+
+                            dep.type = id;
+                            dep.cardinality = as<Cardinality>(val);
+                        });
     }
 
 } // namespace

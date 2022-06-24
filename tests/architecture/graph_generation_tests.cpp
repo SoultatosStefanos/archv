@@ -7,7 +7,7 @@
 #include <boost/graph/isomorphism.hpp>
 #include <fstream>
 
-// TODO
+// NOTE: None of the test samples make any sense at a syntax level.
 
 namespace
 {
@@ -49,6 +49,7 @@ TEST(Generate_graph, Sample_graph_0)
     ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
+// See data/tests/sample_graph_1.json
 void build_sample_graph_1(Graph& g)
 {
     Structure foo;
@@ -131,6 +132,73 @@ TEST(Generate_graph, Sample_graph_1)
     generate_graph(actual, root);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected))
+        << "\n\nActual:\n"
+        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << "\n\nExpected:\n"
+        << dump([&expected](auto& os) { output_graph(os, expected); });
+}
+
+// See data/tests/sample_graph_2.json
+void build_sample_graph_2(Graph& g)
+{
+    Structure class_a, class_b, class_x;
+
+    class_a.symbol.id = "CS::CS_1::class_A";
+    class_a.symbol.name = "class_A";
+    class_a.symbol.name_space = "CS::CS_1::";
+    class_a.symbol.source = {
+        .file = "classes_simple.cpp", .line = 23, .col = 11};
+    class_a.type = "Class";
+
+    class_b.symbol.id = "CS::CS_1::class_B";
+    class_b.symbol.name = "class_B";
+    class_b.symbol.name_space = "CS::CS_1::";
+    class_b.symbol.source = {
+        .file = "classes_simple.cpp", .line = 22, .col = 11};
+    class_b.type = "Class";
+
+    class_x.symbol.id = "CS::CS_1::class_X";
+    class_x.symbol.name = "class_X";
+    class_x.symbol.name_space = "CS::CS_1::";
+    class_x.symbol.source = {
+        .file = "classes_simple.cpp", .line = 25, .col = 11};
+    class_x.type = "Class";
+
+    const auto a = boost::add_vertex(class_a, g);
+    const auto b = boost::add_vertex(class_b, g);
+    const auto x = boost::add_vertex(class_x, g);
+
+    boost::add_edge(a, b, {.type = "ClassField", .cardinality = 1}, g);
+    boost::add_edge(x, b, {.type = "Inherit", .cardinality = 1}, g);
+    boost::add_edge(x, a, {.type = "Inherit", .cardinality = 1}, g);
+}
+
+auto edge_property_isomorphsim(const Graph& lhs, const Graph& rhs) -> bool
+{
+    const auto [lbegin, lend] = boost::edges(lhs);
+    const auto [rbegin, rend] = boost::edges(rhs);
+    return std::equal(
+        lbegin, lend, rbegin, rend, [&lhs, &rhs](auto le, auto re) {
+            return lhs[le] == rhs[re];
+        });
+}
+
+// See data/tests/sample_graph_2.json
+TEST(Generate_graph, Sample_graph_2)
+{
+    const auto root = read_json_root("../../data/tests/sample_graph_2.json");
+    Graph actual, expected;
+    build_sample_graph_2(expected);
+
+    generate_graph(actual, root);
+
+    ASSERT_TRUE(boost::isomorphism(actual, expected))
+        << "\n\nActual:\n"
+        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << "\n\nExpected:\n"
+        << dump([&expected](auto& os) { output_graph(os, expected); });
+
+    ASSERT_TRUE(edge_property_isomorphsim(actual, expected))
         << "\n\nActual:\n"
         << dump([&actual](auto& os) { output_graph(os, actual); })
         << "\n\nExpected:\n"
