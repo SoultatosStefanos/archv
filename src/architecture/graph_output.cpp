@@ -130,8 +130,8 @@ void output_vertex(std::ostream& os, const VertexProperty& v)
 
 void output_edge(std::ostream& os, const EdgeProperty& e)
 {
-    os << "\ntype: " << e.type;
-    os << "\ncardinality: " << e.cardinality;
+    os << "type: " << e.type << '\n';
+    os << "cardinality: " << e.cardinality << '\n';
 }
 
 void output_graph(std::ostream& os,
@@ -144,13 +144,17 @@ void output_graph(std::ostream& os,
 
     os << "\n\nvertices:\n\n";
     for (auto v : boost::make_iterator_range(boost::vertices(g)))
+    {
+        os << "\n--------------------------------\n";
         out_vertex(os, g[v]);
+    }
 
     os << "\n\nedges:\n\n";
     for (auto e : boost::make_iterator_range(boost::edges(g)))
     {
-        os << "\nfrom: " << g[boost::source(e, g)].symbol.id;
-        os << "\nto: " << g[boost::target(e, g)].symbol.id;
+        os << "\n--------------------------------\n";
+        os << "from: " << g[boost::source(e, g)].symbol.id << '\n';
+        os << "to: " << g[boost::target(e, g)].symbol.id << '\n';
         out_edge(os, g[e]);
     }
 }
