@@ -11,6 +11,8 @@
 namespace Architecture
 {
 
+// TODO Add nested classes as vertices
+
 namespace // jsoncpp utils
 {
     // Safe json access.
@@ -96,6 +98,7 @@ namespace // deserializers, read directly from json
         using Count = Method::Count;
         using Depth = Method::Depth;
         using Type = Method::Type;
+        using ReturnType = Method::ReturnType;
 
         m.symbol.access = as<AccessSpecifier>(get(val, "access"));
         m.branches = as<Count>(get(val, "branches"));
@@ -104,6 +107,7 @@ namespace // deserializers, read directly from json
         m.loops = as<Count>(get(val, "loops"));
         m.max_scope = as<Depth>(get(val, "max_scope"));
         m.type = as<Type>(get(val, "method_type"));
+        m.return_type = as<ReturnType>(get(val, "ret_type"));
         m.symbol.name = as<Name>(get(val, "name"));
         deserialize_source_location(get(val, "src_info"), m.symbol.source);
         m.statements = as<Count>(get(val, "statements"));
