@@ -255,14 +255,20 @@ namespace // graph builders
     // Used in order to 'remember' the vertex installed descriptors.
     using VertexCache = std::unordered_map<Structure::ID, Vertex>;
 
+    inline void add_vertex(const Structure& s, Graph& g, VertexCache& cache)
+    {
+        for (const auto& inner : s.nested)
+            add_vertex(inner, g, cache);
+
+        assert(!cache.contains(s.symbol.id));
+        cache[s.symbol.id] = boost::add_vertex(s, g);
+    }
+
     inline void
     add_vertices(const Json::Value& val, Graph& g, VertexCache& cache)
     {
         for_each_object(val, [&g, &cache](const auto& id, const auto& val) {
-            auto s = read_structure(id, val);
-
-            assert(!cache.contains(s.symbol.id));
-            cache[s.symbol.id] = boost::add_vertex(std::move(s), g);
+            add_vertex(read_structure(id, val), g, cache);
         });
     }
 
