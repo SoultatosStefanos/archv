@@ -76,7 +76,7 @@ void maximum_clique_enumeration_clustering(MutableGraph& g,
     visit_cliques(g, Impl::clique_map_inserter(cliques));
 
     const auto max_clique_size = (*std::rbegin(cliques)).first;
-    const auto max_cliques_range = cliques.equal_range(max_clique_size);
+    const auto& max_cliques_range = cliques.equal_range(max_clique_size);
     for (const auto& [size, clique] :
          boost::make_iterator_range(max_cliques_range))
         boost::remove_edge_if(

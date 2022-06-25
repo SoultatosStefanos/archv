@@ -33,10 +33,10 @@ namespace Impl
         for (auto edge : boost::make_iterator_range(boost::edges(g)))
         {
             const auto u = boost::source(edge, g);
-            const auto [ubegin, uend] = boost::adjacent_vertices(u, g);
+            const auto& [ubegin, uend] = boost::adjacent_vertices(u, g);
 
             const auto v = boost::target(edge, g);
-            const auto [vbegin, vend] = boost::adjacent_vertices(v, g);
+            const auto& [vbegin, vend] = boost::adjacent_vertices(v, g);
 
             Vertices intersection;
             std::set_intersection(
@@ -67,7 +67,7 @@ namespace Impl
 
         do
         {
-            const auto [begin, end] = boost::edges(g);
+            const auto& [begin, end] = boost::edges(g);
             const auto iter = std::find_if(
                 begin, end, [edge_proximity, threshold](auto edge) {
                     return boost::get(edge_proximity, edge) < threshold;
