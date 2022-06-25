@@ -12,6 +12,7 @@ target_link_libraries(${TESTS} PRIVATE ${PROJECT_NAME} ${TESTS_LIBS})
 set(SUBDIRECTORIES
   architecture
   clustering
+  visualization
 )
 
 foreach(VAR ${SUBDIRECTORIES})

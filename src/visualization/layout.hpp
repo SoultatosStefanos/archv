@@ -8,7 +8,6 @@
 
 #include <boost/graph/gursoy_atun_layout.hpp>
 #include <boost/graph/topology.hpp>
-#include <cassert>
 #include <concepts>
 #include <random>
 #include <unordered_map>
@@ -57,9 +56,6 @@ inline auto make_layout(const Architecture::Graph& g, const Topology& space)
                               boost::weight_map(boost::get(
                                   &Architecture::Dependency::cardinality, g)));
 
-    assert(std::all_of(boost::vertices(g).first,
-                       boost::vertices(g).second,
-                       [&layout](auto v) { return layout.contains(v); }));
     return layout;
 }
 
