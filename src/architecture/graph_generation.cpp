@@ -223,11 +223,9 @@ namespace // readers
         return m;
     }
 
-    auto read_structure(const Symbol::ID& id, const Json::Value& val)
-        -> Structure
+    void
+    read_structure(Structure& s, const Symbol::ID& id, const Json::Value& val)
     {
-        Structure s;
-
         s.symbol.id = id;
 
         deserialize_structure(val, s);
@@ -248,48 +246,52 @@ namespace // readers
         get_references(get(val, "bases"), s.bases);
         get_references(get(val, "friends"), s.friends);
         get_references(get(val, "template_args"), s.template_args);
-
-        return s;
-    }
-
-    inline auto read_dependency(const Json::Value& val)
-    {
-        using ID = Symbol::ID;
-
-        auto from = as<ID>(get(val, "from"));
-        auto to = as<ID>(get(val, "to"));
-
-        Dependency dep;
-        deserialize_dependency(val, dep);
-
-        return std::make_tuple(std::move(from), std::move(to), std::move(dep));
     }
 
 } // namespace
 
 namespace // graph builders
 {
+    inline void add_vertex(const Symbol::ID& id,
+                           const Json::Value& val,
+                           Graph& g,
+                           VertexCache& cache)
+    {
+        assert(!cache.contains(id));
+        cache[id] = boost::add_vertex(g);
+
+        assert(cache.contains(id));
+        read_structure(g[cache.at(id)], id, val);
+    }
+
     inline void
     add_vertices(const Json::Value& val, Graph& g, VertexCache& cache)
     {
         for_each_object(val, [&g, &cache](const auto& id, const auto& val) {
-            const auto&& s = read_structure(id, val);
-
-            assert(!cache.contains(s.symbol.id));
-            cache[s.symbol.id] = boost::add_vertex(s, g);
+            add_vertex(id, val, g, cache);
         });
+    }
+
+    inline void
+    add_edge(const Json::Value& val, Graph& g, const VertexCache& cache)
+    {
+        using ID = Symbol::ID;
+
+        const auto& from = as<ID>(get(val, "from"));
+        const auto& to = as<ID>(get(val, "to"));
+
+        assert(cache.contains(from));
+        assert(cache.contains(to));
+        const auto [e, res] = boost::add_edge(cache.at(from), cache.at(to), g);
+        assert(res);
+
+        deserialize_dependency(val, g[e]);
     }
 
     void add_edges(const Json::Value& val, Graph& g, const VertexCache& cache)
     {
         for (const auto& v : val)
-        {
-            const auto&& [from, to, dep] = read_dependency(v);
-
-            assert(cache.contains(from));
-            assert(cache.contains(to));
-            boost::add_edge(cache.at(from), cache.at(to), dep, g);
-        }
+            add_edge(v, g, cache);
     }
 
 } // namespace
