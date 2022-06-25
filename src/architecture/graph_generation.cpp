@@ -282,7 +282,7 @@ namespace // graph builders
 
         assert(cache.contains(from));
         assert(cache.contains(to));
-        const auto [e, res] = boost::add_edge(cache.at(from), cache.at(to), g);
+        const auto& [e, res] = boost::add_edge(cache.at(from), cache.at(to), g);
         assert(res);
 
         deserialize_dependency(val, g[e]);

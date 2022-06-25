@@ -1,6 +1,6 @@
 DONE
 
-	CLUSTERING
+	+ CLUSTERING
 
 		K Spanning Tree	-> Minimum test coverage
 
@@ -12,11 +12,16 @@ DONE
 
 		Edge Betweeness Centrality -> Boost
 
-	GRAPH GENERATION
+	+ GRAPH GENERATION
+
+	+ GRAPH LAYOUT 
+	
+		3D Layout 
+		2 Topologies (Cube, Sphere)
 
 TODOS
 
-	CLUSTERING
+	- CLUSTERING
 
 		Louvain method
 
