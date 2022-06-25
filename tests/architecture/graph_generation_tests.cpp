@@ -52,14 +52,6 @@ TEST(Generate_graph, Sample_graph_0)
 // See data/tests/sample_graph_1.json
 void build_sample_graph_1(Graph& g)
 {
-    Structure foo;
-    foo.symbol.id = "CS::CS_1::class_A::Foo";
-    foo.symbol.name = "Foo";
-    foo.symbol.name_space = "CS::CS_1::";
-    foo.symbol.source = {"classes_simple.cpp", 423, 11};
-    foo.symbol.access = "unknown";
-    foo.type = "Class";
-
     Definition field;
     field.symbol.id = "CS::CS_1::class_A::b";
     field.symbol.name = "b";
@@ -114,11 +106,10 @@ void build_sample_graph_1(Graph& g)
     class_a.methods = {m};
     class_a.fields = {field};
     class_a.bases = {"std::runtime_error"};
-    class_a.nested = {foo};
+    class_a.nested = {"CS::CS_1::class_A::Foo"};
     class_a.friends = {"std::map"};
     class_a.template_args = {"int"};
 
-    boost::add_vertex(foo, g);
     boost::add_vertex(class_a, g);
 }
 

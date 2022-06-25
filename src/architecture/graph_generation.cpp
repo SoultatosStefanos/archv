@@ -223,29 +223,14 @@ namespace // readers
         return m;
     }
 
-} // namespace
-
-namespace // graph builders
-{
-    // Used in order to 'remember' the vertex installed descriptors.
-    using VertexCache = std::unordered_map<Structure::ID, Vertex>;
-
-    auto add_structure(const Symbol::ID& id,
-                       const Json::Value& val,
-                       Graph& g,
-                       VertexCache& cache) -> Structure
+    auto read_structure(const Symbol::ID& id, const Json::Value& val)
+        -> Structure
     {
         Structure s;
 
         s.symbol.id = id;
 
         deserialize_structure(val, s);
-
-        get_composites(get(val, "contains"),
-                       s.nested,
-                       [&g, &cache](const auto& id, const auto& val) {
-                           return add_structure(id, val, g, cache);
-                       });
 
         get_composites(get(val, "fields"),
                        s.fields,
@@ -259,21 +244,39 @@ namespace // graph builders
                            return read_method(s, id, val);
                        });
 
+        get_references(get(val, "contains"), s.nested);
         get_references(get(val, "bases"), s.bases);
         get_references(get(val, "friends"), s.friends);
         get_references(get(val, "template_args"), s.template_args);
 
-        assert(!cache.contains(s.symbol.id));
-        cache[s.symbol.id] = boost::add_vertex(s, g);
-
         return s;
     }
 
+    inline auto read_dependency(const Json::Value& val)
+    {
+        using ID = Symbol::ID;
+
+        auto from = as<ID>(get(val, "from"));
+        auto to = as<ID>(get(val, "to"));
+
+        Dependency dep;
+        deserialize_dependency(val, dep);
+
+        return std::make_tuple(std::move(from), std::move(to), std::move(dep));
+    }
+
+} // namespace
+
+namespace // graph builders
+{
     inline void
     add_vertices(const Json::Value& val, Graph& g, VertexCache& cache)
     {
         for_each_object(val, [&g, &cache](const auto& id, const auto& val) {
-            add_structure(id, val, g, cache);
+            const auto&& s = read_structure(id, val);
+
+            assert(!cache.contains(s.symbol.id));
+            cache[s.symbol.id] = boost::add_vertex(s, g);
         });
     }
 
@@ -281,19 +284,17 @@ namespace // graph builders
     {
         for (const auto& v : val)
         {
-            const auto from = get(v, "from").asString();
-            const auto to = get(v, "to").asString();
+            const auto&& [from, to, dep] = read_dependency(v);
 
-            Dependency dep;
-            deserialize_dependency(v, dep);
-
+            assert(cache.contains(from));
+            assert(cache.contains(to));
             boost::add_edge(cache.at(from), cache.at(to), dep, g);
         }
     }
 
 } // namespace
 
-void generate_graph(Graph& g, const Json::Value& root)
+auto generate_graph(Graph& g, const Json::Value& root) -> VertexCache
 {
     assert(boost::num_edges(g) == 0);
     assert(boost::num_vertices(g) == 0);
@@ -301,6 +302,8 @@ void generate_graph(Graph& g, const Json::Value& root)
     VertexCache cache;
     add_vertices(get(root, "structures"), g, cache);
     add_edges(get(root, "dependencies"), g, cache);
+
+    return cache;
 }
 
 } // namespace Architecture

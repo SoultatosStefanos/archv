@@ -13,29 +13,9 @@
 				"std::runtime_error" 
 			],
 			"contains" : 
-			{
-				"CS::CS_1::class_A::Foo" :
-				{
-					"bases" : null,
-					"contains": null,
-					"fields" : null,
-					"friends" : null,
-					"methods" : null,
-					"name" : "Foo",
-					"namespace" : "CS::CS_1",
-					"nested": null,
-					"nested_parent" : null,
-					"src_info" : 
-					{
-						"col" : 11,
-						"file" : "classes_simple.cpp",
-						"line" : 423
-					},
-					"structure_type" : "Class",
-					"template_args" : null,
-					"template_parent" : null
-				}
-			},
+			[
+				"CS::CS_1::class_A::Foo"
+			],
 			"fields" : 
 			{
 				"CS::CS_1::class_A::b" : 

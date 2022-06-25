@@ -13,6 +13,8 @@
 namespace Architecture
 {
 
+// TODO Remove composite structs
+
 // NOTE: No invariants to establish, to avoid syntax coupling as much as
 // possible.
 
@@ -106,7 +108,7 @@ struct Structure
     Composites<Method> methods;
     Composites<Definition> fields;
     References bases;
-    Composites<Structure> nested;
+    References nested;
     References friends;
     References template_args;
 

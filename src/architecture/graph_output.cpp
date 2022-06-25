@@ -113,8 +113,8 @@ namespace
         output_composites(os, s.fields, depth + 1);
         os << '\n' << indent(depth) << "methods:\n";
         output_composites(os, s.methods, depth + 1);
-        os << '\n' << indent(depth) << "nested:\n";
-        output_composites(os, s.nested, depth + 1);
+        os << '\n' << indent(depth) << "nested: ";
+        output_references(os, s.nested);
         os << '\n' << indent(depth) << "template args: ";
         output_references(os, s.template_args);
         os << '\n' << indent(depth) << "type: " << s.type;
@@ -136,8 +136,8 @@ void output_edge(std::ostream& os, const EdgeProperty& e)
 
 void output_graph(std::ostream& os,
                   const Graph& g,
-                  OutputVertex out_vertex,
-                  OutputEdge out_edge)
+                  const OutputVertex& out_vertex,
+                  const OutputEdge& out_edge)
 {
     assert(out_vertex);
     assert(out_edge);

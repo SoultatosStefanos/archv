@@ -28,6 +28,9 @@ concept Topology3D =
 
 // ------------------- Layout ---------------------------------------------- //
 
+// Maps each architecture graph vertex to a topology position.
+// Given a vertex v, a position map m and the x,y,z axis
+// ->  x(v) = m[0], y(v) = m[1], z(v) = m[2]
 template <Topology3D Topology>
 using PositionMap =
     std::unordered_map<Architecture::Vertex, typename Topology::point_type>;

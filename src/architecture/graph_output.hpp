@@ -20,8 +20,8 @@ void output_edge(std::ostream& os, const EdgeProperty& e);
 
 void output_graph(std::ostream& os,
                   const Graph& g,
-                  OutputVertex out_vertex = output_vertex,
-                  OutputEdge out_edge = output_edge);
+                  const OutputVertex& out_vertex = output_vertex,
+                  const OutputEdge& out_edge = output_edge);
 
 } // namespace Architecture
 
