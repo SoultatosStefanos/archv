@@ -1,9 +1,0 @@
-Topologies (3D Space):
-
-	sphere_topology
-
-	cube_topology
-
-Layout Algorithms (Directed Graphs):
-
-	gursoy_atun_layout (Distributes vertices uniformly within a topology, keeping vertices close to their neighbours)

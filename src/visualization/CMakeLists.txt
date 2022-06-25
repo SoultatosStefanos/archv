@@ -1,5 +1,7 @@
-set(FILES  )
-set(SUBDIRECTORIES )
+set(FILES
+	layout.hpp
+)
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
