@@ -2,21 +2,22 @@ DONE
 
 	+ CLUSTERING
 
-		K Spanning Tree	-> Minimum test coverage
+		K Spanning Tree	-> Minimum test coverage, doesn't output clusters
 
-		Shared Nearest Neighbour -> Minimum test coverage
+		Shared Nearest Neighbour -> Minimum test coverage, doesn't output clusters
 
-		Strong Components -> Minimum test coverage
+		Strong Components -> Minimum test coverage, doesn't output clusters
 
-		Maximal Clique Enumeration -> Minimum test coverage
+		Maximal Clique Enumeration -> Minimum test coverage, doesn't output clusters
 
-		Edge Betweeness Centrality -> Boost
+		Edge Betweeness Centrality -> Boost, doesn't output clusters
 
 	+ GRAPH GENERATION
 
 	+ GRAPH LAYOUT 
-	
-		3D Layout 
+
+		3D Layout  -> Minimum test coverage
+
 		2 Topologies (Cube, Sphere)
 
 TODOS
