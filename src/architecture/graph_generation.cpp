@@ -223,8 +223,17 @@ namespace // readers
         return m;
     }
 
-    auto read_structure(const Symbol::ID& id, const Json::Value& val)
-        -> Structure
+} // namespace
+
+namespace // graph builders
+{
+    // Used in order to 'remember' the vertex installed descriptors.
+    using VertexCache = std::unordered_map<Structure::ID, Vertex>;
+
+    auto add_structure(const Symbol::ID& id,
+                       const Json::Value& val,
+                       Graph& g,
+                       VertexCache& cache) -> Structure
     {
         Structure s;
 
@@ -232,7 +241,11 @@ namespace // readers
 
         deserialize_structure(val, s);
 
-        get_composites(get(val, "contains"), s.nested, read_structure);
+        get_composites(get(val, "contains"),
+                       s.nested,
+                       [&g, &cache](const auto& id, const auto& val) {
+                           return add_structure(id, val, g, cache);
+                       });
 
         get_composites(get(val, "fields"),
                        s.fields,
@@ -250,30 +263,17 @@ namespace // readers
         get_references(get(val, "friends"), s.friends);
         get_references(get(val, "template_args"), s.template_args);
 
-        return s;
-    }
-
-} // namespace
-
-namespace // graph builders
-{
-    // Used in order to 'remember' the vertex installed descriptors.
-    using VertexCache = std::unordered_map<Structure::ID, Vertex>;
-
-    inline void add_vertex(const Structure& s, Graph& g, VertexCache& cache)
-    {
-        for (const auto& inner : s.nested)
-            add_vertex(inner, g, cache);
-
         assert(!cache.contains(s.symbol.id));
         cache[s.symbol.id] = boost::add_vertex(s, g);
+
+        return s;
     }
 
     inline void
     add_vertices(const Json::Value& val, Graph& g, VertexCache& cache)
     {
         for_each_object(val, [&g, &cache](const auto& id, const auto& val) {
-            add_vertex(read_structure(id, val), g, cache);
+            add_structure(id, val, g, cache);
         });
     }
 
