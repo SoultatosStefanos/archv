@@ -307,7 +307,7 @@ auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
     add_vertices(get(root, "structures"), g, cache);
     add_edges(get(root, "dependencies"), g, cache);
 
-    return {g, cache};
+    return {g, std::move(cache)};
 }
 
 } // namespace Architecture
