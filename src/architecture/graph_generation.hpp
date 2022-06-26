@@ -12,10 +12,24 @@
 namespace Architecture
 {
 
+// ----------------------- Runtime Errors ----------------------------- //
+
 struct InvalidJsonArchive : std::runtime_error
 {
     using std::runtime_error::runtime_error;
 };
+
+struct JsonValueNotFound : InvalidJsonArchive
+{
+    using InvalidJsonArchive::InvalidJsonArchive;
+};
+
+struct InvalidJsonValueType : InvalidJsonArchive
+{
+    using InvalidJsonArchive::InvalidJsonArchive;
+};
+
+// ---------------------------------------------------------------------//
 
 // Used in order to 'remember' the installed vertex descriptors.
 using VertexCache = std::unordered_map<Structure::ID, Vertex>;
