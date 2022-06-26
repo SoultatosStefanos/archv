@@ -29,11 +29,33 @@ concept Topology3D =
 // ------------------- Layout ---------------------------------------------- //
 
 // Maps each architecture graph vertex to a topology position.
-// Given a vertex v, a position map m and the x,y,z axis
-// ->  x(v) = m[0], y(v) = m[1], z(v) = m[2]
 template <Topology3D Topology>
 using PositionMap =
     std::unordered_map<Architecture::Vertex, typename Topology::point_type>;
+
+template <Topology3D Topology>
+inline auto x(Architecture::Vertex v, const PositionMap<Topology>& map)
+{
+    static_assert(Topology::dimensions == 3);
+    assert(map.contains(v));
+    return map.at(v)[0];
+}
+
+template <Topology3D Topology>
+inline auto y(Architecture::Vertex v, const PositionMap<Topology>& map)
+{
+    static_assert(Topology::dimensions == 3);
+    assert(map.contains(v));
+    return map.at(v)[1];
+}
+
+template <Topology3D Topology>
+inline auto z(Architecture::Vertex v, const PositionMap<Topology>& map)
+{
+    static_assert(Topology::dimensions == 3);
+    assert(map.contains(v));
+    return map.at(v)[2];
+}
 
 // Assigns a position, at a 3d space, to each graph vertex.
 // Distributes vertices uniformly within a topology, keeping vertices close to
@@ -59,6 +81,9 @@ inline auto make_layout(const Architecture::Graph& g, const Topology& space)
                               boost::weight_map(boost::get(
                                   &Architecture::Dependency::cardinality, g)));
 
+    assert(std::all_of(boost::vertices(g).first,
+                       boost::vertices(g).second,
+                       [&layout](auto v) { return layout.contains(v); }));
     return layout;
 }
 
