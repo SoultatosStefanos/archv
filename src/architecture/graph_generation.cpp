@@ -252,6 +252,9 @@ namespace // readers
 
 namespace // graph builders
 {
+    // NOTE: Legacy c++ boost api expects const ref parameters, but copies them
+    // internally. Thus, we default construct the vertices/edges, then modify.
+
     inline void add_vertex(const Symbol::ID& id,
                            const Json::Value& val,
                            Graph& g,

@@ -125,7 +125,7 @@ TEST(Generate_graph, Sample_graph_1)
 
     ASSERT_TRUE(boost::isomorphism(actual, expected))
         << "\n\nActual:\n"
-        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << dump([&a = actual](auto& os) { output_graph(os, a); })
         << "\n\nExpected:\n"
         << dump([&expected](auto& os) { output_graph(os, expected); });
 }
@@ -189,13 +189,13 @@ TEST(Generate_graph, Sample_graph_2)
 
     ASSERT_TRUE(boost::isomorphism(actual, expected))
         << "\n\nActual:\n"
-        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << dump([&a = actual](auto& os) { output_graph(os, a); })
         << "\n\nExpected:\n"
         << dump([&expected](auto& os) { output_graph(os, expected); });
 
     ASSERT_TRUE(edge_property_isomorphsim(actual, expected))
         << "\n\nActual:\n"
-        << dump([&actual](auto& os) { output_graph(os, actual); })
+        << dump([&a = actual](auto& os) { output_graph(os, a); })
         << "\n\nExpected:\n"
         << dump([&expected](auto& os) { output_graph(os, expected); });
 }
