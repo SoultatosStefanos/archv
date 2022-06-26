@@ -296,16 +296,15 @@ namespace // graph builders
 
 } // namespace
 
-auto generate_graph(Graph& g, const Json::Value& root) -> VertexCache
+auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
 {
-    assert(boost::num_edges(g) == 0);
-    assert(boost::num_vertices(g) == 0);
-
+    Graph g;
     VertexCache cache;
+
     add_vertices(get(root, "structures"), g, cache);
     add_edges(get(root, "dependencies"), g, cache);
 
-    return cache;
+    return {g, cache};
 }
 
 } // namespace Architecture

@@ -33,25 +33,25 @@ auto read_json_root(const std::string_view to)
 TEST(Generate_graph, Sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
-    Graph actual;
 
-    ASSERT_THROW(generate_graph(actual, root), InvalidJsonArchive);
+    ASSERT_THROW(generate_graph(root), InvalidJsonArchive);
 }
 
 // See data/tests/sample_graph_0.json
 TEST(Generate_graph, Sample_graph_0)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_0.json");
-    Graph actual, expected;
 
-    generate_graph(actual, root);
+    const auto [actual, _] = generate_graph(root);
 
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(boost::isomorphism(actual, Graph{}));
 }
 
 // See data/tests/sample_graph_1.json
-void build_sample_graph_1(Graph& g)
+auto build_sample_graph_1() -> Graph
 {
+    Graph g;
+
     Definition field;
     field.symbol.id = "CS::CS_1::class_A::b";
     field.symbol.name = "b";
@@ -111,16 +111,17 @@ void build_sample_graph_1(Graph& g)
     class_a.template_args = {"int"};
 
     boost::add_vertex(class_a, g);
+
+    return g;
 }
 
 // See data/tests/sample_graph_1.json
 TEST(Generate_graph, Sample_graph_1)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_1.json");
-    Graph actual, expected;
-    build_sample_graph_1(expected);
+    const auto expected = build_sample_graph_1();
 
-    generate_graph(actual, root);
+    const auto [actual, _] = generate_graph(root);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected))
         << "\n\nActual:\n"
@@ -130,8 +131,10 @@ TEST(Generate_graph, Sample_graph_1)
 }
 
 // See data/tests/sample_graph_2.json
-void build_sample_graph_2(Graph& g)
+auto build_sample_graph_2() -> Graph
 {
+    Graph g;
+
     Structure class_a, class_b, class_x;
 
     class_a.symbol.id = "CS::CS_1::class_A";
@@ -162,6 +165,8 @@ void build_sample_graph_2(Graph& g)
     boost::add_edge(a, b, {.type = "ClassField", .cardinality = 1}, g);
     boost::add_edge(x, b, {.type = "Inherit", .cardinality = 1}, g);
     boost::add_edge(x, a, {.type = "Inherit", .cardinality = 1}, g);
+
+    return g;
 }
 
 auto edge_property_isomorphsim(const Graph& lhs, const Graph& rhs) -> bool
@@ -178,10 +183,9 @@ auto edge_property_isomorphsim(const Graph& lhs, const Graph& rhs) -> bool
 TEST(Generate_graph, Sample_graph_2)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_2.json");
-    Graph actual, expected;
-    build_sample_graph_2(expected);
+    const auto expected = build_sample_graph_2();
 
-    generate_graph(actual, root);
+    const auto [actual, _] = generate_graph(root);
 
     ASSERT_TRUE(boost::isomorphism(actual, expected))
         << "\n\nActual:\n"

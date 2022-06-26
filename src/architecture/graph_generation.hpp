@@ -12,15 +12,15 @@
 namespace Architecture
 {
 
-// Used in order to 'remember' the installed vertex descriptors.
-using VertexCache = std::unordered_map<Structure::ID, Vertex>;
-
 struct InvalidJsonArchive : std::runtime_error
 {
     using std::runtime_error::runtime_error;
 };
 
-auto generate_graph(Graph& g, const Json::Value& root) -> VertexCache;
+// Used in order to 'remember' the installed vertex descriptors.
+using VertexCache = std::unordered_map<Structure::ID, Vertex>;
+
+auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>;
 
 } // namespace Architecture
 
