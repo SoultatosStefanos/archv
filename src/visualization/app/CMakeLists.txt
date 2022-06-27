@@ -1,5 +1,6 @@
 set(FILES
-	visualization.hpp
+	app.cpp
+	app.hpp
 )
 set(SUBDIRECTORIES)
 
