@@ -1,4 +1,4 @@
-// Contains a generic Maximal Clique Enumeration clustering algorithm
+// Contains a generic Maximal Clique Enumeration clustering algorithm.
 // Soultatos Stefanos 2022
 
 #ifndef CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP

@@ -1,16 +1,16 @@
 // Contains an architecture graph generation function, from a .json archive.
 // Soultatos Stefanos 2022
 
-#ifndef ARCHITECTURE_GRAPH_GENERATION_HPP
-#define ARCHITECTURE_GRAPH_GENERATION_HPP
+#ifndef GENERATION_GENERATION_HPP
+#define GENERATION_GENERATION_HPP
 
-#include "graph.hpp"
+#include "architecture/graph.hpp"
 
 #include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
 #include <stdexcept>
 
-namespace Architecture
+namespace Generation
 {
 
 // ----------------------- Runtime Errors ----------------------------- //
@@ -38,10 +38,12 @@ using JsonValueType =
 // ---------------------------------------------------------------------//
 
 // Used in order to 'remember' the installed vertex descriptors.
-using VertexCache = std::unordered_map<Structure::ID, Vertex>;
+using VertexCache =
+    std::unordered_map<Architecture::Structure::ID, Architecture::Vertex>;
 
-auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>;
+auto generate_graph(const Json::Value& root)
+    -> std::pair<Architecture::Graph, VertexCache>;
 
-} // namespace Architecture
+} // namespace Generation
 
-#endif // ARCHITECTURE_GRAPH_GENERATION_HPP
+#endif // GENERATION_GENERATION_HPP

@@ -1,4 +1,4 @@
-// Contains a generic Strong Components clustering algorithm
+// Contains a generic Strong Components clustering algorithm.
 // Soultatos Stefanos 2022
 
 #ifndef CLUSTERING_STRONG_COMPONENTS_CLUSTERING_HPP

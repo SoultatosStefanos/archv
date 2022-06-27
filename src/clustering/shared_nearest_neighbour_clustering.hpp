@@ -1,4 +1,4 @@
-// Contains a generic Shared Nearest Neighbour Clustering algorithm
+// Contains a generic Shared Nearest Neighbour Clustering algorithm.
 // Soultatos Stefanos 2022
 
 #ifndef CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP

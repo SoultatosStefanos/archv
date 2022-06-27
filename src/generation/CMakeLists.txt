@@ -1,5 +1,6 @@
 set(FILES
-	graph_generation_tests.cpp
+	generation.cpp
+	generation.hpp
 )
 set(SUBDIRECTORIES)
 
@@ -8,5 +9,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${TESTS} PRIVATE ${FILES})
+	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
 endif()

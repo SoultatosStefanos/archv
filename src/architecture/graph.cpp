@@ -1,7 +1,4 @@
-// Contains graph output utilities for debugging purposes.
-// Soultatos Stefanos 2022.
-
-#include "graph_output.hpp"
+#include "graph.hpp"
 
 #include <boost/range.hpp>
 

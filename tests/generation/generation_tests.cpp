@@ -1,5 +1,5 @@
-#include "architecture/graph_generation.hpp"
-#include "architecture/graph_output.hpp"
+#include "architecture/architecture.hpp"
+#include "generation/generation.hpp"
 #include "utility.hpp"
 
 #include "gmock/gmock.h"
@@ -12,6 +12,7 @@
 namespace
 {
 
+using namespace Generation;
 using namespace Architecture;
 using namespace Utility;
 
@@ -34,7 +35,7 @@ TEST(Generate_graph, Sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
-    ASSERT_THROW(generate_graph(root), Error);
+    ASSERT_THROW(generate_graph(root), Generation::Error);
 }
 
 // See data/tests/sample_graph_0.json

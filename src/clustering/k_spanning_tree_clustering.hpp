@@ -1,4 +1,4 @@
-// Contains a generic k-Spanning Tree algorithm
+// Contains a generic k-Spanning Tree algorithm.
 // Soultatos Stefanos 2022
 
 #ifndef CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP

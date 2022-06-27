@@ -1,15 +1,14 @@
-// Contains an architecture graph generation function, from a .json archive.
-// Soultatos Stefanos 2022
-
-#include "graph_generation.hpp"
+#include "generation.hpp"
 
 #include <cassert>
 #include <concepts>
 #include <fstream>
 #include <unordered_map>
 
-namespace Architecture
+namespace Generation
 {
+
+using namespace Architecture;
 
 namespace // jsoncpp utils
 {
@@ -308,4 +307,4 @@ auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
     return {g, std::move(cache)};
 }
 
-} // namespace Architecture
+} // namespace Generation
