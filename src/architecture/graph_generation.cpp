@@ -19,7 +19,7 @@ namespace // jsoncpp utils
         assert(at);
 
         if (!val.isMember(at))
-            throw JsonValueNotFound{at};
+            BOOST_THROW_EXCEPTION(JsonMemberNotFound() << JsonMember(at));
 
         return val[at];
     }
@@ -29,7 +29,8 @@ namespace // jsoncpp utils
     inline auto as(const Json::Value& val) -> T
     {
         if (!val.is<T>())
-            throw InvalidJsonValueType{"invalid value type"};
+            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
+                                  << JsonValueType(val.type()));
 
         return val.as<T>();
     }
@@ -45,7 +46,8 @@ namespace // jsoncpp utils
             return;
 
         if (val.isArray())
-            throw InvalidJsonValueType{"invalid array type"};
+            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
+                                  << JsonValueType(val.type()));
 
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
@@ -129,11 +131,7 @@ namespace // deserializers, read directly from json
         using Cardinality = Dependency::Cardinality;
 
         for_each_object(get(val, "types"),
-                        [i = 0, &dep](const auto& id, const auto& val) mutable {
-                            if (i++ > 0)
-                                throw InvalidJsonValueType{
-                                    "expected excatly one 'types' val"};
-
+                        [&dep](const auto& id, const auto& val) {
                             dep.type = id;
                             dep.cardinality = as<Cardinality>(val);
                         });
@@ -164,7 +162,8 @@ namespace // readers
             return;
 
         if (!val.isArray())
-            throw InvalidJsonValueType{"invalid non array type"};
+            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
+                                  << JsonValueType(val.type()));
 
         std::transform(std::begin(val),
                        std::end(val),

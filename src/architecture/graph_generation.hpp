@@ -6,6 +6,7 @@
 
 #include "graph.hpp"
 
+#include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
 #include <stdexcept>
 
@@ -14,20 +15,25 @@ namespace Architecture
 
 // ----------------------- Runtime Errors ----------------------------- //
 
-struct InvalidJsonArchive : std::runtime_error
+struct Error : virtual std::exception, virtual boost::exception
 {
-    using std::runtime_error::runtime_error;
 };
 
-struct JsonValueNotFound : InvalidJsonArchive
+struct JsonMemberNotFound : virtual Error
 {
-    using InvalidJsonArchive::InvalidJsonArchive;
 };
 
-struct InvalidJsonValueType : InvalidJsonArchive
+struct InvalidJsonValueType : virtual Error
 {
-    using InvalidJsonArchive::InvalidJsonArchive;
 };
+
+// ---------------------------------------------------------------------//
+
+// ----------------------- Runtime Error info ------------------------- //
+
+using JsonMember = boost::error_info<struct JsonMemberTag, const char*>;
+using JsonValueType =
+    boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
 
 // ---------------------------------------------------------------------//
 

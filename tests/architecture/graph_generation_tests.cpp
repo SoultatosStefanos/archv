@@ -34,7 +34,7 @@ TEST(Generate_graph, Sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
-    ASSERT_THROW(generate_graph(root), InvalidJsonArchive);
+    ASSERT_THROW(generate_graph(root), Error);
 }
 
 // See data/tests/sample_graph_0.json
