@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(graph_visualizer CXX)
+project(arch_visualizer CXX)
 
 if(MSVC)
   add_compile_options(/W4 /WX)

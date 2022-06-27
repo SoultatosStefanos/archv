@@ -1,3 +1,6 @@
+CMake
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../.. 
+	cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../.. 
 
 Lint
 	run-clang-tidy-13 -header-filter=.* (from build/debug)
