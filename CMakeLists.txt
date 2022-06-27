@@ -16,12 +16,16 @@ add_library(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
-set(JSONCPP_LIBS libjsoncpp.so)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC ${JSONCPP_LIBS})
-
 set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
+
+find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
+
+set(JSONCPP_LIBS libjsoncpp.so)
+
+set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
