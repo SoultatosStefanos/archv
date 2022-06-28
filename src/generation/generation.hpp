@@ -9,6 +9,7 @@
 #include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
 #include <stdexcept>
+#include <string_view>
 
 namespace Generation
 {
@@ -42,6 +43,9 @@ using VertexCache =
     std::unordered_map<Architecture::Structure::ID, Architecture::Vertex>;
 
 auto generate_graph(const Json::Value& root)
+    -> std::pair<Architecture::Graph, VertexCache>;
+
+auto generate_graph(const std::string_view json_path)
     -> std::pair<Architecture::Graph, VertexCache>;
 
 } // namespace Generation

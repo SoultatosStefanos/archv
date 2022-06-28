@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <concepts>
+#include <filesystem>
 #include <fstream>
 #include <unordered_map>
 
@@ -305,6 +306,17 @@ auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
     add_edges(get(root, "dependencies"), g, cache);
 
     return {g, std::move(cache)};
+}
+
+auto generate_graph(const std::string_view json_path)
+    -> std::pair<Architecture::Graph, VertexCache>
+{
+    assert(std::filesystem::exists(json_path));
+
+    Json::Value root;
+    std::ifstream(json_path.data()) >> root;
+
+    return generate_graph(root);
 }
 
 } // namespace Generation
