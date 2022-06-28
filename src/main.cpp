@@ -9,29 +9,51 @@
 #include <filesystem>
 #include <string_view>
 
-using namespace Visualization;
-using namespace Architecture;
-using namespace Generation;
-using namespace Utility;
-
 // NOTE: Demo currently
 
 // TODO generate graph
 // TODO Catch and log exceptions
+
 auto main(int argc, char const* argv[]) -> int
 {
-    if (argc != 2)
+    using namespace Visualization;
+    using namespace Architecture;
+    using namespace Generation;
+    using namespace Utility;
+
+    try
     {
-        std::cerr << "usage: `./<exec> <json file path>`\n";
+        if (argc != 2)
+        {
+            std::cerr << "usage: `./<exec> <json file path>`\n";
+            return EXIT_FAILURE;
+        }
+
+        const auto [graph, vertex_cache] =
+            generate_graph(JsonManager::get().croot(argv[1]));
+
+        App app{
+            graph,
+            LayoutFactory::make_layout(graph, LayoutFactory::Topology::cube)};
+
+        app.initApp();
+        // render
+        app.closeApp();
+
+        return EXIT_SUCCESS;
+    } catch (const boost::exception& e)
+    {
+        std::cerr << boost::diagnostic_information(e) << '\n';
+        return EXIT_FAILURE;
+
+    } catch (const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+
+    } catch (...)
+    {
+        std::cerr << "unknown error" << '\n';
         return EXIT_FAILURE;
     }
-
-    const auto [g, cache] = generate_graph(JsonManager::get().croot(argv[1]));
-
-    App app{g, LayoutFactory::make_layout(g, LayoutFactory::Topology::cube)};
-    app.initApp();
-    // render
-    app.closeApp();
-
-    return EXIT_SUCCESS;
 }
