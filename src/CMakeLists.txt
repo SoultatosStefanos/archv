@@ -1,4 +1,7 @@
-set(FILES)
+set(FILES
+	utility.cpp
+	utility.hpp
+)
 set(SUBDIRECTORIES
 	architecture
 	clustering

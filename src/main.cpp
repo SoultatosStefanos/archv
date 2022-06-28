@@ -1,6 +1,7 @@
 #include "architecture/architecture.hpp"
 #include "clustering/clustering.hpp"
 #include "generation/generation.hpp"
+#include "utility.hpp"
 #include "visualization/visualization.hpp"
 
 #include <boost/exception/all.hpp>
@@ -11,29 +12,7 @@
 using namespace Visualization;
 using namespace Architecture;
 using namespace Generation;
-
-namespace
-{
-
-struct InvalidJsonArchive : virtual std::exception, virtual boost::exception
-{
-};
-
-using JsonArchive =
-    boost::error_info<struct JsonArchiveTag, const std::string_view>;
-
-inline auto archive_root(const std::string_view from)
-{
-    if (!std::filesystem::exists(from))
-        BOOST_THROW_EXCEPTION(InvalidJsonArchive() << JsonArchive(from));
-
-    Json::Value root;
-    std::ifstream(from.data()) >> root;
-
-    return root;
-}
-
-} // namespace
+using namespace Utility;
 
 // NOTE: Demo currently
 
@@ -47,7 +26,7 @@ auto main(int argc, char const* argv[]) -> int
         return EXIT_FAILURE;
     }
 
-    const auto [g, cache] = generate_graph(archive_root(argv[1]));
+    const auto [g, cache] = generate_graph(JsonManager::get().croot(argv[1]));
 
     App app{g, LayoutFactory::make_layout(g, LayoutFactory::Topology::cube)};
     app.initApp();
