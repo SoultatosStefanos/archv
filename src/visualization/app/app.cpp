@@ -6,12 +6,23 @@ namespace Visualization
 using namespace Ogre;
 using namespace OgreBites;
 
-App::App(const Graph& g, const Layout& layout)
-    : Base{name}, m_g{g}, m_layout{layout}
+App::App(const Graph& g, UniqueLayoutPtr layout)
+    : Base{"Architecture Visualizer"}, m_g{g}, m_layout{std::move(layout)}
 {
+    assert(m_layout);
     assert(std::all_of(boost::vertices(m_g).first,
                        boost::vertices(m_g).second,
-                       [&](auto v) { return m_layout.maps(v); }));
+                       [&](auto v) { return m_layout->maps(v); }));
+}
+
+void App::layout(UniqueLayoutPtr layout)
+{
+    assert(layout);
+    assert(std::all_of(boost::vertices(m_g).first,
+                       boost::vertices(m_g).second,
+                       [&layout](auto v) { return layout->maps(v); }));
+
+    m_layout = std::move(layout);
 }
 
 // TODO Quick graph visualization test with ogre head mesh and camera man, plus

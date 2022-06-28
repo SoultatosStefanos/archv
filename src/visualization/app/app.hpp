@@ -20,19 +20,21 @@ class App : public OgreBites::ApplicationContext
 public:
     using Base = OgreBites::ApplicationContext;
     using Graph = Architecture::Graph;
+    using UniqueLayoutPtr = std::unique_ptr<Layout>;
 
-    static constexpr auto name{"Architecture Visualizer"};
-
-    App(const Graph& g, const Layout& layout);
+    App(const Graph& g, UniqueLayoutPtr layout);
 
     virtual ~App() override = default;
+
+    auto layout() const -> const UniqueLayoutPtr& { return m_layout; }
+    void layout(UniqueLayoutPtr layout);
 
     virtual void setup() override;
     virtual void shutdown() override;
 
 private:
     const Graph& m_g;
-    const Layout& m_layout;
+    UniqueLayoutPtr m_layout;
 
     Ogre::SceneManager* m_scene{nullptr};
 };

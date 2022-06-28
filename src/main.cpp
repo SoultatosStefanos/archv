@@ -15,9 +15,8 @@ using namespace Architecture;
 auto main(int argc, char const* argv[]) -> int
 {
     const auto g = Graph();
-    const auto l = LayoutFactory::make_layout(g, LayoutFactory::Topology::cube);
 
-    App app{g, *l};
+    App app{g,  LayoutFactory::make_layout(g, LayoutFactory::Topology::cube)};
     app.initApp();
     // render
     app.closeApp();
