@@ -15,14 +15,14 @@ App::App(const Graph& g, UniqueLayoutPtr layout)
                        [&](auto v) { return m_layout->maps(v); }));
 }
 
-void App::layout(UniqueLayoutPtr layout)
+void App::layout(UniqueLayoutPtr l)
 {
-    assert(layout);
+    assert(l);
     assert(std::all_of(boost::vertices(m_g).first,
                        boost::vertices(m_g).second,
-                       [&layout](auto v) { return layout->maps(v); }));
+                       [&l](auto v) { return l->maps(v); }));
 
-    m_layout = std::move(layout);
+    m_layout = std::move(l);
 }
 
 // TODO Quick graph visualization test with ogre head mesh and camera man, plus

@@ -27,7 +27,7 @@ public:
     virtual ~App() override = default;
 
     auto layout() const -> const UniqueLayoutPtr& { return m_layout; }
-    void layout(UniqueLayoutPtr layout);
+    void layout(UniqueLayoutPtr l);
 
     virtual void setup() override;
     virtual void shutdown() override;
