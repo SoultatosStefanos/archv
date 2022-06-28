@@ -11,9 +11,6 @@
 
 // NOTE: Demo currently
 
-// TODO generate graph
-// TODO Catch and log exceptions
-
 auto main(int argc, char const* argv[]) -> int
 {
     using namespace Visualization;
@@ -41,17 +38,18 @@ auto main(int argc, char const* argv[]) -> int
         app.closeApp();
 
         return EXIT_SUCCESS;
-    } catch (const boost::exception& e)
+    }
+    catch (const boost::exception& e)
     {
         std::cerr << boost::diagnostic_information(e) << '\n';
         return EXIT_FAILURE;
-
-    } catch (const std::exception& e)
+    }
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
-
-    } catch (...)
+    }
+    catch (...)
     {
         std::cerr << "unknown error" << '\n';
         return EXIT_FAILURE;

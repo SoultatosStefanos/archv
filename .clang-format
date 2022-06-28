@@ -18,6 +18,7 @@ BraceWrapping:
   AfterUnion: true
   BeforeElse: true
   BeforeWhile: true
+  BeforeCatch: true
 
 
 AlwaysBreakTemplateDeclarations: true
