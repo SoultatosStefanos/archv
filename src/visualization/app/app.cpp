@@ -25,10 +25,6 @@ void App::layout(UniqueLayoutPtr l)
     m_layout = std::move(l);
 }
 
-// TODO Quick graph visualization test with ogre head mesh and camera man, plus
-// test memory management.
-
-// TODO
 // FIXME
 void App::setup()
 {
@@ -47,7 +43,6 @@ void App::setup()
     light_node->setPosition(20, 80, 50);
 }
 
-// TODO
 // FIXME
 void App::shutdown()
 {
