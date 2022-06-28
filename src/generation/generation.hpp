@@ -34,6 +34,7 @@ struct InvalidJsonValueType : virtual Error
 using JsonMember = boost::error_info<struct JsonMemberTag, const char*>;
 using JsonValueType =
     boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
+using JsonValue = boost::error_info<struct JsonValueTag, Json::Value>;
 
 // ---------------------------------------------------------------------//
 

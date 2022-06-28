@@ -28,7 +28,8 @@ namespace // jsoncpp utils
     {
         if (!val.is<T>())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type()));
+                                  << JsonValueType(val.type())
+                                  << JsonValue(val));
 
         return val.as<T>();
     }

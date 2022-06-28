@@ -1,8 +1,8 @@
-// Contains some general utilities.
+// Contains a general purpose json archive root pool.
 // Soultatos Stefanos 2022
 
-#ifndef SRC_UTILITY_HPP
-#define SRC_UTILITY_HPP
+#ifndef SRC_JSON_MANAGER_HPP
+#define SRC_JSON_MANAGER_HPP
 
 #include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
@@ -53,4 +53,4 @@ private:
 
 } // namespace Utility
 
-#endif // SRC_UTILITY_HPP
+#endif // SRC_JSON_MANAGER_HPP

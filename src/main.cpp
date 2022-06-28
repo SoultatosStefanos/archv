@@ -1,7 +1,7 @@
 #include "architecture/architecture.hpp"
 #include "clustering/clustering.hpp"
 #include "generation/generation.hpp"
-#include "utility.hpp"
+#include "json_manager.hpp"
 #include "visualization/visualization.hpp"
 
 #include <boost/exception/all.hpp>

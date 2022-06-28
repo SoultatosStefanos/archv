@@ -1,6 +1,6 @@
 set(FILES
-	utility.cpp
-	utility.hpp
+	json_manager.cpp
+	json_manager.hpp
 )
 set(SUBDIRECTORIES
 	architecture
