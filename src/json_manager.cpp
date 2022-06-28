@@ -6,6 +6,13 @@
 namespace Utility
 {
 
+namespace // error info
+{
+    using JsonArchiveInfo =
+        boost::error_info<struct JsonArchiveTag, const std::string_view>;
+
+} // namespace
+
 namespace
 {
     inline auto make_root(const JsonManager::FilePath from)
@@ -23,7 +30,7 @@ namespace
 auto JsonManager::croot(const FilePath from) const -> const JsonVal&
 {
     if (!std::filesystem::exists(from))
-        BOOST_THROW_EXCEPTION(InvalidJsonArchive() << JsonArchive(from));
+        BOOST_THROW_EXCEPTION(InvalidJsonArchive() << JsonArchiveInfo(from));
 
     return cache.contains(from) ? cache.at(from)
                                 : cache[from] = make_root(from);

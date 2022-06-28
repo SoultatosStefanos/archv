@@ -22,10 +22,12 @@ foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
 
-find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
-
 set(JSONCPP_LIBS libjsoncpp.so)
 
-set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES})
+find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
+find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
+set(BOOST_LIBS ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
+
+set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})

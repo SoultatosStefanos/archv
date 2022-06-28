@@ -13,12 +13,13 @@
 namespace Utility
 {
 
+// --------------------------- Runtime Errors ------------------------------- //
+
 struct InvalidJsonArchive : virtual std::exception, virtual boost::exception
 {
 };
 
-using JsonArchive =
-    boost::error_info<struct JsonArchiveTag, const std::string_view>;
+// -------------------------------------------------------------------------- //
 
 // Pools json archive roots from file paths.
 class JsonManager final

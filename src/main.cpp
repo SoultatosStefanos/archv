@@ -5,6 +5,9 @@
 #include "visualization/visualization.hpp"
 
 #include <boost/exception/all.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/trivial.hpp>
 #include <cstdlib>
 #include <filesystem>
 #include <string_view>
@@ -26,7 +29,7 @@ auto main(int argc, char const* argv[]) -> int
     {
         if (argc != 2)
         {
-            std::cerr << "usage: `./<exec> <json file path>`\n";
+            std::cout << "usage: `./<exec> <json file path>`\n";
 
             return EXIT_FAILURE;
         }
@@ -46,19 +49,20 @@ auto main(int argc, char const* argv[]) -> int
     }
     catch (const boost::exception& e)
     {
-        std::cerr << boost::diagnostic_information(e) << '\n';
+        BOOST_LOG_TRIVIAL(fatal) << "error:\n"
+                                 << boost::diagnostic_information(e);
 
         return EXIT_FAILURE;
     }
     catch (const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        BOOST_LOG_TRIVIAL(fatal) << "error: " << e.what();
 
         return EXIT_FAILURE;
     }
     catch (...)
     {
-        std::cerr << "unknown error" << '\n';
+        BOOST_LOG_TRIVIAL(fatal) << "unknown error";
 
         return EXIT_FAILURE;
     }

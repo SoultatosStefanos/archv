@@ -9,6 +9,15 @@ namespace Generation
 
 using namespace Architecture;
 
+namespace // error info
+{
+    using JsonMemberInfo = boost::error_info<struct JsonMemberTag, const char*>;
+    using JsonValueTypeInfo =
+        boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
+    using JsonValueInfo = boost::error_info<struct JsonValueTag, Json::Value>;
+
+} // namespace
+
 namespace // jsoncpp utils
 {
     // Safe json access.
@@ -18,7 +27,7 @@ namespace // jsoncpp utils
 
         if (!val.isMember(at))
             BOOST_THROW_EXCEPTION(JsonMemberNotFound()
-                                  << JsonMember(at) << JsonValue(val));
+                                  << JsonMemberInfo(at) << JsonValueInfo(val));
 
         return val[at];
     }
@@ -29,8 +38,8 @@ namespace // jsoncpp utils
     {
         if (!val.is<T>())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type())
-                                  << JsonValue(val));
+                                  << JsonValueTypeInfo(val.type())
+                                  << JsonValueInfo(val));
 
         return val.as<T>();
     }
@@ -47,8 +56,8 @@ namespace // jsoncpp utils
 
         if (val.isArray())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type())
-                                  << JsonValue(val));
+                                  << JsonValueTypeInfo(val.type())
+                                  << JsonValueInfo(val));
 
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
@@ -164,8 +173,8 @@ namespace // readers
 
         if (!val.isArray())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type())
-                                  << JsonValue(val));
+                                  << JsonValueTypeInfo(val.type())
+                                  << JsonValueInfo(val));
 
         std::transform(std::begin(val),
                        std::end(val),
