@@ -1,8 +1,8 @@
 // Containes the architecture visualizaer core application.
 // Soultatos Stefanos 2022
 
-#ifndef VISUALIZATION_APP_HPP
-#define VISUALIZATION_APP_HPP
+#ifndef APP_APP_HPP
+#define APP_APP_HPP
 
 #include "Ogre.h"
 #include "OgreApplicationContext.h"
@@ -23,20 +23,20 @@ public:
 
     static constexpr auto name{"Architecture Visualizer"};
 
-    App(const Graph& g, const Layout& layout)
-        : Base{name}, m_g{g}, m_layout{layout}
-    {}
+    App(const Graph& g, const Layout& layout);
 
     virtual ~App() override = default;
 
-    void setup() override;
-    void shutdown() override;
+    virtual void setup() override;
+    virtual void shutdown() override;
 
 private:
     const Graph& m_g;
     const Layout& m_layout;
+
+    Ogre::SceneManager* m_scene{nullptr};
 };
 
 } // namespace Visualization
 
-#endif // VISUALIZATION_APP_HPP
+#endif // APP_APP_HPP

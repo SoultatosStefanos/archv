@@ -1,7 +1,10 @@
 set(FILES
 	visualization.hpp
 )
-set(SUBDIRECTORIES)
+set(SUBDIRECTORIES
+	app
+	layout
+)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

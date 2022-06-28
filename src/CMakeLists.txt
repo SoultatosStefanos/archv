@@ -13,3 +13,10 @@ endforeach()
 if(FILES)
 	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
 endif()
+
+set(EXEC main)
+
+if(EXEC)
+	add_executable(${EXEC} ${EXEC}.cpp)
+	target_link_libraries(${EXEC} PUBLIC ${PROJECT_NAME})
+endif()

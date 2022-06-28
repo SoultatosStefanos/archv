@@ -23,11 +23,12 @@ public:
     Layout(const Layout&) = default;
     Layout(Layout&&) = default;
 
-    virtual ~Layout() = 0;
+    virtual ~Layout() = default;
 
     auto operator=(const Layout&) -> Layout& = default;
     auto operator=(Layout&&) -> Layout& = default;
 
+    virtual auto maps(Vertex v) const -> bool = 0;
     virtual auto x(Vertex v) const -> double = 0;
     virtual auto y(Vertex v) const -> double = 0;
     virtual auto z(Vertex v) const -> double = 0;

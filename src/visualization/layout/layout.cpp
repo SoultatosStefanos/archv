@@ -29,9 +29,9 @@ namespace
     // Convenience boost adaptor for our architecture, in 3D space.
     template <typename Topology>
     inline auto make_layout(const Architecture::Graph& g, const Topology& space)
-        -> PositionMap<Topology>
     {
         PositionMap<Topology> layout;
+
         boost::gursoy_atun_layout(
             g,
             space,
@@ -53,38 +53,43 @@ namespace
     class GursoyAtunLayout : public Layout
     {
     public:
-        using PositionMap = PositionMap<Topology>;
-
         explicit GursoyAtunLayout(const Graph& g)
-            : m_g{g}, m_map{make_layout(g, m_space)}
+            : m_map{make_layout(g, m_space)}
         {}
 
         virtual ~GursoyAtunLayout() override = default;
 
+        virtual auto maps(Vertex v) const -> bool override
+        {
+            return m_map.contains(v);
+        }
+
         virtual auto x(Vertex v) const -> double override
         {
+            assert(maps(v));
             return m_map.at(v)[0];
         }
 
         virtual auto y(Vertex v) const -> double override
         {
+            assert(maps(v));
             return m_map.at(v)[1];
         }
 
         virtual auto z(Vertex v) const -> double override
         {
+            assert(maps(v));
             return m_map.at(v)[2];
         }
 
         virtual auto clone() const -> UniquePtr override
         {
-            return std::make_unique<decltype(*this)>(*this);
+            return std::make_unique<GursoyAtunLayout<Topology>>(*this);
         }
 
     private:
         Topology m_space;
-        PositionMap m_map;
-        const Graph& m_g;
+        PositionMap<Topology> m_map;
     };
 
 } // namespace
