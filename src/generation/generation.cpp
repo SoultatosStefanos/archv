@@ -17,7 +17,8 @@ namespace // jsoncpp utils
         assert(at);
 
         if (!val.isMember(at))
-            BOOST_THROW_EXCEPTION(JsonMemberNotFound() << JsonMember(at));
+            BOOST_THROW_EXCEPTION(JsonMemberNotFound()
+                                  << JsonMember(at) << JsonValue(val));
 
         return val[at];
     }
@@ -46,7 +47,8 @@ namespace // jsoncpp utils
 
         if (val.isArray())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type()));
+                                  << JsonValueType(val.type())
+                                  << JsonValue(val));
 
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
@@ -162,7 +164,8 @@ namespace // readers
 
         if (!val.isArray())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueType(val.type()));
+                                  << JsonValueType(val.type())
+                                  << JsonValue(val));
 
         std::transform(std::begin(val),
                        std::end(val),
