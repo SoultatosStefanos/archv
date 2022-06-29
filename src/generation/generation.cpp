@@ -28,8 +28,11 @@ namespace // jsoncpp utils
 
     // Safe json value type conversion
     template <typename T>
-    inline auto as(const Json::Value& val) -> T
+    inline auto as(const Json::Value& val, bool required = true) -> T
     {
+        if (!required and val.isNull())
+            return T{};
+
         if (!val.is<T>())
             BOOST_THROW_EXCEPTION(InvalidJsonValueType()
                                   << JsonValueTypeInfo(val.type())
@@ -82,7 +85,7 @@ namespace // deserializers, read directly from json
         def.symbol.name = as<Name>(get(val, "name"));
         deserialize_source_location(get(val, "src_info"), def.symbol.source);
         def.full_type = as<FullType>(get(val, "full_type"));
-        def.type = as<Type>(get(val, "type"));
+        def.type = as<Type>(get(val, "type"), false);
     }
 
     inline void
