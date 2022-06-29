@@ -1,8 +1,8 @@
-// Contains testing utilities
+// Contains testing utilities.
 // Soultatos Stefanos 2021
 
-#ifndef TESTS_UTILITY_HPP
-#define TESTS_UTILITY_HPP
+#ifndef UTILITY_TESTING_HPP
+#define UTILITY_TESTING_HPP
 
 #include <cassert>
 #include <concepts>
@@ -75,4 +75,4 @@ inline auto dump(OutputFunc f)
 
 } // namespace Utility
 
-#endif // TESTS_UTILITY_HPP
+#endif // UTILITY_TESTING_HPP

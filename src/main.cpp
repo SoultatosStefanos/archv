@@ -1,7 +1,7 @@
 #include "architecture/architecture.hpp"
 #include "clustering/clustering.hpp"
 #include "generation/generation.hpp"
-#include "json_manager.hpp"
+#include "utility/all.hpp"
 #include "visualization/visualization.hpp"
 
 #include <boost/exception/all.hpp>
@@ -45,8 +45,7 @@ auto main(int argc, char const* argv[]) -> int
 
         init_logging();
 
-        const auto [graph, vertex_cache] =
-            generate_graph(JsonManager::get().croot(argv[1]));
+        const auto [graph, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
         App app{graph, std::make_unique<GursoyAtunLayout<Cube>>(graph, Cube{})};
 

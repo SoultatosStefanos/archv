@@ -1,6 +1,5 @@
 set(FILES
   tests.cpp
-  utility.hpp
 )
 
 set(TESTS ${PROJECT_NAME}_tests)

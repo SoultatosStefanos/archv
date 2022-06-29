@@ -1,11 +1,9 @@
-set(FILES
-	json_manager.cpp
-	json_manager.hpp
-)
+set(FILES)
 set(SUBDIRECTORIES
 	architecture
 	clustering
 	generation
+	utility
 	visualization
 )
 

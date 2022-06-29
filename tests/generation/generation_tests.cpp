@@ -1,6 +1,6 @@
 #include "architecture/architecture.hpp"
 #include "generation/generation.hpp"
-#include "utility.hpp"
+#include "utility/testing.hpp"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
