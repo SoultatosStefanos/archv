@@ -1,5 +1,6 @@
 #include "app.hpp"
 
+#include <OgreCameraMan.h>
 #include <boost/log/trivial.hpp>
 
 namespace Visualization
@@ -59,6 +60,10 @@ void App::setup()
             << "made vertex entity at: (" << node->getPosition().x << ", "
             << node->getPosition().y << ", " << node->getPosition().z << ')';
     }
+
+    // cameraman
+    auto* cameraman = new CameraMan(cam_node); // FIXME leaks of course
+    addInputListener(cameraman);
 }
 
 // FIXME
