@@ -1,6 +1,5 @@
 #include "app.hpp"
 
-#include <OgreCameraMan.h>
 #include <boost/log/trivial.hpp>
 
 namespace Visualization
@@ -56,19 +55,23 @@ void App::setup()
         node->setPosition(m_layout->x(v), m_layout->y(v), m_layout->z(v));
         node->setScale(0.15, 0.15, 0.15);
 
-        BOOST_LOG_TRIVIAL(trace)
+        BOOST_LOG_TRIVIAL(debug)
             << "made vertex entity at: (" << node->getPosition().x << ", "
             << node->getPosition().y << ", " << node->getPosition().z << ')';
     }
 
     // cameraman
-    auto* cameraman = new CameraMan(cam_node); // FIXME leaks of course
-    addInputListener(cameraman);
+    m_cameraman = new CameraMan(cam_node);
+    addInputListener(m_cameraman);
 }
 
 // FIXME
 void App::shutdown()
 {
+    // cameraman
+    removeInputListener(m_cameraman);
+    delete m_cameraman;
+
     // nodes
     // TODO remove and destroy nodes from root scene
     m_scene->destroyAllEntities();

@@ -20,6 +20,10 @@ DONE
 
 		2 Topologies (Cube, Sphere)
 
+	+ Visualization
+
+		Basic Graph Vertex Visualization in 3D space -> Not Flexible yet
+
 TODOS
 
 	- CLUSTERING
@@ -27,3 +31,23 @@ TODOS
 		Louvain method
 
 		Layered Label Propagation
+
+	- GRAPH LAYOUT
+
+		Add Topologies
+
+		Add Layout Algorithms
+	
+	- Visualization
+
+		Edge Visualization
+
+		UI (Vertex interface, subsections)
+
+		Volume
+
+		Background
+
+		Animations
+
+		Config

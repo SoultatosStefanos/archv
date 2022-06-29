@@ -9,6 +9,7 @@
 #include "architecture/graph.hpp"
 #include "visualization/layout/layout.hpp"
 
+#include <OgreCameraMan.h>
 #include <memory>
 
 namespace Visualization
@@ -37,6 +38,7 @@ private:
     UniqueLayoutPtr m_layout;
 
     Ogre::SceneManager* m_scene{nullptr};
+    OgreBites::CameraMan* m_cameraman{nullptr};
 };
 
 } // namespace Visualization

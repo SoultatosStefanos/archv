@@ -14,9 +14,6 @@
 
 // NOTE: Demo currently
 
-// TODO Quick graph visualization test with ogre head mesh and camera man, plus
-// test memory management.
-
 static void init_logging()
 {
     namespace logging = boost::log;
@@ -48,7 +45,7 @@ auto main(int argc, char const* argv[]) -> int
         const auto [graph, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
         App app{graph,
-                std::make_unique<GursoyAtunLayout<Cube>>(graph, Cube{80})};
+                std::make_unique<GursoyAtunLayout<Sphere>>(graph, Sphere{80})};
 
         app.initApp();
         app.getRoot()->startRendering();
