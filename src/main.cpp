@@ -47,10 +47,11 @@ auto main(int argc, char const* argv[]) -> int
 
         const auto [graph, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
-        App app{graph, std::make_unique<GursoyAtunLayout<Cube>>(graph, Cube{})};
+        App app{graph,
+                std::make_unique<GursoyAtunLayout<Cube>>(graph, Cube{80})};
 
         app.initApp();
-        // render
+        app.getRoot()->startRendering();
         app.closeApp();
 
         return EXIT_SUCCESS;
