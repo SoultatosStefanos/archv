@@ -5,7 +5,8 @@
 #define UTILITY_ALL_HPP
 
 #include "json.hpp"
+#include "path.hpp"
 #include "pool.hpp"
-#include "testing.hpp"
+#include "random.hpp"
 
 #endif // UTILITY_ALL_HPP

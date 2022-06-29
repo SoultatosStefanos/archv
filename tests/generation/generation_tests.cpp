@@ -1,6 +1,6 @@
 #include "architecture/architecture.hpp"
 #include "generation/generation.hpp"
-#include "utility/testing.hpp"
+#include "utility/all.hpp"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -15,6 +15,27 @@ namespace
 using namespace Generation;
 using namespace Architecture;
 using namespace Utility;
+
+template <typename OutputFunc>
+struct StreamProxy
+{
+    OutputFunc out;
+};
+
+template <typename OutputFunc>
+inline auto operator<<(std::ostream& os, const StreamProxy<OutputFunc>& proxy)
+    -> auto&
+{
+    proxy.out(os);
+    return os;
+}
+
+// Dumps output info to an output stream. (Useful with gtest.)
+template <typename OutputFunc>
+inline auto dump(OutputFunc f)
+{
+    return StreamProxy<OutputFunc>{f};
+}
 
 auto read_json_root(const std::string_view to)
 {

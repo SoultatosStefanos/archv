@@ -2,8 +2,9 @@ set(FILES
 	all.hpp
 	json.cpp
 	json.hpp
+	path.hpp
 	pool.hpp
-	testing.hpp
+	random.hpp
 )
 set(SUBDIRECTORIES)
 

@@ -1,5 +1,5 @@
 #include "clustering/maximal_clique_enumeration_clustering.hpp"
-#include "utility/testing.hpp"
+#include "utility/all.hpp"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
