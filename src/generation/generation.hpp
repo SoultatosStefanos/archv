@@ -29,6 +29,15 @@ struct InvalidJsonValueType : virtual Error
 
 // ---------------------------------------------------------------------//
 
+// ----------------------- Runtime Error Info ------------------------- //
+
+using JsonMemberInfo = boost::error_info<struct JsonMemberTag, const char*>;
+using JsonValueTypeInfo =
+    boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
+using JsonValueInfo = boost::error_info<struct JsonValueTag, Json::Value>;
+
+// ---------------------------------------------------------------------//
+
 // Used in order to 'remember' the installed vertex descriptors.
 using VertexCache =
     std::unordered_map<Architecture::Structure::ID, Architecture::Vertex>;

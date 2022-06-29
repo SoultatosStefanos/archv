@@ -6,13 +6,6 @@
 namespace Utility
 {
 
-namespace // error info
-{
-    using JsonArchiveInfo =
-        boost::error_info<struct JsonArchiveTag, const std::string_view>;
-
-} // namespace
-
 namespace
 {
     inline auto make_root(const JsonManager::FilePath from)

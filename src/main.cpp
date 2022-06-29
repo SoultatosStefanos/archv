@@ -6,7 +6,7 @@
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
-#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/expressions.hpp>
 #include <boost/log/trivial.hpp>
 #include <cstdlib>
 #include <filesystem>
@@ -14,9 +14,18 @@
 
 // NOTE: Demo currently
 
-// TODO Print good stacktraces on exceptions.
 // TODO Quick graph visualization test with ogre head mesh and camera man, plus
 // test memory management.
+
+static void init_logging()
+{
+    namespace logging = boost::log;
+
+#ifdef NDEBUG
+    logging::core::get()->set_filter(logging::trivial::severity >=
+                                     logging::trivial::info);
+#endif
+}
 
 auto main(int argc, char const* argv[]) -> int
 {
@@ -33,6 +42,8 @@ auto main(int argc, char const* argv[]) -> int
 
             return EXIT_FAILURE;
         }
+
+        init_logging();
 
         const auto [graph, vertex_cache] =
             generate_graph(JsonManager::get().croot(argv[1]));

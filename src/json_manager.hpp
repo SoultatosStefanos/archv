@@ -21,6 +21,13 @@ struct InvalidJsonArchive : virtual std::exception, virtual boost::exception
 
 // -------------------------------------------------------------------------- //
 
+// ----------------------- Runtime Error Info ------------------------------- //
+
+using JsonArchiveInfo =
+    boost::error_info<struct JsonArchiveTag, const std::string_view>;
+
+// -------------------------------------------------------------------------- //
+
 // Pools json archive roots from file paths.
 class JsonManager final
 {

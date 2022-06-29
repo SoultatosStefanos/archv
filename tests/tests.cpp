@@ -1,19 +1,34 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/trivial.hpp>
+
+static void init_logging()
+{
+    namespace logging = boost::log;
+
+    logging::core::get()->set_logging_enabled(false);
+}
 
 auto main(int argc, char* argv[]) -> int
 {
-    try {
+    try
+    {
+        init_logging();
+
         ::testing::InitGoogleTest(&argc, argv);
 
         return RUN_ALL_TESTS();
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e)
+    {
         std::cerr << e.what() << '\n';
 
         return EXIT_FAILURE;
     }
-    catch (...) {
+    catch (...)
+    {
         std::cerr << "unexpected error\n";
 
         return EXIT_FAILURE;

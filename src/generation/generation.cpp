@@ -1,5 +1,6 @@
 #include "generation.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <concepts>
 #include <unordered_map>
@@ -9,21 +10,14 @@ namespace Generation
 
 using namespace Architecture;
 
-namespace // error info
-{
-    using JsonMemberInfo = boost::error_info<struct JsonMemberTag, const char*>;
-    using JsonValueTypeInfo =
-        boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
-    using JsonValueInfo = boost::error_info<struct JsonValueTag, Json::Value>;
-
-} // namespace
-
 namespace // jsoncpp utils
 {
     // Safe json access.
     inline auto get(const Json::Value& val, const char* at)
     {
         assert(at);
+
+        BOOST_LOG_TRIVIAL(debug) << "reading json value member: " << at;
 
         if (!val.isMember(at))
             BOOST_THROW_EXCEPTION(JsonMemberNotFound()
@@ -186,6 +180,8 @@ namespace // readers
                            const Symbol::ID& id,
                            const Json::Value& val)
     {
+        BOOST_LOG_TRIVIAL(debug) << "reading field of: " << owner.symbol.id;
+
         Definition f;
         deserialize_definition_with_access_specifier(val, f);
         f.symbol.id = id;
@@ -197,6 +193,8 @@ namespace // readers
                                        const Symbol::ID& id,
                                        const Json::Value& val)
     {
+        BOOST_LOG_TRIVIAL(debug) << "reading local of: " << owner.symbol.id;
+
         Definition def;
         deserialize_definition(val, def);
         def.symbol.id = id;
@@ -208,6 +206,8 @@ namespace // readers
                      const Symbol::ID& id,
                      const Json::Value& val) -> Method
     {
+        BOOST_LOG_TRIVIAL(debug) << "reading method of: " << owner.symbol.id;
+
         Method m;
 
         deserialize_method(val, m);
@@ -235,6 +235,8 @@ namespace // readers
     void
     read_structure(Structure& s, const Symbol::ID& id, const Json::Value& val)
     {
+        BOOST_LOG_TRIVIAL(debug) << "reading structure: " << id;
+
         s.symbol.id = id;
 
         deserialize_structure(val, s);
@@ -292,6 +294,9 @@ namespace // graph builders
         const auto& from = as<ID>(get(val, "from"));
         const auto& to = as<ID>(get(val, "to"));
 
+        BOOST_LOG_TRIVIAL(debug)
+            << "reading dependency from: " << from << ", to: " << to;
+
         assert(cache.contains(from));
         assert(cache.contains(to));
         const auto& [e, res] = boost::add_edge(cache.at(from), cache.at(to), g);
@@ -316,7 +321,9 @@ auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
     add_vertices(get(root, "structures"), g, cache);
     add_edges(get(root, "dependencies"), g, cache);
 
-    return {g, std::move(cache)};
+    BOOST_LOG_TRIVIAL(info) << "generated graph";
+
+    return {std::move(g), std::move(cache)};
 }
 
 } // namespace Generation
