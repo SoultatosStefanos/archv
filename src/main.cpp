@@ -48,9 +48,7 @@ auto main(int argc, char const* argv[]) -> int
         const auto [graph, vertex_cache] =
             generate_graph(JsonManager::get().croot(argv[1]));
 
-        App app{
-            graph,
-            LayoutFactory::make_layout(graph, LayoutFactory::Topology::cube)};
+        App app{graph, std::make_unique<GursoyAtunLayout<Cube>>(graph, Cube{})};
 
         app.initApp();
         // render

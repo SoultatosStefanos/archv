@@ -5,6 +5,6 @@
 #define VISUALIZATION_VISUALIZATION_HPP
 
 #include "app/app.hpp"
-#include "layout/layout.hpp"
+#include "layout/all.hpp"
 
 #endif // VISUALIZATION_VISUALIZATION_HPP

@@ -1,4 +1,4 @@
-// Containes an architecture graph 3D layout interface and a factory class.
+// Containes an architecture graph 3D layout interface.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_LAYOUT_HPP
@@ -28,37 +28,11 @@ public:
     auto operator=(const Layout&) -> Layout& = default;
     auto operator=(Layout&&) -> Layout& = default;
 
-    virtual auto maps(Vertex v) const -> bool = 0;
     virtual auto x(Vertex v) const -> double = 0;
     virtual auto y(Vertex v) const -> double = 0;
     virtual auto z(Vertex v) const -> double = 0;
 
     virtual auto clone() const -> UniquePtr = 0;
-};
-
-class LayoutFactory final
-{
-public:
-    using Graph = Architecture::Graph;
-    using UniquePtr = std::unique_ptr<Layout>;
-
-    enum class Topology
-    {
-        cube,
-        sphere
-    };
-
-    LayoutFactory(const LayoutFactory&) = delete;
-    LayoutFactory(LayoutFactory&&) = delete;
-
-    auto operator=(const LayoutFactory&) -> LayoutFactory& = default;
-    auto operator=(LayoutFactory&&) -> LayoutFactory& = default;
-
-    static auto make_layout(const Graph& g, Topology topology) -> UniquePtr;
-
-private:
-    LayoutFactory() = default;
-    ~LayoutFactory() = default;
 };
 
 } // namespace Visualization

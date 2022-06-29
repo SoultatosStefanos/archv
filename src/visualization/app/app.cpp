@@ -10,18 +10,11 @@ App::App(const Graph& g, UniqueLayoutPtr layout)
     : Base{"Architecture Visualizer"}, m_g{g}, m_layout{std::move(layout)}
 {
     assert(m_layout);
-    assert(std::all_of(boost::vertices(m_g).first,
-                       boost::vertices(m_g).second,
-                       [&](auto v) { return m_layout->maps(v); }));
 }
 
 void App::layout(UniqueLayoutPtr l)
 {
     assert(l);
-    assert(std::all_of(boost::vertices(m_g).first,
-                       boost::vertices(m_g).second,
-                       [&l](auto v) { return l->maps(v); }));
-
     m_layout = std::move(l);
 }
 
