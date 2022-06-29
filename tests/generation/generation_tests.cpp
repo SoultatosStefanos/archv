@@ -84,9 +84,9 @@ auto build_sample_graph_1() -> Graph
     m.symbol.name_space = "CS::CS_1::";
     m.symbol.source = {"classes_simple.cpp", 23, 11};
     m.symbol.access = "public";
-    m.arguments = {arg};
+    m.arguments = {std::move(arg)};
     m.branches = 10;
-    m.definitions = {def};
+    m.definitions = {std::move(def)};
     m.lines = 20;
     m.literals = 30;
     m.loops = 40;
@@ -104,8 +104,8 @@ auto build_sample_graph_1() -> Graph
     class_a.symbol.source = {"classes_simple.cpp", 23, 11};
     class_a.symbol.access = "unknown";
     class_a.type = "Class";
-    class_a.methods = {m};
-    class_a.fields = {field};
+    class_a.methods = {std::move(m)};
+    class_a.fields = {std::move(field)};
     class_a.bases = {"std::runtime_error"};
     class_a.nested = {"CS::CS_1::class_A::Foo"};
     class_a.friends = {"std::map"};
