@@ -29,6 +29,7 @@ void App::layout(UniqueLayoutPtr l)
 void App::setup()
 {
     ApplicationContext::setup();
+    addInputListener(this);
 
     // scene manager
     m_scene = getRoot()->createSceneManager();
@@ -116,6 +117,16 @@ void App::shutdown()
     getRoot()->destroySceneManager(m_scene);
 
     ApplicationContext::shutdown();
+}
+
+auto App::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
+{
+    static constexpr auto quit_sym = SDLK_ESCAPE;
+
+    if (e.keysym.sym == quit_sym)
+        getRoot()->queueEndRendering();
+
+    return true;
 }
 
 } // namespace Visualization

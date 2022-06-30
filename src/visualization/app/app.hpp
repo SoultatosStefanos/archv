@@ -10,13 +10,15 @@
 #include "visualization/layout/layout.hpp"
 
 #include <OgreCameraMan.h>
+#include <OgreInput.h>
 #include <memory>
 
 namespace Visualization
 {
 
-// The heart of the application
-class App : public OgreBites::ApplicationContext
+// The heart of the application.
+class App : public OgreBites::ApplicationContext,
+            public OgreBites::InputListener
 {
 public:
     using Base = OgreBites::ApplicationContext;
@@ -32,6 +34,8 @@ public:
 
     virtual void setup() override;
     virtual void shutdown() override;
+
+    virtual auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
 
 private:
     const Graph& m_g;
