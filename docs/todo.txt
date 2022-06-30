@@ -40,8 +40,6 @@ TODOS
 	
 	- Visualization
 
-		Edge Visualization
-
 		UI (Vertex interface, subsections)
 
 		Volume
