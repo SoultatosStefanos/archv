@@ -1,5 +1,6 @@
 #include "app.hpp"
 
+#include <OgreManualObject.h>
 #include <boost/log/trivial.hpp>
 
 namespace Visualization
@@ -19,6 +20,10 @@ void App::layout(UniqueLayoutPtr l)
     assert(l);
     m_layout = std::move(l);
 }
+
+// scene manager + light + camera + nodes + cameraman
+
+// scene nodes
 
 // FIXME
 void App::setup()
@@ -58,6 +63,27 @@ void App::setup()
         BOOST_LOG_TRIVIAL(debug)
             << "made vertex entity at: (" << node->getPosition().x << ", "
             << node->getPosition().y << ", " << node->getPosition().z << ')';
+    }
+
+    // edges
+    auto mat = Ogre::MaterialManager::getSingleton().create("Mat", "General");
+
+    for (auto e : boost::make_iterator_range(boost::edges(m_g)))
+    {
+        auto* manual = m_scene->createManualObject();
+
+        manual->begin("Mat", Ogre::RenderOperation::OT_LINE_LIST);
+
+        const auto src = boost::source(e, m_g);
+        const auto des = boost::target(e, m_g);
+
+        manual->position(m_layout->x(src), m_layout->y(src), m_layout->z(src));
+        manual->position(m_layout->x(des), m_layout->y(des), m_layout->z(des));
+
+        manual->end();
+
+        auto* manual_node = m_scene->getRootSceneNode()->createChildSceneNode();
+        manual_node->attachObject(manual);
     }
 
     // cameraman
