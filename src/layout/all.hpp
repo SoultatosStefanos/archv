@@ -4,8 +4,9 @@
 #ifndef LAYOUT_ALL_HPP
 #define LAYOUT_ALL_HPP
 
-#include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
+#include "layout_factory.hpp"
 #include "topology.hpp"
+#include "topology_factory.hpp"
 
 #endif // LAYOUT_ALL_HPP

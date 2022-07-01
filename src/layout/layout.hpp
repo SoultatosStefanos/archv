@@ -1,17 +1,40 @@
-// Contains a 3D layout implementation, using the Gursoy Atun Layout algorithm.
+// Containes an architecture graph 3D layout interface.
 // Soultatos Stefanos 2022
 
-#ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
-#define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
+#ifndef LAYOUT_LAYOUT_HPP
+#define LAYOUT_LAYOUT_HPP
 
-#include "layout.hpp"
+#include "architecture/graph.hpp"
 #include "topology.hpp"
 
-#include <boost/graph/gursoy_atun_layout.hpp>
-#include <unordered_map>
+#include <memory>
 
-namespace Visualization
+namespace Layout
 {
+
+// In 3D space.
+class Layout
+{
+public:
+    using Graph = Architecture::Graph;
+    using Vertex = Graph::vertex_descriptor;
+    using UniquePtr = std::unique_ptr<Layout>;
+
+    Layout() = default;
+    Layout(const Layout&) = default;
+    Layout(Layout&&) = default;
+
+    virtual ~Layout() = default;
+
+    auto operator=(const Layout&) -> Layout& = default;
+    auto operator=(Layout&&) -> Layout& = default;
+
+    virtual auto x(Vertex v) const -> double = 0;
+    virtual auto y(Vertex v) const -> double = 0;
+    virtual auto z(Vertex v) const -> double = 0;
+
+    virtual auto clone() const -> UniquePtr = 0;
+};
 
 // Assigns a position, at a 3d space, to each graph vertex.
 // Distributes vertices uniformly within a topology, keeping vertices close
@@ -22,23 +45,10 @@ namespace Visualization
 // https://www.boost.org/doc/libs/1_79_0/libs/graph/doc/gursoy_atun_layout.html
 //
 // Convenience boost adaptor for our architecture, in 3D space.
-template <Convex3DTopology Topology>
 class GursoyAtunLayout : public Layout
 {
 public:
-    GursoyAtunLayout(const Graph& g, const Topology& space)
-    {
-        boost::gursoy_atun_layout(
-            g,
-            space,
-            boost::make_assoc_property_map(m_map),
-            boost::weight_map(
-                boost::get(&Architecture::Dependency::cardinality, g)));
-
-        assert(std::all_of(boost::vertices(g).first,
-                           boost::vertices(g).second,
-                           [this](auto v) { return m_map.contains(v); }));
-    }
+    GursoyAtunLayout(const Graph& g, const Topology& space);
 
     virtual ~GursoyAtunLayout() override = default;
 
@@ -62,16 +72,15 @@ public:
 
     virtual auto clone() const -> UniquePtr override
     {
-        return std::make_unique<GursoyAtunLayout<Topology>>(*this);
+        return std::make_unique<GursoyAtunLayout>(*this);
     }
 
 private:
-    using Point = typename Topology::point_type;
     using PositionMap = std::unordered_map<Vertex, Point>;
 
     PositionMap m_map;
 };
 
-} // namespace Visualization
+} // namespace Layout
 
-#endif // LAYOUT_GURSOY_ATUN_LAYOUT_HPP
+#endif // LAYOUT_LAYOUT_HPP

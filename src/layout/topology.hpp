@@ -5,19 +5,19 @@
 #define LAYOUT_TOPOLOGY_HPP
 
 #include <boost/graph/topology.hpp>
-#include <concepts>
 #include <random>
+#include <variant>
 
-namespace Visualization
+namespace Layout
 {
 
-template <typename Topology>
-concept Convex3DTopology =
-    std::is_base_of_v<boost::convex_topology<3>, Topology>;
+using Point = typename boost::convex_topology<3>::point_type;
 
 using Cube = boost::cube_topology<std::minstd_rand>;
 using Sphere = boost::sphere_topology<std::minstd_rand>;
 
-} // namespace Visualization
+using Topology = std::variant<Cube, Sphere>;
+
+} // namespace Layout
 
 #endif // LAYOUT_TOPOLOGY_HPP
