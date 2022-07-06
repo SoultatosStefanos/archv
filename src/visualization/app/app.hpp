@@ -38,10 +38,19 @@ public:
     virtual auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
 
 private:
+    void initialize_scene_manager();
+    void initialize_light();
+    void initialize_camera();
+    void initialize_vertices();
+    void initialize_edges();
+    void initialize_input();
+
     const Graph& m_g;
     UniqueLayoutPtr m_layout;
 
     Ogre::SceneManager* m_scene{nullptr};
+    Ogre::SceneNode* m_cam_node{nullptr};
+
     OgreBites::CameraMan* m_cameraman{nullptr};
 };
 
