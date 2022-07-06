@@ -25,19 +25,18 @@ public:
 
     static_assert(std::is_constructible_v<LayoutType, decltype(gursoy_atun)>);
 
-    LayoutFactory(const LayoutFactory&) = delete;
-    LayoutFactory(LayoutFactory&&) = delete;
-
-    auto operator=(const LayoutFactory&) -> LayoutFactory& = delete;
-    auto operator=(LayoutFactory&&) -> LayoutFactory& = delete;
-
-    static auto make_layout(const LayoutType& type,
-                            const Graph& g,
-                            const Topology& space) -> UniquePtr;
-
-private:
     LayoutFactory() = default;
-    ~LayoutFactory() = default;
+    LayoutFactory(const LayoutFactory&) = default;
+    LayoutFactory(LayoutFactory&&) = default;
+
+    virtual ~LayoutFactory() = default;
+
+    auto operator=(const LayoutFactory&) -> LayoutFactory& = default;
+    auto operator=(LayoutFactory&&) -> LayoutFactory& = default;
+
+    virtual auto make_layout(const LayoutType& type,
+                             const Graph& g,
+                             const Topology& space) const -> UniquePtr = 0;
 };
 
 } // namespace Layout

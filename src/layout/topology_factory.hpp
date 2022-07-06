@@ -22,18 +22,16 @@ public:
     static_assert(std::is_constructible_v<TopologyType, decltype(cube_type)>);
     static_assert(std::is_constructible_v<TopologyType, decltype(sphere_type)>);
 
-    TopologyFactory(const TopologyFactory&) = delete;
-    TopologyFactory(TopologyFactory&&) = delete;
-
-    auto operator=(const TopologyFactory&) -> TopologyFactory& = delete;
-    auto operator=(TopologyFactory&&) -> TopologyFactory& = delete;
-
-    static auto make_topology(const TopologyType& type, double scale)
-        -> Topology;
-
-private:
     TopologyFactory() = default;
-    ~TopologyFactory() = default;
+    TopologyFactory(const TopologyFactory&) = default;
+    TopologyFactory(TopologyFactory&&) = default;
+    virtual ~TopologyFactory() = default;
+
+    auto operator=(const TopologyFactory&) -> TopologyFactory& = default;
+    auto operator=(TopologyFactory&&) -> TopologyFactory& = default;
+
+    virtual auto make_topology(const TopologyType& type, double scale) const
+        -> Topology = 0;
 };
 
 } // namespace Layout
