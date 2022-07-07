@@ -10,10 +10,10 @@
 #include <cassert>
 #include <vector>
 
-namespace Clustering
+namespace clustering
 {
 
-namespace Impl
+namespace detail
 {
 
     template <typename Graph, typename ComponentMap>
@@ -56,26 +56,26 @@ namespace Impl
             g);
     }
 
-} // namespace Impl
+} // namespace detail
 
 template <typename MutableGraph, typename ComponentMap>
 inline void strong_components_clustering(MutableGraph& g, ComponentMap comp)
 {
-    Impl::strong_components_clustering_impl(g, comp);
+    detail::strong_components_clustering_impl(g, comp);
 }
 
 template <typename MutableGraph>
 inline void strong_components_clustering(MutableGraph& g)
 {
-    using ComponentStorage = std::vector<int>;
+    using component_storage = std::vector<int>;
 
-    ComponentStorage c(boost::num_vertices(g));
-    Impl::strong_components_clustering_impl(
+    component_storage c(boost::num_vertices(g));
+    detail::strong_components_clustering_impl(
         g,
         boost::make_iterator_property_map(std::begin(c),
                                           boost::get(boost::vertex_index, g)));
 }
 
-} // namespace Clustering
+} // namespace clustering
 
 #endif // CLUSTERING_STRONG_COMPONENTS_CLUSTERING_HPP

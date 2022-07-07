@@ -14,12 +14,12 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace Utility
+namespace utility
 {
 
 // --------------------------- Runtime Errors ------------------------------- //
 
-struct InvalidJsonArchive : virtual std::exception, virtual boost::exception
+struct invalid_json_archive : virtual std::exception, virtual boost::exception
 {
 };
 
@@ -27,25 +27,26 @@ struct InvalidJsonArchive : virtual std::exception, virtual boost::exception
 
 // ----------------------- Runtime Error Info ------------------------------- //
 
-using JsonArchiveInfo =
-    boost::error_info<struct JsonArchiveTag, const std::string_view>;
+using json_archive_info =
+    boost::error_info<struct tag_json_archive, std::string_view>;
 
 // -------------------------------------------------------------------------- //
 
-namespace Impl
+namespace detail
 {
-    struct JsonRootFactory
+    struct json_root_factory
     {
         auto operator()(const std::string_view tag) const -> Json::Value;
     };
 
-} // namespace Impl
+} // namespace detail
 
-using JsonPool = Pool<Json::Value, std::string_view, Impl::JsonRootFactory>;
+using json_pool =
+    pool<Json::Value, std::string_view, detail::json_root_factory>;
 
 // Global json file resource pool.
-extern const JsonPool jsons;
+extern const json_pool jsons;
 
-} // namespace Utility
+} // namespace utility
 
 #endif // UTILITY_JSON_HPP

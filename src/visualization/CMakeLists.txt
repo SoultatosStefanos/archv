@@ -1,8 +1,8 @@
 set(FILES
-	visualization.hpp
+	all.hpp
 )
 set(SUBDIRECTORIES
-	app
+	application
 	layout
 )
 

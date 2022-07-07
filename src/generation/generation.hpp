@@ -10,20 +10,20 @@
 #include <jsoncpp/json/json.h>
 #include <stdexcept>
 
-namespace Generation
+namespace generation
 {
 
 // ----------------------- Runtime Errors ----------------------------- //
 
-struct Error : virtual std::exception, virtual boost::exception
+struct error : virtual std::exception, virtual boost::exception
 {
 };
 
-struct JsonMemberNotFound : virtual Error
+struct json_member_not_found : virtual error
 {
 };
 
-struct InvalidJsonValueType : virtual Error
+struct invalid_json_value_type : virtual error
 {
 };
 
@@ -31,20 +31,20 @@ struct InvalidJsonValueType : virtual Error
 
 // ----------------------- Runtime Error Info ------------------------- //
 
-using JsonMemberInfo = boost::error_info<struct JsonMemberTag, const char*>;
-using JsonValueTypeInfo =
-    boost::error_info<struct JsonValueTypeTag, Json::ValueType>;
-using JsonValueInfo = boost::error_info<struct JsonValueTag, Json::Value>;
+using json_member_info = boost::error_info<struct tag_json_member, const char*>;
+using json_value_type_info =
+    boost::error_info<struct tag_json_value_type, Json::ValueType>;
+using json_value_info = boost::error_info<struct tage_json_value, Json::Value>;
 
 // ---------------------------------------------------------------------//
 
 // Used in order to 'remember' the installed vertex descriptors.
-using VertexCache =
-    std::unordered_map<Architecture::Structure::ID, Architecture::Vertex>;
+using vertex_cache = std::unordered_map<architecture::structure::id_type,
+                                        architecture::graph::vertex_descriptor>;
 
 auto generate_graph(const Json::Value& root)
-    -> std::pair<Architecture::Graph, VertexCache>;
+    -> std::pair<architecture::graph, vertex_cache>;
 
-} // namespace Generation
+} // namespace generation
 
 #endif // GENERATION_GENERATION_HPP

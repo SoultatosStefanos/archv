@@ -1,4 +1,4 @@
-#include "architecture/architecture.hpp"
+#include "architecture/all.hpp"
 #include "generation/generation.hpp"
 #include "utility/all.hpp"
 
@@ -12,18 +12,18 @@
 namespace
 {
 
-using namespace Generation;
-using namespace Architecture;
-using namespace Utility;
+using namespace generation;
+using namespace architecture;
+using namespace utility;
 
 template <typename OutputFunc>
-struct StreamProxy
+struct stream_proxy
 {
     OutputFunc out;
 };
 
 template <typename OutputFunc>
-inline auto operator<<(std::ostream& os, const StreamProxy<OutputFunc>& proxy)
+inline auto operator<<(std::ostream& os, const stream_proxy<OutputFunc>& proxy)
     -> auto&
 {
     proxy.out(os);
@@ -34,7 +34,7 @@ inline auto operator<<(std::ostream& os, const StreamProxy<OutputFunc>& proxy)
 template <typename OutputFunc>
 inline auto dump(OutputFunc f)
 {
-    return StreamProxy<OutputFunc>{f};
+    return stream_proxy<OutputFunc>{f};
 }
 
 auto read_json_root(const std::string_view to)
@@ -56,7 +56,7 @@ TEST(Generate_graph, Sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
-    ASSERT_THROW(generate_graph(root), Generation::Error);
+    ASSERT_THROW(generate_graph(root), generation::error);
 }
 
 // See data/tests/sample_graph_0.json
@@ -66,45 +66,45 @@ TEST(Generate_graph, Sample_graph_0)
 
     const auto [actual, _] = generate_graph(root);
 
-    ASSERT_TRUE(boost::isomorphism(actual, Graph{}));
+    ASSERT_TRUE(boost::isomorphism(actual, graph{}));
 }
 
 // See data/tests/sample_graph_1.json
-auto build_sample_graph_1() -> Graph
+auto build_sample_graph_1() -> graph
 {
-    Graph g;
+    graph g;
 
-    Definition field;
-    field.symbol.id = "CS::CS_1::class_A::b";
-    field.symbol.name = "b";
-    field.symbol.name_space = "CS::CS_1::";
-    field.symbol.source = {"classes_simple.cpp", 23, 29};
-    field.symbol.access = "private";
-    field.full_type = "class CS::CS_1::class_B";
-    field.type = "CS::CS_1::class_B";
+    definition field;
+    field.sym.id = "CS::CS_1::class_A::b";
+    field.sym.name = "b";
+    field.sym.name_space = "CS::CS_1::";
+    field.sym.source = {"classes_simple.cpp", 23, 29};
+    field.sym.access = "private";
+    field.full_t = "class CS::CS_1::class_B";
+    field.t = "CS::CS_1::class_B";
 
-    Definition arg;
-    arg.symbol.id = "b";
-    arg.symbol.name = "b";
-    arg.symbol.name_space = "CS::CS_1::";
-    arg.symbol.source = {"friends.cpp", 58, 29};
-    arg.full_type = "friends::B";
-    arg.type = "friends::B";
+    definition arg;
+    arg.sym.id = "b";
+    arg.sym.name = "b";
+    arg.sym.name_space = "CS::CS_1::";
+    arg.sym.source = {"friends.cpp", 58, 29};
+    arg.full_t = "friends::B";
+    arg.t = "friends::B";
 
-    Definition def;
-    def.symbol.id = "x";
-    def.symbol.name = "x";
-    def.symbol.name_space = "CS::CS_1::";
-    def.symbol.source = {"friends.cpp", 58, 23};
-    def.full_type = "friends::B";
-    def.type = "friends::B";
+    definition def;
+    def.sym.id = "x";
+    def.sym.name = "x";
+    def.sym.name_space = "CS::CS_1::";
+    def.sym.source = {"friends.cpp", 58, 23};
+    def.full_t = "friends::B";
+    def.t = "friends::B";
 
-    Method m;
-    m.symbol.id = "CS::CS_1::class_A::class_A(class CS::CS_1::class_A &&)";
-    m.symbol.name = "class_A";
-    m.symbol.name_space = "CS::CS_1::";
-    m.symbol.source = {"classes_simple.cpp", 23, 11};
-    m.symbol.access = "public";
+    method m;
+    m.sym.id = "CS::CS_1::class_A::class_A(class CS::CS_1::class_A &&)";
+    m.sym.name = "class_A";
+    m.sym.name_space = "CS::CS_1::";
+    m.sym.source = {"classes_simple.cpp", 23, 11};
+    m.sym.access = "public";
     m.arguments = {std::move(arg)};
     m.branches = 10;
     m.definitions = {std::move(def)};
@@ -112,19 +112,19 @@ auto build_sample_graph_1() -> Graph
     m.literals = 30;
     m.loops = 40;
     m.max_scope = 50;
-    m.type = "Constructor_Trivial";
-    m.return_type = "void";
+    m.t = "Constructor_Trivial";
+    m.ret_type = "void";
     m.statements = 60;
     m.template_args = {"bool", "int", "char"};
     m.is_virtual = true;
 
-    Structure class_a;
-    class_a.symbol.id = "CS::CS_1::class_A";
-    class_a.symbol.name = "class_A";
-    class_a.symbol.name_space = "CS::CS_1::";
-    class_a.symbol.source = {"classes_simple.cpp", 23, 11};
-    class_a.symbol.access = "unknown";
-    class_a.type = "Class";
+    structure class_a;
+    class_a.sym.id = "CS::CS_1::class_A";
+    class_a.sym.name = "class_A";
+    class_a.sym.name_space = "CS::CS_1::";
+    class_a.sym.source = {"classes_simple.cpp", 23, 11};
+    class_a.sym.access = "unknown";
+    class_a.t = "Class";
     class_a.methods = {std::move(m)};
     class_a.fields = {std::move(field)};
     class_a.bases = {"std::runtime_error"};
@@ -153,45 +153,42 @@ TEST(Generate_graph, Sample_graph_1)
 }
 
 // See data/tests/sample_graph_2.json
-auto build_sample_graph_2() -> Graph
+auto build_sample_graph_2() -> graph
 {
-    Graph g;
+    graph g;
 
-    Structure class_a, class_b, class_x;
+    structure class_a, class_b, class_x;
 
-    class_a.symbol.id = "CS::CS_1::class_A";
-    class_a.symbol.name = "class_A";
-    class_a.symbol.name_space = "CS::CS_1::";
-    class_a.symbol.source = {
-        .file = "classes_simple.cpp", .line = 23, .col = 11};
-    class_a.type = "Class";
+    class_a.sym.id = "CS::CS_1::class_A";
+    class_a.sym.name = "class_A";
+    class_a.sym.name_space = "CS::CS_1::";
+    class_a.sym.source = {.file = "classes_simple.cpp", .line = 23, .col = 11};
+    class_a.t = "Class";
 
-    class_b.symbol.id = "CS::CS_1::class_B";
-    class_b.symbol.name = "class_B";
-    class_b.symbol.name_space = "CS::CS_1::";
-    class_b.symbol.source = {
-        .file = "classes_simple.cpp", .line = 22, .col = 11};
-    class_b.type = "Class";
+    class_b.sym.id = "CS::CS_1::class_B";
+    class_b.sym.name = "class_B";
+    class_b.sym.name_space = "CS::CS_1::";
+    class_b.sym.source = {.file = "classes_simple.cpp", .line = 22, .col = 11};
+    class_b.t = "Class";
 
-    class_x.symbol.id = "CS::CS_1::class_X";
-    class_x.symbol.name = "class_X";
-    class_x.symbol.name_space = "CS::CS_1::";
-    class_x.symbol.source = {
-        .file = "classes_simple.cpp", .line = 25, .col = 11};
-    class_x.type = "Class";
+    class_x.sym.id = "CS::CS_1::class_X";
+    class_x.sym.name = "class_X";
+    class_x.sym.name_space = "CS::CS_1::";
+    class_x.sym.source = {.file = "classes_simple.cpp", .line = 25, .col = 11};
+    class_x.t = "Class";
 
     const auto a = boost::add_vertex(class_a, g);
     const auto b = boost::add_vertex(class_b, g);
     const auto x = boost::add_vertex(class_x, g);
 
-    boost::add_edge(a, b, {.type = "ClassField", .cardinality = 1}, g);
-    boost::add_edge(x, b, {.type = "Inherit", .cardinality = 1}, g);
-    boost::add_edge(x, a, {.type = "Inherit", .cardinality = 1}, g);
+    boost::add_edge(a, b, {.t = "ClassField", .cardinality = 1}, g);
+    boost::add_edge(x, b, {.t = "Inherit", .cardinality = 1}, g);
+    boost::add_edge(x, a, {.t = "Inherit", .cardinality = 1}, g);
 
     return g;
 }
 
-auto edge_property_isomorphsim(const Graph& lhs, const Graph& rhs) -> bool
+auto edge_property_isomorphsim(const graph& lhs, const graph& rhs) -> bool
 {
     const auto [lbegin, lend] = boost::edges(lhs);
     const auto [rbegin, rend] = boost::edges(rhs);

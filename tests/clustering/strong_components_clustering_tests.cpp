@@ -8,8 +8,8 @@
 namespace
 {
 
-using namespace Clustering;
-using namespace Utility;
+using namespace clustering;
+using namespace utility;
 
 class Highly_connected_components_tests : public testing::Test
 {
@@ -29,7 +29,7 @@ TEST_F(Highly_connected_components_tests, Empty_yields_empty)
 
 // see
 // https://www.boost.org/doc/libs/1_65_0/libs/graph/example/strong_components.cpp
-TEST_F(Highly_connected_components_tests, Clustering)
+TEST_F(Highly_connected_components_tests, clustering)
 {
     Graph g;
 

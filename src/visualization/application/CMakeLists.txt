@@ -1,6 +1,6 @@
 set(FILES
-	app.cpp
-	app.hpp
+	application.cpp
+	application.hpp
 )
 set(SUBDIRECTORIES)
 

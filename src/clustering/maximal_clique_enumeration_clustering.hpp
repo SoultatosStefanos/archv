@@ -10,17 +10,17 @@
 #include <map>
 #include <ranges>
 
-namespace Clustering
+namespace clustering
 {
 
-namespace Impl
+namespace detail
 {
     // NOTE: Use of custom output iterator to comply with boost vistor.clique()
     // api.
     template <typename CliqueMap>
-    struct CliqueMapInsertIter
+    struct clique_map_insert_iterator
     {
-        explicit CliqueMapInsertIter(CliqueMap& map) : cliques{map} {}
+        explicit clique_map_insert_iterator(CliqueMap& map) : cliques{map} {}
 
         template <typename Clique, typename Graph>
         void clique(const Clique& p, const Graph&)
@@ -35,7 +35,7 @@ namespace Impl
     template <typename CliqueMap>
     inline auto clique_map_inserter(CliqueMap& map)
     {
-        return CliqueMapInsertIter<CliqueMap>{map};
+        return clique_map_insert_iterator<CliqueMap>{map};
     }
 
     template <typename Clique, typename Vertex>
@@ -52,7 +52,7 @@ namespace Impl
                clique_contains_vertex(c, boost::target(e, g));
     }
 
-} // namespace Impl
+} // namespace detail
 
 template <typename MutableGraph, typename VisitCliques>
 void maximum_clique_enumeration_clustering(MutableGraph& g,
@@ -60,20 +60,21 @@ void maximum_clique_enumeration_clustering(MutableGraph& g,
 {
     BOOST_CONCEPT_ASSERT((boost::MutableGraphConcept<MutableGraph>) );
 
-    using Vertex =
+    using vertex =
         typename boost::graph_traits<MutableGraph>::vertex_descriptor;
-    using Clique = std::deque<Vertex>;
-    using CliqueMap = std::multimap<std::size_t, Clique>;
+    using clique = std::deque<vertex>;
+    using clique_map = std::multimap<std::size_t, clique>;
 
-    static_assert(std::is_invocable_v<VisitCliques,
-                                      MutableGraph,
-                                      Impl::CliqueMapInsertIter<CliqueMap>>);
+    static_assert(
+        std::is_invocable_v<VisitCliques,
+                            MutableGraph,
+                            detail::clique_map_insert_iterator<clique_map>>);
 
     if (boost::num_edges(g) == 0)
         return;
 
-    CliqueMap cliques;
-    visit_cliques(g, Impl::clique_map_inserter(cliques));
+    clique_map cliques;
+    visit_cliques(g, detail::clique_map_inserter(cliques));
 
     const auto max_clique_size = (*std::rbegin(cliques)).first;
     const auto& max_cliques_range = cliques.equal_range(max_clique_size);
@@ -81,11 +82,11 @@ void maximum_clique_enumeration_clustering(MutableGraph& g,
          boost::make_iterator_range(max_cliques_range))
         boost::remove_edge_if(
             [&g, &c = clique](auto e) {
-                return !Impl::is_enclosed_within_clique(g, c, e);
+                return !detail::is_enclosed_within_clique(g, c, e);
             },
             g);
 }
 
-} // namespace Clustering
+} // namespace clustering
 
 #endif // CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP
