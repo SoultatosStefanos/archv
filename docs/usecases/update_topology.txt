@@ -1,0 +1,17 @@
+Update Topology
+
+Data:
+	Graph, Components
+	Scale
+	Type
+
+Primary Course:
+	1. User issues "Update Topology" command with the type, scale data.
+	2. System validates layout type and scale.
+	3. System returns if the topology type and the scale are the same as the current.
+	4. System creates a new topology, given the type and the above cached data.
+	5. System creates a new layout, given the new topology and the above cached data.
+	6. System spreads the graph, given the new layout.
+
+Exception Course: TopolgyType Error
+	1. System delivers error message to user.

@@ -5,10 +5,10 @@
 #include <concepts>
 #include <unordered_map>
 
-namespace Generation
+namespace generation
 {
 
-using namespace Architecture;
+using namespace architecture;
 
 namespace // jsoncpp utils
 {
@@ -20,8 +20,9 @@ namespace // jsoncpp utils
         BOOST_LOG_TRIVIAL(debug) << "reading json value member: " << at;
 
         if (!val.isMember(at))
-            BOOST_THROW_EXCEPTION(JsonMemberNotFound()
-                                  << JsonMemberInfo(at) << JsonValueInfo(val));
+            BOOST_THROW_EXCEPTION(json_member_not_found()
+                                  << json_member_info(at)
+                                  << json_value_info(val));
 
         return val[at];
     }
@@ -34,9 +35,9 @@ namespace // jsoncpp utils
             return T{};
 
         if (!val.is<T>())
-            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueTypeInfo(val.type())
-                                  << JsonValueInfo(val));
+            BOOST_THROW_EXCEPTION(invalid_json_value_type()
+                                  << json_value_type_info(val.type())
+                                  << json_value_info(val));
 
         return val.as<T>();
     }
@@ -44,7 +45,7 @@ namespace // jsoncpp utils
     // Traverse json objects with ids.
     template <typename BinaryOperation>
     requires std::invocable<BinaryOperation,
-                            std::decay_t<Symbol::ID>,
+                            std::decay_t<symbol::id_type>,
                             std::decay_t<Json::Value>>
     void for_each_object(const Json::Value& val, BinaryOperation visitor)
     {
@@ -52,9 +53,9 @@ namespace // jsoncpp utils
             return;
 
         if (val.isArray())
-            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueTypeInfo(val.type())
-                                  << JsonValueInfo(val));
+            BOOST_THROW_EXCEPTION(invalid_json_value_type()
+                                  << json_value_type_info(val.type())
+                                  << json_value_info(val));
 
         for (auto iter = std::begin(val); iter != std::end(val); ++iter)
             visitor(iter.name(), *iter);
@@ -65,82 +66,82 @@ namespace // jsoncpp utils
 namespace // deserializers, read directly from json
 {
     inline void deserialize_source_location(const Json::Value& val,
-                                            SourceLocation& loc)
+                                            source_location& loc)
     {
-        using File = SourceLocation::File;
-        using Line = SourceLocation::Line;
-        using Col = SourceLocation::Col;
+        using file_type = source_location::file_type;
+        using line_type = source_location::line_type;
+        using column_type = source_location::column_type;
 
-        loc.file = as<File>(get(val, "file"));
-        loc.line = as<Line>(get(val, "line"));
-        loc.col = as<Col>(get(val, "col"));
+        loc.file = as<file_type>(get(val, "file"));
+        loc.line = as<line_type>(get(val, "line"));
+        loc.col = as<column_type>(get(val, "col"));
     }
 
-    inline void deserialize_definition(const Json::Value& val, Definition& def)
+    inline void deserialize_definition(const Json::Value& val, definition& def)
     {
-        using Name = Symbol::Name;
-        using FullType = Definition::FullType;
-        using Type = Definition::Type;
+        using name_type = symbol::name_type;
+        using full_type = definition::full_type;
+        using type = definition::type;
 
-        def.symbol.name = as<Name>(get(val, "name"));
-        deserialize_source_location(get(val, "src_info"), def.symbol.source);
-        def.full_type = as<FullType>(get(val, "full_type"));
-        def.type = as<Type>(get(val, "type"), false);
+        def.sym.name = as<name_type>(get(val, "name"));
+        deserialize_source_location(get(val, "src_info"), def.sym.source);
+        def.full_t = as<full_type>(get(val, "full_type"));
+        def.t = as<type>(get(val, "type"), false);
     }
 
     inline void
     deserialize_definition_with_access_specifier(const Json::Value& val,
-                                                 Definition& def)
+                                                 definition& def)
     {
-        using AccessSpecifier = Symbol::AccessSpecifier;
+        using access_specifier = symbol::access_specifier;
 
         deserialize_definition(val, def);
-        def.symbol.access = as<AccessSpecifier>(get(val, "access"));
+        def.sym.access = as<access_specifier>(get(val, "access"));
     }
 
-    void deserialize_method(const Json::Value& val, Method& m)
+    void deserialize_method(const Json::Value& val, method& m)
     {
-        using AccessSpecifier = Symbol::AccessSpecifier;
-        using Name = Symbol::Name;
-        using Count = Method::Count;
-        using Depth = Method::Depth;
-        using Type = Method::Type;
-        using ReturnType = Method::ReturnType;
+        using access_specifier = symbol::access_specifier;
+        using name_type = symbol::name_type;
+        using count_type = method::count_type;
+        using depth_type = method::depth_type;
+        using type = method::type;
+        using return_type = method::return_type;
 
-        m.symbol.access = as<AccessSpecifier>(get(val, "access"));
-        m.branches = as<Count>(get(val, "branches"));
-        m.lines = as<Count>(get(val, "lines"));
-        m.literals = as<Count>(get(val, "literals"));
-        m.loops = as<Count>(get(val, "loops"));
-        m.max_scope = as<Depth>(get(val, "max_scope"));
-        m.type = as<Type>(get(val, "method_type"));
-        m.return_type = as<ReturnType>(get(val, "ret_type"));
-        m.symbol.name = as<Name>(get(val, "name"));
-        deserialize_source_location(get(val, "src_info"), m.symbol.source);
-        m.statements = as<Count>(get(val, "statements"));
+        m.sym.access = as<access_specifier>(get(val, "access"));
+        m.branches = as<count_type>(get(val, "branches"));
+        m.lines = as<count_type>(get(val, "lines"));
+        m.literals = as<count_type>(get(val, "literals"));
+        m.loops = as<count_type>(get(val, "loops"));
+        m.max_scope = as<depth_type>(get(val, "max_scope"));
+        m.t = as<type>(get(val, "method_type"));
+        m.ret_type = as<return_type>(get(val, "ret_type"));
+        m.sym.name = as<name_type>(get(val, "name"));
+        deserialize_source_location(get(val, "src_info"), m.sym.source);
+        m.statements = as<count_type>(get(val, "statements"));
         m.is_virtual = as<bool>(get(val, "virtual"));
     }
 
-    inline void deserialize_structure(const Json::Value& val, Structure& s)
+    inline void deserialize_structure(const Json::Value& val, structure& s)
     {
-        using Name = Symbol::Name;
-        using Namespace = Symbol::Namespace;
-        using Type = Structure::Type;
+        using name_type = symbol::name_type;
+        using namespace_type = symbol::namespace_type;
+        using type = structure::type;
 
-        s.symbol.name = as<Name>(get(val, "name"));
-        s.symbol.name_space = as<Namespace>(get(val, "namespace"));
-        s.type = as<Type>(get(val, "structure_type"));
-        deserialize_source_location(get(val, "src_info"), s.symbol.source);
+        s.sym.name = as<name_type>(get(val, "name"));
+        s.sym.name_space = as<namespace_type>(get(val, "namespace"));
+        s.t = as<type>(get(val, "structure_type"));
+        deserialize_source_location(get(val, "src_info"), s.sym.source);
     }
 
-    inline void deserialize_dependency(const Json::Value& val, Dependency& dep)
+    inline void deserialize_dependency(const Json::Value& val, dependency& dep)
     {
-        using Cardinality = Dependency::Cardinality;
+        using cardinality_type = dependency::cardinality_type;
 
         for_each_object(get(val, "types"),
                         [&dep](const auto& id, const auto& val) {
-                            dep.type = id;
-                            dep.cardinality = as<Cardinality>(val);
+                            dep.t = id;
+                            dep.cardinality = as<cardinality_type>(val);
                         });
     }
 
@@ -150,7 +151,7 @@ namespace // readers
 {
     template <typename Container, typename BinaryOperation>
     requires std::invocable<BinaryOperation,
-                            std::decay_t<Symbol::ID>,
+                            std::decay_t<symbol::id_type>,
                             std::decay_t<Json::Value>>
     inline void get_composites(const Json::Value& val,
                                Container& data,
@@ -169,9 +170,9 @@ namespace // readers
             return;
 
         if (!val.isArray())
-            BOOST_THROW_EXCEPTION(InvalidJsonValueType()
-                                  << JsonValueTypeInfo(val.type())
-                                  << JsonValueInfo(val));
+            BOOST_THROW_EXCEPTION(invalid_json_value_type()
+                                  << json_value_type_info(val.type())
+                                  << json_value_info(val));
 
         std::transform(std::begin(val),
                        std::end(val),
@@ -179,44 +180,44 @@ namespace // readers
                        [](const auto& v) { return as<std::string>(v); });
     }
 
-    inline auto read_field(const Structure& owner,
-                           const Symbol::ID& id,
+    inline auto read_field(const structure& owner,
+                           const symbol::id_type& id,
                            const Json::Value& val)
     {
-        BOOST_LOG_TRIVIAL(debug) << "reading field of: " << owner.symbol.id;
+        BOOST_LOG_TRIVIAL(debug) << "reading field of: " << owner.sym.id;
 
-        Definition f;
+        definition f;
         deserialize_definition_with_access_specifier(val, f);
-        f.symbol.id = id;
-        f.symbol.name_space = owner.symbol.name_space;
+        f.sym.id = id;
+        f.sym.name_space = owner.sym.name_space;
         return f;
     }
 
-    inline auto read_method_definition(const Method& owner,
-                                       const Symbol::ID& id,
+    inline auto read_method_definition(const method& owner,
+                                       const symbol::id_type& id,
                                        const Json::Value& val)
     {
-        BOOST_LOG_TRIVIAL(debug) << "reading local of: " << owner.symbol.id;
+        BOOST_LOG_TRIVIAL(debug) << "reading local of: " << owner.sym.id;
 
-        Definition def;
+        definition def;
         deserialize_definition(val, def);
-        def.symbol.id = id;
-        def.symbol.name_space = owner.symbol.name_space;
+        def.sym.id = id;
+        def.sym.name_space = owner.sym.name_space;
         return def;
     }
 
-    auto read_method(const Structure& owner,
-                     const Symbol::ID& id,
-                     const Json::Value& val) -> Method
+    auto read_method(const structure& owner,
+                     const symbol::id_type& id,
+                     const Json::Value& val) -> method
     {
-        BOOST_LOG_TRIVIAL(debug) << "reading method of: " << owner.symbol.id;
+        BOOST_LOG_TRIVIAL(debug) << "reading method of: " << owner.sym.id;
 
-        Method m;
+        method m;
 
         deserialize_method(val, m);
 
-        m.symbol.id = id;
-        m.symbol.name_space = owner.symbol.name_space;
+        m.sym.id = id;
+        m.sym.name_space = owner.sym.name_space;
 
         get_composites(get(val, "args"),
                        m.arguments,
@@ -235,12 +236,13 @@ namespace // readers
         return m;
     }
 
-    void
-    read_structure(Structure& s, const Symbol::ID& id, const Json::Value& val)
+    void read_structure(structure& s,
+                        const symbol::id_type& id,
+                        const Json::Value& val)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading structure: " << id;
 
-        s.symbol.id = id;
+        s.sym.id = id;
 
         deserialize_structure(val, s);
 
@@ -269,10 +271,10 @@ namespace // graph builders
     // NOTE: Legacy c++ boost api expects const ref parameters, but copies them
     // internally. Thus, we default construct the vertices/edges, then modify.
 
-    inline void add_vertex(const Symbol::ID& id,
+    inline void add_vertex(const symbol::id_type& id,
                            const Json::Value& val,
-                           Graph& g,
-                           VertexCache& cache)
+                           graph& g,
+                           vertex_cache& cache)
     {
         assert(!cache.contains(id));
         cache[id] = boost::add_vertex(g);
@@ -282,7 +284,7 @@ namespace // graph builders
     }
 
     inline void
-    add_vertices(const Json::Value& val, Graph& g, VertexCache& cache)
+    add_vertices(const Json::Value& val, graph& g, vertex_cache& cache)
     {
         for_each_object(val, [&g, &cache](const auto& id, const auto& val) {
             add_vertex(id, val, g, cache);
@@ -290,9 +292,9 @@ namespace // graph builders
     }
 
     inline void
-    add_edge(const Json::Value& val, Graph& g, const VertexCache& cache)
+    add_edge(const Json::Value& val, graph& g, const vertex_cache& cache)
     {
-        using ID = Symbol::ID;
+        using ID = symbol::id_type;
 
         const auto& from = as<ID>(get(val, "from"));
         const auto& to = as<ID>(get(val, "to"));
@@ -308,7 +310,7 @@ namespace // graph builders
         deserialize_dependency(val, g[e]);
     }
 
-    void add_edges(const Json::Value& val, Graph& g, const VertexCache& cache)
+    void add_edges(const Json::Value& val, graph& g, const vertex_cache& cache)
     {
         for (const auto& v : val)
             add_edge(v, g, cache);
@@ -316,10 +318,10 @@ namespace // graph builders
 
 } // namespace
 
-auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
+auto generate_graph(const Json::Value& root) -> std::pair<graph, vertex_cache>
 {
-    Graph g;
-    VertexCache cache;
+    graph g;
+    vertex_cache cache;
 
     add_vertices(get(root, "structures"), g, cache);
     add_edges(get(root, "dependencies"), g, cache);
@@ -329,4 +331,4 @@ auto generate_graph(const Json::Value& root) -> std::pair<Graph, VertexCache>
     return {std::move(g), std::move(cache)};
 }
 
-} // namespace Generation
+} // namespace generation

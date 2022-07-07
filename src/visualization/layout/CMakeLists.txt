@@ -1,8 +1,20 @@
 set(FILES
 	all.hpp
-	gursoy_atun_layout.hpp
+	controller.hpp
+	layout_factory.cpp
+	layout_factory.hpp
+	layout.cpp
 	layout.hpp
+	manager.cpp
+	manager.hpp
+	presenter.hpp
+	service.cpp
+	service.hpp
+	topology_factory.cpp
+	topology_factory.hpp
 	topology.hpp
+	view.cpp
+	view.hpp
 )
 set(SUBDIRECTORIES)
 

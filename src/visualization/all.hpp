@@ -1,10 +1,10 @@
 // Distributes all subsystems from this directory.
 // Soultatos Stefanos 2022
 
-#ifndef VISUALIZATION_VISUALIZATION_HPP
-#define VISUALIZATION_VISUALIZATION_HPP
+#ifndef VISUALIZATION_ALL_HPP
+#define VISUALIZATION_ALL_HPP
 
-#include "app/app.hpp"
+#include "application/application.hpp"
 #include "layout/all.hpp"
 
 #endif // VISUALIZATION_VISUALIZATION_HPP

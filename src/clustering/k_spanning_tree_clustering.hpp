@@ -9,18 +9,18 @@
 #include <concepts>
 #include <type_traits>
 
-namespace Clustering
+namespace clustering
 {
 
-namespace Impl
+namespace detail
 {
-    struct EdgeHash
+    struct edge_hash
     {
         template <typename Edge>
         auto operator()(Edge e) const -> auto
         {
-            using Val = uint64_t;
-            return std::hash<Val>{}(reinterpret_cast<Val>(e.get_property()));
+            using type = uint64_t;
+            return std::hash<type>{}(reinterpret_cast<type>(e.get_property()));
         }
     };
 
@@ -49,39 +49,39 @@ namespace Impl
                 WeightMap,
                 typename boost::graph_traits<MutableGraph>::edge_descriptor>) );
 
-        using Edge =
+        using edge =
             typename boost::graph_traits<MutableGraph>::edge_descriptor;
-        using MSTEdges = std::unordered_set<Edge, EdgeHash>;
+        using mst_edges = std::unordered_set<edge, edge_hash>;
 
         static_assert(std::is_invocable_v<MinimumSpanningTree,
                                           MutableGraph,
-                                          std::insert_iterator<MSTEdges>>);
+                                          std::insert_iterator<mst_edges>>);
 
         assert(k >= 1 && "cannot form negative clusters");
 
         if (boost::num_edges(g) == 0)
             return;
 
-        MSTEdges mst_edges;
-        mst(g, std::inserter(mst_edges, std::begin(mst_edges)));
+        mst_edges edges;
+        mst(g, std::inserter(edges, std::begin(edges)));
 
         const auto iters = k - 1;
         for (decltype(k) i = 0; i < iters; ++i)
         {
-            const auto iter = max_weighted(
-                std::begin(mst_edges), std::end(mst_edges), edge_weight);
+            const auto iter =
+                max_weighted(std::begin(edges), std::end(edges), edge_weight);
 
-            if (iter == std::end(mst_edges))
+            if (iter == std::end(edges))
                 break;
 
-            mst_edges.erase(iter);
+            edges.erase(iter);
         }
 
-        boost::remove_edge_if(
-            [&mst_edges](auto e) { return !mst_edges.contains(e); }, g);
+        boost::remove_edge_if([&edges](auto e) { return !edges.contains(e); },
+                              g);
     }
 
-} // namespace Impl
+} // namespace detail
 
 template <typename MutableGraph,
           typename MinimumSpanningTree,
@@ -93,17 +93,17 @@ inline void k_spanning_tree_clustering(MutableGraph& g,
                                        WeightMap edge_weight,
                                        MinimumSpanningTree mst)
 {
-    Impl::k_spanning_tree_clustering_impl(g, k, mst, edge_weight);
+    detail::k_spanning_tree_clustering_impl(g, k, mst, edge_weight);
 }
 
 template <typename MutableGraph, typename MinimumSpanningTree>
 inline void
 k_spanning_tree_clustering(MutableGraph& g, unsigned k, MinimumSpanningTree mst)
 {
-    Impl::k_spanning_tree_clustering_impl(
+    detail::k_spanning_tree_clustering_impl(
         g, k, mst, boost::get(boost::edge_weight, g));
 }
 
-} // namespace Clustering
+} // namespace clustering
 
 #endif // CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP

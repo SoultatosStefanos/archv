@@ -1,23 +1,24 @@
 #include "json.hpp"
 
-namespace Utility
+namespace utility
 {
 
-namespace Impl
+namespace detail
 {
-    auto JsonRootFactory::operator()(const std::string_view tag) const
+    auto json_root_factory::operator()(const std::string_view tag) const
         -> Json::Value
     {
         if (!std::filesystem::exists(tag))
-            BOOST_THROW_EXCEPTION(InvalidJsonArchive() << JsonArchiveInfo(tag));
+            BOOST_THROW_EXCEPTION(invalid_json_archive()
+                                  << json_archive_info(tag));
 
         Json::Value root;
         std::ifstream(tag.data()) >> root;
         return root;
     }
 
-} // namespace Impl
+} // namespace detail
 
-const JsonPool jsons;
+const json_pool jsons;
 
-} // namespace Utility
+} // namespace utility

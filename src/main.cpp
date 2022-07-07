@@ -1,8 +1,8 @@
-#include "architecture/architecture.hpp"
-#include "clustering/clustering.hpp"
+#include "architecture/all.hpp"
+#include "clustering/all.hpp"
 #include "generation/generation.hpp"
 #include "utility/all.hpp"
-#include "visualization/visualization.hpp"
+#include "visualization/all.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
@@ -26,10 +26,10 @@ static void init_logging()
 
 auto main(int argc, char const* argv[]) -> int
 {
-    using namespace Visualization;
-    using namespace Architecture;
-    using namespace Generation;
-    using namespace Utility;
+    using namespace visualization;
+    using namespace architecture;
+    using namespace generation;
+    using namespace utility;
 
     try
     {
@@ -42,10 +42,9 @@ auto main(int argc, char const* argv[]) -> int
 
         init_logging();
 
-        const auto [graph, vertex_cache] = generate_graph(jsons.get(argv[1]));
+        const auto [g, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
-        App app{graph,
-                std::make_unique<GursoyAtunLayout<Sphere>>(graph, Sphere{80})};
+        application app{g};
 
         app.initApp();
         app.getRoot()->startRendering();
