@@ -23,7 +23,7 @@ public:
 
     explicit layout_service(const graph& g) : m_g{g} {}
 
-    void initialize_layout();
+    void initialize_layout(); // TODO tidy
 
     void update_layout(const std::string& type);
     void update_topology(const std::string& type, double scale);
@@ -42,6 +42,7 @@ private:
 
     mutable std::string m_layout_type;
     mutable std::string m_topology_type;
+    mutable double m_topology_scale;
     mutable topology m_topology;
     mutable std::unique_ptr<layout> m_layout;
 };

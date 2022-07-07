@@ -19,6 +19,9 @@ void layout_service::initialize_layout()
     m_layout = layout_factory::make_layout(
         layout_factory::gursoy_atun_type, m_g, m_topology);
 
+    m_layout_type = layout_factory::gursoy_atun_type;
+    m_topology_type = topology_factory::sphere_type;
+    m_topology_scale = 100;
     notify_layout_changed(*m_layout);
 }
 
@@ -27,6 +30,7 @@ void layout_service::update_layout(const std::string& type)
     if (type != m_layout_type)
     {
         // check type
+        m_layout_type = type;
         m_layout = layout_factory::make_layout(type, m_g, m_topology);
         notify_layout_changed(*m_layout);
     }
@@ -34,11 +38,13 @@ void layout_service::update_layout(const std::string& type)
 
 void layout_service::update_topology(const std::string& type, double scale)
 {
-    if (type != m_topology_type)
+    if (type != m_topology_type or scale != m_topology_scale)
     {
         // check type
+        m_topology_type = type;
+        m_topology_scale = scale;
         m_topology = topology_factory::make_topology(type, scale);
-        m_layout = layout_factory::make_layout(type, m_g, m_topology);
+        m_layout = layout_factory::make_layout(m_layout_type, m_g, m_topology);
         notify_layout_changed(*m_layout);
     }
 }
