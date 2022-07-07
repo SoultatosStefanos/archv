@@ -1,32 +1,19 @@
-#include "app.hpp"
+#include "application.hpp"
 
 #include <OgreManualObject.h>
-#include <boost/log/trivial.hpp>
 
-namespace Visualization
+namespace visualization
 {
 
 using namespace Ogre;
 using namespace OgreBites;
 
-App::App(const Graph& g, UniqueLayoutPtr layout)
-    : Base{"Architecture Visualizer"}, m_g{g}, m_layout{std::move(layout)}
-{
-    assert(m_layout);
-}
-
-void App::layout(UniqueLayoutPtr l)
-{
-    assert(l);
-    m_layout = std::move(l);
-}
-
-// scene manager + light + camera + nodes + cameraman
-
-// scene nodes
+application::application(const graph& g)
+    : ApplicationContext("Architecture Visualizer"), m_g{g}
+{}
 
 // FIXME
-void App::setup()
+void application::setup()
 {
     ApplicationContext::setup();
     addInputListener(this);
@@ -56,44 +43,23 @@ void App::setup()
     for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
     {
         auto* entity = m_scene->createEntity("ogrehead.mesh");
-        auto* node = m_scene->getRootSceneNode()->createChildSceneNode();
+        auto* node =
+            m_scene->getRootSceneNode()->createChildSceneNode(m_g[v].sym.id);
         node->attachObject(entity);
-        node->setPosition(m_layout->x(v), m_layout->y(v), m_layout->z(v));
         node->setScale(0.15, 0.15, 0.15);
-
-        BOOST_LOG_TRIVIAL(debug)
-            << "made vertex entity at: (" << node->getPosition().x << ", "
-            << node->getPosition().y << ", " << node->getPosition().z << ')';
-    }
-
-    // edges
-    auto mat = Ogre::MaterialManager::getSingleton().create("Mat", "General");
-
-    for (auto e : boost::make_iterator_range(boost::edges(m_g)))
-    {
-        auto* manual = m_scene->createManualObject();
-
-        manual->begin("Mat", Ogre::RenderOperation::OT_LINE_LIST);
-
-        const auto src = boost::source(e, m_g);
-        const auto des = boost::target(e, m_g);
-
-        manual->position(m_layout->x(src), m_layout->y(src), m_layout->z(src));
-        manual->position(m_layout->x(des), m_layout->y(des), m_layout->z(des));
-
-        manual->end();
-
-        auto* manual_node = m_scene->getRootSceneNode()->createChildSceneNode();
-        manual_node->attachObject(manual);
     }
 
     // cameraman
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
+
+    // layout
+    layout_manager::get().initialize(m_g, *m_scene);
+    layout_manager::get().service().initialize_layout();
 }
 
 // FIXME
-void App::shutdown()
+void application::shutdown()
 {
     // cameraman
     removeInputListener(m_cameraman);
@@ -119,7 +85,7 @@ void App::shutdown()
     ApplicationContext::shutdown();
 }
 
-auto App::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
+auto application::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
     static constexpr auto quit_sym = SDLK_ESCAPE;
 
@@ -129,4 +95,4 @@ auto App::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     return true;
 }
 
-} // namespace Visualization
+} // namespace visualization

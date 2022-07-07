@@ -8,7 +8,7 @@
 #include <limits>
 #include <random>
 
-namespace Utility
+namespace utility
 {
 
 template <typename Seed = std::random_device>
@@ -34,6 +34,6 @@ auto urandom(T min = std::numeric_limits<T>::min(),
     return static_cast<T>(dist(rng()));
 }
 
-} // namespace Utility
+} // namespace utility
 
 #endif // UTILITY_RANDOM_HPP

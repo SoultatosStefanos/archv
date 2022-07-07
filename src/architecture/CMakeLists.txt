@@ -1,5 +1,5 @@
 set(FILES
-	architecture.hpp
+	all.hpp
 	components.hpp
 	graph.cpp
 	graph.hpp

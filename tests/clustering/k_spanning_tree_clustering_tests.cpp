@@ -10,8 +10,8 @@
 namespace
 {
 
-using namespace Clustering;
-using namespace Utility;
+using namespace clustering;
+using namespace utility;
 
 class K_spanning_tree_tests : public testing::Test
 {

@@ -1,8 +1,6 @@
 set(FILES
-	all.hpp
-	event_bus.cpp
-	event_bus.hpp
-	event.hpp
+	application.cpp
+	application.hpp
 )
 set(SUBDIRECTORIES)
 

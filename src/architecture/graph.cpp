@@ -2,7 +2,7 @@
 
 #include <boost/range.hpp>
 
-namespace Architecture
+namespace architecture
 {
 
 namespace
@@ -12,12 +12,12 @@ namespace
         return v ? "true" : "false";
     }
 
-    struct Indenter
+    struct indenter
     {
         const int depth{0};
     };
 
-    inline auto operator<<(std::ostream& os, const Indenter& indenter) -> auto&
+    inline auto operator<<(std::ostream& os, const indenter& indenter) -> auto&
     {
         for (auto i = 0; i < indenter.depth; ++i)
             os << '\t';
@@ -26,22 +26,22 @@ namespace
 
     [[nodiscard]] inline auto indent(int depth)
     {
-        return Indenter{depth};
+        return indenter{depth};
     }
 
     template <typename Container>
     void output_references(std::ostream& os, const Container& data)
     {
         static_assert(
-            std::is_same_v<typename Container::value_type, Symbol::ID>);
+            std::is_same_v<typename Container::value_type, symbol::id_type>);
 
         for (const auto& r : data)
             os << r << ", ";
     }
 
-    void output(std::ostream& os, const Definition& d, const int depth);
-    void output(std::ostream& os, const Method& m, const int depth);
-    void output(std::ostream& os, const Structure& s, const int depth);
+    void output(std::ostream& os, const definition& d, const int depth);
+    void output(std::ostream& os, const method& m, const int depth);
+    void output(std::ostream& os, const structure& s, const int depth);
 
     template <typename Container>
     void
@@ -55,12 +55,12 @@ namespace
         }
     }
 
-    void output(std::ostream& os, const SourceLocation& loc)
+    void output(std::ostream& os, const source_location& loc)
     {
         os << "file: " << loc.file << '(' << loc.line << ':' << loc.col << ')';
     }
 
-    void output(std::ostream& os, const Symbol& s, const int depth)
+    void output(std::ostream& os, const symbol& s, const int depth)
     {
         os << indent(depth) << "id: " << s.id << '\n'
            << indent(depth) << "name: " << s.name << '\n'
@@ -70,19 +70,19 @@ namespace
         os << '\n' << indent(depth) << "access: " << s.access;
     }
 
-    void output(std::ostream& os, const Definition& d, const int depth)
+    void output(std::ostream& os, const definition& d, const int depth)
     {
-        output(os, d.symbol, depth);
+        output(os, d.sym, depth);
         os << '\n'
-           << indent(depth) << "full type: " << d.full_type << '\n'
-           << indent(depth) << "type: " << d.type;
+           << indent(depth) << "full type: " << d.full_t << '\n'
+           << indent(depth) << "type: " << d.t;
     }
 
-    void output(std::ostream& os, const Method& m, const int depth)
+    void output(std::ostream& os, const method& m, const int depth)
     {
         assert(depth > 0);
 
-        output(os, m.symbol, depth);
+        output(os, m.sym, depth);
         os << '\n' << indent(depth) << "arguments:\n";
         output_composites(os, m.arguments, depth + 1);
         os << '\n' << indent(depth) << "branches: " << m.branches << '\n';
@@ -94,16 +94,16 @@ namespace
            << indent(depth) << "literals: " << m.literals << '\n'
            << indent(depth) << "loops: " << m.loops << '\n'
            << indent(depth) << "max scope: " << m.max_scope << '\n'
-           << indent(depth) << "return type: " << m.return_type << '\n'
+           << indent(depth) << "return type: " << m.ret_type << '\n'
            << indent(depth) << "statements: " << m.statements << '\n';
         os << indent(depth) << "template args: ";
         output_references(os, m.template_args);
-        os << '\n' << indent(depth) << "type: " << m.type;
+        os << '\n' << indent(depth) << "type: " << m.t;
     }
 
-    void output(std::ostream& os, const Structure& s, const int depth)
+    void output(std::ostream& os, const structure& s, const int depth)
     {
-        output(os, s.symbol, depth);
+        output(os, s.sym, depth);
         os << '\n' << indent(depth) << "bases: ";
         output_references(os, s.bases);
         os << '\n' << indent(depth) << "fields:\n";
@@ -114,27 +114,26 @@ namespace
         output_references(os, s.nested);
         os << '\n' << indent(depth) << "template args: ";
         output_references(os, s.template_args);
-        os << '\n' << indent(depth) << "type: " << s.type;
+        os << '\n' << indent(depth) << "type: " << s.t;
     }
 
 } // namespace
 
-void output_vertex(std::ostream& os, const VertexProperty& v)
+void output_structure(std::ostream& os, const structure& s)
 {
-    static_assert(std::is_same_v<VertexProperty, Structure>);
-    output(os, v, 0);
+    output(os, s, 0);
 }
 
-void output_edge(std::ostream& os, const EdgeProperty& e)
+void output_dependency(std::ostream& os, const dependency& d)
 {
-    os << "type: " << e.type << '\n';
-    os << "cardinality: " << e.cardinality << '\n';
+    os << "type: " << d.t << '\n';
+    os << "cardinality: " << d.cardinality << '\n';
 }
 
 void output_graph(std::ostream& os,
-                  const Graph& g,
-                  const OutputVertex& out_vertex,
-                  const OutputEdge& out_edge)
+                  const graph& g,
+                  const output_vertex& out_vertex,
+                  const output_edge& out_edge)
 {
     assert(out_vertex);
     assert(out_edge);
@@ -150,10 +149,10 @@ void output_graph(std::ostream& os,
     for (auto e : boost::make_iterator_range(boost::edges(g)))
     {
         os << "\n--------------------------------\n";
-        os << "from: " << g[boost::source(e, g)].symbol.id << '\n';
-        os << "to: " << g[boost::target(e, g)].symbol.id << '\n';
+        os << "from: " << g[boost::source(e, g)].sym.id << '\n';
+        os << "to: " << g[boost::target(e, g)].sym.id << '\n';
         out_edge(os, g[e]);
     }
 }
 
-} // namespace Architecture
+} // namespace architecture

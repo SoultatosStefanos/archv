@@ -3,10 +3,10 @@
 #include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
 
-namespace Layout
+namespace visualization
 {
 
-GursoyAtunLayout::GursoyAtunLayout(const Graph& g, const Topology& space)
+gursoy_atun_layout::gursoy_atun_layout(const graph& g, const topology& space)
 {
     std::visit(
         [this, &g](const auto& topology) {
@@ -15,7 +15,7 @@ GursoyAtunLayout::GursoyAtunLayout(const Graph& g, const Topology& space)
                 topology,
                 boost::make_assoc_property_map(m_map),
                 boost::weight_map(
-                    boost::get(&Architecture::Dependency::cardinality, g)));
+                    boost::get(&architecture::dependency::cardinality, g)));
         },
         space);
 
@@ -24,4 +24,4 @@ GursoyAtunLayout::GursoyAtunLayout(const Graph& g, const Topology& space)
                        [this](auto v) { return m_map.contains(v); }));
 }
 
-} // namespace Layout
+} // namespace visualization

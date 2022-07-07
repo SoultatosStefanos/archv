@@ -9,8 +9,8 @@
 namespace
 {
 
-using namespace Clustering;
-using namespace Utility;
+using namespace clustering;
+using namespace utility;
 
 class Shared_nearest_neighbour_tests : public testing::Test
 {

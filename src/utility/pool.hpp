@@ -8,30 +8,30 @@
 #include <type_traits>
 #include <unordered_map>
 
-namespace Utility
+namespace utility
 {
 
-namespace Impl
+namespace detail
 {
-    struct Constructor
+    struct constructor
     {
         template <typename Resource, typename Tag>
         requires std::constructible_from<Resource, Tag>
         constexpr auto operator()(const Tag& tag) const
             noexcept(std::is_nothrow_constructible_v<Resource, Tag>)
         {
-            return Resource{tag};
+            return Resource(tag);
         }
     };
 
-} // namespace Impl
+} // namespace detail
 
 // A general purpose resource pool for tagged resources.
 template <typename Resource,
           typename Tag,
-          typename Factory = Impl::Constructor,
+          typename Factory = detail::constructor,
           typename AssociativeContainer = std::unordered_map<Tag, Resource>>
-class Pool
+class pool
 {
 public:
     static_assert(std::is_invocable_r_v<Resource, Factory, std::decay_t<Tag>>);
@@ -55,6 +55,6 @@ private:
     mutable AssociativeContainer m_data;
 };
 
-} // namespace Utility
+} // namespace utility
 
 #endif // UTILITY_POOL_HPP
