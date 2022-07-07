@@ -13,7 +13,50 @@ application::application(const graph& g)
 {}
 
 // FIXME
-void application::setup() {}
+void application::setup()
+{
+    ApplicationContext::setup();
+    addInputListener(this);
+
+    // scene manager
+    m_scene = getRoot()->createSceneManager();
+    RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
+    m_scene->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+
+    // light
+    auto* light = m_scene->createLight();
+    auto* light_node =
+        m_scene->getRootSceneNode()->createChildSceneNode("LightNode");
+    light_node->attachObject(light);
+    light_node->setPosition(20, 80, 50);
+
+    // camera
+    auto* cam_node = m_scene->getRootSceneNode()->createChildSceneNode("Cam");
+    auto* cam = m_scene->createCamera("C");
+    cam->setNearClipDistance(5); // specific to this sample
+    cam->setAutoAspectRatio(true);
+    cam_node->attachObject(cam);
+    cam_node->setPosition(0, 0, 140);
+    getRenderWindow()->addViewport(cam);
+
+    // nodes
+    for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
+    {
+        auto* entity = m_scene->createEntity("ogrehead.mesh");
+        auto* node =
+            m_scene->getRootSceneNode()->createChildSceneNode(m_g[v].sym.id);
+        node->attachObject(entity);
+        node->setScale(0.15, 0.15, 0.15);
+    }
+
+    // cameraman
+    m_cameraman = new CameraMan(cam_node);
+    addInputListener(m_cameraman);
+
+    // layout
+    layout_manager::get().initialize(m_g, *m_scene);
+    layout_manager::get().service().initialize_layout();
+}
 
 // FIXME
 void application::shutdown()
