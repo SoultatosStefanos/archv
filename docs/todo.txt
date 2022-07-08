@@ -49,3 +49,12 @@ TODOS
 		Animations
 
 		Config
+
+	
+08 / 07 / 2022
+
+	visualizer/layout sybsystem tests
+
+	Check logging best practices (global?)
+
+	remake layout demo with user input
