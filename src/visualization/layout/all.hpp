@@ -5,11 +5,12 @@
 #define LAYOUT_ALL_HPP
 
 #include "controller.hpp"
+#include "core.hpp"
+#include "events.hpp"
 #include "layout.hpp"
 #include "layout_factory.hpp"
-#include "manager.hpp"
 #include "presenter.hpp"
-#include "service.hpp"
+#include "services.hpp"
 #include "topology.hpp"
 #include "topology_factory.hpp"
 #include "view.hpp"

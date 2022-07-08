@@ -4,55 +4,52 @@
 #ifndef LAYOUT_CONTROLLER_HPP
 #define LAYOUT_CONTROLLER_HPP
 
-#include "service.hpp"
-#include "view.hpp"
+#include "events.hpp"
+#include "visualization/communication/event_bus.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <cassert>
-#include <functional>
-#include <memory>
 #include <string>
 
 namespace visualization::layout
 {
 
-// Delegates input events from a layout view to a layout service.
-template <typename LayoutView = layout_view,
-          typename LayoutService = layout_service>
-class layout_controller
+// Delegates input events from an event bus to the appropriate services.
+class controller
 {
 public:
-    layout_controller(LayoutView& view, LayoutService& service)
-        : m_view{view}, m_service{service}
-    {
-        m_view.add_layout_input_listener(
-            [this](const auto& type) { layout_selected(type); });
+    using event_bus = communication::event_bus;
+    using update_layout_service = std::function<void(const std::string&)>;
+    using update_topology_service =
+        std::function<void(const std::string&, double)>;
 
-        m_view.add_topology_input_listener(
-            [this](const auto& type, auto scale) {
-                topology_selected(type, scale);
-            });
+    controller(event_bus& pipeline,
+               update_layout_service update_layout,
+               update_topology_service update_topology)
+        : m_update_layout{std::move(update_layout)},
+          m_update_topology{std::move(update_topology)}
+    {
+        assert(m_update_layout);
+        assert(m_update_topology);
+
+        pipeline.subscribe<layout_input_event>(
+            [this](const auto& e) { layout_selected(e.type); });
+
+        pipeline.subscribe<topology_input_event>(
+            [this](const auto& e) { topology_selected(e.type, e.scale); });
     }
 
-    void layout_selected(const std::string& type)
+    void layout_selected(const std::string& type) const
     {
-        BOOST_LOG_TRIVIAL(info)
-            << "layout with type: " << type << " selected\n";
-
-        m_service.update_layout(type);
+        m_update_layout(type);
     }
 
-    void topology_selected(const std::string& type, double scale)
+    void topology_selected(const std::string& type, double scale) const
     {
-        BOOST_LOG_TRIVIAL(info) << "topology with type: " << type
-                                << ", and scale: " << scale << " selected\n";
-
-        m_service.update_topology(type, scale);
+        m_update_topology(type, scale);
     }
 
 private:
-    LayoutView& m_view;
-    LayoutService& m_service;
+    update_layout_service m_update_layout;
+    update_topology_service m_update_topology;
 };
 
 } // namespace visualization::layout

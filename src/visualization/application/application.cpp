@@ -54,8 +54,8 @@ void application::setup()
     addInputListener(m_cameraman);
 
     // layout
-    layout::layout_manager::get().initialize(m_g, *m_scene);
-    layout::layout_manager::get().service().initialize_layout();
+    // TODO Pass from config
+    layout::core::get().initialize("gursoy_atun", "sphere", 100, m_g, *m_scene);
 }
 
 // FIXME
@@ -95,4 +95,4 @@ auto application::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     return true;
 }
 
-} // namespace visualization
+} // namespace visualization::application

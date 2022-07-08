@@ -1,0 +1,73 @@
+// Contains the core of the visualization/layout subsystem.
+// Soultatos Stefanos 2022
+
+#ifndef LAYOUT_CORE_HPP
+#define LAYOUT_CORE_HPP
+
+#include "controller.hpp"
+#include "events.hpp"
+#include "layout.hpp"
+#include "presenter.hpp"
+#include "services.hpp"
+#include "view.hpp"
+#include "visualization/communication/all.hpp"
+
+#include <memory>
+
+namespace visualization::layout
+{
+
+class core final
+{
+public:
+    using graph = architecture::graph;
+
+    core(const core&) = delete;
+    core(core&&) = delete;
+
+    auto operator=(const core&) -> core& = delete;
+    auto operator=(core&&) -> core& = delete;
+
+    static auto get() -> core&
+    {
+        static core singleton;
+        return singleton;
+    }
+
+    void initialize(const std::string& layout_type,
+                    const std::string& topology_type,
+                    double scale,
+                    const graph& g,
+                    const Ogre::SceneManager& scene);
+
+private:
+    core() = default;
+    ~core() = default;
+
+    void initialize_logging();
+    void initialize_topology(const std::string& topology_type, double scale);
+    void initialize_layout(const std::string& layout_type, const graph& g);
+
+    void hook_mvp(const std::string& layout_type,
+                  const std::string& topology_type,
+                  double scale,
+                  const graph& g,
+                  const Ogre::SceneManager& scene);
+
+    using event_bus = communication::event_bus;
+
+    event_bus m_pipeline;
+
+    std::unique_ptr<layout> m_layout;
+    topology m_space;
+
+    std::unique_ptr<update_layout_service> m_update_layout;
+    std::unique_ptr<update_topology_service> m_update_topology;
+    std::unique_ptr<view> m_view;
+    std::unique_ptr<controller> m_controller;
+    std::unique_ptr<presenter> m_presenter;
+};
+
+} // namespace visualization::layout
+
+#endif // LAYOUT_CORE_HPP
