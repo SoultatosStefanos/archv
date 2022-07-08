@@ -1,5 +1,5 @@
 set(FILES)
-set(SUBDIRECTORIES layout)
+set(SUBDIRECTORIES communication layout)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
