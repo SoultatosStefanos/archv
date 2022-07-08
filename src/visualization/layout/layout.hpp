@@ -80,6 +80,6 @@ private:
     position_map m_map;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_LAYOUT_HPP

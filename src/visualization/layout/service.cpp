@@ -30,7 +30,6 @@ void layout_service::update_layout(const std::string& type)
 {
     if (type != m_layout_type)
     {
-        // check type
         m_layout_type = type;
         m_layout = layout_factory::make_layout(type, m_g, m_topology);
         notify_layout_changed(*m_layout);
@@ -41,7 +40,6 @@ void layout_service::update_topology(const std::string& type, double scale)
 {
     if (type != m_topology_type or scale != m_topology_scale)
     {
-        // check type
         m_topology_type = type;
         m_topology_scale = scale;
         m_topology = topology_factory::make_topology(type, scale);

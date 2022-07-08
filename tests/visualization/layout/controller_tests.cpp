@@ -12,7 +12,7 @@ namespace
 using namespace visualization::layout;
 using namespace visualization::layout::mocks;
 
-class Given_mocked_dependencies : public testing::Test
+class Given_mocked_layout_controller_dependencies : public testing::Test
 {
 public:
     using nice_mock_layout_view = testing::NiceMock<mock_layout_view>;
@@ -31,7 +31,7 @@ protected:
     std::unique_ptr<nice_mock_layout_service> service;
 };
 
-TEST_F(Given_mocked_dependencies,
+TEST_F(Given_mocked_layout_controller_dependencies,
        A_new_controller_subscribes_to_the_view_input_events)
 {
     EXPECT_CALL(*view, add_layout_input_listener(testing::_));
@@ -41,12 +41,12 @@ TEST_F(Given_mocked_dependencies,
 }
 
 class Given_a_layout_controller_with_mocked_dependencies
-    : public Given_mocked_dependencies
+    : public Given_mocked_layout_controller_dependencies
 {
 public:
     void SetUp() override
     {
-        Given_mocked_dependencies::SetUp();
+        Given_mocked_layout_controller_dependencies::SetUp();
         ctrl = std::make_unique<controller>(*view, *service);
     }
 
