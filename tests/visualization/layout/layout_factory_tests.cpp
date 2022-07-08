@@ -23,4 +23,10 @@ TEST(Layout_factory, Given_gursoy_atun_type_returns_proper_derived_class)
     ASSERT_NE(dynamic_cast<gursoy_atun_layout*>(l.get()), nullptr);
 }
 
+TEST(Layout_factory, Will_abort_on_invalid_type)
+{
+    ASSERT_DEATH(layout_factory::make_layout("", graph(), topology(cube(1))),
+                 "");
+}
+
 } // namespace
