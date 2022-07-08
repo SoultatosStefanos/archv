@@ -11,6 +11,7 @@ void layout_service::add_layout_changed_listener(on_layout_changed f)
     m_layout_changed_listeners.push_back(std::move(f));
 }
 
+// TODO Remove
 void layout_service::initialize_layout()
 {
     m_topology =

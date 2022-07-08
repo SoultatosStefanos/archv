@@ -1,7 +1,7 @@
 set(FILES
-	controller_tests.cpp
-	layout_factory_tests.cpp
-	topology_factory_tests.cpp
+	all.hpp
+	mock_service.hpp
+	mock_view.hpp
 )
 set(SUBDIRECTORIES)
 
