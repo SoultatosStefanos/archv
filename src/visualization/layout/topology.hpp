@@ -9,7 +9,7 @@
 #include <random>
 #include <variant>
 
-namespace visualization
+namespace visualization::layout
 {
 
 using point = typename boost::convex_topology<3>::point_type;
@@ -19,6 +19,6 @@ using sphere = boost::sphere_topology<std::minstd_rand>;
 
 using topology = std::variant<cube, sphere>;
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_TOPOLOGY_HPP

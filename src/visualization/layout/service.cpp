@@ -3,7 +3,7 @@
 #include "layout_factory.hpp"
 #include "topology_factory.hpp"
 
-namespace visualization
+namespace visualization::layout
 {
 
 void layout_service::add_layout_changed_listener(on_layout_changed f)

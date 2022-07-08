@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 
-namespace visualization
+namespace visualization::layout
 {
 
 class layout_factory final
@@ -36,6 +36,6 @@ private:
     ~layout_factory() = default;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_LAYOUT_FACTORY_HPP

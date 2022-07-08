@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
-namespace visualization::mocks
+namespace visualization::layout::mocks
 {
 
 class layout_view
@@ -52,6 +52,6 @@ public:
                 (override));
 };
 
-} // namespace visualization::mocks
+} // namespace visualization::layout::mocks
 
 #endif // MOCKS_MOCK_VIEW_HPP

@@ -8,7 +8,7 @@
 #include "service.hpp"
 #include "view.hpp"
 
-namespace visualization
+namespace visualization::layout
 {
 
 // Delegates change events from a service to a view.
@@ -39,6 +39,6 @@ private:
     LayoutService& m_service;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_PRESENTER_HPP

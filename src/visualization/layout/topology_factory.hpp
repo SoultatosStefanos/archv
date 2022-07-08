@@ -8,7 +8,7 @@
 
 #include <string>
 
-namespace visualization
+namespace visualization::layout
 {
 
 class topology_factory final
@@ -31,6 +31,6 @@ private:
     ~topology_factory() = default;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_TOPOLOGY_FACTORY_HPP

@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace visualization
+namespace visualization::layout
 {
 
 class layout_view
@@ -39,6 +39,6 @@ private:
     topology_input_listeners m_topology_listeners;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_VIEW_HPP

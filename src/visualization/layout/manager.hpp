@@ -12,7 +12,7 @@
 
 #include <memory>
 
-namespace visualization
+namespace visualization::layout
 {
 
 class layout_manager final
@@ -93,6 +93,6 @@ private:
     std::unique_ptr<layout_presenter<>> m_presenter;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_MANAGER_HPP

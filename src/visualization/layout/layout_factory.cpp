@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace visualization
+namespace visualization::layout
 {
 
 auto layout_factory::make_layout(const std::string& type,

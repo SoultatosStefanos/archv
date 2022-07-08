@@ -31,6 +31,8 @@ auto main(int argc, char const* argv[]) -> int
     using namespace generation;
     using namespace utility;
 
+    namespace app = visualization::application;
+
     try
     {
         if (argc != 2)
@@ -44,7 +46,7 @@ auto main(int argc, char const* argv[]) -> int
 
         const auto [g, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
-        application app{g};
+        app::application app{g};
 
         app.initApp();
         app.getRoot()->startRendering();

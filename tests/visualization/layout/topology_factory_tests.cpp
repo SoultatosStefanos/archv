@@ -9,7 +9,7 @@ namespace
 {
 
 using namespace architecture;
-using namespace visualization;
+using namespace visualization::layout;
 
 TEST(Topology_factory, Will_produce_a_cube_given_cube_type)
 {

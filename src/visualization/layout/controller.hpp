@@ -12,7 +12,7 @@
 #include <memory>
 #include <string>
 
-namespace visualization
+namespace visualization::layout
 {
 
 // Delegates input events from a layout view to a layout service.
@@ -48,6 +48,6 @@ private:
     LayoutService& m_service;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_CONTROLLER_HPP

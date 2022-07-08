@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace visualization
+namespace visualization::layout
 {
 
 auto topology_factory::make_topology(const std::string& type, double scale)

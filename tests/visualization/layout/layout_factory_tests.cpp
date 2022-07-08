@@ -9,7 +9,7 @@ namespace
 {
 
 using namespace architecture;
-using namespace visualization;
+using namespace visualization::layout;
 
 TEST(Layout_factory, Given_gursoy_atun_type_returns_proper_derived_class)
 {

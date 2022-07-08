@@ -3,7 +3,7 @@
 #include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
 
-namespace visualization
+namespace visualization::layout
 {
 
 gursoy_atun_layout::gursoy_atun_layout(const graph& g, const topology& space)

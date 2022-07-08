@@ -9,7 +9,7 @@
 
 #include <memory>
 
-namespace visualization
+namespace visualization::layout
 {
 
 // In 3D space.

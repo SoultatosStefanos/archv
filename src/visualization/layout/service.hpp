@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace visualization
+namespace visualization::layout
 {
 
 class layout_service
@@ -47,6 +47,6 @@ private:
     mutable std::unique_ptr<layout> m_layout;
 };
 
-} // namespace visualization
+} // namespace visualization::layout
 
 #endif // LAYOUT_SERVICE_HPP

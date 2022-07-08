@@ -2,7 +2,7 @@
 
 #include <OgreManualObject.h>
 
-namespace visualization
+namespace visualization::application
 {
 
 using namespace Ogre;
@@ -54,8 +54,8 @@ void application::setup()
     addInputListener(m_cameraman);
 
     // layout
-    layout_manager::get().initialize(m_g, *m_scene);
-    layout_manager::get().service().initialize_layout();
+    layout::layout_manager::get().initialize(m_g, *m_scene);
+    layout::layout_manager::get().service().initialize_layout();
 }
 
 // FIXME

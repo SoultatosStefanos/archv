@@ -2,7 +2,7 @@
 
 #include "topology_factory.hpp"
 
-namespace visualization
+namespace visualization::layout
 {
 
 void layout_manager::initialize(const graph& g, const Ogre::SceneManager& scene)

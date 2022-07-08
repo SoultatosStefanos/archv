@@ -2,7 +2,7 @@
 
 #include <boost/log/trivial.hpp>
 
-namespace visualization
+namespace visualization::layout
 {
 
 void layout_view::draw_vertex(const std::string& id,

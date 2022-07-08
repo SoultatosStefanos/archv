@@ -9,8 +9,8 @@
 namespace
 {
 
-using namespace visualization;
-using namespace visualization::mocks;
+using namespace visualization::layout;
+using namespace visualization::layout::mocks;
 
 class Given_mocked_dependencies : public testing::Test
 {

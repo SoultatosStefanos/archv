@@ -13,7 +13,7 @@
 #include <OgreInput.h>
 #include <memory>
 
-namespace visualization
+namespace visualization::application
 {
 
 // The heart of the application.
@@ -38,6 +38,6 @@ private:
     OgreBites::CameraMan* m_cameraman{nullptr};
 };
 
-} // namespace visualization
+} // namespace visualization::application
 
 #endif // APPLICATION_APPLICATION_HPP
