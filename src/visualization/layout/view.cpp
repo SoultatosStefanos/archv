@@ -3,6 +3,10 @@
 namespace visualization::layout
 {
 
+view::view(event_bus& pipeline, const Ogre::SceneManager& scene)
+    : m_pipeline{pipeline}, m_scene{scene}
+{}
+
 void view::draw_vertex(const std::string& id,
                        double x,
                        double y,

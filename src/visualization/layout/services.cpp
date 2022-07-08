@@ -38,6 +38,18 @@ void update_layout_service::change_layout(const std::string& type)
     m_pipeline.post(layout_changed_event{.curr = *m_layout});
 }
 
+update_topology_service::update_topology_service(event_bus& pipeline,
+                                                 const graph& g,
+                                                 topology& space,
+                                                 std::string topology_type,
+                                                 double scale)
+    : m_pipeline{pipeline},
+      m_g{g},
+      m_space{space},
+      m_space_type{std::move(topology_type)},
+      m_space_scale{scale}
+{}
+
 void update_topology_service::update(const std::string& type, double scale)
 {
     if (type != m_space_type or scale != m_space_scale)

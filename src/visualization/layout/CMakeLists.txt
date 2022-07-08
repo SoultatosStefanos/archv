@@ -1,5 +1,6 @@
 set(FILES
 	all.hpp
+	controller.cpp
 	controller.hpp
 	core.cpp
 	core.hpp
@@ -7,6 +8,7 @@ set(FILES
 	layout_factory.hpp
 	layout.cpp
 	layout.hpp
+	presenter.cpp
 	presenter.hpp
 	services.cpp
 	services.hpp

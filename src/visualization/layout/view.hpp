@@ -4,8 +4,8 @@
 #ifndef LAYOUT_VIEW_HPP
 #define LAYOUT_VIEW_HPP
 
-#include "visualization/communication/all.hpp"
 #include "events.hpp"
+#include "visualization/communication/all.hpp"
 
 #include <OgreSceneManager.h>
 #include <string>
@@ -18,9 +18,7 @@ class view
 public:
     using event_bus = communication::event_bus;
 
-    view(event_bus& pipeline, const Ogre::SceneManager& scene)
-        : m_pipeline{pipeline}, m_scene{scene}
-    {}
+    view(event_bus& pipeline, const Ogre::SceneManager& scene);
 
     void draw_vertex(const std::string& id, double x, double y, double z) const;
 

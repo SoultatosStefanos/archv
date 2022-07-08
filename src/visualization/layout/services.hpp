@@ -55,13 +55,7 @@ public:
                             const graph& g,
                             topology& space,
                             std::string topology_type,
-                            double scale)
-        : m_pipeline{pipeline},
-          m_g{g},
-          m_space{space},
-          m_space_type{std::move(topology_type)},
-          m_space_scale{scale}
-    {}
+                            double scale);
 
     void update(const std::string& type, double scale);
 

@@ -1,4 +1,5 @@
 set(FILES
+	controller_tests.cpp
 	layout_factory_tests.cpp
 	topology_factory_tests.cpp
 )
