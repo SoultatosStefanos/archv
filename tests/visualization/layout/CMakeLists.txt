@@ -1,5 +1,6 @@
 set(FILES
 	layout_factory_tests.cpp
+	topology_factory_tests.cpp
 )
 set(SUBDIRECTORIES)
 
