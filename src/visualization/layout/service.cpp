@@ -3,6 +3,8 @@
 #include "layout_factory.hpp"
 #include "topology_factory.hpp"
 
+#include <boost/log/trivial.hpp>
+
 namespace visualization::layout
 {
 
@@ -50,8 +52,10 @@ void layout_service::update_topology(const std::string& type, double scale)
 
 void layout_service::notify_layout_changed(const layout& l) const
 {
+    BOOST_LOG_TRIVIAL(info) << "layout changed\n";
+
     for (const auto& f : m_layout_changed_listeners)
         f(l);
 }
 
-} // namespace visualization
+} // namespace visualization::layout

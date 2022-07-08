@@ -7,6 +7,7 @@
 #include "service.hpp"
 #include "view.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <functional>
 #include <memory>
@@ -35,11 +36,17 @@ public:
 
     void layout_selected(const std::string& type)
     {
+        BOOST_LOG_TRIVIAL(info)
+            << "layout with type: " << type << " selected\n";
+
         m_service.update_layout(type);
     }
 
     void topology_selected(const std::string& type, double scale)
     {
+        BOOST_LOG_TRIVIAL(info) << "topology with type: " << type
+                                << ", and scale: " << scale << " selected\n";
+
         m_service.update_topology(type, scale);
     }
 
