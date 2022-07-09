@@ -3,6 +3,7 @@ set(FILES
 	layout_factory_tests.cpp
 	presenter_tests.cpp
 	topology_factory_tests.cpp
+	view_tests.cpp
 )
 set(SUBDIRECTORIES)
 
