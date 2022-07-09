@@ -91,6 +91,18 @@ auto application::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 
     if (e.keysym.sym == quit_sym)
         getRoot()->queueEndRendering();
+    // else if (e.keysym.sym == SDLK_LEFT)
+    //     layout::core::get().pipeline().post(
+    //         layout::topology_input_event{.type = "sphere", .scale = 100});
+    // else if (e.keysym.sym == SDLK_RIGHT)
+    //     layout::core::get().pipeline().post(
+    //         layout::topology_input_event{.type = "cube", .scale = 100});
+    // else if (e.keysym.sym == SDLK_UP)
+    //     layout::core::get().pipeline().post(
+    //         layout::topology_input_event{.type = "sphere", .scale = 200});
+    // else if (e.keysym.sym == SDLK_DOWN)
+    //     layout::core::get().pipeline().post(
+    //         layout::topology_input_event{.type = "sphere", .scale = 80});
 
     return true;
 }

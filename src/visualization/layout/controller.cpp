@@ -23,17 +23,17 @@ controller::controller(event_bus& pipeline,
 
 void controller::layout_selected(const std::string& type) const
 {
-    m_update_layout(type);
-
     BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << type;
+
+    m_update_layout(type);
 }
 
 void controller::topology_selected(const std::string& type, double scale) const
 {
-    m_update_topology(type, scale);
-
     BOOST_LOG_TRIVIAL(info)
         << "topology selected with type: " << type << " and scale: " << scale;
+
+    m_update_topology(type, scale);
 }
 
 } // namespace visualization::layout
