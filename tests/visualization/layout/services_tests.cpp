@@ -2,6 +2,7 @@
 #include "visualization/communication/all.hpp"
 #include "visualization/layout/layout_factory.hpp"
 #include "visualization/layout/services.hpp"
+#include "visualization/layout/topology_factory.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -66,6 +67,60 @@ TEST_F(
     EXPECT_CALL(mock, Call(testing::_)).Times(1);
 
     pipeline->post(topology_changed_event{.curr = space});
+}
+
+class An_update_topology_service : public testing::Test
+{
+public:
+    using mock_subscriber = testing::NiceMock<
+        testing::MockFunction<event_bus::subscriber<topology_changed_event>>>;
+
+    void SetUp() override
+    {
+        pipeline = std::make_unique<event_bus>();
+        space = topology_factory::make_topology(topology_type, topology_scale);
+
+        update_topology = std::make_unique<update_topology_service>(
+            *pipeline, g, space, topology_type, topology_scale);
+
+        pipeline->subscribe<topology_changed_event>(mock.AsStdFunction());
+    }
+
+protected:
+    std::unique_ptr<event_bus> pipeline;
+    graph g;
+
+    std::string topology_type = topology_factory::sphere_type;
+    double topology_scale = 38;
+    topology space;
+
+    std::unique_ptr<update_topology_service> update_topology;
+
+    mock_subscriber mock;
+};
+
+TEST_F(An_update_topology_service,
+       Will_not_change_the_topology_if_given_type_and_scale_are_same_as_curr)
+{
+    EXPECT_CALL(mock, Call(testing::_)).Times(0);
+
+    update_topology->update(topology_type, topology_scale);
+}
+
+TEST_F(An_update_topology_service,
+       Will_change_the_topology_if_given_type_is_different_to_curr)
+{
+    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+
+    update_topology->update(topology_factory::cube_type, topology_scale);
+}
+
+TEST_F(An_update_topology_service,
+       Will_change_the_topology_if_given_scale_is_different_to_curr)
+{
+    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+
+    update_topology->update(topology_type, 100);
 }
 
 } // namespace
