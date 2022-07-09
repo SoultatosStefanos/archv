@@ -53,10 +53,18 @@ TODOS
 	
 08 / 07 / 2022
 
-	visualizer/layout sybsystem tests
+	visualizer/layout sybsystem tests <- DONE
 
-	Check logging best practices (global?)
+	Check logging best practices (global?) <- DONE
 
-	Remake layout demo with user input
+	Remake layout demo with user input <- DONE
 
-	Read about message buses vs notiffier pattern
+	Read about message buses vs notiffier pattern <- DONE
+
+
+09 / 07 / 2022
+
+	Input subsystem
+
+	Ogre input handling
+
