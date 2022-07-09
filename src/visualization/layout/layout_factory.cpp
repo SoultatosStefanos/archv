@@ -1,5 +1,6 @@
 #include "layout_factory.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace visualization::layout
@@ -16,9 +17,10 @@ auto layout_factory::make_layout(const std::string& type,
     }
     else
     {
+        BOOST_LOG_TRIVIAL(fatal) << "invalid layout type: " << type;
         assert(false);
         return nullptr;
     }
 }
 
-} // namespace visualization
+} // namespace visualization::layout

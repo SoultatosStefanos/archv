@@ -1,5 +1,6 @@
 #include "topology_factory.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace visualization::layout
@@ -18,9 +19,10 @@ auto topology_factory::make_topology(const std::string& type, double scale)
     }
     else
     {
+        BOOST_LOG_TRIVIAL(fatal) << "invalid topology type: " << type;
         assert(false);
         return topology();
     }
 }
 
-} // namespace visualization
+} // namespace visualization::layout
