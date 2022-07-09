@@ -20,6 +20,7 @@ namespace visualization::layout
 class core final
 {
 public:
+    using event_bus = communication::event_bus;
     using graph = architecture::graph;
 
     core(const core&) = delete;
@@ -40,6 +41,9 @@ public:
                     const graph& g,
                     const Ogre::SceneManager& scene);
 
+    auto pipeline() const -> const event_bus& { return m_pipeline; }
+    auto pipeline() -> event_bus& { return m_pipeline; }
+
 private:
     core() = default;
     ~core() = default;
@@ -52,8 +56,6 @@ private:
                   double scale,
                   const graph& g,
                   const Ogre::SceneManager& scene);
-
-    using event_bus = communication::event_bus;
 
     event_bus m_pipeline;
 

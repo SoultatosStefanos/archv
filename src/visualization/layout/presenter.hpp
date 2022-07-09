@@ -24,6 +24,12 @@ public:
 
     presenter(event_bus& pipeline, const graph& g, view view);
 
+    void set_view(view v)
+    {
+        assert(v);
+        m_view = std::move(v);
+    }
+
     void update_view(const layout& l) const;
 
 private:

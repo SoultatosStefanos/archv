@@ -25,6 +25,18 @@ public:
                update_layout_service update_layout,
                update_topology_service update_topology);
 
+    void set_update_layout_service(update_layout_service update_layout)
+    {
+        assert(update_layout);
+        m_update_layout = std::move(update_layout);
+    }
+
+    void set_update_topology_service(update_topology_service update_topology)
+    {
+        assert(update_topology);
+        m_update_topology = std::move(update_topology);
+    }
+
     void layout_selected(const std::string& type) const;
 
     void topology_selected(const std::string& type, double scale) const;
