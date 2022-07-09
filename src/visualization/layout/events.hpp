@@ -31,14 +31,6 @@ struct topology_changed_event
     const topology& curr;
 };
 
-struct vertex_drawn_event
-{
-    const std::string& id;
-    double x;
-    double y;
-    double z;
-};
-
 } // namespace visualization::layout
 
 #endif // LAYOUT_EVENTS_HPP

@@ -14,37 +14,10 @@ void core::initialize(const std::string& layout_type,
                       const graph& g,
                       const Ogre::SceneManager& scene)
 {
-    initialize_logging();
     initialize_topology(topology_type, scale);
     initialize_layout(layout_type, g);
-
     hook_mvp(layout_type, topology_type, scale, g, scene);
-
     m_presenter->update_view(*m_layout);
-}
-
-void core::initialize_logging()
-{
-    m_pipeline.subscribe<layout_input_event>([](const auto& e) {
-        BOOST_LOG_TRIVIAL(info)
-            << "layout input event with type: " << e.type << '\n';
-    });
-
-    m_pipeline.subscribe<topology_input_event>([](const auto& e) {
-        BOOST_LOG_TRIVIAL(info) << "topology input event with type: " << e.type
-                                << " and scale: " << e.scale << '\n';
-    });
-
-    m_pipeline.subscribe<layout_changed_event>(
-        [](const auto&) { BOOST_LOG_TRIVIAL(info) << "layout changed\n"; });
-
-    m_pipeline.subscribe<topology_changed_event>(
-        [](const auto&) { BOOST_LOG_TRIVIAL(info) << "topology changed\n"; });
-
-    m_pipeline.subscribe<vertex_drawn_event>([](const auto& e) {
-        BOOST_LOG_TRIVIAL(debug) << "vertex: " << e.id << " drawn at: (" << e.x
-                                 << ", " << e.y << ", " << e.z << ")\n";
-    });
 }
 
 void core::initialize_topology(const std::string& topology_type, double scale)

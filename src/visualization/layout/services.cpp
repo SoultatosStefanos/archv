@@ -3,6 +3,8 @@
 #include "layout_factory.hpp"
 #include "topology_factory.hpp"
 
+#include <boost/log/trivial.hpp>
+
 namespace visualization::layout
 {
 
@@ -35,7 +37,10 @@ void update_layout_service::change_layout(const std::string& type)
 {
     m_layout_type = type;
     m_layout = layout_factory::make_layout(type, m_g, *m_space);
+
     m_pipeline.post(layout_changed_event{.curr = *m_layout});
+
+    BOOST_LOG_TRIVIAL(info) << "layout changed to: " << type;
 }
 
 update_topology_service::update_topology_service(event_bus& pipeline,
@@ -57,7 +62,11 @@ void update_topology_service::update(const std::string& type, double scale)
         m_space_type = type;
         m_space_scale = scale;
         m_space = topology_factory::make_topology(type, scale);
+
         m_pipeline.post(topology_changed_event{.curr = m_space});
+
+        BOOST_LOG_TRIVIAL(info)
+            << "topology changed to: " << type << " with scale: " << scale;
     }
 }
 

@@ -1,5 +1,7 @@
 #include "view.hpp"
 
+#include <boost/log/trivial.hpp>
+
 namespace visualization::layout
 {
 
@@ -14,7 +16,9 @@ void view::draw_vertex(const std::string& id,
 {
     assert(m_scene.hasSceneNode(id));
     m_scene.getSceneNode(id)->setPosition(x, y, z);
-    m_pipeline.post(vertex_drawn_event{.id = id, .x = x, .y = y, .z = z});
+
+    BOOST_LOG_TRIVIAL(debug) << "vertex: " << id << " drawn at: (" << x << ", "
+                             << y << ", " << z << ')';
 }
 
 } // namespace visualization::layout

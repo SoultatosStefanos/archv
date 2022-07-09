@@ -1,5 +1,7 @@
 #include "controller.hpp"
 
+#include <boost/log/trivial.hpp>
+
 namespace visualization::layout
 {
 
@@ -22,11 +24,16 @@ controller::controller(event_bus& pipeline,
 void controller::layout_selected(const std::string& type) const
 {
     m_update_layout(type);
+
+    BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << type;
 }
 
 void controller::topology_selected(const std::string& type, double scale) const
 {
     m_update_topology(type, scale);
+
+    BOOST_LOG_TRIVIAL(info)
+        << "topology selected with type: " << type << " and scale: " << scale;
 }
 
-}
+} // namespace visualization::layout

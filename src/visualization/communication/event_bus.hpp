@@ -6,6 +6,8 @@
 
 #include <algorithm>
 #include <any>
+#include <boost/core/demangle.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <typeindex>
 #include <typeinfo>
@@ -38,6 +40,9 @@ public:
     void post(const Event& e) const
     {
         auto&& index = typeid(Event);
+
+        BOOST_LOG_TRIVIAL(debug)
+            << "event: " << boost::core::demangle(index.name());
 
         if (m_table.contains(index))
         {

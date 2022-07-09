@@ -44,7 +44,6 @@ private:
     core() = default;
     ~core() = default;
 
-    void initialize_logging();
     void initialize_topology(const std::string& topology_type, double scale);
     void initialize_layout(const std::string& layout_type, const graph& g);
 
