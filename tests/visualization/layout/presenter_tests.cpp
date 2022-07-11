@@ -43,7 +43,7 @@ TEST_F(
     auto s = topology_factory::make_topology(topology_factory::cube_type, 3);
     auto l =
         layout_factory::make_layout(layout_factory::gursoy_atun_type, g, s);
-    layout_changed_event event{.curr = *l};
+    layout_response_event event{.curr = *l};
 
     EXPECT_CALL(mock, Call(testing::_, testing::_, testing::_, testing::_))
         .Times(vertices_num);
@@ -58,7 +58,7 @@ TEST_F(
     auto s = topology_factory::make_topology(topology_factory::cube_type, 3);
     auto l =
         layout_factory::make_layout(layout_factory::gursoy_atun_type, g, s);
-    layout_changed_event event{.curr = *l};
+    layout_response_event event{.curr = *l};
     const auto n = urandom(1, 5);
 
     EXPECT_CALL(mock, Call(testing::_, testing::_, testing::_, testing::_))

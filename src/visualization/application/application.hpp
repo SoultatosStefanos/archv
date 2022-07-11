@@ -7,6 +7,7 @@
 #include "Ogre.h"
 #include "OgreApplicationContext.h"
 #include "architecture/all.hpp"
+#include "visualization/command/all.hpp"
 #include "visualization/layout/all.hpp"
 
 #include <OgreCameraMan.h>
@@ -32,10 +33,14 @@ public:
     virtual auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
 
 private:
+    using command_history = command::command_history;
+
     const graph& m_g;
 
     Ogre::SceneManager* m_scene{nullptr};
     OgreBites::CameraMan* m_cameraman{nullptr};
+
+    command_history m_cmds;
 };
 
 } // namespace visualization::application

@@ -7,6 +7,8 @@
 #include "events.hpp"
 #include "visualization/communication/event_bus.hpp"
 
+#include <functional>
+#include <memory>
 #include <string>
 
 namespace visualization::layout
@@ -17,9 +19,10 @@ class controller
 {
 public:
     using event_bus = communication::event_bus;
-    using update_layout_service = std::function<void(const std::string&)>;
+    using update_layout_service =
+        std::function<void(const layout_request_event&)>;
     using update_topology_service =
-        std::function<void(const std::string&, double)>;
+        std::function<void(const topology_request_event&)>;
 
     controller(event_bus& pipeline,
                update_layout_service update_layout,
@@ -37,9 +40,9 @@ public:
         m_update_topology = std::move(update_topology);
     }
 
-    void layout_selected(const std::string& type) const;
-
-    void topology_selected(const std::string& type, double scale) const;
+protected:
+    void layout_selected(const layout_request_event& e) const;
+    void topology_selected(const topology_request_event&) const;
 
 private:
     update_layout_service m_update_layout;

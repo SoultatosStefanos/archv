@@ -14,26 +14,26 @@ controller::controller(event_bus& pipeline,
     assert(m_update_layout);
     assert(m_update_topology);
 
-    pipeline.subscribe<layout_input_event>(
-        [this](const auto& e) { layout_selected(e.type); });
+    pipeline.subscribe<layout_request_event>(
+        [this](const auto& e) { layout_selected(e); });
 
-    pipeline.subscribe<topology_input_event>(
-        [this](const auto& e) { topology_selected(e.type, e.scale); });
+    pipeline.subscribe<topology_request_event>(
+        [this](const auto& e) { topology_selected(e); });
 }
 
-void controller::layout_selected(const std::string& type) const
+void controller::layout_selected(const layout_request_event& e) const
 {
-    BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << type;
+    BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << e.new_type;
 
-    m_update_layout(type);
+    m_update_layout(e);
 }
 
-void controller::topology_selected(const std::string& type, double scale) const
+void controller::topology_selected(const topology_request_event& e) const
 {
-    BOOST_LOG_TRIVIAL(info)
-        << "topology selected with type: " << type << " and scale: " << scale;
+    BOOST_LOG_TRIVIAL(info) << "topology selected with type: " << e.new_type
+                            << " and scale: " << e.new_scale;
 
-    m_update_topology(type, scale);
+    m_update_topology(e);
 }
 
 } // namespace visualization::layout

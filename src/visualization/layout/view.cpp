@@ -5,20 +5,30 @@
 namespace visualization::layout
 {
 
-view::view(event_bus& pipeline, const Ogre::SceneManager& scene)
+ogre_view::ogre_view(event_bus& pipeline, const Ogre::SceneManager& scene)
     : m_pipeline{pipeline}, m_scene{scene}
 {}
 
-void view::draw_vertex(const std::string& id,
-                       double x,
-                       double y,
-                       double z) const
+void ogre_view::draw(const layout_data& data)
 {
-    assert(m_scene.hasSceneNode(id));
-    m_scene.getSceneNode(id)->setPosition(x, y, z);
-
-    BOOST_LOG_TRIVIAL(debug) << "vertex: " << id << " drawn at: (" << x << ", "
-                             << y << ", " << z << ')';
+    draw_vertices(data);
+    draw_edges(data);
 }
+
+void ogre_view::draw_vertices(const layout_data& data)
+{
+    for (const auto& [id, pos] : data)
+    {
+        assert(m_scene.hasSceneNode(id));
+
+        m_scene.getSceneNode(id)->setPosition(pos.x, pos.y, pos.z);
+
+        BOOST_LOG_TRIVIAL(debug) << "vertex: " << id << " drawn at: (" << pos.x
+                                 << ", " << pos.y << ", " << pos.z << ')';
+    }
+}
+
+// TODO
+void ogre_view::draw_edges(const layout_data&) {}
 
 } // namespace visualization::layout

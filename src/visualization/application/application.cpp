@@ -55,7 +55,8 @@ void application::setup()
 
     // layout
     // TODO Pass from config
-    layout::core::get().initialize("gursoy_atun", "sphere", 100, m_g, *m_scene);
+    layout::core::get().initialize(
+        m_cmds, "gursoy_atun", "sphere", 100, m_g, *m_scene);
 }
 
 // FIXME

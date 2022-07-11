@@ -6,6 +6,7 @@
 
 #include "architecture/graph.hpp"
 #include "events.hpp"
+#include "view.hpp"
 #include "visualization/communication/all.hpp"
 
 #include <cassert>
@@ -19,23 +20,29 @@ class presenter
 public:
     using event_bus = communication::event_bus;
     using graph = architecture::graph;
-    using view =
-        std::function<void(const std::string&, double, double, double)>;
 
-    presenter(event_bus& pipeline, const graph& g, view view);
+    presenter(event_bus& pipeline, const graph& g, view* v);
 
-    void set_view(view v)
+    void set_view(view* v)
     {
         assert(v);
-        m_view = std::move(v);
+        m_view = v;
     }
 
-    void update_view(const layout& l) const;
+    void initialize_view(const std::string& layout_type,
+                         const std::string& topology_type,
+                         double topology_scale,
+                         const layout& l) const;
+
+protected:
+    void update_view(const layout_response_event& e) const;
+
+    auto make_view_data(const layout& l) const -> view::layout_data;
 
 private:
     const graph& m_g;
 
-    view m_view;
+    view* m_view{nullptr};
 };
 
 } // namespace visualization::layout

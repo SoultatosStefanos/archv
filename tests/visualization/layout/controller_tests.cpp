@@ -40,7 +40,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_layout_service_when_a_layout_input_event_is_posted_to_its_pipeline)
 {
-    layout_input_event event{.type = "aaa"};
+    layout_request_event event{.type = "aaa"};
 
     EXPECT_CALL(ul_mock, Call(event.type)).Times(1);
 
@@ -51,7 +51,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_layout_service_n_times_when_a_layout_input_event_is_posted_to_its_pipeline_n_times)
 {
-    layout_input_event event{.type = "aaa"};
+    layout_request_event event{.type = "aaa"};
     const auto n = urandom(0, 1000);
 
     EXPECT_CALL(ul_mock, Call(event.type)).Times(n);
@@ -64,7 +64,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_topology_service_when_a_topology_input_event_is_posted_to_its_pipeline)
 {
-    topology_input_event event{.type = "bbb", .scale = 29};
+    topology_request_event event{.type = "bbb", .scale = 29};
 
     EXPECT_CALL(ut_mock, Call(event.type, event.scale)).Times(1);
 
@@ -75,7 +75,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_topology_service_n_times_when_a_topology_input_event_is_posted_to_its_pipeline_n_times)
 {
-    topology_input_event event{.type = "bbb", .scale = 29};
+    topology_request_event event{.type = "bbb", .scale = 29};
     const auto n = urandom(0, 1000);
 
     EXPECT_CALL(ut_mock, Call(event.type, event.scale)).Times(n);

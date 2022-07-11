@@ -20,7 +20,7 @@ class An_update_layout_service : public testing::Test
 {
 public:
     using mock_subscriber = testing::NiceMock<
-        testing::MockFunction<event_bus::subscriber<layout_changed_event>>>;
+        testing::MockFunction<event_bus::subscriber<layout_response_event>>>;
 
     void SetUp() override
     {
@@ -30,7 +30,7 @@ public:
         update_layout = std::make_unique<update_layout_service>(
             *pipeline, g, l, layout_type, &space);
 
-        pipeline->subscribe<layout_changed_event>(mock.AsStdFunction());
+        pipeline->subscribe<layout_response_event>(mock.AsStdFunction());
     }
 
 protected:
@@ -66,14 +66,14 @@ TEST_F(
 {
     EXPECT_CALL(mock, Call(testing::_)).Times(1);
 
-    pipeline->post(topology_changed_event{.curr = space});
+    pipeline->post(topology_response_event{.curr = space});
 }
 
 class An_update_topology_service : public testing::Test
 {
 public:
     using mock_subscriber = testing::NiceMock<
-        testing::MockFunction<event_bus::subscriber<topology_changed_event>>>;
+        testing::MockFunction<event_bus::subscriber<topology_response_event>>>;
 
     void SetUp() override
     {
@@ -83,7 +83,7 @@ public:
         update_topology = std::make_unique<update_topology_service>(
             *pipeline, g, space, topology_type, topology_scale);
 
-        pipeline->subscribe<topology_changed_event>(mock.AsStdFunction());
+        pipeline->subscribe<topology_response_event>(mock.AsStdFunction());
     }
 
 protected:
