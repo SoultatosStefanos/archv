@@ -55,9 +55,6 @@ private:
     void initialize_layout(const std::string& layout_type, const graph& g);
 
     void initialize_mvp(command_history& cmds,
-                        const std::string& layout_type,
-                        const std::string& topology_type,
-                        double scale,
                         const graph& g,
                         const Ogre::SceneManager& scene);
 

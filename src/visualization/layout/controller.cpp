@@ -15,20 +15,20 @@ controller::controller(event_bus& pipeline,
     assert(m_update_topology);
 
     pipeline.subscribe<layout_request_event>(
-        [this](const auto& e) { layout_selected(e); });
+        [this](const auto& e) { dispatch(e); });
 
     pipeline.subscribe<topology_request_event>(
-        [this](const auto& e) { topology_selected(e); });
+        [this](const auto& e) { dispatch(e); });
 }
 
-void controller::layout_selected(const layout_request_event& e) const
+void controller::dispatch(const layout_request_event& e) const
 {
     BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << e.new_type;
 
     m_update_layout(e);
 }
 
-void controller::topology_selected(const topology_request_event& e) const
+void controller::dispatch(const topology_request_event& e) const
 {
     BOOST_LOG_TRIVIAL(info) << "topology selected with type: " << e.new_type
                             << " and scale: " << e.new_scale;

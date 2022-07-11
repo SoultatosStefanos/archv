@@ -28,21 +28,9 @@ public:
                update_layout_service update_layout,
                update_topology_service update_topology);
 
-    void set_update_layout_service(update_layout_service update_layout)
-    {
-        assert(update_layout);
-        m_update_layout = std::move(update_layout);
-    }
-
-    void set_update_topology_service(update_topology_service update_topology)
-    {
-        assert(update_topology);
-        m_update_topology = std::move(update_topology);
-    }
-
 protected:
-    void layout_selected(const layout_request_event& e) const;
-    void topology_selected(const topology_request_event&) const;
+    void dispatch(const layout_request_event& e) const;
+    void dispatch(const topology_request_event& e) const;
 
 private:
     update_layout_service m_update_layout;
