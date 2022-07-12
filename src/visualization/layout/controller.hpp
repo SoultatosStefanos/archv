@@ -7,34 +7,54 @@
 #include "events.hpp"
 #include "visualization/communication/event_bus.hpp"
 
-#include <functional>
-#include <memory>
-#include <string>
+#include <boost/log/trivial.hpp>
+#include <concepts>
 
 namespace visualization::layout
 {
 
 // Delegates input events from an event bus to the appropriate services.
+template <typename UpdateLayoutService, typename UpdateTopologyService>
+requires std::invocable<UpdateLayoutService, const layout_request_event&> &&
+    std::invocable<UpdateTopologyService, const topology_request_event&> &&
+    std::move_constructible<UpdateLayoutService> &&
+    std::move_constructible<UpdateTopologyService>
 class controller
 {
 public:
     using event_bus = communication::event_bus;
-    using update_layout_service =
-        std::function<void(const layout_request_event&)>;
-    using update_topology_service =
-        std::function<void(const topology_request_event&)>;
 
     controller(event_bus& pipeline,
-               update_layout_service update_layout,
-               update_topology_service update_topology);
+               UpdateLayoutService update_layout,
+               UpdateTopologyService update_topology)
+        : m_update_layout{std::move(update_layout)},
+          m_update_topology{std::move(update_topology)}
+    {
+        pipeline.subscribe<layout_request_event>(
+            [this](const auto& e) { dispatch(e); });
 
-protected:
-    void dispatch(const layout_request_event& e) const;
-    void dispatch(const topology_request_event& e) const;
+        pipeline.subscribe<topology_request_event>(
+            [this](const auto& e) { dispatch(e); });
+    }
 
 private:
-    update_layout_service m_update_layout;
-    update_topology_service m_update_topology;
+    void dispatch(const layout_request_event& e)
+    {
+        BOOST_LOG_TRIVIAL(info) << "requested layout: " << e.new_type;
+
+        m_update_layout(e);
+    }
+
+    void dispatch(const topology_request_event& e)
+    {
+        BOOST_LOG_TRIVIAL(info)
+            << "requested topology: " << e.new_type << ", " << e.new_scale;
+
+        m_update_topology(e);
+    }
+
+    UpdateLayoutService m_update_layout;
+    UpdateTopologyService m_update_topology;
 };
 
 } // namespace visualization::layout

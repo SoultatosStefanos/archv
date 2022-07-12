@@ -37,32 +37,13 @@ void core::initialize_mvp(command_history& cmds,
                           const graph& g,
                           const Ogre::SceneManager& scene)
 {
-    m_view = std::make_unique<view>(m_pipeline, scene);
-
-    m_presenter = std::make_unique<presenter>(
-        m_pipeline, g, [&](const auto& data) { m_view->draw(data); });
+    m_presenter =
+        std::make_unique<presenter>(m_pipeline, g, view(m_pipeline, scene));
 
     m_controller = std::make_unique<controller>(
         m_pipeline,
-        [&](const auto& e) {
-            cmds.execute(std::make_unique<update_layout_service>(
-                m_pipeline,
-                e,
-                g,
-                m_space,
-                m_layout,
-                layout_factory::make_layout));
-        },
-        [&](const auto& e) {
-            cmds.execute(std::make_unique<update_topology_service>(
-                m_pipeline,
-                e,
-                g,
-                m_space,
-                m_layout,
-                topology_factory::make_topology,
-                layout_factory::make_layout));
-        });
+        update_layout_service(m_pipeline, cmds, g, m_space, m_layout),
+        update_topology_service(m_pipeline, cmds, g, m_space, m_layout));
 }
 
 } // namespace visualization::layout

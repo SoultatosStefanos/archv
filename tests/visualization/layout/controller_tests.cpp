@@ -38,23 +38,23 @@ protected:
 
 TEST_F(
     A_layout_controller,
-    Calls_the_update_layout_service_when_a_layout_input_event_is_posted_to_its_pipeline)
+    Calls_the_update_layout_service_when_a_layout_request_event_is_posted_to_its_pipeline)
 {
-    layout_request_event event{.type = "aaa"};
+    layout_request_event event{.old_type = "random", .new_type = "gursoy atun"};
 
-    EXPECT_CALL(ul_mock, Call(event.type)).Times(1);
+    EXPECT_CALL(ul_mock, Call(event)).Times(1);
 
     pipeline->post(event);
 }
 
 TEST_F(
     A_layout_controller,
-    Calls_the_update_layout_service_n_times_when_a_layout_input_event_is_posted_to_its_pipeline_n_times)
+    Calls_the_update_layout_service_n_times_when_a_layout_request_event_is_posted_to_its_pipeline_n_times)
 {
-    layout_request_event event{.type = "aaa"};
+    layout_request_event event{.old_type = "random", .new_type = "gursoy atun"};
     const auto n = urandom(0, 1000);
 
-    EXPECT_CALL(ul_mock, Call(event.type)).Times(n);
+    EXPECT_CALL(ul_mock, Call(event)).Times(n);
 
     for (auto i = 0; i < n; ++i)
         pipeline->post(event);
@@ -62,11 +62,15 @@ TEST_F(
 
 TEST_F(
     A_layout_controller,
-    Calls_the_update_topology_service_when_a_topology_input_event_is_posted_to_its_pipeline)
+    Calls_the_update_topology_service_when_a_topology_request_event_is_posted_to_its_pipeline)
 {
-    topology_request_event event{.type = "bbb", .scale = 29};
+    topology_request_event event{.layout_type = "gursoy atun",
+                                 .new_scale = 30,
+                                 .new_type = "cube",
+                                 .old_scale = 20,
+                                 .old_type = "sphere"};
 
-    EXPECT_CALL(ut_mock, Call(event.type, event.scale)).Times(1);
+    EXPECT_CALL(ut_mock, Call(event)).Times(1);
 
     pipeline->post(event);
 }
@@ -75,10 +79,14 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_topology_service_n_times_when_a_topology_input_event_is_posted_to_its_pipeline_n_times)
 {
-    topology_request_event event{.type = "bbb", .scale = 29};
+    topology_request_event event{.layout_type = "gursoy atun",
+                                 .new_scale = 30,
+                                 .new_type = "cube",
+                                 .old_scale = 20,
+                                 .old_type = "sphere"};
     const auto n = urandom(0, 1000);
 
-    EXPECT_CALL(ut_mock, Call(event.type, event.scale)).Times(n);
+    EXPECT_CALL(ut_mock, Call(event)).Times(n);
 
     for (auto i = 0; i < n; ++i)
         pipeline->post(event);

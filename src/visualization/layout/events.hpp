@@ -14,6 +14,9 @@ struct layout_request_event
 {
     std::string old_type;
     std::string new_type;
+
+    auto operator==(const layout_request_event&) const -> bool = default;
+    auto operator!=(const layout_request_event&) const -> bool = default;
 };
 
 struct topology_request_event
@@ -23,12 +26,27 @@ struct topology_request_event
     double old_scale;
     std::string new_type;
     double new_scale;
+
+    auto operator==(const topology_request_event&) const -> bool = default;
+    auto operator!=(const topology_request_event&) const -> bool = default;
 };
 
 struct layout_response_event
 {
     const layout& curr;
 };
+
+inline auto operator==(const layout_response_event& lhs,
+                       const layout_response_event& rhs)
+{
+    return &lhs.curr == &rhs.curr;
+}
+
+inline auto operator!=(const layout_response_event& lhs,
+                       const layout_response_event& rhs)
+{
+    return !(lhs == rhs);
+}
 
 } // namespace visualization::layout
 

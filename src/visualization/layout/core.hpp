@@ -48,6 +48,10 @@ public:
     auto pipeline() -> event_bus& { return m_pipeline; }
 
 private:
+    using controller =
+        controller<update_layout_service, update_topology_service>;
+    using presenter = presenter<view>;
+
     core() = default;
     ~core() = default;
 
@@ -63,7 +67,6 @@ private:
     std::unique_ptr<layout> m_layout;
     topology m_space;
 
-    std::unique_ptr<view> m_view;
     std::unique_ptr<controller> m_controller;
     std::unique_ptr<presenter> m_presenter;
 };

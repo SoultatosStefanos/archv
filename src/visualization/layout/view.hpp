@@ -10,8 +10,6 @@
 #include <OgreSceneManager.h>
 #include <memory>
 #include <string>
-#include <tuple>
-#include <unordered_map>
 
 namespace visualization::layout
 {
@@ -21,17 +19,14 @@ class view
 {
 public:
     using event_bus = communication::event_bus;
-    using layout_data =
-        std::unordered_map<std::string, std::tuple<double, double, double>>;
 
     view(event_bus& pipeline, const Ogre::SceneManager& scene);
 
-    void draw(const layout_data& data);
+    void draw_vertex(const std::string& id, double x, double y, double z);
+
+    // TODO draw edge
 
 private:
-    void draw_vertices(const layout_data& data);
-    void draw_edges(const layout_data& data);
-
     event_bus& m_pipeline;
     const Ogre::SceneManager& m_scene;
 };

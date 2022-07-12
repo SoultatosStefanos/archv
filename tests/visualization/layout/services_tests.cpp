@@ -27,7 +27,7 @@ public:
         pipeline = std::make_unique<event_bus>();
         l = layout_factory::make_layout(layout_type, g, space);
 
-        update_layout = std::make_unique<update_layout_service>(
+        update_layout = std::make_unique<update_layout_command>(
             *pipeline, g, l, layout_type, &space);
 
         pipeline->subscribe<layout_response_event>(mock.AsStdFunction());
@@ -40,7 +40,7 @@ protected:
     graph g;
     topology space = cube(38);
 
-    std::unique_ptr<update_layout_service> update_layout;
+    std::unique_ptr<update_layout_command> update_layout;
 
     mock_subscriber mock;
 };
@@ -80,7 +80,7 @@ public:
         pipeline = std::make_unique<event_bus>();
         space = topology_factory::make_topology(topology_type, topology_scale);
 
-        update_topology = std::make_unique<update_topology_service>(
+        update_topology = std::make_unique<update_topology_command>(
             *pipeline, g, space, topology_type, topology_scale);
 
         pipeline->subscribe<topology_response_event>(mock.AsStdFunction());
@@ -94,7 +94,7 @@ protected:
     double topology_scale = 38;
     topology space;
 
-    std::unique_ptr<update_topology_service> update_topology;
+    std::unique_ptr<update_topology_command> update_topology;
 
     mock_subscriber mock;
 };
