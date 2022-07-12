@@ -39,9 +39,9 @@ void core::initialize_mvp(command_history& cmds,
 {
     m_view = std::make_unique<view>(m_pipeline, scene);
 
-    m_presenter = std::make_unique<presenter>(m_pipeline, g, *m_view);
+    m_presenter = std::make_unique<present>(m_pipeline, g, *m_view);
 
-    m_controller = std::make_unique<controller>(
+    m_controller = std::make_unique<control>(
         m_pipeline,
         update_layout_service(m_pipeline, cmds, g, m_space, m_layout),
         update_topology_service(m_pipeline, cmds, g, m_space, m_layout));

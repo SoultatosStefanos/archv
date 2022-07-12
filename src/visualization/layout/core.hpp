@@ -4,13 +4,13 @@
 #ifndef LAYOUT_CORE_HPP
 #define LAYOUT_CORE_HPP
 
-#include "command/all.hpp"
 #include "controller.hpp"
 #include "events.hpp"
 #include "layout.hpp"
 #include "presenter.hpp"
 #include "services.hpp"
 #include "view.hpp"
+#include "visualization/command/all.hpp"
 #include "visualization/communication/all.hpp"
 
 #include <memory>
@@ -48,9 +48,8 @@ public:
     auto pipeline() -> event_bus& { return m_pipeline; }
 
 private:
-    using controller =
-        controller<update_layout_service, update_topology_service>;
-    using presenter = presenter<view>;
+    using control = controller<update_layout_service, update_topology_service>;
+    using present = presenter<view>;
 
     core() = default;
     ~core() = default;
@@ -68,8 +67,8 @@ private:
     topology m_space;
 
     std::unique_ptr<view> m_view;
-    std::unique_ptr<controller> m_controller;
-    std::unique_ptr<presenter> m_presenter;
+    std::unique_ptr<control> m_controller;
+    std::unique_ptr<present> m_presenter;
 };
 
 } // namespace visualization::layout

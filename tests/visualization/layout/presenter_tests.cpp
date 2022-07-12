@@ -44,12 +44,12 @@ public:
 class A_layout_presenter : public testing::Test
 {
 public:
-    using presenter = presenter<view_interface>;
+    using present = presenter<view_interface>;
 
     void SetUp() override
     {
         pipeline = std::make_unique<event_bus>();
-        pres = std::make_unique<presenter>(*pipeline, g, mock);
+        pres = std::make_unique<present>(*pipeline, g, mock);
     }
 
 protected:
@@ -59,7 +59,7 @@ protected:
     graph g{vertices_num};
 
     std::unique_ptr<event_bus> pipeline;
-    std::unique_ptr<presenter> pres;
+    std::unique_ptr<present> pres;
 };
 
 TEST_F(

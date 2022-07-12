@@ -5,9 +5,9 @@
 #define LAYOUT_SERVICES_HPP
 
 #include "architecture/all.hpp"
-#include "command/all.hpp"
 #include "events.hpp"
 #include "layout.hpp"
+#include "visualization/command/all.hpp"
 #include "visualization/communication/all.hpp"
 
 namespace visualization::layout
@@ -82,7 +82,7 @@ public:
     update_topology_service(event_bus& pipeline,
                             command_history& cmds,
                             const graph& g,
-                            const topology& space,
+                            topology& space,
                             std::unique_ptr<layout>& l);
 
     void operator()(const topology_request_event& e);
@@ -128,7 +128,7 @@ private:
     command_history& m_cmds;
 
     const graph& m_g;
-    const topology& m_space;
+    topology& m_space;
     std::unique_ptr<layout>& m_layout;
 };
 

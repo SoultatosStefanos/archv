@@ -104,7 +104,7 @@ void update_topology_service::update_topology_command::change_topology(
 update_topology_service::update_topology_service(event_bus& pipeline,
                                                  command_history& cmds,
                                                  const graph& g,
-                                                 const topology& space,
+                                                 topology& space,
                                                  std::unique_ptr<layout>& l)
     : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
 {}

@@ -23,12 +23,12 @@ public:
     using update_topology_mock =
         testing::NiceMock<testing::MockFunction<update_top_func>>;
 
-    using controller = controller<update_layout_func, update_top_func>;
+    using control = controller<update_layout_func, update_top_func>;
 
     void SetUp() override
     {
         pipeline = std::make_unique<event_bus>();
-        ctrl = std::make_unique<controller>(
+        ctrl = std::make_unique<control>(
             *pipeline, ul_mock.AsStdFunction(), ut_mock.AsStdFunction());
     }
 
@@ -37,7 +37,7 @@ protected:
     update_topology_mock ut_mock;
 
     std::unique_ptr<event_bus> pipeline;
-    std::unique_ptr<controller> ctrl;
+    std::unique_ptr<control> ctrl;
 };
 
 TEST_F(
@@ -69,10 +69,10 @@ TEST_F(
     Calls_the_update_topology_service_when_a_topology_request_event_is_posted_to_its_pipeline)
 {
     topology_request_event event{.layout_type = "gursoy atun",
-                                 .new_scale = 30,
-                                 .new_type = "cube",
+                                 .old_type = "sphere",
                                  .old_scale = 20,
-                                 .old_type = "sphere"};
+                                 .new_type = "cube",
+                                 .new_scale = 30};
 
     EXPECT_CALL(ut_mock, Call(event)).Times(1);
 
@@ -84,10 +84,11 @@ TEST_F(
     Calls_the_update_topology_service_n_times_when_a_topology_input_event_is_posted_to_its_pipeline_n_times)
 {
     topology_request_event event{.layout_type = "gursoy atun",
-                                 .new_scale = 30,
-                                 .new_type = "cube",
+                                 .old_type = "sphere",
                                  .old_scale = 20,
-                                 .old_type = "sphere"};
+                                 .new_type = "cube",
+                                 .new_scale = 30};
+
     const auto n = urandom(0, 1000);
 
     EXPECT_CALL(ut_mock, Call(event)).Times(n);
