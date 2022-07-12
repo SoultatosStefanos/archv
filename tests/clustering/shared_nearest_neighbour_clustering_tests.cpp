@@ -1,9 +1,9 @@
 #include "clustering/shared_nearest_neighbour_clustering.hpp"
 #include "utility/all.hpp"
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <map>
 
 namespace

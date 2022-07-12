@@ -1,9 +1,9 @@
 #include "clustering/strong_components_clustering.hpp"
 #include "utility/all.hpp"
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 namespace
 {
