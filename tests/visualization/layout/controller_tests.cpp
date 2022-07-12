@@ -15,11 +15,15 @@ using namespace visualization::communication;
 class A_layout_controller : public testing::Test
 {
 public:
-    using update_layout_mock = testing::NiceMock<
-        testing::MockFunction<controller::update_layout_service>>;
+    using update_layout_func = std::function<void(const layout_request_event&)>;
+    using update_layout_mock =
+        testing::NiceMock<testing::MockFunction<update_layout_func>>;
 
-    using update_topology_mock = testing::NiceMock<
-        testing::MockFunction<controller::update_topology_service>>;
+    using update_top_func = std::function<void(const topology_request_event&)>;
+    using update_topology_mock =
+        testing::NiceMock<testing::MockFunction<update_top_func>>;
+
+    using controller = controller<update_layout_func, update_top_func>;
 
     void SetUp() override
     {

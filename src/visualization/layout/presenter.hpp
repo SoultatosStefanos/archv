@@ -23,15 +23,13 @@ concept renderer = requires(Class val,
 
 // Delegates layout change events from a pipeline to a view.
 template <renderer View>
-requires std::move_constructible<View>
 class presenter
 {
 public:
     using event_bus = communication::event_bus;
     using graph = architecture::graph;
 
-    presenter(event_bus& pipeline, const graph& g, View v)
-        : m_g{g}, m_view{std::move(v)}
+    presenter(event_bus& pipeline, const graph& g, View& v) : m_g{g}, m_view{v}
     {
         pipeline.subscribe<layout_response_event>(
             [this](const auto& e) { update_view(e.curr); });
@@ -50,7 +48,7 @@ public:
 
 private:
     const graph& m_g;
-    View m_view;
+    View& m_view;
 };
 
 } // namespace visualization::layout

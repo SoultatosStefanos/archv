@@ -67,6 +67,7 @@ private:
     std::unique_ptr<layout> m_layout;
     topology m_space;
 
+    std::unique_ptr<view> m_view;
     std::unique_ptr<controller> m_controller;
     std::unique_ptr<presenter> m_presenter;
 };
