@@ -2,10 +2,10 @@
 #include "generation/generation.hpp"
 #include "utility/all.hpp"
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include <boost/graph/isomorphism.hpp>
 #include <fstream>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 // NOTE: None of the test samples make any sense at a syntax level.
 

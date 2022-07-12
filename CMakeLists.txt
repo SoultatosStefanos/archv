@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 
-set(SUBDIRECTORIES external src tests)
+set(SUBDIRECTORIES src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})

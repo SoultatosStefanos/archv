@@ -1,10 +1,10 @@
 #include "clustering/maximal_clique_enumeration_clustering.hpp"
 #include "utility/all.hpp"
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include <boost/graph/bron_kerbosch_all_cliques.hpp>
 #include <boost/graph/isomorphism.hpp>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 namespace
 {
