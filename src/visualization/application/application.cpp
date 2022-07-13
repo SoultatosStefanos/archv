@@ -90,19 +90,42 @@ auto application::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
     static constexpr auto quit_sym = SDLK_ESCAPE;
 
+#if (0) // FIXME
+    static std::string layout_type = "gursoy_atun";
+    static std::string topology_type = "sphere";
+    static double topology_scale = 100;
+#endif
+
     if (e.keysym.sym == quit_sym)
         getRoot()->queueEndRendering();
-    // else if (e.keysym.sym == SDLK_LEFT)
-    //     m_cmds.undo();
-    // else if (e.keysym.sym == SDLK_RIGHT)
-    //     m_cmds.redo();
-    // else if (e.keysym.sym == SDLK_UP)
-    //     layout::core::get().pipeline().post(
-    //         layout::topology_request_event{.layout_type = "gursoy_atun",
-    //                                        .old_type = "sphere",
-    //                                        .old_scale = 100,
-    //                                        .new_type = "sphere",
-    //                                        .new_scale = 200});
+#if (0) // FIXME
+    else if (e.keysym.sym == SDLK_LEFT)
+        m_cmds.undo();
+    else if (e.keysym.sym == SDLK_RIGHT)
+        m_cmds.redo();
+    else if (e.keysym.sym == SDLK_UP)
+    {
+        layout::core::get().pipeline().post(
+            layout::topology_request_event{.layout_type = layout_type,
+                                           .old_type = topology_type,
+                                           .old_scale = topology_scale,
+                                           .new_type = "cube",
+                                           .new_scale = 200});
+        topology_type = "cube";
+        topology_scale = 200;
+    }
+    else if (e.keysym.sym == SDLK_DOWN)
+    {
+        layout::core::get().pipeline().post(
+            layout::topology_request_event{.layout_type = layout_type,
+                                           .old_type = topology_type,
+                                           .old_scale = topology_scale,
+                                           .new_type = "sphere",
+                                           .new_scale = 200});
+        topology_type = "sphere";
+        topology_scale = 200;
+    }
+#endif
 
     return true;
 }
