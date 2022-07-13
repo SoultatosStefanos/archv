@@ -93,17 +93,16 @@ auto application::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     if (e.keysym.sym == quit_sym)
         getRoot()->queueEndRendering();
     // else if (e.keysym.sym == SDLK_LEFT)
-    //     layout::core::get().pipeline().post(
-    //         layout::topology_input_event{.type = "sphere", .scale = 100});
+    //     m_cmds.undo();
     // else if (e.keysym.sym == SDLK_RIGHT)
-    //     layout::core::get().pipeline().post(
-    //         layout::topology_input_event{.type = "cube", .scale = 100});
+    //     m_cmds.redo();
     // else if (e.keysym.sym == SDLK_UP)
     //     layout::core::get().pipeline().post(
-    //         layout::topology_input_event{.type = "sphere", .scale = 200});
-    // else if (e.keysym.sym == SDLK_DOWN)
-    //     layout::core::get().pipeline().post(
-    //         layout::topology_input_event{.type = "sphere", .scale = 80});
+    //         layout::topology_request_event{.layout_type = "gursoy_atun",
+    //                                        .old_type = "sphere",
+    //                                        .old_scale = 100,
+    //                                        .new_type = "sphere",
+    //                                        .new_scale = 200});
 
     return true;
 }

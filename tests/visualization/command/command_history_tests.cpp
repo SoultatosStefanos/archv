@@ -175,4 +175,43 @@ TEST_F(Given_a_command_history,
         cmd_history->redo();
 }
 
+TEST_F(Given_a_command_history,
+       After_undoing_and_executing_once_redo_does_nothing)
+{
+    auto cmd = std::make_unique<mock_command>();
+    auto cmd2 = std::make_unique<mock_command>();
+
+    EXPECT_CALL(*cmd, redo).Times(0);
+    EXPECT_CALL(*cmd2, redo).Times(0);
+
+    cmd_history->execute(std::move(cmd));
+    cmd_history->undo();
+    cmd_history->execute(std::move(cmd2));
+    cmd_history->redo();
+}
+
+TEST_F(Given_a_command_history,
+       After_undoing_n_times_and_executing_once_redo_does_nothing)
+{
+    const auto n = urandom(2, 10);
+    std::vector<std::unique_ptr<mock_command>> mock_commands(n);
+    for (auto& cmd : mock_commands)
+        cmd = std::make_unique<mock_command>();
+
+    for (const auto& cmd : mock_commands)
+    {
+        EXPECT_CALL(*cmd, redo).Times(0);
+    }
+
+    for (auto& cmd : mock_commands)
+        cmd_history->execute(std::move(cmd));
+
+    for (auto i = 0; i < n; ++i)
+        cmd_history->undo();
+
+    auto cmd2 = std::make_unique<mock_command>();
+    cmd_history->execute(std::move(cmd2));
+    cmd_history->redo();
+}
+
 } // namespace
