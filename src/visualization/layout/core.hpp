@@ -10,6 +10,7 @@
 #include "presenter.hpp"
 #include "services.hpp"
 #include "view.hpp"
+#include "visualization/command/all.hpp"
 #include "visualization/communication/all.hpp"
 
 #include <memory>
@@ -22,6 +23,7 @@ class core final
 public:
     using event_bus = communication::event_bus;
     using graph = architecture::graph;
+    using command_history = command::command_history;
 
     core(const core&) = delete;
     core(core&&) = delete;
@@ -35,9 +37,10 @@ public:
         return singleton;
     }
 
-    void initialize(const std::string& layout_type,
+    void initialize(command_history& cmds,
+                    const std::string& layout_type,
                     const std::string& topology_type,
-                    double scale,
+                    double topology_scale,
                     const graph& g,
                     const Ogre::SceneManager& scene);
 
@@ -45,28 +48,27 @@ public:
     auto pipeline() -> event_bus& { return m_pipeline; }
 
 private:
+    using control = controller<update_layout_service, update_topology_service>;
+    using present = presenter<view>;
+
     core() = default;
     ~core() = default;
 
     void initialize_topology(const std::string& topology_type, double scale);
     void initialize_layout(const std::string& layout_type, const graph& g);
 
-    void hook_mvp(const std::string& layout_type,
-                  const std::string& topology_type,
-                  double scale,
-                  const graph& g,
-                  const Ogre::SceneManager& scene);
+    void initialize_mvp(command_history& cmds,
+                        const graph& g,
+                        const Ogre::SceneManager& scene);
 
     event_bus m_pipeline;
 
     std::unique_ptr<layout> m_layout;
     topology m_space;
 
-    std::unique_ptr<update_layout_service> m_update_layout;
-    std::unique_ptr<update_topology_service> m_update_topology;
     std::unique_ptr<view> m_view;
-    std::unique_ptr<controller> m_controller;
-    std::unique_ptr<presenter> m_presenter;
+    std::unique_ptr<control> m_controller;
+    std::unique_ptr<present> m_presenter;
 };
 
 } // namespace visualization::layout

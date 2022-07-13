@@ -5,6 +5,8 @@
 #define VISUALIZATION_ALL_HPP
 
 #include "application/application.hpp"
+#include "command/all.hpp"
+#include "communication/all.hpp"
 #include "layout/all.hpp"
 
 #endif // VISUALIZATION_VISUALIZATION_HPP

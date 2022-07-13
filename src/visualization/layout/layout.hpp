@@ -22,7 +22,6 @@ public:
     layout() = default;
     layout(const layout&) = default;
     layout(layout&&) = default;
-
     virtual ~layout() = default;
 
     auto operator=(const layout&) -> layout& = default;

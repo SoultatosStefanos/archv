@@ -1,12 +1,10 @@
 set(FILES
 	all.hpp
+	command_history.cpp
+	command_history.hpp
+	command.hpp
 )
-set(SUBDIRECTORIES
-	application
-	command
-	communication
-	layout
-)
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

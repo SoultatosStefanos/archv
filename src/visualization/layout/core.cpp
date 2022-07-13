@@ -8,15 +8,18 @@
 namespace visualization::layout
 {
 
-void core::initialize(const std::string& layout_type,
+void core::initialize(command_history& cmds,
+                      const std::string& layout_type,
                       const std::string& topology_type,
-                      double scale,
+                      double topology_scale,
                       const graph& g,
                       const Ogre::SceneManager& scene)
 {
-    initialize_topology(topology_type, scale);
+    initialize_topology(topology_type, topology_scale);
     initialize_layout(layout_type, g);
-    hook_mvp(layout_type, topology_type, scale, g, scene);
+    initialize_mvp(cmds, g, scene);
+
+    assert(m_presenter);
     m_presenter->update_view(*m_layout);
 }
 
@@ -30,31 +33,18 @@ void core::initialize_layout(const std::string& layout_type, const graph& g)
     m_layout = layout_factory::make_layout(layout_type, g, m_space);
 }
 
-void core::hook_mvp(const std::string& layout_type,
-                    const std::string& topology_type,
-                    double scale,
-                    const graph& g,
-                    const Ogre::SceneManager& scene)
+void core::initialize_mvp(command_history& cmds,
+                          const graph& g,
+                          const Ogre::SceneManager& scene)
 {
-    m_update_layout = std::make_unique<update_layout_service>(
-        m_pipeline, g, m_layout, layout_type, &m_space);
-
-    m_update_topology = std::make_unique<update_topology_service>(
-        m_pipeline, g, m_space, topology_type, scale);
-
     m_view = std::make_unique<view>(m_pipeline, scene);
 
-    m_controller = std::make_unique<controller>(
-        m_pipeline,
-        [&](const auto& type) { m_update_layout->update(type); },
-        [&](const auto& type, auto scale) {
-            m_update_topology->update(type, scale);
-        });
+    m_presenter = std::make_unique<present>(m_pipeline, g, *m_view);
 
-    m_presenter = std::make_unique<presenter>(
-        m_pipeline, g, [&](const auto& id, auto x, auto y, auto z) {
-            m_view->draw_vertex(id, x, y, z);
-        });
+    m_controller = std::make_unique<control>(
+        m_pipeline,
+        update_layout_service(m_pipeline, cmds, g, m_space, m_layout),
+        update_topology_service(m_pipeline, cmds, g, m_space, m_layout));
 }
 
 } // namespace visualization::layout

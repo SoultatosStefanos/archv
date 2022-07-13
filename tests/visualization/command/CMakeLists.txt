@@ -1,6 +1,5 @@
 set(FILES
-	all.hpp
-	event_bus.hpp
+	command_history_tests.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -9,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${TESTS} PRIVATE ${FILES})
 endif()

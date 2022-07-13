@@ -27,9 +27,4 @@ TEST(Topology_factory, Will_produce_a_sphere_given_sphere_type)
     ASSERT_TRUE(std::holds_alternative<sphere>(space));
 }
 
-TEST(Topology_factory, Will_abort_on_invalid_type)
-{
-    ASSERT_DEATH(topology_factory::make_topology("", 2), "");
-}
-
 } // namespace

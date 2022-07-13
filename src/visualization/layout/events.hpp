@@ -10,25 +10,30 @@
 namespace visualization::layout
 {
 
-struct layout_input_event
+struct layout_request_event
 {
-    const std::string& type;
+    std::string old_type;
+    std::string new_type;
+
+    auto operator==(const layout_request_event&) const -> bool = default;
+    auto operator!=(const layout_request_event&) const -> bool = default;
 };
 
-struct topology_input_event
+struct topology_request_event
 {
-    const std::string& type;
-    double scale;
+    std::string layout_type;
+    std::string old_type;
+    double old_scale;
+    std::string new_type;
+    double new_scale;
+
+    auto operator==(const topology_request_event&) const -> bool = default;
+    auto operator!=(const topology_request_event&) const -> bool = default;
 };
 
-struct layout_changed_event
+struct layout_response_event
 {
     const layout& curr;
-};
-
-struct topology_changed_event
-{
-    const topology& curr;
 };
 
 } // namespace visualization::layout

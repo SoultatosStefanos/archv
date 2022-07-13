@@ -8,66 +8,111 @@
 namespace visualization::layout
 {
 
-update_layout_service::update_layout_service(event_bus& pipeline,
-                                             const graph& g,
-                                             std::unique_ptr<layout>& l,
-                                             std::string layout_type,
-                                             const topology* space)
+update_layout_service::update_layout_command::update_layout_command(
+    event_bus& pipeline,
+    layout_request_event e,
+    const graph& g,
+    const topology& space,
+    std::unique_ptr<layout>& l)
     : m_pipeline{pipeline},
+      m_request(std::move(e)),
       m_g{g},
-      m_layout{l},
-      m_layout_type{std::move(layout_type)},
-      m_space{space}
-{
-    assert(space);
+      m_space{space},
+      m_layout{l}
+{}
 
-    m_pipeline.subscribe<topology_changed_event>([this](const auto& e) {
-        m_space = &e.curr;
-        change_layout(m_layout_type);
-    });
+void update_layout_service::update_layout_command::execute()
+{
+    if (m_request.new_type != m_request.old_type)
+        change_layout(m_request.new_type);
 }
 
-void update_layout_service::update(const std::string& type)
+void update_layout_service::update_layout_command::undo()
 {
-    if (type != m_layout_type)
-        change_layout(type);
+    if (m_request.new_type != m_request.old_type)
+        change_layout(m_request.old_type);
 }
 
-void update_layout_service::change_layout(const std::string& type)
+void update_layout_service::update_layout_command::change_layout(
+    const std::string& type)
 {
-    m_layout_type = type;
-    m_layout = layout_factory::make_layout(type, m_g, *m_space);
+    m_layout = layout_factory::make_layout(type, m_g, m_space);
 
     BOOST_LOG_TRIVIAL(info) << "layout changed to: " << type;
 
-    m_pipeline.post(layout_changed_event{.curr = *m_layout});
+    m_pipeline.post(layout_response_event{.curr = *m_layout});
+}
+
+update_layout_service::update_layout_service(event_bus& pipeline,
+                                             command_history& cmds,
+                                             const graph& g,
+                                             const topology& space,
+                                             std::unique_ptr<layout>& l)
+    : m_pipeline{pipeline}, m_cmds(cmds), m_g{g}, m_space{space}, m_layout{l}
+{}
+
+void update_layout_service::operator()(const layout_request_event& e)
+{
+    m_cmds.execute(std::make_unique<update_layout_command>(
+        m_pipeline, e, m_g, m_space, m_layout));
+}
+
+update_topology_service::update_topology_command::update_topology_command(
+    event_bus& pipeline,
+    topology_request_event e,
+    const graph& g,
+    topology& space,
+    std::unique_ptr<layout>& l)
+    : m_pipeline{pipeline},
+      m_request{std::move(e)},
+      m_g{g},
+      m_space{space},
+      m_layout{l}
+{}
+
+void update_topology_service::update_topology_command::execute()
+{
+    if (m_request.new_type != m_request.old_type or
+        m_request.new_scale != m_request.old_scale)
+        change_topology(
+            m_request.new_type, m_request.new_scale, m_request.layout_type);
+}
+
+void update_topology_service::update_topology_command::undo()
+{
+    if (m_request.new_type != m_request.old_type or
+        m_request.new_scale != m_request.old_scale)
+        change_topology(
+            m_request.old_type, m_request.old_scale, m_request.layout_type);
+}
+
+void update_topology_service::update_topology_command::change_topology(
+    const std::string& topology_type,
+    double topology_scale,
+    const std::string& layout_type)
+{
+    m_space = topology_factory::make_topology(topology_type, topology_scale);
+    m_layout = layout_factory::make_layout(layout_type, m_g, m_space);
+
+    BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_type
+                            << " with scale: " << topology_scale;
+    BOOST_LOG_TRIVIAL(info) << "layout changed to: " << layout_type;
+
+    m_pipeline.post(layout_response_event{.curr = *m_layout});
 }
 
 update_topology_service::update_topology_service(event_bus& pipeline,
+                                                 command_history& cmds,
                                                  const graph& g,
                                                  topology& space,
-                                                 std::string topology_type,
-                                                 double scale)
-    : m_pipeline{pipeline},
-      m_g{g},
-      m_space{space},
-      m_space_type{std::move(topology_type)},
-      m_space_scale{scale}
+                                                 std::unique_ptr<layout>& l)
+    : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
 {}
 
-void update_topology_service::update(const std::string& type, double scale)
+void update_topology_service::operator()(const topology_request_event& e)
 {
-    if (type != m_space_type or scale != m_space_scale)
-    {
-        m_space_type = type;
-        m_space_scale = scale;
-        m_space = topology_factory::make_topology(type, scale);
-
-        BOOST_LOG_TRIVIAL(info)
-            << "topology changed to: " << type << " with scale: " << scale;
-
-        m_pipeline.post(topology_changed_event{.curr = m_space});
-    }
+    m_cmds.execute(std::make_unique<update_topology_command>(
+        m_pipeline, e, m_g, m_space, m_layout));
 }
 
 } // namespace visualization::layout

@@ -8,11 +8,13 @@
 #include "visualization/communication/all.hpp"
 
 #include <OgreSceneManager.h>
+#include <memory>
 #include <string>
 
 namespace visualization::layout
 {
 
+// TODO Fire requests from gui
 class view
 {
 public:
@@ -20,11 +22,12 @@ public:
 
     view(event_bus& pipeline, const Ogre::SceneManager& scene);
 
-    void draw_vertex(const std::string& id, double x, double y, double z) const;
+    void draw_vertex(const std::string& id, double x, double y, double z);
+
+    // TODO draw edge
 
 private:
     event_bus& m_pipeline;
-
     const Ogre::SceneManager& m_scene;
 };
 

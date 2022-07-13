@@ -50,7 +50,7 @@ protected:
     std::unique_ptr<view> v;
 };
 
-TEST_F(A_layout_view, Positions_scene_node_with_id_on_draw)
+TEST_F(A_layout_view, Positions_the_scene_node_when_instructed)
 {
     double x = 10, y = 2, z = -1;
 
