@@ -1,6 +1,4 @@
-#include "graph.hpp"
-
-#include <boost/range.hpp>
+#include "graph_output.hpp"
 
 namespace architecture
 {
@@ -128,31 +126,6 @@ void output_dependency(std::ostream& os, const dependency& d)
 {
     os << "type: " << d.t << '\n';
     os << "cardinality: " << d.cardinality << '\n';
-}
-
-void output_graph(std::ostream& os,
-                  const graph& g,
-                  const output_vertex& out_vertex,
-                  const output_edge& out_edge)
-{
-    assert(out_vertex);
-    assert(out_edge);
-
-    os << "\n\nvertices:\n\n";
-    for (auto v : boost::make_iterator_range(boost::vertices(g)))
-    {
-        os << "\n--------------------------------\n";
-        out_vertex(os, g[v]);
-    }
-
-    os << "\n\nedges:\n\n";
-    for (auto e : boost::make_iterator_range(boost::edges(g)))
-    {
-        os << "\n--------------------------------\n";
-        os << "from: " << g[boost::source(e, g)].sym.id << '\n';
-        os << "to: " << g[boost::target(e, g)].sym.id << '\n';
-        out_edge(os, g[e]);
-    }
 }
 
 } // namespace architecture

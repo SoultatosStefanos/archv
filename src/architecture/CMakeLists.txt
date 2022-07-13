@@ -1,7 +1,8 @@
 set(FILES
 	all.hpp
 	components.hpp
-	graph.cpp
+	graph_output.cpp
+	graph_output.hpp
 	graph.hpp
 )
 set(SUBDIRECTORIES)

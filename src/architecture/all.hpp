@@ -6,5 +6,6 @@
 
 #include "components.hpp"
 #include "graph.hpp"
+#include "graph_output.hpp"
 
 #endif // ARCHITECTURE_ALL_HPP

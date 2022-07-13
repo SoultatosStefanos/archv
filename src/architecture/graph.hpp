@@ -7,8 +7,6 @@
 #include "components.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <functional>
-#include <iostream>
 
 namespace architecture
 {
@@ -23,23 +21,6 @@ using graph = boost::adjacency_list<boost::vecS,
                                     boost::directedS,
                                     structure,
                                     dependency>;
-
-// -------------------------------------------------------------------------- //
-
-// ---------------------- Utilities ----------------------------------------- //
-
-void output_structure(std::ostream& os, const structure& v);
-void output_dependency(std::ostream& os, const dependency& e);
-
-using output_vertex = std::function<void(std::ostream&, const structure&)>;
-using output_edge = std::function<void(std::ostream&, const dependency&)>;
-
-void output_graph(std::ostream& os,
-                  const graph& g,
-                  const output_vertex& out_vertex = output_structure,
-                  const output_edge& out_edge = output_dependency);
-
-// -------------------------------------------------------------------------- //
 
 } // namespace architecture
 
