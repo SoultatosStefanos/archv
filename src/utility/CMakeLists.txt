@@ -1,10 +1,12 @@
 set(FILES
 	all.hpp
-	json.cpp
-	json.hpp
+	event_system.hpp
+	flyweight.cpp
+	flyweight.hpp
 	path.hpp
-	pool.hpp
 	random.hpp
+	undo_redo.cpp
+	undo_redo.hpp
 )
 set(SUBDIRECTORIES)
 

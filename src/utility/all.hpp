@@ -4,9 +4,10 @@
 #ifndef UTILITY_ALL_HPP
 #define UTILITY_ALL_HPP
 
-#include "json.hpp"
+#include "event_system.hpp"
+#include "flyweight.hpp"
 #include "path.hpp"
-#include "pool.hpp"
 #include "random.hpp"
+#include "undo_redo.hpp"
 
 #endif // UTILITY_ALL_HPP

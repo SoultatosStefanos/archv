@@ -3,8 +3,8 @@ set(SUBDIRECTORIES
 	architecture
 	clustering
 	generation
+	layout
 	utility
-	visualization
 )
 
 foreach(VAR ${SUBDIRECTORIES})
@@ -16,8 +16,9 @@ if(FILES)
 endif()
 
 set(EXEC main)
+set(EXEC_FILES main.cpp app.hpp app.cpp)
 
-if(EXEC)
-	add_executable(${EXEC} ${EXEC}.cpp)
+if(EXEC_FILES)
+	add_executable(${EXEC} ${EXEC_FILES})
 	target_link_libraries(${EXEC} PUBLIC ${PROJECT_NAME})
 endif()

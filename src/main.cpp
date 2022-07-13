@@ -1,8 +1,9 @@
+#include "app.hpp"
 #include "architecture/all.hpp"
 #include "clustering/all.hpp"
 #include "generation/generation.hpp"
+#include "layout/all.hpp"
 #include "utility/all.hpp"
-#include "visualization/all.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
@@ -26,12 +27,9 @@ static void init_logging()
 
 auto main(int argc, char const* argv[]) -> int
 {
-    using namespace visualization;
     using namespace architecture;
     using namespace generation;
     using namespace utility;
-
-    namespace app = visualization::application;
 
     try
     {
@@ -46,11 +44,11 @@ auto main(int argc, char const* argv[]) -> int
 
         const auto [g, vertex_cache] = generate_graph(jsons.get(argv[1]));
 
-        app::application app{g};
+        app arch_visualizer{g};
 
-        app.initApp();
-        app.getRoot()->startRendering();
-        app.closeApp();
+        arch_visualizer.initApp();
+        arch_visualizer.getRoot()->startRendering();
+        arch_visualizer.closeApp();
 
         return EXIT_SUCCESS;
     }

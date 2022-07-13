@@ -1,0 +1,36 @@
+// Contains the view of the layout subsystem.
+// Soultatos Stefanos 2022
+
+#ifndef LAYOUT_VIEW_HPP
+#define LAYOUT_VIEW_HPP
+
+#include "events.hpp"
+#include "utility/event_system.hpp"
+
+#include <OgreSceneManager.h>
+#include <memory>
+#include <string>
+
+namespace layout
+{
+
+// TODO Fire requests from gui
+class view
+{
+public:
+    using event_bus = utility::event_bus;
+
+    view(event_bus& pipeline, const Ogre::SceneManager& scene);
+
+    void draw_vertex(const std::string& id, double x, double y, double z);
+
+    // TODO draw edge
+
+private:
+    event_bus& m_pipeline;
+    const Ogre::SceneManager& m_scene;
+};
+
+} // namespace layout
+
+#endif // LAYOUT_VIEW_HPP
