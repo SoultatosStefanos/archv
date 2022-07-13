@@ -22,8 +22,8 @@ public:
         bus = std::make_unique<event_bus>();
         g = std::make_unique<graph>();
         cmds = std::make_unique<command_history>();
-        s = std::make_unique<topology>(cube(10));
-        l = std::make_unique<gursoy_atun_layout>(*g, *s);
+        s = cube(10);
+        l = std::make_unique<gursoy_atun_layout>(*g, s);
     }
 
 protected:
@@ -31,7 +31,7 @@ protected:
     std::unique_ptr<graph> g;
     std::unique_ptr<command_history> cmds;
     std::unique_ptr<layout> l;
-    std::unique_ptr<topology> s;
+    topology s;
 };
 
 class An_update_layout_service
@@ -39,13 +39,13 @@ class An_update_layout_service
 {
 public:
     using mock_subscriber =
-        NiceMock<MockFunction<event_bus::subscriber<layout_request_event>>>;
+        NiceMock<MockFunction<event_bus::subscriber<layout_response_event>>>;
 
     void SetUp() override
     {
         Given_a_bus_graph_cmds_topology_and_layout::SetUp();
         service =
-            std::make_unique<update_layout_service>(*bus, *cmds, *g, *s, l);
+            std::make_unique<update_layout_service>(*bus, *cmds, *g, s, l);
     }
 
 protected:
@@ -55,11 +55,11 @@ protected:
 TEST_F(An_update_layout_service,
        Wont_change_the_layout_when_requested_same_type)
 {
-    auto* prev = &l;
+    const auto* prev = l.get();
 
     std::invoke(*service, layout_request_event("gursoy_atun", "gursoy_atun"));
 
-    ASSERT_EQ(prev, &l);
+    ASSERT_EQ(prev, l.get());
 }
 
 TEST_F(An_update_layout_service,
@@ -67,9 +67,9 @@ TEST_F(An_update_layout_service,
 {
     const auto event = layout_request_event("gursoy_atun", "gursoy_atun");
     mock_subscriber mock;
-    bus->subscribe<layout_request_event>(mock.AsStdFunction());
+    bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(event)).Times(0);
+    EXPECT_CALL(mock, Call(testing::_)).Times(0);
 
     std::invoke(*service, event);
 }
@@ -99,6 +99,166 @@ TEST_F(An_update_layout_service,
        Will_revert_to_changed_layout_after_execute_undo_and_redo)
 {
     SUCCEED();
+}
+
+class An_update_topology_service
+    : public Given_a_bus_graph_cmds_topology_and_layout
+{
+public:
+    using mock_subscriber =
+        NiceMock<MockFunction<event_bus::subscriber<layout_response_event>>>;
+
+    void SetUp() override
+    {
+        Given_a_bus_graph_cmds_topology_and_layout::SetUp();
+        service =
+            std::make_unique<update_topology_service>(*bus, *cmds, *g, s, l);
+    }
+
+protected:
+    std::unique_ptr<update_topology_service> service;
+};
+
+TEST_F(An_update_topology_service,
+       Wont_change_the_layout_when_requested_same_type_and_scale)
+{
+    const auto* prev = l.get();
+
+    std::invoke(*service,
+                topology_request_event{.layout_type = "gursoy_atun",
+                                       .old_type = "sphere",
+                                       .old_scale = 80,
+                                       .new_type = "sphere",
+                                       .new_scale = 80});
+
+    ASSERT_EQ(prev, l.get());
+}
+
+TEST_F(An_update_topology_service,
+       Wont_post_a_layout_response_when_requested_same_type_and_scale)
+{
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "sphere",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 80};
+    mock_subscriber mock;
+    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(testing::_)).Times(0);
+
+    std::invoke(*service, event);
+}
+
+TEST_F(An_update_topology_service,
+       Will_change_the_layout_and_topology_when_requested_different_type)
+{
+    assert(std::holds_alternative<cube>(s));
+
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "cube",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 80};
+
+    const auto* prev = l.get();
+
+    std::invoke(*service, event);
+
+    ASSERT_NE(prev, l.get());
+    ASSERT_TRUE(std::holds_alternative<sphere>(s));
+}
+
+TEST_F(An_update_topology_service,
+       Will_post_a_layout_response_when_requested_different_type)
+{
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "sphere",
+                                              .old_scale = 80,
+                                              .new_type = "cube",
+                                              .new_scale = 80};
+    mock_subscriber mock;
+    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+
+    std::invoke(*service, event);
+}
+
+TEST_F(An_update_topology_service,
+       Will_change_the_layout_when_requested_different_scale)
+{
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "sphere",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 100};
+    const auto* prev = l.get();
+
+    std::invoke(*service, event);
+
+    ASSERT_NE(prev, l.get());
+}
+
+TEST_F(An_update_topology_service,
+       Will_post_a_layout_response_when_requested_different_scale)
+{
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "sphere",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 50};
+    mock_subscriber mock;
+    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+
+    std::invoke(*service, event);
+}
+
+TEST_F(An_update_topology_service,
+       Will_revert_to_initial_topology_after_requested_different_type_and_undo)
+{
+    assert(std::holds_alternative<cube>(s));
+
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "cube",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 80};
+
+    std::invoke(*service, event);
+
+    EXPECT_TRUE(std::holds_alternative<sphere>(s));
+
+    cmds->undo();
+
+    ASSERT_TRUE(std::holds_alternative<cube>(s));
+}
+
+TEST_F(
+    An_update_topology_service,
+    Will_revert_to_changed_topology_after_requested_different_type_and_undo_and_redo)
+{
+    assert(std::holds_alternative<cube>(s));
+
+    const auto event = topology_request_event{.layout_type = "gursoy_atun",
+                                              .old_type = "cube",
+                                              .old_scale = 80,
+                                              .new_type = "sphere",
+                                              .new_scale = 80};
+
+    std::invoke(*service, event);
+
+    EXPECT_TRUE(std::holds_alternative<sphere>(s));
+
+    cmds->undo();
+
+    EXPECT_TRUE(std::holds_alternative<cube>(s));
+
+    cmds->redo();
+
+    ASSERT_TRUE(std::holds_alternative<sphere>(s));
 }
 
 } // namespace

@@ -36,18 +36,6 @@ struct layout_response_event
     const layout& curr;
 };
 
-inline auto operator==(const layout_response_event& lhs,
-                       const layout_response_event& rhs)
-{
-    return &lhs.curr == &rhs.curr;
-}
-
-inline auto operator!=(const layout_response_event& lhs,
-                       const layout_response_event& rhs)
-{
-    return !(lhs == rhs);
-}
-
 } // namespace visualization::layout
 
 #endif // LAYOUT_EVENTS_HPP
