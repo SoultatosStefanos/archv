@@ -18,19 +18,19 @@ class Given_a_bus_graph_cmds_topology_and_layout : public testing::Test
 public:
     void SetUp() override
     {
-        bus = event_bus();
-        g = graph();
-        cmds = command_history();
-        s = cube(10);
-        l = std::make_unique<gursoy_atun_layout>(g, s);
+        bus = std::make_unique<event_bus>();
+        g = std::make_unique<graph>();
+        cmds = std::make_unique<command_history>();
+        s = std::make_unique<topology>(cube(10));
+        l = std::make_unique<gursoy_atun_layout>(*g, *s);
     }
 
 protected:
-    event_bus bus;
-    graph g;
-    command_history cmds;
+    std::unique_ptr<event_bus> bus;
+    std::unique_ptr<graph> g;
+    std::unique_ptr<command_history> cmds;
     std::unique_ptr<layout> l;
-    topology s;
+    std::unique_ptr<topology> s;
 };
 
 class An_update_layout_service
@@ -40,7 +40,8 @@ public:
     void SetUp() override
     {
         Given_a_bus_graph_cmds_topology_and_layout::SetUp();
-        service = std::make_unique<update_layout_service>(bus, cmds, g, s, l);
+        service =
+            std::make_unique<update_layout_service>(*bus, *cmds, *g, *s, l);
     }
 
 protected:
