@@ -61,7 +61,7 @@ update_topology_service::update_topology_command::update_topology_command(
     topology_request_event e,
     const graph& g,
     topology& space,
-    std::unique_ptr<layout>& l)
+    layout_pointer& l)
     : m_pipeline{pipeline},
       m_request{std::move(e)},
       m_g{g},
@@ -104,7 +104,7 @@ update_topology_service::update_topology_service(event_bus& pipeline,
                                                  command_history& cmds,
                                                  const graph& g,
                                                  topology& space,
-                                                 std::unique_ptr<layout>& l)
+                                                 layout_pointer& l)
     : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
 {}
 

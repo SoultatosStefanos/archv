@@ -80,12 +80,13 @@ public:
     using event_bus = utility::event_bus;
     using command_history = utility::command_history;
     using command = utility::command;
+      using layout_pointer = layout_factory::pointer;
 
     update_topology_service(event_bus& pipeline,
                             command_history& cmds,
                             const graph& g,
                             topology& space,
-                            std::unique_ptr<layout>& l);
+                            layout_pointer& l);
 
     void operator()(const topology_request_event& e);
 
@@ -97,7 +98,7 @@ private:
                                 topology_request_event e,
                                 const graph& g,
                                 topology& space,
-                                std::unique_ptr<layout>& l);
+                                layout_pointer& l);
 
         virtual ~update_topology_command() override = default;
 
@@ -122,7 +123,7 @@ private:
 
         const graph& m_g;
         topology& m_space;
-        std::unique_ptr<layout>& m_layout;
+        layout_pointer& m_layout;
     };
 
     event_bus& m_pipeline;
@@ -131,7 +132,7 @@ private:
 
     const graph& m_g;
     topology& m_space;
-    std::unique_ptr<layout>& m_layout;
+    layout_pointer& m_layout;
 };
 
 } // namespace layout
