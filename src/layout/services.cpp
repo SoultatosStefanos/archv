@@ -1,6 +1,5 @@
 #include "services.hpp"
 
-#include "layout_factory.hpp"
 #include "topology_factory.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -13,7 +12,7 @@ update_layout_service::update_layout_command::update_layout_command(
     layout_request_event e,
     const graph& g,
     const topology& space,
-    std::unique_ptr<layout>& l)
+    layout_pointer& l)
     : m_pipeline{pipeline},
       m_request(std::move(e)),
       m_g{g},
@@ -47,7 +46,7 @@ update_layout_service::update_layout_service(event_bus& pipeline,
                                              command_history& cmds,
                                              const graph& g,
                                              const topology& space,
-                                             std::unique_ptr<layout>& l)
+                                             layout_pointer& l)
     : m_pipeline{pipeline}, m_cmds(cmds), m_g{g}, m_space{space}, m_layout{l}
 {}
 

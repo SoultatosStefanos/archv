@@ -9,7 +9,7 @@ namespace layout
 auto layout_factory::make_layout(const std::string& type,
                                  const graph& g,
                                  const topology& space)
-    -> std::unique_ptr<layout>
+    -> pointer
 {
     if (type == gursoy_atun_type)
     {

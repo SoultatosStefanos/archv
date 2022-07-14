@@ -18,6 +18,7 @@ class layout_factory final
 {
 public:
     using graph = architecture::graph;
+    using pointer = std::unique_ptr<layout>;
 
     static constexpr auto gursoy_atun_type{"gursoy_atun"};
 
@@ -29,7 +30,7 @@ public:
 
     static auto make_layout(const std::string& type,
                             const graph& g,
-                            const topology& space) -> std::unique_ptr<layout>;
+                            const topology& space) -> pointer;
 
 private:
     layout_factory() = default;

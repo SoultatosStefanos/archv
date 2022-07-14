@@ -20,7 +20,7 @@ TEST(Layout_factory, Given_gursoy_atun_type_returns_proper_derived_class)
         layout_factory::make_layout(layout_factory::gursoy_atun_type, g, space);
 
     ASSERT_NE(l, nullptr);
-    ASSERT_NE(dynamic_cast<gursoy_atun_layout*>(l.get()), nullptr);
+    ASSERT_NO_THROW(dynamic_cast<gursoy_atun_layout&>(*l));
 }
 
 } // namespace

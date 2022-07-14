@@ -65,9 +65,8 @@ TEST_F(
     A_layout_presenter,
     Calls_the_view_when_a_layout_changed_event_is_posted_to_its_pipeline_vertices_num_times)
 {
-    auto s = topology_factory::make_topology(topology_factory::cube_type, 3);
-    auto l =
-        layout_factory::make_layout(layout_factory::gursoy_atun_type, g, s);
+    auto s = cube(3);
+    auto l = std::make_unique<gursoy_atun_layout>(g, s);
     layout_response_event event{.curr = *l};
 
     EXPECT_CALL(mock,
@@ -81,9 +80,8 @@ TEST_F(
     A_layout_presenter,
     Calls_the_view_when_a_layout_changed_event_is_posted_n_times_to_its_pipeline_vertices_num_times_n_times)
 {
-    auto s = topology_factory::make_topology(topology_factory::cube_type, 3);
-    auto l =
-        layout_factory::make_layout(layout_factory::gursoy_atun_type, g, s);
+    auto s = cube(3);
+    auto l = std::make_unique<gursoy_atun_layout>(g, s);
     layout_response_event event{.curr = *l};
     const auto n = urandom(1, 5);
 

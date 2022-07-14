@@ -51,6 +51,7 @@ private:
     using core_controller =
         controller<update_layout_service, update_topology_service>;
     using core_presenter = presenter<view>;
+    using layout_pointer = layout_factory::pointer;
 
     core() = default;
     ~core() = default;
@@ -64,7 +65,7 @@ private:
 
     event_bus m_pipeline;
 
-    std::unique_ptr<layout> m_layout;
+    layout_pointer m_layout;
     topology m_space;
 
     std::unique_ptr<view> m_view;
