@@ -30,7 +30,7 @@ void core::initialize_topology(const std::string& topology_type, double scale)
 
 void core::initialize_layout(const std::string& layout_type, const graph& g)
 {
-    m_layout = layout_factory::make_layout(layout_type, g, m_space);
+    m_layout = layout_factory::make_layout(layout_type, g, *m_space);
 }
 
 void core::initialize_mvp(command_history& cmds,
@@ -43,7 +43,7 @@ void core::initialize_mvp(command_history& cmds,
 
     m_controller = std::make_unique<core_controller>(
         m_pipeline,
-        update_layout_service(m_pipeline, cmds, g, m_space, m_layout),
+        update_layout_service(m_pipeline, cmds, g, *m_space, m_layout),
         update_topology_service(m_pipeline, cmds, g, m_space, m_layout));
 }
 

@@ -19,8 +19,7 @@ class layout_factory final
 public:
     using graph = architecture::graph;
     using pointer = std::unique_ptr<layout>;
-
-    static constexpr auto gursoy_atun_type{"gursoy_atun"};
+    using layout_descriptor = typename layout_traits<layout>::descriptor;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -28,7 +27,7 @@ public:
     auto operator=(const layout_factory&) -> layout_factory& = default;
     auto operator=(layout_factory&&) -> layout_factory& = default;
 
-    static auto make_layout(const std::string& type,
+    static auto make_layout(layout_descriptor desc,
                             const graph& g,
                             const topology& space) -> pointer;
 

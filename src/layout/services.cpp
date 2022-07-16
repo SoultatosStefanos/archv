@@ -1,7 +1,5 @@
 #include "services.hpp"
 
-#include "topology_factory.hpp"
-
 #include <boost/log/trivial.hpp>
 
 namespace layout
@@ -60,7 +58,7 @@ update_topology_service::update_topology_command::update_topology_command(
     event_bus& pipeline,
     topology_request_event e,
     const graph& g,
-    topology& space,
+    topology_pointer& space,
     layout_pointer& l)
     : m_pipeline{pipeline},
       m_request{std::move(e)},
@@ -91,7 +89,7 @@ void update_topology_service::update_topology_command::change_topology(
     const std::string& layout_type)
 {
     m_space = topology_factory::make_topology(topology_type, topology_scale);
-    m_layout = layout_factory::make_layout(layout_type, m_g, m_space);
+    m_layout = layout_factory::make_layout(layout_type, m_g, *m_space);
 
     BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_type
                             << " with scale: " << topology_scale;
@@ -103,7 +101,7 @@ void update_topology_service::update_topology_command::change_topology(
 update_topology_service::update_topology_service(event_bus& pipeline,
                                                  command_history& cmds,
                                                  const graph& g,
-                                                 topology& space,
+                                                 topology_pointer& space,
                                                  layout_pointer& l)
     : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
 {}

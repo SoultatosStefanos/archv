@@ -21,8 +21,8 @@ public:
         bus = std::make_unique<event_bus>();
         g = std::make_unique<graph>();
         cmds = std::make_unique<command_history>();
-        s = cube(10);
-        l = std::make_unique<gursoy_atun_layout>(*g, s);
+        s = std::make_unique<cube>(10);
+        l = std::make_unique<gursoy_atun_layout>(*g, *s);
     }
 
 protected:
@@ -30,7 +30,7 @@ protected:
     std::unique_ptr<graph> g;
     std::unique_ptr<command_history> cmds;
     std::unique_ptr<layout::layout> l;
-    topology s;
+    std::unique_ptr<topology> s;
 };
 
 class An_update_layout_service
@@ -44,7 +44,7 @@ public:
     {
         Given_a_bus_graph_cmds_topology_and_layout::SetUp();
         service =
-            std::make_unique<update_layout_service>(*bus, *cmds, *g, s, l);
+            std::make_unique<update_layout_service>(*bus, *cmds, *g, *s, l);
     }
 
 protected:
@@ -152,7 +152,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_and_topology_when_requested_different_type)
 {
-    assert(std::holds_alternative<cube>(s));
+    assert(s->desc() == topology_traits<cube>::desc());
 
     const auto event = topology_request_event{.layout_type = "gursoy_atun",
                                               .old_type = "cube",
@@ -165,7 +165,7 @@ TEST_F(An_update_topology_service,
     std::invoke(*service, event);
 
     ASSERT_NE(prev, l.get());
-    ASSERT_TRUE(std::holds_alternative<sphere>(s));
+    ASSERT_EQ(s->desc(), topology_traits<sphere>::desc());
 }
 
 TEST_F(An_update_topology_service,
@@ -218,7 +218,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_revert_to_initial_topology_after_requested_different_type_and_undo)
 {
-    assert(std::holds_alternative<cube>(s));
+    assert(s->desc() == topology_traits<cube>::desc());
 
     const auto event = topology_request_event{.layout_type = "gursoy_atun",
                                               .old_type = "cube",
@@ -228,18 +228,18 @@ TEST_F(An_update_topology_service,
 
     std::invoke(*service, event);
 
-    EXPECT_TRUE(std::holds_alternative<sphere>(s));
+    EXPECT_EQ(s->desc(), topology_traits<sphere>::desc());
 
     cmds->undo();
 
-    ASSERT_TRUE(std::holds_alternative<cube>(s));
+    ASSERT_EQ(s->desc(), topology_traits<cube>::desc());
 }
 
 TEST_F(
     An_update_topology_service,
     Will_revert_to_changed_topology_after_requested_different_type_and_undo_and_redo)
 {
-    assert(std::holds_alternative<cube>(s));
+    assert(s->desc() == topology_traits<cube>::desc());
 
     const auto event = topology_request_event{.layout_type = "gursoy_atun",
                                               .old_type = "cube",
@@ -249,15 +249,15 @@ TEST_F(
 
     std::invoke(*service, event);
 
-    EXPECT_TRUE(std::holds_alternative<sphere>(s));
+    EXPECT_EQ(s->desc(), topology_traits<sphere>::desc());
 
     cmds->undo();
 
-    EXPECT_TRUE(std::holds_alternative<cube>(s));
+    EXPECT_EQ(s->desc(), topology_traits<cube>::desc());
 
     cmds->redo();
 
-    ASSERT_TRUE(std::holds_alternative<sphere>(s));
+    ASSERT_EQ(s->desc(), topology_traits<sphere>::desc());
 }
 
 } // namespace

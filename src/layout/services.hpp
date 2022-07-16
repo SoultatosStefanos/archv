@@ -8,6 +8,7 @@
 #include "events.hpp"
 #include "layout.hpp"
 #include "layout_factory.hpp"
+#include "topology_factory.hpp"
 #include "utility/event_system.hpp"
 #include "utility/undo_redo.hpp"
 
@@ -80,12 +81,13 @@ public:
     using event_bus = utility::event_bus;
     using command_history = utility::command_history;
     using command = utility::command;
-      using layout_pointer = layout_factory::pointer;
+    using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
 
     update_topology_service(event_bus& pipeline,
                             command_history& cmds,
                             const graph& g,
-                            topology& space,
+                            topology_pointer& space,
                             layout_pointer& l);
 
     void operator()(const topology_request_event& e);
@@ -97,7 +99,7 @@ private:
         update_topology_command(event_bus& pipeline,
                                 topology_request_event e,
                                 const graph& g,
-                                topology& space,
+                                topology_pointer& space,
                                 layout_pointer& l);
 
         virtual ~update_topology_command() override = default;
@@ -122,7 +124,7 @@ private:
         topology_request_event m_request;
 
         const graph& m_g;
-        topology& m_space;
+        topology_pointer& m_space;
         layout_pointer& m_layout;
     };
 
@@ -131,7 +133,7 @@ private:
     command_history& m_cmds;
 
     const graph& m_g;
-    topology& m_space;
+    topology_pointer& m_space;
     layout_pointer& m_layout;
 };
 

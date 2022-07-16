@@ -6,22 +6,22 @@
 namespace layout
 {
 
-auto topology_factory::make_topology(const std::string& type, double scale)
-    -> topology
+auto topology_factory::make_topology(topology_descriptor desc,
+                                     topology_scale scale) -> pointer
 {
-    if (type == sphere_type)
+    if (desc == topology_traits<sphere>::desc())
     {
-        return sphere(scale);
+        return std::make_unique<sphere>(scale);
     }
-    else if (type == cube_type)
+    else if (desc == topology_traits<cube>::desc())
     {
-        return cube(scale);
+        return std::make_unique<cube>(scale);
     }
     else
     {
-        BOOST_LOG_TRIVIAL(fatal) << "invalid topology type: " << type;
+        BOOST_LOG_TRIVIAL(fatal) << "invalid topology type: " << desc;
         assert(false);
-        return topology();
+        return nullptr;
     }
 }
 
