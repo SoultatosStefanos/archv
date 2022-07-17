@@ -9,17 +9,18 @@
 #include "topology.hpp"
 
 #include <memory>
-#include <string>
+#include <string_view>
 
 namespace layout
 {
 
+// In respect to typeid() operator.
 class layout_factory final
 {
 public:
     using graph = architecture::graph;
     using pointer = std::unique_ptr<layout>;
-    using layout_descriptor = typename layout_traits<layout>::descriptor;
+    using type_name = std::string_view;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -27,7 +28,7 @@ public:
     auto operator=(const layout_factory&) -> layout_factory& = default;
     auto operator=(layout_factory&&) -> layout_factory& = default;
 
-    static auto make_layout(layout_descriptor desc,
+    static auto make_layout(type_name type,
                             const graph& g,
                             const topology& space) -> pointer;
 

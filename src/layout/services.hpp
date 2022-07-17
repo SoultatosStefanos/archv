@@ -23,6 +23,7 @@ public:
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
+    using type_name = layout_request_event::type_name;
 
     update_layout_service(event_bus& pipeline,
                           command_history& cmds,
@@ -55,12 +56,12 @@ private:
         }
 
     private:
-        void change_layout(const std::string& type);
+        void change_layout(type_name type);
 
         event_bus& m_pipeline;
 
         layout_request_event m_request;
-        std::string m_prev_type;
+        type_name m_prev_type;
 
         const graph& m_g;
         const topology& m_space;
@@ -84,6 +85,7 @@ public:
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
+    using type_name = topology_request_event::type_name;
 
     update_topology_service(event_bus& pipeline,
                             command_history& cmds,
@@ -116,13 +118,12 @@ private:
         }
 
     private:
-        void change_topology(const std::string& topology_type,
-                             double topology_scale);
+        void change_topology(type_name topology_type, double topology_scale);
 
         event_bus& m_pipeline;
 
         topology_request_event m_request;
-        std::string m_prev_type;
+        type_name m_prev_type;
         double m_prev_scale;
 
         const graph& m_g;

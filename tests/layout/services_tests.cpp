@@ -56,7 +56,8 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, layout_request_event("gursoy_atun"));
+    std::invoke(*service,
+                layout_request_event(typeid(gursoy_atun_layout).name()));
 
     ASSERT_EQ(prev, l.get());
 }
@@ -64,7 +65,7 @@ TEST_F(An_update_layout_service,
 TEST_F(An_update_layout_service,
        Wont_post_a_layout_response_when_requested_same_type)
 {
-    const auto event = layout_request_event("gursoy_atun");
+    const auto event = layout_request_event(typeid(gursoy_atun_layout).name());
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -123,7 +124,9 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, topology_request_event{.type = "cube", .scale = 10});
+    std::invoke(
+        *service,
+        topology_request_event{.type = typeid(*s).name(), .scale = s->scale()});
 
     ASSERT_EQ(prev, l.get());
 }
@@ -131,7 +134,8 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Wont_post_a_layout_response_when_requested_same_type_and_scale)
 {
-    const auto event = topology_request_event{.type = "cube", .scale = 10};
+    const auto event =
+        topology_request_event{.type = typeid(*s).name(), .scale = s->scale()};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -143,22 +147,24 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_and_topology_when_requested_different_type)
 {
-    assert(s->desc() == topology_traits<cube>::desc());
+    assert(typeid(*s) == typeid(cube));
 
-    const auto event = topology_request_event{.type = "sphere", .scale = 80};
+    const auto event =
+        topology_request_event{.type = typeid(sphere).name(), .scale = 80};
 
     const auto* prev = l.get();
 
     std::invoke(*service, event);
 
     ASSERT_NE(prev, l.get());
-    ASSERT_EQ(s->desc(), topology_traits<sphere>::desc());
+    ASSERT_EQ(typeid(*s), typeid(sphere));
 }
 
 TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_type)
 {
-    const auto event = topology_request_event{.type = "cube", .scale = 80};
+    const auto event =
+        topology_request_event{.type = typeid(cube).name(), .scale = 80};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -170,7 +176,8 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_when_requested_different_scale)
 {
-    const auto event = topology_request_event{.type = "sphere", .scale = 100};
+    const auto event =
+        topology_request_event{.type = typeid(sphere).name(), .scale = 100};
     const auto* prev = l.get();
 
     std::invoke(*service, event);
@@ -181,7 +188,8 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_scale)
 {
-    const auto event = topology_request_event{.type = "sphere", .scale = 50};
+    const auto event =
+        topology_request_event{.type = typeid(sphere).name(), .scale = 50};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -193,38 +201,40 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_revert_to_initial_topology_after_requested_different_type_and_undo)
 {
-    assert(s->desc() == topology_traits<cube>::desc());
+    assert(typeid(*s) == typeid(cube));
 
-    const auto event = topology_request_event{.type = "sphere", .scale = 80};
+    const auto event =
+        topology_request_event{.type = typeid(sphere).name(), .scale = 80};
 
     std::invoke(*service, event);
 
-    EXPECT_EQ(s->desc(), topology_traits<sphere>::desc());
+    EXPECT_EQ(typeid(*s), typeid(sphere));
 
     cmds->undo();
 
-    ASSERT_EQ(s->desc(), topology_traits<cube>::desc());
+    ASSERT_EQ(typeid(*s), typeid(cube));
 }
 
 TEST_F(
     An_update_topology_service,
     Will_revert_to_changed_topology_after_requested_different_type_and_undo_and_redo)
 {
-    assert(s->desc() == topology_traits<cube>::desc());
+    assert(typeid(*s) == typeid(cube));
 
-    const auto event = topology_request_event{.type = "sphere", .scale = 80};
+    const auto event =
+        topology_request_event{.type = typeid(sphere).name(), .scale = 80};
 
     std::invoke(*service, event);
 
-    EXPECT_EQ(s->desc(), topology_traits<sphere>::desc());
+    EXPECT_EQ(typeid(*s), typeid(sphere));
 
     cmds->undo();
 
-    EXPECT_EQ(s->desc(), topology_traits<cube>::desc());
+    EXPECT_EQ(typeid(*s), typeid(cube));
 
     cmds->redo();
 
-    ASSERT_EQ(s->desc(), topology_traits<sphere>::desc());
+    ASSERT_EQ(typeid(*s), typeid(sphere));
 }
 
 } // namespace

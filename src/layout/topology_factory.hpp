@@ -7,17 +7,18 @@
 #include "topology.hpp"
 
 #include <memory>
-#include <string>
+#include <string_view>
 
 namespace layout
 {
 
+// In respect to typeid() operator.
 class topology_factory final
 {
 public:
     using pointer = std::unique_ptr<topology>;
-    using topology_descriptor = typename topology_traits<topology>::descriptor;
-    using topology_scale = typename topology_traits<topology>::scale_type;
+    using type_name = std::string_view;
+    using scale_type = typename topology::scale_type;
 
     topology_factory(const topology_factory&) = default;
     topology_factory(topology_factory&&) = default;
@@ -25,8 +26,7 @@ public:
     auto operator=(const topology_factory&) -> topology_factory& = default;
     auto operator=(topology_factory&&) -> topology_factory& = default;
 
-    static auto make_topology(topology_descriptor desc, topology_scale scale)
-        -> pointer;
+    static auto make_topology(type_name type, scale_type scale) -> pointer;
 
 private:
     topology_factory() = default;

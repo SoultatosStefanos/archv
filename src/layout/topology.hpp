@@ -25,7 +25,6 @@ public:
     using sphere_variant = boost::sphere_topology<std::minstd_rand>;
     using space_type = std::variant<cube_variant, sphere_variant>;
     using scale_type = double;
-    using descriptor = std::string_view;
 
     topology() = default;
     topology(const topology&) = default;
@@ -35,36 +34,19 @@ public:
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
 
-    virtual auto desc() const -> descriptor = 0;
-
     virtual auto space() const -> const space_type& = 0;
     virtual auto scale() const -> scale_type = 0;
 
     virtual auto clone() const -> std::unique_ptr<topology> = 0;
 };
 
-template <typename Topology>
-struct topology_traits
-{
-    using space_type = typename Topology::space_type;
-    using point = typename Topology::point;
-    using scale_type = typename Topology::scale_type;
-    using descriptor = typename Topology::descriptor;
-
-    static constexpr auto desc() -> descriptor { return Topology::description; }
-};
-
 class cube : public topology
 {
 public:
-    static constexpr descriptor description = "cube";
-
     explicit cube(scale_type scale)
         : m_space{cube_variant(scale)}, m_scale{scale}
     {}
     virtual ~cube() override = default;
-
-    virtual auto desc() const -> descriptor override { return description; }
 
     virtual auto space() const -> const space_type& override { return m_space; }
     virtual auto scale() const -> scale_type override { return m_scale; }
@@ -82,14 +64,10 @@ private:
 class sphere : public topology
 {
 public:
-    static constexpr descriptor description = "sphere";
-
     explicit sphere(scale_type scale)
         : m_space{sphere_variant(scale)}, m_scale{scale}
     {}
     virtual ~sphere() override = default;
-
-    virtual auto desc() const -> descriptor override { return description; }
 
     virtual auto space() const -> const space_type& override { return m_space; }
     virtual auto scale() const -> scale_type override { return m_scale; }

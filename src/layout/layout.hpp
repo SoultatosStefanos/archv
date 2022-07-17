@@ -19,7 +19,6 @@ public:
     using graph = architecture::graph;
     using vertex = graph::vertex_descriptor;
     using coord = double;
-    using descriptor = std::string_view;
 
     layout() = default;
     layout(const layout&) = default;
@@ -29,24 +28,11 @@ public:
     auto operator=(const layout&) -> layout& = default;
     auto operator=(layout&&) -> layout& = default;
 
-    virtual auto desc() const -> descriptor = 0;
-
     virtual auto x(vertex v) const -> coord = 0;
     virtual auto y(vertex v) const -> coord = 0;
     virtual auto z(vertex v) const -> coord = 0;
 
     virtual auto clone() const -> std::unique_ptr<layout> = 0;
-};
-
-template <typename Layout>
-struct layout_traits
-{
-    using graph = typename Layout::graph;
-    using vertex = typename Layout::vertex;
-    using coord = typename Layout::coord;
-    using descriptor = typename Layout::descriptor;
-
-    static constexpr auto desc() -> descriptor { return Layout::description; }
 };
 
 // Assigns a position, at a 3d space, to each graph vertex.
@@ -61,12 +47,8 @@ struct layout_traits
 class gursoy_atun_layout : public layout
 {
 public:
-    static constexpr descriptor description = "gursoy_atun";
-
     gursoy_atun_layout(const graph& g, const topology& space);
     virtual ~gursoy_atun_layout() override = default;
-
-    virtual auto desc() const -> descriptor { return description; }
 
     virtual auto x(vertex v) const -> coord override
     {

@@ -7,12 +7,16 @@
 #include "layout.hpp"
 #include "topology.hpp"
 
+#include <string_view>
+
 namespace layout
 {
 
 struct layout_request_event
 {
-    std::string type;
+    using type_name = std::string_view;
+
+    type_name type;
 
     auto operator==(const layout_request_event&) const -> bool = default;
     auto operator!=(const layout_request_event&) const -> bool = default;
@@ -20,7 +24,9 @@ struct layout_request_event
 
 struct topology_request_event
 {
-    std::string type;
+    using type_name = std::string_view;
+
+    type_name type;
     double scale;
 
     auto operator==(const topology_request_event&) const -> bool = default;
