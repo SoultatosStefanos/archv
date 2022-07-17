@@ -51,7 +51,8 @@ void app::setup()
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
 
-    { // layout
+#if (0) // FIXME
+    {   // layout
 
         // NOTE: Will get the initial configurations from file and delegate to
         // the presenter to unformat them
@@ -72,6 +73,8 @@ void app::setup()
 
         m_layout_core->update_view();
     }
+
+#endif
 }
 
 // FIXME
@@ -107,7 +110,7 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 
     if (e.keysym.sym == quit_sym)
         getRoot()->queueEndRendering();
-    #if (0) // FIXME
+#if (0) // FIXME
     else if (e.keysym.sym == SDLK_LEFT)
         m_cmds.undo();
     else if (e.keysym.sym == SDLK_RIGHT)
@@ -122,7 +125,7 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
         m_layout_core->get_view().send_topology_request(
             typeid(layout::cube).name(), 80);
     }
-    #endif
+#endif
 
     return true;
 }

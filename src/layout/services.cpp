@@ -6,6 +6,28 @@
 namespace layout
 {
 
+#if (0) // FIXME
+
+void initialize_service::operator()(layout_type lay_type,
+                                    topology_type space_type,
+                                    topology_scale scale,
+                                    const graph& g,
+                                    layout_pointer& layout,
+                                    topology_pointer& space)
+{
+    space = topology_factory::make_topology(space_type, scale);
+    layout = layout_factory::make_layout(lay_type, g, *space);
+
+    BOOST_LOG_TRIVIAL(info)
+        << "layout initialized to: " << boost::core::demangle(lay_type.data())
+        << ", with topology type: " << boost::core::demangle(space_type.data())
+        << " and scale: " << scale;
+
+    m_signal(*layout, *space);
+}
+
+#endif
+
 update_layout_service::update_layout_command::update_layout_command(
     signal& s,
     type_name type,
@@ -39,20 +61,20 @@ void update_layout_service::update_layout_command::change_layout(type_name type)
     BOOST_LOG_TRIVIAL(info)
         << "layout changed to: " << boost::core::demangle(type.data());
 
-    m_signal(*m_layout);
+    m_signal(*m_layout, *m_space);
 }
 
-update_layout_service::update_layout_service(command_history& cmds)
-    : m_cmds(cmds)
+update_layout_service::update_layout_service(command_history& cmds,
+                                             const graph& g,
+                                             layout_pointer& layout,
+                                             const topology_pointer& space)
+    : m_cmds(cmds), m_g{g}, m_layout{layout}, m_space{space}
 {}
 
-void update_layout_service::operator()(type_name type,
-                                       const graph& g,
-                                       layout_factory::pointer& layout,
-                                       const topology_pointer& space)
+void update_layout_service::operator()(type_name type)
 {
     m_cmds.execute(std::make_unique<update_layout_command>(
-        m_signal, type, g, layout, space));
+        m_signal, type, m_g, m_layout, m_space));
 }
 
 update_topology_service::update_topology_command::update_topology_command(
@@ -101,18 +123,18 @@ void update_topology_service::update_topology_command::change_topology(
     m_signal(*m_layout, *m_space);
 }
 
-update_topology_service::update_topology_service(command_history& cmds)
-    : m_cmds{cmds}
+update_topology_service::update_topology_service(
+    command_history& cmds,
+    const graph& g,
+    layout_factory::pointer& layout,
+    topology_factory::pointer& topology)
+    : m_cmds{cmds}, m_g{g}, m_layout{layout}, m_topology{topology}
 {}
 
-void update_topology_service::operator()(type_name type,
-                                         scale_type scale,
-                                         const graph& g,
-                                         layout_pointer& l,
-                                         topology_pointer& space)
+void update_topology_service::operator()(type_name type, scale_type scale)
 {
     m_cmds.execute(std::make_unique<update_topology_command>(
-        m_signal, type, scale, g, space, l));
+        m_signal, type, scale, m_g, m_topology, m_layout));
 }
 
 } // namespace layout

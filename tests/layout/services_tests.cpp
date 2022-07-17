@@ -37,12 +37,13 @@ protected:
 class An_update_layout_service : public Given_a_graph_cmds_topology_and_layout
 {
 public:
-    using mock_subscriber = NiceMock<MockFunction<void(const lay::layout&)>>;
+    using mock_subscriber =
+        NiceMock<MockFunction<void(const lay::layout&, const topology&)>>;
 
     void SetUp() override
     {
         Given_a_graph_cmds_topology_and_layout::SetUp();
-        service = std::make_unique<update_layout_service>(*cmds);
+        service = std::make_unique<update_layout_service>(*cmds, *g, l, s);
     }
 
 protected:
@@ -54,7 +55,7 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name(), *g, l, s);
+    std::invoke(*service, typeid(gursoy_atun_layout).name());
 
     ASSERT_EQ(prev, l.get());
 }
@@ -65,9 +66,9 @@ TEST_F(An_update_layout_service,
     mock_subscriber mock;
     service->on_layout_response(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name(), *g, l, s);
+    std::invoke(*service, typeid(gursoy_atun_layout).name());
 }
 
 // TODO
@@ -106,7 +107,7 @@ public:
     void SetUp() override
     {
         Given_a_graph_cmds_topology_and_layout::SetUp();
-        service = std::make_unique<update_topology_service>(*cmds);
+        service = std::make_unique<update_topology_service>(*cmds, *g, l, s);
     }
 
 protected:
@@ -118,7 +119,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(*s).name(), s->scale(), *g, l, s);
+    std::invoke(*service, typeid(*s).name(), s->scale());
 
     ASSERT_EQ(prev, l.get());
 }
@@ -131,7 +132,7 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, typeid(*s).name(), s->scale(), *g, l, s);
+    std::invoke(*service, typeid(*s).name(), s->scale());
 }
 
 TEST_F(An_update_topology_service,
@@ -139,7 +140,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
+    std::invoke(*service, typeid(sphere).name(), 80);
 
     ASSERT_NE(prev, l.get());
     ASSERT_EQ(typeid(*s), typeid(sphere));
@@ -153,7 +154,7 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(cube).name(), 80, *g, l, s);
+    std::invoke(*service, typeid(cube).name(), 80);
 }
 
 TEST_F(An_update_topology_service,
@@ -161,7 +162,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(sphere).name(), 100, *g, l, s);
+    std::invoke(*service, typeid(sphere).name(), 100);
 
     ASSERT_NE(prev, l.get());
 }
@@ -174,7 +175,7 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(sphere).name(), 50, *g, l, s);
+    std::invoke(*service, typeid(sphere).name(), 50);
 }
 
 TEST_F(An_update_topology_service,
@@ -182,7 +183,7 @@ TEST_F(An_update_topology_service,
 {
     assert(typeid(*s) == typeid(cube));
 
-    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
+    std::invoke(*service, typeid(sphere).name(), 80);
 
     EXPECT_EQ(typeid(*s), typeid(sphere));
 
@@ -197,7 +198,7 @@ TEST_F(
 {
     assert(typeid(*s) == typeid(cube));
 
-    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
+    std::invoke(*service, typeid(sphere).name(), 80);
 
     EXPECT_EQ(typeid(*s), typeid(sphere));
 

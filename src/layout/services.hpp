@@ -15,9 +15,43 @@
 namespace layout
 {
 
+#if (0) // FIXME
+
+class initialize_service
+{
+    using signal =
+        boost::signals2::signal<void(const layout&, const topology&)>;
+
+public:
+    using graph = architecture::graph;
+    using command_history = utility::command_history;
+    using command = utility::command;
+    using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
+    using layout_type = layout_factory::type_name;
+    using topology_type = topology_factory::type_name;
+    using topology_scale = topology_factory::scale_type;
+    using layout_listener = signal::slot_type;
+
+    void operator()(layout_type lay_type,
+                    topology_type space_type,
+                    topology_scale scale,
+                    const graph& g,
+                    layout_pointer& layout,
+                    topology_pointer& space);
+
+    void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
+
+private:
+    signal m_signal;
+};
+
+#endif
+
 class update_layout_service
 {
-    using signal = boost::signals2::signal<void(const layout&)>;
+    using signal =
+        boost::signals2::signal<void(const layout&, const topology&)>;
 
 public:
     using graph = architecture::graph;
@@ -28,12 +62,12 @@ public:
     using type_name = layout_factory::type_name;
     using layout_listener = signal::slot_type;
 
-    explicit update_layout_service(command_history& cmds);
+    update_layout_service(command_history& cmds,
+                          const graph& g,
+                          layout_pointer& layout,
+                          const topology_pointer& space);
 
-    void operator()(type_name type,
-                    const graph& g,
-                    layout_pointer& layout,
-                    const topology_pointer& space);
+    void operator()(type_name type);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
@@ -74,6 +108,9 @@ private:
 
     signal m_signal;
     command_history& m_cmds;
+    const graph& m_g;
+    layout_pointer& m_layout;
+    const topology_pointer& m_space;
 };
 
 class update_topology_service
@@ -91,13 +128,12 @@ public:
     using scale_type = topology_factory::scale_type;
     using layout_listener = signal::slot_type;
 
-    explicit update_topology_service(command_history& cmds);
+    update_topology_service(command_history& cmds,
+                            const graph& g,
+                            layout_factory::pointer& layout,
+                            topology_factory::pointer& topology);
 
-    void operator()(type_name type,
-                    scale_type scale,
-                    const graph& g,
-                    layout_factory::pointer& layout,
-                    topology_factory::pointer& topology);
+    void operator()(type_name type, scale_type scale);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
@@ -141,6 +177,9 @@ private:
 
     signal m_signal;
     command_history& m_cmds;
+    const graph& m_g;
+    layout_factory::pointer& m_layout;
+    topology_factory::pointer& m_topology;
 };
 
 } // namespace layout

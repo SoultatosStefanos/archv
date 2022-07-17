@@ -49,18 +49,13 @@ struct dummy_view
 
 struct dummy_update_layout
 {
-    using layout_listener = std::function<void(const lay::layout&)>;
+    using layout_listener =
+        std::function<void(const lay::layout&, const topology&)>;
 
     void on_layout_response(const layout_listener&) {}
 
     bool called = false;
-    void operator()(layout_factory::type_name,
-                    const architecture::graph&,
-                    layout_factory::pointer&,
-                    const topology_factory::pointer&)
-    {
-        called = true;
-    }
+    void operator()(layout_factory::type_name) { called = true; }
 };
 
 struct dummy_update_topology
@@ -71,11 +66,7 @@ struct dummy_update_topology
     void on_layout_response(const layout_listener&) {}
 
     bool called = false;
-    void operator()(topology_factory::type_name,
-                    topology_factory::scale_type,
-                    const architecture::graph&,
-                    layout_factory::pointer&,
-                    topology_factory::pointer&)
+    void operator()(topology_factory::type_name, topology_factory::scale_type)
     {
         called = true;
     }

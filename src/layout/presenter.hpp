@@ -38,23 +38,17 @@ concept view_concept =
 
 template <typename Class>
 concept update_layout_concept =
-    std::invocable<Class,
-                   layout_factory::type_name,
-                   const architecture::graph&,
-                   layout_factory::pointer&,
-                   const topology_factory::pointer&> &&
+    std::invocable<Class, layout_factory::type_name> &&
     requires(Class val, typename Class::layout_listener listener)
 {
     {val.on_layout_response(listener)};
 };
 
 template <typename Class>
-concept update_topology_concept = std::invocable<Class,
-                                                 topology_factory::type_name,
-                                                 topology_factory::scale_type,
-                                                 const architecture::graph&,
-                                                 layout_factory::pointer&,
-                                                 topology_factory::pointer&> &&
+concept update_topology_concept =
+    std::invocable<Class,
+                   topology_factory::type_name,
+                   topology_factory::scale_type> &&
     requires(Class val, typename Class::layout_listener listener)
 {
     {val.on_layout_response(listener)};
@@ -74,8 +68,6 @@ class presenter
 {
 public:
     using graph = architecture::graph;
-    using layout_pointer = layout_factory::pointer;
-    using topology_pointer = topology_factory::pointer;
     using view = View;
     using layout_selection = typename view::layout_selection;
     using topology_selection = typename view::topology_selection;
@@ -84,24 +76,21 @@ public:
     using update_topology_service = UpdateTopologyService;
 
     presenter(const graph& g,
-              layout_pointer layout = nullptr,
-              topology_pointer topology = nullptr,
               view v = view(),
               update_layout_service usecase1 = update_layout_service(),
               update_topology_service usecase2 = update_topology_service())
         : m_g{g},
-          m_layout{std::move(layout)},
-          m_space{std::move(topology)},
           m_view{std::move(v)},
           m_update_layout{std::move(usecase1)},
           m_update_topology{std::move(usecase2)}
     {
         m_view.on_layout_request([this](auto type) { update_layout(type); });
+
         m_view.on_topology_request(
             [this](auto type, auto scale) { update_topology(type, scale); });
 
         m_update_layout.on_layout_response(
-            [this](const auto& l) { update_view(l); });
+            [this](const auto& l, const auto& t) { update_view(l, t); });
 
         m_update_topology.on_layout_response(
             [this](const auto& l, const auto& t) { update_view(l, t); });
@@ -116,19 +105,6 @@ public:
     auto get_space_updater() const -> const auto& { return m_update_topology; }
     auto get_space_updater() -> auto& { return m_update_topology; }
 
-    void update_view()
-    {
-        assert(m_layout);
-        update_view(*m_layout);
-    }
-
-    void update_view(const layout& l)
-    {
-        assert(m_space);
-        update_view_selections(l, *m_space);
-        update_view_vertices(l);
-    }
-
     void update_view(const layout& l, const topology& s)
     {
         update_view_selections(l, s);
@@ -137,12 +113,12 @@ public:
 
     void update_layout(layout_selection type)
     {
-        m_update_layout(type, m_g, m_layout, m_space);
+        std::invoke(m_update_layout, type);
     }
 
     void update_topology(topology_selection type, topology_scale_selection s)
     {
-        m_update_topology(type, s, m_g, m_layout, m_space);
+        std::invoke(m_update_topology, type, s);
     }
 
 private:
@@ -165,8 +141,6 @@ private:
     }
 
     const graph& m_g;
-    layout_pointer m_layout;
-    topology_pointer m_space;
 
     view m_view;
 
