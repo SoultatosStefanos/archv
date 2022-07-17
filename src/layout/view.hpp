@@ -40,8 +40,8 @@ public:
     void update_topology_selection(topology_selection space,
                                    topology_scale_selection scale);
 
-    void on_layout_request(layout_request_listener f);
-    void on_topology_request(topology_request_listener f);
+    void on_layout_request(const layout_request_listener& f);
+    void on_topology_request(const topology_request_listener& f);
 
     void send_layout_request(layout_selection l) const;
     void send_topology_request(topology_selection space,

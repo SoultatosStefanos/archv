@@ -26,7 +26,7 @@ struct dummy_view
         std::function<void(topology_selection, topology_scale_selection)>;
 
     int draw_vertex_called_times = 0;
-    void draw_vertex(vertex_id, coord, coord, coord)
+    void draw_vertex(const vertex_id&, coord, coord, coord)
     {
         ++draw_vertex_called_times;
     }
@@ -43,15 +43,15 @@ struct dummy_view
         selected_topology_scale = scale;
     }
 
-    void on_layout_request(layout_request_listener) {}
-    void on_topology_request(topology_request_listener) {}
+    void on_layout_request(const layout_request_listener&) {}
+    void on_topology_request(const topology_request_listener&) {}
 };
 
 struct dummy_update_layout
 {
     using layout_listener = std::function<void(const lay::layout&)>;
 
-    void on_layout_response(layout_listener) {}
+    void on_layout_response(const layout_listener&) {}
 
     bool called = false;
     void operator()(layout_factory::type_name,
@@ -68,7 +68,7 @@ struct dummy_update_topology
     using layout_listener =
         std::function<void(const lay::layout&, const topology&)>;
 
-    void on_layout_response(layout_listener) {}
+    void on_layout_response(const layout_listener&) {}
 
     bool called = false;
     void operator()(topology_factory::type_name,

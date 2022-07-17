@@ -30,12 +30,12 @@ void view::update_topology_selection(topology_selection,
         << "update_topology_selection() not implemented yet";
 }
 
-void view::on_layout_request(layout_request_listener f)
+void view::on_layout_request(const layout_request_listener& f)
 {
     m_layout_signal.connect(f);
 }
 
-void view::on_topology_request(topology_request_listener f)
+void view::on_topology_request(const topology_request_listener& f)
 {
     m_topology_signal.connect(f);
 }
