@@ -18,13 +18,11 @@ void view::draw_vertex(const vertex_id& id, coord x, coord y, coord z)
                              << y << ", " << z << ')';
 }
 
-// TODO
 void view::update_layout_selection(layout_selection)
 {
     BOOST_LOG_TRIVIAL(error) << "update_layout_selection() not implemented yet";
 }
 
-// TODO
 void view::update_topology_selection(topology_selection,
                                      topology_scale_selection)
 {

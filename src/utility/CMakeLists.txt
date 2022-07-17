@@ -1,6 +1,5 @@
 set(FILES
 	all.hpp
-	event_system.hpp
 	flyweight.cpp
 	flyweight.hpp
 	path.hpp

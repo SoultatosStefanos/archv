@@ -4,7 +4,6 @@
 #ifndef UTILITY_ALL_HPP
 #define UTILITY_ALL_HPP
 
-#include "event_system.hpp"
 #include "flyweight.hpp"
 #include "path.hpp"
 #include "random.hpp"

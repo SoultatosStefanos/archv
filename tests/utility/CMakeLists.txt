@@ -1,5 +1,4 @@
 set(FILES
-	event_system_tests.cpp
 	undo_redo_tests.cpp
 )
 set(SUBDIRECTORIES)

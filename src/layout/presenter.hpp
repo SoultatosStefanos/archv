@@ -107,8 +107,14 @@ public:
             [this](const auto& l, const auto& t) { update_view(l, t); });
     }
 
-    auto ui() const -> const view& { return m_view; }
-    auto ui() -> view& { return m_view; }
+    auto get_view() const -> const auto& { return m_view; }
+    auto get_view() -> auto& { return m_view; }
+
+    auto get_layout_updater() const -> const auto& { return m_update_layout; }
+    auto get_layout_updater() -> auto& { return m_update_layout; }
+
+    auto get_space_updater() const -> const auto& { return m_update_topology; }
+    auto get_space_updater() -> auto& { return m_update_topology; }
 
     void update_view()
     {
