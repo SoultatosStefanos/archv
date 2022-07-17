@@ -4,30 +4,53 @@
 #ifndef LAYOUT_VIEW_HPP
 #define LAYOUT_VIEW_HPP
 
-#include "events.hpp"
-#include "utility/event_system.hpp"
-
 #include <OgreSceneManager.h>
+#include <boost/signals2/signal.hpp>
 #include <memory>
 #include <string>
+#include <string_view>
 
 namespace layout
 {
 
-// TODO Fire requests from gui
 class view
 {
 public:
-    using event_bus = utility::event_bus;
-
-    view(event_bus& pipeline, const Ogre::SceneManager& scene);
-
-    void draw_vertex(const std::string& id, double x, double y, double z);
-
-    // TODO draw edge
+    using vertex_id = std::string;
+    using coord = double;
+    using layout_selection = std::string_view;
+    using topology_selection = std::string_view;
+    using topology_scale_selection = double;
 
 private:
-    event_bus& m_pipeline;
+    using layout_request = boost::signals2::signal<void(layout_selection)>;
+    using topology_request = boost::signals2::signal<void(
+        topology_selection, topology_scale_selection)>;
+
+public:
+    using layout_request_listener = layout_request::slot_type;
+    using topology_request_listener = topology_request::slot_type;
+
+    explicit view(const Ogre::SceneManager& scene);
+
+    void draw_vertex(const vertex_id& id, coord x, coord y, coord z);
+    // TODO draw edge
+
+    void update_layout_selection(layout_selection l);
+    void update_topology_selection(topology_selection space,
+                                   topology_scale_selection scale);
+
+    void on_layout_request(layout_request_listener f);
+    void on_topology_request(topology_request_listener f);
+
+    void send_layout_request(layout_selection l) const;
+    void send_topology_request(topology_selection space,
+                               topology_scale_selection scale) const;
+
+private:
+    layout_request m_layout_signal;
+    topology_request m_topology_signal;
+
     const Ogre::SceneManager& m_scene;
 };
 

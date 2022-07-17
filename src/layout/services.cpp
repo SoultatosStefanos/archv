@@ -7,17 +7,17 @@ namespace layout
 {
 
 update_layout_service::update_layout_command::update_layout_command(
-    event_bus& pipeline,
+    signal& s,
     type_name type,
     const graph& g,
-    const topology& space,
-    layout_pointer& l)
-    : m_pipeline{pipeline},
+    layout_pointer& layout,
+    const topology_pointer& space)
+    : m_signal{s},
       m_type(type),
-      m_prev_type{typeid(*l).name()},
+      m_prev_type{typeid(*layout).name()},
       m_g{g},
-      m_space{space},
-      m_layout{l}
+      m_layout{layout},
+      m_space{space}
 {}
 
 void update_layout_service::update_layout_command::execute()
@@ -34,36 +34,35 @@ void update_layout_service::update_layout_command::undo()
 
 void update_layout_service::update_layout_command::change_layout(type_name type)
 {
-    m_layout = layout_factory::make_layout(type, m_g, m_space);
+    m_layout = layout_factory::make_layout(type, m_g, *m_space);
 
     BOOST_LOG_TRIVIAL(info)
         << "layout changed to: " << boost::core::demangle(type.data());
 
-    m_pipeline.post(layout_response_event{.curr = *m_layout});
+    m_signal(*m_layout);
 }
 
-update_layout_service::update_layout_service(event_bus& pipeline,
-                                             command_history& cmds,
-                                             const graph& g,
-                                             const topology& space,
-                                             layout_pointer& l)
-    : m_pipeline{pipeline}, m_cmds(cmds), m_g{g}, m_space{space}, m_layout{l}
+update_layout_service::update_layout_service(command_history& cmds)
+    : m_cmds(cmds)
 {}
 
-void update_layout_service::operator()(type_name type)
+void update_layout_service::operator()(type_name type,
+                                       const graph& g,
+                                       layout_factory::pointer& layout,
+                                       const topology_pointer& space)
 {
     m_cmds.execute(std::make_unique<update_layout_command>(
-        m_pipeline, type, m_g, m_space, m_layout));
+        m_signal, type, g, layout, space));
 }
 
 update_topology_service::update_topology_command::update_topology_command(
-    event_bus& pipeline,
+    signal& s,
     type_name type,
-    double scale,
+    scale_type scale,
     const graph& g,
     topology_pointer& space,
     layout_pointer& l)
-    : m_pipeline{pipeline},
+    : m_signal{s},
       m_type{type},
       m_scale{scale},
       m_prev_type{typeid(*space).name()},
@@ -87,32 +86,33 @@ void update_topology_service::update_topology_command::undo()
 }
 
 void update_topology_service::update_topology_command::change_topology(
-    type_name topology_type, double topology_scale)
+    type_name type, double scale)
 {
-    m_space = topology_factory::make_topology(topology_type, topology_scale);
-    m_layout =
-        layout_factory::make_layout(typeid(*m_layout).name(), m_g, *m_space);
+    m_space = topology_factory::make_topology(type, scale);
 
-    BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_type
-                            << " with scale: " << topology_scale;
-    BOOST_LOG_TRIVIAL(info) << "layout changed to: "
-                            << boost::core::demangle(typeid(*m_layout).name());
+    const auto layout_type = typeid(*m_layout).name();
+    m_layout = layout_factory::make_layout(layout_type, m_g, *m_space);
 
-    m_pipeline.post(layout_response_event{.curr = *m_layout});
+    BOOST_LOG_TRIVIAL(info)
+        << "topology changed to: " << type << " with scale: " << scale;
+    BOOST_LOG_TRIVIAL(info)
+        << "layout changed to: " << boost::core::demangle(layout_type);
+
+    m_signal(*m_layout, *m_space);
 }
 
-update_topology_service::update_topology_service(event_bus& pipeline,
-                                                 command_history& cmds,
-                                                 const graph& g,
-                                                 topology_pointer& space,
-                                                 layout_pointer& l)
-    : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
+update_topology_service::update_topology_service(command_history& cmds)
+    : m_cmds{cmds}
 {}
 
-void update_topology_service::operator()(type_name type, double scale)
+void update_topology_service::operator()(type_name type,
+                                         scale_type scale,
+                                         const graph& g,
+                                         layout_pointer& l,
+                                         topology_pointer& space)
 {
     m_cmds.execute(std::make_unique<update_topology_command>(
-        m_pipeline, type, scale, m_g, m_space, m_layout));
+        m_signal, type, scale, g, space, l));
 }
 
 } // namespace layout

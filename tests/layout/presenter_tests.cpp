@@ -12,83 +12,86 @@ using namespace architecture;
 using namespace utility;
 using namespace layout;
 
-class view_interface
+namespace lay = layout;
+
+struct dummy_view
 {
-public:
-    view_interface() = default;
-    view_interface(const view_interface&) = default;
-    view_interface(view_interface&&) = default;
-    virtual ~view_interface() = default;
+    using vertex_id = std::string;
+    using coord = long double;
+    using layout_selection = const char*;
+    using topology_selection = const char*;
+    using topology_scale_selection = double;
+    using layout_request_listener = std::function<void(layout_selection)>;
+    using topology_request_listener =
+        std::function<void(topology_selection, topology_scale_selection)>;
 
-    auto operator=(const view_interface&) -> view_interface& = default;
-    auto operator=(view_interface&&) -> view_interface& = default;
+    void draw_vertex(vertex_id, coord, coord, coord) {}
 
-    virtual void draw_vertex(const std::string&, double, double, double) = 0;
+    void update_layout_selection(layout_selection) {}
+    void update_topology_selection(topology_selection, topology_scale_selection)
+    {}
+
+    void on_layout_request(layout_request_listener) {}
+    void on_topology_request(topology_request_listener) {}
 };
 
-class view_mock : public view_interface
+struct dummy_update_layout
 {
-public:
-    view_mock() = default;
-    ~view_mock() override = default;
+    using layout_response_listener = std::function<void(const lay::layout&)>;
 
-    MOCK_METHOD(void,
-                draw_vertex,
-                (const std::string&, double, double, double),
-                (override));
+    void on_layout_response(layout_response_listener) {}
+
+    void operator()(layout_factory::type_name,
+                    const architecture::graph&,
+                    layout_factory::pointer&,
+                    const topology_factory::pointer&)
+    {}
+};
+
+struct dummy_update_topology
+{
+    using layout_response_listener =
+        std::function<void(const lay::layout&, const topology&)>;
+
+    void on_layout_response(layout_response_listener) {}
+
+    void operator()(topology_factory::type_name,
+                    topology_factory::scale_type,
+                    const architecture::graph&,
+                    layout_factory::pointer&,
+                    topology_factory::pointer&)
+    {}
 };
 
 class A_layout_presenter : public testing::Test
 {
 public:
-    using present = presenter<view_interface>;
+    using test_presenter =
+        presenter<dummy_view, dummy_update_layout, dummy_update_topology>;
 
-    void SetUp() override
-    {
-        pipeline = std::make_unique<event_bus>();
-        pres = std::make_unique<present>(*pipeline, g, mock);
-    }
+    void SetUp() override { pres = std::make_unique<test_presenter>(g); }
 
 protected:
     static constexpr auto vertices_num = 100;
 
-    view_mock mock;
     graph g{vertices_num};
-
-    std::unique_ptr<event_bus> pipeline;
-    std::unique_ptr<present> pres;
+    std::unique_ptr<test_presenter> pres;
 };
 
-TEST_F(
-    A_layout_presenter,
-    Calls_the_view_when_a_layout_changed_event_is_posted_to_its_pipeline_vertices_num_times)
-{
-    auto s = cube(3);
-    auto l = std::make_unique<gursoy_atun_layout>(g, s);
-    layout_response_event event{.curr = *l};
+// TEST_F(A_layout_presenter,
+//        Calls_the_view_with_update_layout_view_vertices_num_times)
+// {
+//     auto s = cube(3);
+//     auto l = std::make_unique<gursoy_atun_layout>(g, s);
+//     layout_response_event event{.curr = *l};
 
-    EXPECT_CALL(mock,
-                draw_vertex(testing::_, testing::_, testing::_, testing::_))
-        .Times(vertices_num);
+//     EXPECT_CALL(pres->ui)
 
-    pipeline->post(event);
-}
+//     EXPECT_CALL(mock,
+//                 draw_vertex(testing::_, testing::_, testing::_, testing::_))
+//         .Times(vertices_num);
 
-TEST_F(
-    A_layout_presenter,
-    Calls_the_view_when_a_layout_changed_event_is_posted_n_times_to_its_pipeline_vertices_num_times_n_times)
-{
-    auto s = cube(3);
-    auto l = std::make_unique<gursoy_atun_layout>(g, s);
-    layout_response_event event{.curr = *l};
-    const auto n = urandom(1, 5);
-
-    EXPECT_CALL(mock,
-                draw_vertex(testing::_, testing::_, testing::_, testing::_))
-        .Times(vertices_num * n);
-
-    for (auto i = 0; i < n; ++i)
-        pipeline->post(event);
-}
+//     pipeline->post(event);
+// }
 
 } // namespace

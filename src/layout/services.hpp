@@ -5,43 +5,47 @@
 #ifndef LAYOUT_SERVICES_HPP
 #define LAYOUT_SERVICES_HPP
 
-#include "architecture/all.hpp"
-#include "events.hpp"
-#include "layout.hpp"
+#include "architecture/graph.hpp"
 #include "factories.hpp"
-#include "utility/event_system.hpp"
+#include "layout.hpp"
 #include "utility/undo_redo.hpp"
+
+#include <boost/signals2/signal.hpp>
 
 namespace layout
 {
 
 class update_layout_service
 {
+    using signal = boost::signals2::signal<void(const layout&)>;
+
 public:
     using graph = architecture::graph;
-    using event_bus = utility::event_bus;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
     using type_name = layout_factory::type_name;
+    using layout_listener = signal::slot_type;
 
-    update_layout_service(event_bus& pipeline,
-                          command_history& cmds,
-                          const graph& g,
-                          const topology& space,
-                          layout_pointer& l);
+    explicit update_layout_service(command_history& cmds);
 
-    void operator()(type_name type);
+    void operator()(type_name type,
+                    const graph& g,
+                    layout_pointer& layout,
+                    const topology_pointer& space);
+
+    void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
 private:
     class update_layout_command : public command
     {
     public:
-        update_layout_command(event_bus& pipeline,
+        update_layout_command(signal& s,
                               type_name type,
                               const graph& g,
-                              const topology& space,
-                              layout_pointer& l);
+                              layout_pointer& layout,
+                              const topology_pointer& space);
 
         virtual ~update_layout_command() override = default;
 
@@ -58,50 +62,52 @@ private:
     private:
         void change_layout(type_name type);
 
-        event_bus& m_pipeline;
+        signal& m_signal;
 
         type_name m_type;
         type_name m_prev_type;
 
         const graph& m_g;
-        const topology& m_space;
         layout_pointer& m_layout;
+        const topology_pointer& m_space;
     };
 
-    event_bus& m_pipeline;
+    signal m_signal;
     command_history& m_cmds;
-
-    const graph& m_g;
-    const topology& m_space;
-    layout_pointer& m_layout;
 };
 
 class update_topology_service
 {
+    using signal =
+        boost::signals2::signal<void(const layout&, const topology&)>;
+
 public:
     using graph = architecture::graph;
-    using event_bus = utility::event_bus;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using type_name = topology_factory::type_name;
+    using scale_type = topology_factory::scale_type;
+    using layout_listener = signal::slot_type;
 
-    update_topology_service(event_bus& pipeline,
-                            command_history& cmds,
-                            const graph& g,
-                            topology_pointer& space,
-                            layout_pointer& l);
+    explicit update_topology_service(command_history& cmds);
 
-    void operator()(type_name type, double scale);
+    void operator()(type_name type,
+                    scale_type scale,
+                    const graph& g,
+                    layout_factory::pointer& layout,
+                    topology_factory::pointer& topology);
+
+    void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
 private:
     class update_topology_command : public command
     {
     public:
-        update_topology_command(event_bus& pipeline,
+        update_topology_command(signal& s,
                                 type_name type,
-                                double scale,
+                                scale_type scale,
                                 const graph& g,
                                 topology_pointer& space,
                                 layout_pointer& l);
@@ -121,7 +127,7 @@ private:
     private:
         void change_topology(type_name topology_type, double topology_scale);
 
-        event_bus& m_pipeline;
+        signal& m_signal;
 
         type_name m_type;
         double m_scale;
@@ -133,13 +139,8 @@ private:
         layout_pointer& m_layout;
     };
 
-    event_bus& m_pipeline;
-
+    signal m_signal;
     command_history& m_cmds;
-
-    const graph& m_g;
-    topology_pointer& m_space;
-    layout_pointer& m_layout;
 };
 
 } // namespace layout

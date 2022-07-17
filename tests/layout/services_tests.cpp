@@ -13,38 +13,36 @@ using namespace layout;
 using namespace utility;
 using namespace testing;
 
-class Given_a_bus_graph_cmds_topology_and_layout : public Test
+namespace lay = layout;
+
+class Given_a_graph_cmds_topology_and_layout : public Test
 {
 public:
     void SetUp() override
     {
-        bus = std::make_unique<event_bus>();
         g = std::make_unique<graph>();
         cmds = std::make_unique<command_history>();
-        s = std::make_unique<cube>(10);
-        l = std::make_unique<gursoy_atun_layout>(*g, *s);
+        s = topology_factory::make_topology(typeid(cube).name(), 10);
+        l = layout_factory::make_layout(
+            typeid(gursoy_atun_layout).name(), *g, *s);
     }
 
 protected:
-    std::unique_ptr<event_bus> bus;
     std::unique_ptr<graph> g;
     std::unique_ptr<command_history> cmds;
-    std::unique_ptr<layout::layout> l;
-    std::unique_ptr<topology> s;
+    layout_factory::pointer l;
+    topology_factory::pointer s;
 };
 
-class An_update_layout_service
-    : public Given_a_bus_graph_cmds_topology_and_layout
+class An_update_layout_service : public Given_a_graph_cmds_topology_and_layout
 {
 public:
-    using mock_subscriber =
-        NiceMock<MockFunction<event_bus::subscriber<layout_response_event>>>;
+    using mock_subscriber = NiceMock<MockFunction<void(const lay::layout&)>>;
 
     void SetUp() override
     {
-        Given_a_bus_graph_cmds_topology_and_layout::SetUp();
-        service =
-            std::make_unique<update_layout_service>(*bus, *cmds, *g, *s, l);
+        Given_a_graph_cmds_topology_and_layout::SetUp();
+        service = std::make_unique<update_layout_service>(*cmds);
     }
 
 protected:
@@ -56,7 +54,7 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name());
+    std::invoke(*service, typeid(gursoy_atun_layout).name(), *g, l, s);
 
     ASSERT_EQ(prev, l.get());
 }
@@ -65,11 +63,11 @@ TEST_F(An_update_layout_service,
        Wont_post_a_layout_response_when_requested_same_type)
 {
     mock_subscriber mock;
-    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+    service->on_layout_response(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_)).Times(0);
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name());
+    std::invoke(*service, typeid(gursoy_atun_layout).name(), *g, l, s);
 }
 
 // TODO
@@ -99,18 +97,16 @@ TEST_F(An_update_layout_service,
     SUCCEED();
 }
 
-class An_update_topology_service
-    : public Given_a_bus_graph_cmds_topology_and_layout
+class An_update_topology_service : public Given_a_graph_cmds_topology_and_layout
 {
 public:
     using mock_subscriber =
-        NiceMock<MockFunction<event_bus::subscriber<layout_response_event>>>;
+        NiceMock<MockFunction<void(const lay::layout&, const topology&)>>;
 
     void SetUp() override
     {
-        Given_a_bus_graph_cmds_topology_and_layout::SetUp();
-        service =
-            std::make_unique<update_topology_service>(*bus, *cmds, *g, s, l);
+        Given_a_graph_cmds_topology_and_layout::SetUp();
+        service = std::make_unique<update_topology_service>(*cmds);
     }
 
 protected:
@@ -122,7 +118,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(*s).name(), s->scale());
+    std::invoke(*service, typeid(*s).name(), s->scale(), *g, l, s);
 
     ASSERT_EQ(prev, l.get());
 }
@@ -131,11 +127,11 @@ TEST_F(An_update_topology_service,
        Wont_post_a_layout_response_when_requested_same_type_and_scale)
 {
     mock_subscriber mock;
-    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+    service->on_layout_response(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, typeid(*s).name(), s->scale());
+    std::invoke(*service, typeid(*s).name(), s->scale(), *g, l, s);
 }
 
 TEST_F(An_update_topology_service,
@@ -143,7 +139,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
 
     ASSERT_NE(prev, l.get());
     ASSERT_EQ(typeid(*s), typeid(sphere));
@@ -153,11 +149,11 @@ TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_type)
 {
     mock_subscriber mock;
-    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+    service->on_layout_response(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(cube).name(), 80);
+    std::invoke(*service, typeid(cube).name(), 80, *g, l, s);
 }
 
 TEST_F(An_update_topology_service,
@@ -165,7 +161,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(sphere).name(), 100);
+    std::invoke(*service, typeid(sphere).name(), 100, *g, l, s);
 
     ASSERT_NE(prev, l.get());
 }
@@ -174,11 +170,11 @@ TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_scale)
 {
     mock_subscriber mock;
-    bus->subscribe<layout_response_event>(mock.AsStdFunction());
+    service->on_layout_response(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(sphere).name(), 50);
+    std::invoke(*service, typeid(sphere).name(), 50, *g, l, s);
 }
 
 TEST_F(An_update_topology_service,
@@ -186,7 +182,7 @@ TEST_F(An_update_topology_service,
 {
     assert(typeid(*s) == typeid(cube));
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
 
     EXPECT_EQ(typeid(*s), typeid(sphere));
 
@@ -201,7 +197,7 @@ TEST_F(
 {
     assert(typeid(*s) == typeid(cube));
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    std::invoke(*service, typeid(sphere).name(), 80, *g, l, s);
 
     EXPECT_EQ(typeid(*s), typeid(sphere));
 

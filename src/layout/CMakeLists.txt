@@ -1,9 +1,5 @@
 set(FILES
 	all.hpp
-	controller.hpp
-	core.cpp
-	core.hpp
-	events.hpp
 	factories.cpp
 	factories.hpp
 	layout.cpp
