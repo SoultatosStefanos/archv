@@ -40,7 +40,7 @@ public:
 private:
     void dispatch(const layout_request_event& e)
     {
-        BOOST_LOG_TRIVIAL(info) << "requested layout: " << e.new_type;
+        BOOST_LOG_TRIVIAL(info) << "requested layout: " << e.type;
 
         m_update_layout(e);
     }
@@ -48,7 +48,7 @@ private:
     void dispatch(const topology_request_event& e)
     {
         BOOST_LOG_TRIVIAL(info)
-            << "requested topology: " << e.new_type << ", " << e.new_scale;
+            << "requested topology: " << e.type << ", " << e.scale;
 
         m_update_topology(e);
     }

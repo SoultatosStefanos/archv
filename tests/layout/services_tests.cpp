@@ -56,7 +56,7 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, layout_request_event("gursoy_atun", "gursoy_atun"));
+    std::invoke(*service, layout_request_event("gursoy_atun"));
 
     ASSERT_EQ(prev, l.get());
 }
@@ -64,7 +64,7 @@ TEST_F(An_update_layout_service,
 TEST_F(An_update_layout_service,
        Wont_post_a_layout_response_when_requested_same_type)
 {
-    const auto event = layout_request_event("gursoy_atun", "gursoy_atun");
+    const auto event = layout_request_event("gursoy_atun");
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -123,12 +123,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service,
-                topology_request_event{.layout_type = "gursoy_atun",
-                                       .old_type = "sphere",
-                                       .old_scale = 80,
-                                       .new_type = "sphere",
-                                       .new_scale = 80});
+    std::invoke(*service, topology_request_event{.type = "cube", .scale = 10});
 
     ASSERT_EQ(prev, l.get());
 }
@@ -136,11 +131,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Wont_post_a_layout_response_when_requested_same_type_and_scale)
 {
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "sphere",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 80};
+    const auto event = topology_request_event{.type = "cube", .scale = 10};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -154,11 +145,7 @@ TEST_F(An_update_topology_service,
 {
     assert(s->desc() == topology_traits<cube>::desc());
 
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "cube",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 80};
+    const auto event = topology_request_event{.type = "sphere", .scale = 80};
 
     const auto* prev = l.get();
 
@@ -171,11 +158,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_type)
 {
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "sphere",
-                                              .old_scale = 80,
-                                              .new_type = "cube",
-                                              .new_scale = 80};
+    const auto event = topology_request_event{.type = "cube", .scale = 80};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -187,11 +170,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_when_requested_different_scale)
 {
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "sphere",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 100};
+    const auto event = topology_request_event{.type = "sphere", .scale = 100};
     const auto* prev = l.get();
 
     std::invoke(*service, event);
@@ -202,11 +181,7 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_scale)
 {
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "sphere",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 50};
+    const auto event = topology_request_event{.type = "sphere", .scale = 50};
     mock_subscriber mock;
     bus->subscribe<layout_response_event>(mock.AsStdFunction());
 
@@ -220,11 +195,7 @@ TEST_F(An_update_topology_service,
 {
     assert(s->desc() == topology_traits<cube>::desc());
 
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "cube",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 80};
+    const auto event = topology_request_event{.type = "sphere", .scale = 80};
 
     std::invoke(*service, event);
 
@@ -241,11 +212,7 @@ TEST_F(
 {
     assert(s->desc() == topology_traits<cube>::desc());
 
-    const auto event = topology_request_event{.layout_type = "gursoy_atun",
-                                              .old_type = "cube",
-                                              .old_scale = 80,
-                                              .new_type = "sphere",
-                                              .new_scale = 80};
+    const auto event = topology_request_event{.type = "sphere", .scale = 80};
 
     std::invoke(*service, event);
 

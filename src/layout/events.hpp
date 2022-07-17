@@ -12,8 +12,7 @@ namespace layout
 
 struct layout_request_event
 {
-    std::string old_type;
-    std::string new_type;
+    std::string type;
 
     auto operator==(const layout_request_event&) const -> bool = default;
     auto operator!=(const layout_request_event&) const -> bool = default;
@@ -21,11 +20,8 @@ struct layout_request_event
 
 struct topology_request_event
 {
-    std::string layout_type;
-    std::string old_type;
-    double old_scale;
-    std::string new_type;
-    double new_scale;
+    std::string type;
+    double scale;
 
     auto operator==(const topology_request_event&) const -> bool = default;
     auto operator!=(const topology_request_event&) const -> bool = default;

@@ -30,14 +30,14 @@ public:
                           const topology& space,
                           layout_pointer& l);
 
-    void operator()(const layout_request_event& e);
+    void operator()(const layout_request_event& request);
 
 private:
     class update_layout_command : public command
     {
     public:
         update_layout_command(event_bus& pipeline,
-                              layout_request_event e,
+                              layout_request_event request,
                               const graph& g,
                               const topology& space,
                               layout_pointer& l);
@@ -60,6 +60,7 @@ private:
         event_bus& m_pipeline;
 
         layout_request_event m_request;
+        std::string m_prev_type;
 
         const graph& m_g;
         const topology& m_space;
@@ -90,14 +91,14 @@ public:
                             topology_pointer& space,
                             layout_pointer& l);
 
-    void operator()(const topology_request_event& e);
+    void operator()(const topology_request_event& request);
 
 private:
     class update_topology_command : public command
     {
     public:
         update_topology_command(event_bus& pipeline,
-                                topology_request_event e,
+                                topology_request_event request,
                                 const graph& g,
                                 topology_pointer& space,
                                 layout_pointer& l);
@@ -116,12 +117,13 @@ private:
 
     private:
         void change_topology(const std::string& topology_type,
-                             double topology_scale,
-                             const std::string& layout_type);
+                             double topology_scale);
 
         event_bus& m_pipeline;
 
         topology_request_event m_request;
+        std::string m_prev_type;
+        double m_prev_scale;
 
         const graph& m_g;
         topology_pointer& m_space;

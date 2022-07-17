@@ -43,7 +43,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_layout_service_when_a_layout_request_event_is_posted_to_its_pipeline)
 {
-    layout_request_event event{.old_type = "random", .new_type = "gursoy atun"};
+    layout_request_event event{.type = "random"};
 
     EXPECT_CALL(ul_mock, Call(event)).Times(1);
 
@@ -54,7 +54,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_layout_service_n_times_when_a_layout_request_event_is_posted_to_its_pipeline_n_times)
 {
-    layout_request_event event{.old_type = "random", .new_type = "gursoy atun"};
+    layout_request_event event{.type = "gursoy atun"};
     const auto n = urandom(0, 1000);
 
     EXPECT_CALL(ul_mock, Call(event)).Times(n);
@@ -67,11 +67,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_topology_service_when_a_topology_request_event_is_posted_to_its_pipeline)
 {
-    topology_request_event event{.layout_type = "gursoy atun",
-                                 .old_type = "sphere",
-                                 .old_scale = 20,
-                                 .new_type = "cube",
-                                 .new_scale = 30};
+    topology_request_event event{.type = "cube atun", .scale = 20};
 
     EXPECT_CALL(ut_mock, Call(event)).Times(1);
 
@@ -82,11 +78,7 @@ TEST_F(
     A_layout_controller,
     Calls_the_update_topology_service_n_times_when_a_topology_input_event_is_posted_to_its_pipeline_n_times)
 {
-    topology_request_event event{.layout_type = "gursoy atun",
-                                 .old_type = "sphere",
-                                 .old_scale = 20,
-                                 .new_type = "cube",
-                                 .new_scale = 30};
+    topology_request_event event{.type = "cube atun", .scale = 20};
 
     const auto n = urandom(0, 1000);
 
