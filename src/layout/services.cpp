@@ -8,12 +8,12 @@ namespace layout
 
 update_layout_service::update_layout_command::update_layout_command(
     event_bus& pipeline,
-    layout_request_event request,
+    type_name type,
     const graph& g,
     const topology& space,
     layout_pointer& l)
     : m_pipeline{pipeline},
-      m_request(std::move(request)),
+      m_type(type),
       m_prev_type{typeid(*l).name()},
       m_g{g},
       m_space{space},
@@ -22,8 +22,8 @@ update_layout_service::update_layout_command::update_layout_command(
 
 void update_layout_service::update_layout_command::execute()
 {
-    if (m_request.type != typeid(*m_layout).name())
-        change_layout(m_request.type);
+    if (m_type != typeid(*m_layout).name())
+        change_layout(m_type);
 }
 
 void update_layout_service::update_layout_command::undo()
@@ -50,20 +50,22 @@ update_layout_service::update_layout_service(event_bus& pipeline,
     : m_pipeline{pipeline}, m_cmds(cmds), m_g{g}, m_space{space}, m_layout{l}
 {}
 
-void update_layout_service::operator()(const layout_request_event& request)
+void update_layout_service::operator()(type_name type)
 {
     m_cmds.execute(std::make_unique<update_layout_command>(
-        m_pipeline, request, m_g, m_space, m_layout));
+        m_pipeline, type, m_g, m_space, m_layout));
 }
 
 update_topology_service::update_topology_command::update_topology_command(
     event_bus& pipeline,
-    topology_request_event request,
+    type_name type,
+    double scale,
     const graph& g,
     topology_pointer& space,
     layout_pointer& l)
     : m_pipeline{pipeline},
-      m_request{std::move(request)},
+      m_type{type},
+      m_scale{scale},
       m_prev_type{typeid(*space).name()},
       m_prev_scale{space->scale()},
       m_g{g},
@@ -73,9 +75,8 @@ update_topology_service::update_topology_command::update_topology_command(
 
 void update_topology_service::update_topology_command::execute()
 {
-    if (m_request.type != typeid(*m_space).name() or
-        m_request.scale != m_space->scale())
-        change_topology(m_request.type, m_request.scale);
+    if (m_type != typeid(*m_space).name() or m_scale != m_space->scale())
+        change_topology(m_type, m_scale);
 }
 
 void update_topology_service::update_topology_command::undo()
@@ -108,10 +109,10 @@ update_topology_service::update_topology_service(event_bus& pipeline,
     : m_pipeline{pipeline}, m_cmds{cmds}, m_g{g}, m_space{space}, m_layout{l}
 {}
 
-void update_topology_service::operator()(const topology_request_event& request)
+void update_topology_service::operator()(type_name type, double scale)
 {
     m_cmds.execute(std::make_unique<update_topology_command>(
-        m_pipeline, request, m_g, m_space, m_layout));
+        m_pipeline, type, scale, m_g, m_space, m_layout));
 }
 
 } // namespace layout

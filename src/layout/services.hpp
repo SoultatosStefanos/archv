@@ -1,4 +1,5 @@
-// Contains the layout service of the layout subsystem.
+// Contains the application specific usecases (interactors/services) of the
+// layout subsystem.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_SERVICES_HPP
@@ -23,7 +24,7 @@ public:
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
-    using type_name = layout_request_event::type_name;
+    using type_name = layout_factory::type_name;
 
     update_layout_service(event_bus& pipeline,
                           command_history& cmds,
@@ -31,14 +32,14 @@ public:
                           const topology& space,
                           layout_pointer& l);
 
-    void operator()(const layout_request_event& request);
+    void operator()(type_name type);
 
 private:
     class update_layout_command : public command
     {
     public:
         update_layout_command(event_bus& pipeline,
-                              layout_request_event request,
+                              type_name type,
                               const graph& g,
                               const topology& space,
                               layout_pointer& l);
@@ -60,7 +61,7 @@ private:
 
         event_bus& m_pipeline;
 
-        layout_request_event m_request;
+        type_name m_type;
         type_name m_prev_type;
 
         const graph& m_g;
@@ -85,7 +86,7 @@ public:
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
-    using type_name = topology_request_event::type_name;
+    using type_name = topology_factory::type_name;
 
     update_topology_service(event_bus& pipeline,
                             command_history& cmds,
@@ -93,14 +94,15 @@ public:
                             topology_pointer& space,
                             layout_pointer& l);
 
-    void operator()(const topology_request_event& request);
+    void operator()(type_name type, double scale);
 
 private:
     class update_topology_command : public command
     {
     public:
         update_topology_command(event_bus& pipeline,
-                                topology_request_event request,
+                                type_name type,
+                                double scale,
                                 const graph& g,
                                 topology_pointer& space,
                                 layout_pointer& l);
@@ -122,7 +124,8 @@ private:
 
         event_bus& m_pipeline;
 
-        topology_request_event m_request;
+        type_name m_type;
+        double m_scale;
         type_name m_prev_type;
         double m_prev_scale;
 

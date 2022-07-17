@@ -15,9 +15,10 @@ namespace layout
 
 // Delegates input events from an event bus to the appropriate services.
 template <typename UpdateLayoutService, typename UpdateTopologyService>
-requires std::invocable<UpdateLayoutService, const layout_request_event&> &&
-    std::invocable<UpdateTopologyService, const topology_request_event&> &&
-    std::move_constructible<UpdateLayoutService> &&
+requires std::invocable<UpdateLayoutService, layout_request_event::type_name> &&
+    std::invocable<UpdateTopologyService,
+                   layout_request_event::type_name,
+                   double> && std::move_constructible<UpdateLayoutService> &&
     std::move_constructible<UpdateTopologyService>
 class controller
 {
@@ -42,7 +43,7 @@ private:
     {
         BOOST_LOG_TRIVIAL(info) << "requested layout: " << e.type;
 
-        m_update_layout(e);
+        m_update_layout(e.type);
     }
 
     void dispatch(const topology_request_event& e)
@@ -50,7 +51,7 @@ private:
         BOOST_LOG_TRIVIAL(info)
             << "requested topology: " << e.type << ", " << e.scale;
 
-        m_update_topology(e);
+        m_update_topology(e.type, e.scale);
     }
 
     UpdateLayoutService m_update_layout;
