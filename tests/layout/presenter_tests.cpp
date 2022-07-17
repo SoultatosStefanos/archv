@@ -49,43 +49,35 @@ struct dummy_view
 
 struct dummy_update_layout
 {
-    using layout_response_listener = std::function<void(const lay::layout&)>;
+    using layout_listener = std::function<void(const lay::layout&)>;
 
-    void on_layout_response(layout_response_listener) {}
+    void on_layout_response(layout_listener) {}
 
     bool called = false;
-    layout_factory::type_name given_type;
-
-    void operator()(layout_factory::type_name t,
+    void operator()(layout_factory::type_name,
                     const architecture::graph&,
                     layout_factory::pointer&,
                     const topology_factory::pointer&)
     {
         called = true;
-        given_type = t;
     }
 };
 
 struct dummy_update_topology
 {
-    using layout_response_listener =
+    using layout_listener =
         std::function<void(const lay::layout&, const topology&)>;
 
-    void on_layout_response(layout_response_listener) {}
+    void on_layout_response(layout_listener) {}
 
     bool called = false;
-    topology_factory::type_name given_type;
-    topology_factory::scale_type given_scale;
-
-    void operator()(topology_factory::type_name t,
-                    topology_factory::scale_type s,
+    void operator()(topology_factory::type_name,
+                    topology_factory::scale_type,
                     const architecture::graph&,
                     layout_factory::pointer&,
                     topology_factory::pointer&)
     {
         called = true;
-        given_type = t;
-        given_scale = s;
     }
 };
 
@@ -130,24 +122,16 @@ TEST_F(A_layout_presenter,
 
 TEST_F(A_layout_presenter, Routes_update_layout_requests)
 {
-    auto selection = "majestic layout";
-
-    pres->update_layout(selection);
+    pres->update_layout("majestic layout");
 
     ASSERT_TRUE(pres->get_layout_updater().called);
-    ASSERT_EQ(pres->get_layout_updater().given_type, selection);
 }
 
 TEST_F(A_layout_presenter, Routes_update_topology_requests)
 {
-    auto selection = "giga hypercube";
-    auto scale = 1000000;
-
-    pres->update_topology(selection, scale);
+    pres->update_topology("giga hypercube", 1000000);
 
     ASSERT_TRUE(pres->get_space_updater().called);
-    ASSERT_EQ(pres->get_space_updater().given_type, selection);
-    ASSERT_EQ(pres->get_space_updater().given_scale, scale);
 }
 
 } // namespace

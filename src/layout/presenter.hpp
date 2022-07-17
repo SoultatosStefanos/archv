@@ -43,7 +43,7 @@ concept update_layout_concept =
                    const architecture::graph&,
                    layout_factory::pointer&,
                    const topology_factory::pointer&> &&
-    requires(Class val, typename Class::layout_response_listener listener)
+    requires(Class val, typename Class::layout_listener listener)
 {
     {val.on_layout_response(listener)};
 };
@@ -55,7 +55,7 @@ concept update_topology_concept = std::invocable<Class,
                                                  const architecture::graph&,
                                                  layout_factory::pointer&,
                                                  topology_factory::pointer&> &&
-    requires(Class val, typename Class::layout_response_listener listener)
+    requires(Class val, typename Class::layout_listener listener)
 {
     {val.on_layout_response(listener)};
 };

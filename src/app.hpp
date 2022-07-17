@@ -31,6 +31,9 @@ public:
 
 private:
     using command_history = utility::command_history;
+    using layout_presenter = layout::presenter<layout::view,
+                                               layout::update_layout_service,
+                                               layout::update_topology_service>;
 
     const graph& m_g;
 
@@ -38,6 +41,8 @@ private:
     OgreBites::CameraMan* m_cameraman{nullptr};
 
     command_history m_cmds;
+
+    std::unique_ptr<layout_presenter> m_layout_core;
 };
 
 #endif // APP_HPP
