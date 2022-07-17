@@ -1,7 +1,6 @@
 #include "core.hpp"
 
-#include "layout_factory.hpp"
-#include "topology_factory.hpp"
+#include "factories.hpp"
 
 #include <boost/log/trivial.hpp>
 

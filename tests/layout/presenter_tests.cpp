@@ -1,6 +1,4 @@
-#include "layout/layout_factory.hpp"
 #include "layout/presenter.hpp"
-#include "layout/topology_factory.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>

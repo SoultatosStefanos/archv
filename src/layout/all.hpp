@@ -7,12 +7,11 @@
 #include "controller.hpp"
 #include "core.hpp"
 #include "events.hpp"
+#include "factories.hpp"
 #include "layout.hpp"
-#include "layout_factory.hpp"
 #include "presenter.hpp"
 #include "services.hpp"
 #include "topology.hpp"
-#include "topology_factory.hpp"
 #include "view.hpp"
 
 #endif // LAYOUT_ALL_HPP

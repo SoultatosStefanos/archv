@@ -8,8 +8,7 @@
 #include "architecture/all.hpp"
 #include "events.hpp"
 #include "layout.hpp"
-#include "layout_factory.hpp"
-#include "topology_factory.hpp"
+#include "factories.hpp"
 #include "utility/event_system.hpp"
 #include "utility/undo_redo.hpp"
 
