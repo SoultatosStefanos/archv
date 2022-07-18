@@ -1,5 +1,7 @@
 set(FILES
 	all.hpp
+	core.cpp
+	core.hpp
 	factories.cpp
 	factories.hpp
 	layout.cpp

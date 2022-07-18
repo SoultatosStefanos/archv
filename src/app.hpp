@@ -32,22 +32,12 @@ public:
 private:
     using command_history = utility::command_history;
 
-#if (0) // FIXME
-    using layout_presenter = layout::presenter<layout::view,
-                                               layout::update_layout_service,
-                                               layout::update_topology_service>;
-#endif
-
     const graph& m_g;
 
     Ogre::SceneManager* m_scene{nullptr};
     OgreBites::CameraMan* m_cameraman{nullptr};
 
     command_history m_cmds;
-
-#if (0) // FIXME
-    std::unique_ptr<layout_presenter> m_layout_core;
-#endif
 };
 
 #endif // APP_HPP

@@ -51,30 +51,13 @@ void app::setup()
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
 
-#if (0) // FIXME
-    {   // layout
-
-        // NOTE: Will get the initial configurations from file and delegate to
-        // the presenter to unformat them
-        using namespace layout;
-
-        auto space =
-            topology_factory::make_topology(typeid(sphere).name(), 100);
-        auto lay = layout_factory::make_layout(
-            typeid(gursoy_atun_layout).name(), m_g, *space);
-
-        m_layout_core =
-            std::make_unique<layout_presenter>(m_g,
-                                               std::move(lay),
-                                               std::move(space),
-                                               view(*m_scene),
-                                               update_layout_service(m_cmds),
-                                               update_topology_service(m_cmds));
-
-        m_layout_core->update_view();
-    }
-
-#endif
+    layout::core::get().initialize(
+        m_cmds,
+        m_g,
+        *m_scene,
+        layout::layout_factory::type_name::gursoy_atun,
+        layout::topology_factory::type_name::sphere,
+        100);
 }
 
 // FIXME
@@ -116,15 +99,11 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     else if (e.keysym.sym == SDLK_RIGHT)
         m_cmds.redo();
     else if (e.keysym.sym == SDLK_UP)
-    {
-        m_layout_core->get_view().send_topology_request(
-            typeid(layout::sphere).name(), 80);
-    }
+        layout::core::get().get_presenter().get_view().send_topology_request(
+            "Sphere", 80);
     else if (e.keysym.sym == SDLK_DOWN)
-    {
-        m_layout_core->get_view().send_topology_request(
-            typeid(layout::cube).name(), 80);
-    }
+        layout::core::get().get_presenter().get_view().send_topology_request(
+            "Cube", 80);
 #endif
 
     return true;

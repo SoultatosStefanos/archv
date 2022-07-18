@@ -4,6 +4,7 @@
 #ifndef LAYOUT_ALL_HPP
 #define LAYOUT_ALL_HPP
 
+#include "core.hpp"
 #include "factories.hpp"
 #include "layout.hpp"
 #include "presenter.hpp"

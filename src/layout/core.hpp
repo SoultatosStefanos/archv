@@ -1,0 +1,103 @@
+// Contains a manager class of the layout subsystem.
+// Soultatos Stefanos 2022
+
+#ifndef LAYOUT_CORE_HPP
+#define LAYOUT_CORE_HPP
+
+#include "factories.hpp"
+#include "layout.hpp"
+#include "presenter.hpp"
+#include "services.hpp"
+#include "topology.hpp"
+#include "view.hpp"
+
+#include <cassert>
+#include <memory>
+
+namespace layout
+{
+
+class core final
+{
+public:
+    using command_history = utility::command_history;
+    using graph = architecture::graph;
+    using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
+    using layout_type = layout_factory::type_name;
+    using topology_type = topology_factory::type_name;
+    using topology_scale = topology_factory::scale_type;
+    using presenter_type =
+        presenter<view, update_layout_service, update_topology_service>;
+
+    static_assert(std::is_default_constructible_v<layout_pointer>);
+    static_assert(std::is_default_constructible_v<topology_pointer>);
+
+    core(const core&) = delete;
+    core(core&&) = delete;
+
+    auto operator=(const core&) -> core& = delete;
+    auto operator=(core&&) -> core& = delete;
+
+    static auto get() -> core&
+    {
+        static core singleton;
+        return singleton;
+    }
+
+    void initialize(command_history& cmds,
+                    const graph& g,
+                    const Ogre::SceneManager& scene,
+                    layout_type l,
+                    topology_type t,
+                    topology_scale s);
+
+    auto get_layout() const -> const layout&
+    {
+        assert(m_layout);
+        return *m_layout;
+    }
+
+    auto get_layout() -> layout&
+    {
+        assert(m_layout);
+        return *m_layout;
+    }
+
+    auto get_topology() const -> const topology&
+    {
+        assert(m_topology);
+        return *m_topology;
+    }
+
+    auto get_topology() -> topology&
+    {
+        assert(m_topology);
+        return *m_topology;
+    }
+
+    auto get_presenter() const -> const presenter_type&
+    {
+        assert(m_presenter);
+        return *m_presenter;
+    }
+
+    auto get_presenter() -> presenter_type&
+    {
+        assert(m_presenter);
+        return *m_presenter;
+    }
+
+private:
+    core() = default;
+    ~core() = default;
+
+    layout_pointer m_layout;
+    topology_pointer m_topology;
+
+    std::unique_ptr<presenter_type> m_presenter;
+};
+
+} // namespace layout
+
+#endif // LAYOUT_CORE_HPP
