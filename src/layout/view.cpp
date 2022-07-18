@@ -1,6 +1,5 @@
 #include "view.hpp"
 
-#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace layout
@@ -8,7 +7,7 @@ namespace layout
 
 view::view(const Ogre::SceneManager& scene) : m_scene{scene} {}
 
-void view::draw_vertex(const vertex_id& id, coord x, coord y, coord z)
+void view::draw_vertex(const std::string& id, double x, double y, double z)
 {
     assert(m_scene.hasSceneNode(id));
 
@@ -18,15 +17,14 @@ void view::draw_vertex(const vertex_id& id, coord x, coord y, coord z)
                              << y << ", " << z << ')';
 }
 
-void view::update_layout_selection(layout_selection l)
+void view::update_layout_selection(std::string l)
 {
     BOOST_LOG_TRIVIAL(info) << "view layout selection updated to: " << l;
     BOOST_LOG_TRIVIAL(error) << "update_layout_selection() not implemented yet";
     [[maybe_unused]] auto _ = std::move(l);
 }
 
-void view::update_topology_selection(topology_selection s,
-                                     topology_scale_selection scale)
+void view::update_topology_selection(std::string s, double scale)
 {
     BOOST_LOG_TRIVIAL(info) << "view topology selection updated to: " << s
                             << ", with scale: " << scale;
@@ -34,32 +32,6 @@ void view::update_topology_selection(topology_selection s,
         << "update_topology_selection() not implemented yet";
 
     [[maybe_unused]] auto _ = std::move(s);
-}
-
-void view::on_layout_request(const layout_request_listener& f)
-{
-    m_layout_signal.connect(f);
-}
-
-void view::on_topology_request(const topology_request_listener& f)
-{
-    m_topology_signal.connect(f);
-}
-
-void view::send_layout_request(const layout_selection& l) const
-{
-    BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << l;
-
-    m_layout_signal(l);
-}
-
-void view::send_topology_request(const topology_selection& space,
-                                 topology_scale_selection scale) const
-{
-    BOOST_LOG_TRIVIAL(info)
-        << "topology selected with type: " << space << " and scale: " << scale;
-
-    m_topology_signal(space, scale);
 }
 
 } // namespace layout

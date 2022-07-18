@@ -16,51 +16,41 @@ namespace lay = layout;
 
 struct dummy_view
 {
-    using vertex_id = std::string;
-    using coord = long double;
-    using layout_selection = std::string;
-    using topology_selection = std::string;
-    using topology_scale_selection = double;
-    using layout_request_listener =
-        std::function<void(const layout_selection&)>;
-    using topology_request_listener = std::function<void(
-        const topology_selection&, topology_scale_selection)>;
-
     int draw_vertex_called_times = 0;
-    void draw_vertex(const vertex_id&, coord, coord, coord)
+    void draw_vertex(const std::string&, double, double, double)
     {
         ++draw_vertex_called_times;
     }
 
-    layout_selection selected_layout;
-    void update_layout_selection(layout_selection l)
+    std::string selected_layout;
+    void update_layout_selection(std::string l)
     {
         selected_layout = std::move(l);
     }
 
-    topology_selection selected_topology;
-    topology_scale_selection selected_topology_scale;
-    void update_topology_selection(topology_selection space,
-                                   topology_scale_selection scale)
+    std::string selected_topology;
+    double selected_topology_scale;
+    void update_topology_selection(std::string space, double scale)
     {
         selected_topology = std::move(space);
         selected_topology_scale = scale;
     }
 
-    void on_layout_request(const layout_request_listener&) {}
-    void on_topology_request(const topology_request_listener&) {}
+    void on_layout_request(const std::function<void(const std::string&)>&) {}
+
+    void
+    on_topology_request(const std::function<void(const std::string&, double)>&)
+    {}
 };
 
 struct dummy_update_layout
 {
-    using layout_listener =
-        std::function<void(const lay::layout&, const topology&)>;
-
-    void on_layout_response(const layout_listener&) {}
+    void on_layout_response(
+        const std::function<void(const lay::layout&, const topology&)>&)
+    {}
 
     bool called = false;
     layout_factory::type_name type;
-
     void operator()(layout_factory::type_name t)
     {
         called = true;
@@ -70,15 +60,13 @@ struct dummy_update_layout
 
 struct dummy_update_topology
 {
-    using layout_listener =
-        std::function<void(const lay::layout&, const topology&)>;
-
-    void on_layout_response(const layout_listener&) {}
+    void on_layout_response(
+        const std::function<void(const lay::layout&, const topology&)>&)
+    {}
 
     bool called = false;
     topology_factory::type_name type;
     topology_factory::scale_type scale;
-
     void operator()(topology_factory::type_name t,
                     topology_factory::scale_type s)
     {

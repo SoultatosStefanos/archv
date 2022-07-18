@@ -18,47 +18,36 @@ namespace layout
 // ------------------------- Concepts -------------------------------- //
 
 template <typename Class>
-concept view_concept =
-    requires(Class val,
-             typename Class::vertex_id id,
-             typename Class::coord pos,
-             typename Class::layout_selection layout_type,
-             typename Class::topology_selection topology_type,
-             typename Class::topology_scale_selection topology_scale,
-             typename Class::layout_request_listener layout_listener,
-             typename Class::topology_request_listener topology_listener)
+concept view_concept = requires(Class val, double num, std::string str)
 {
-    {val.draw_vertex(id, pos, pos, pos)};
+    {val.draw_vertex(str, num, num, num)};
     /* {val.draw_edge(id, id, pos, pos, pos, pos, pos, pos)}; */ // TODO
-    {val.update_layout_selection(layout_type)};
-    {val.update_topology_selection(topology_type, topology_scale)};
-    {val.on_layout_request(layout_listener)};
-    {val.on_topology_request(topology_listener)};
+    {val.update_layout_selection(str)};
+    {val.update_topology_selection(str, num)};
+    {val.on_layout_request([](const std::string&) {})};
+    {val.on_topology_request([](const std::string&, double) {})};
 };
 
 template <typename Class>
 concept update_layout_concept =
-    std::invocable<Class, layout_factory::type_name> &&
-    requires(Class val, typename Class::layout_listener listener)
+    std::invocable<Class, layout_factory::type_name> && requires(Class val)
 {
-    {val.on_layout_response(listener)};
+    {val.on_layout_response([](const layout&, const topology&) {})};
 };
 
 template <typename Class>
 concept update_topology_concept =
     std::invocable<Class,
                    topology_factory::type_name,
-                   topology_factory::scale_type> &&
-    requires(Class val, typename Class::layout_listener listener)
+                   topology_factory::scale_type> && requires(Class val)
 {
-    {val.on_layout_response(listener)};
+    {val.on_layout_response([](const layout&, const topology&) {})};
 };
 
-template <typename Class, typename View>
-concept layout_formatter_concept =
-    requires(Class val,
-             layout_factory::type_name type,
-             typename View::layout_selection selection)
+template <typename Class>
+concept layout_formatter_concept = requires(Class val,
+                                            layout_factory::type_name type,
+                                            std::string selection)
 {
     // clang-format off
         { val.format(type) } -> std::same_as<decltype(selection)>;
@@ -66,11 +55,10 @@ concept layout_formatter_concept =
     // clang-format on
 };
 
-template <typename Class, typename View>
-concept topology_formatter_concept =
-    requires(Class val,
-             topology_factory::type_name type,
-             typename View::topology_selection selection)
+template <typename Class>
+concept space_formatter_concept = requires(Class val,
+                                           topology_factory::type_name type,
+                                           std::string selection)
 {
     // clang-format off
         { val.format(type) } -> std::same_as<decltype(selection)>;
@@ -84,24 +72,22 @@ concept topology_formatter_concept =
 
 namespace detail
 {
-    template <view_concept View>
     struct layout_formatter
     {
         using layout_type = layout_factory::type_name;
-        using layout_selection = typename View::layout_selection;
 
-        static auto format(layout_type t) -> layout_selection
+        static auto format(layout_type t) -> std::string
         {
-            using table = std::unordered_map<layout_type, layout_selection>;
+            using table = std::unordered_map<layout_type, std::string>;
 
             static const table cache{{layout_type::gursoy_atun, "Gursoy Atun"}};
             assert(cache.contains(t));
             return cache.at(t);
         }
 
-        static auto unformat(const layout_selection& s) -> layout_type
+        static auto unformat(const std::string& s) -> layout_type
         {
-            using table = std::unordered_map<layout_selection, layout_type>;
+            using table = std::unordered_map<std::string, layout_type>;
 
             static const table cache{{"Gursoy Atun", layout_type::gursoy_atun}};
             assert(cache.contains(s));
@@ -109,15 +95,13 @@ namespace detail
         }
     };
 
-    template <view_concept View>
-    struct topology_formatter
+    struct space_formatter
     {
         using topology_type = topology_factory::type_name;
-        using topology_selection = typename View::topology_selection;
 
-        static auto format(topology_type t) -> topology_selection
+        static auto format(topology_type t) -> std::string
         {
-            using table = std::unordered_map<topology_type, topology_selection>;
+            using table = std::unordered_map<topology_type, std::string>;
 
             static const table cache{
                 {topology_factory::type_name::cube, "Cube"},
@@ -127,9 +111,9 @@ namespace detail
             return cache.at(t);
         }
 
-        static auto unformat(const topology_selection& s) -> topology_type
+        static auto unformat(const std::string& s) -> topology_type
         {
-            using table = std::unordered_map<topology_selection, topology_type>;
+            using table = std::unordered_map<std::string, topology_type>;
 
             static const table cache{
                 {"Cube", topology_factory::type_name::cube},
@@ -147,28 +131,23 @@ namespace detail
 template <view_concept View,
           update_layout_concept UpdateLayoutService,
           update_topology_concept UpdateTopologyService,
-          typename LayoutFormatter = detail::layout_formatter<View>,
-          typename TopologyFormatter = detail::topology_formatter<View>>
+          layout_formatter_concept LayoutFormatter = detail::layout_formatter,
+          space_formatter_concept TopologyFormatter = detail::space_formatter>
 requires std::move_constructible<View> &&
     std::move_constructible<UpdateLayoutService> &&
     std::move_constructible<UpdateTopologyService> &&
-    layout_formatter_concept<LayoutFormatter, View> &&
-    topology_formatter_concept<TopologyFormatter, View> &&
     std::move_constructible<LayoutFormatter> &&
     std::move_constructible<TopologyFormatter>
 class presenter
 {
 public:
     using graph = architecture::graph;
-    using view = View;
-    using layout_selection = typename view::layout_selection;
-    using topology_selection = typename view::topology_selection;
-    using topology_scale_selection = typename view::topology_scale_selection;
-    using update_layout_service = UpdateLayoutService;
-    using update_topology_service = UpdateTopologyService;
     using layout_type = layout_factory::type_name;
     using topology_type = topology_factory::type_name;
     using topology_scale = topology_factory::scale_type;
+    using view = View;
+    using update_layout_service = UpdateLayoutService;
+    using update_topology_service = UpdateTopologyService;
     using layout_formatter = LayoutFormatter;
     using topology_formatter = TopologyFormatter;
 
@@ -247,14 +226,14 @@ public:
         update_view_vertices(l);
     }
 
-    void update_layout(const layout_selection& selected_layout)
+    void update_layout(const std::string& selected_layout)
     {
         const auto type = m_layout_formatter.unformat(selected_layout);
         m_update_layout(type);
     }
 
-    void update_topology(const topology_selection& selected_topology,
-                         topology_scale_selection selected_scale)
+    void update_topology(const std::string& selected_topology,
+                         double selected_scale)
     {
         const auto type = m_topology_formatter.unformat(selected_topology);
         m_update_topology(type, selected_scale);
