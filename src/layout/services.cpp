@@ -6,28 +6,6 @@
 namespace layout
 {
 
-#if (0) // FIXME
-
-void initialize_service::operator()(layout_type lay_type,
-                                    topology_type space_type,
-                                    topology_scale scale,
-                                    const graph& g,
-                                    layout_pointer& layout,
-                                    topology_pointer& space)
-{
-    space = topology_factory::make_topology(space_type, scale);
-    layout = layout_factory::make_layout(lay_type, g, *space);
-
-    BOOST_LOG_TRIVIAL(info)
-        << "layout initialized to: " << boost::core::demangle(lay_type.data())
-        << ", with topology type: " << boost::core::demangle(space_type.data())
-        << " and scale: " << scale;
-
-    m_signal(*layout, *space);
-}
-
-#endif
-
 update_layout_service::update_layout_command::update_layout_command(
     signal& s,
     type_name type,

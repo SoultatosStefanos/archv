@@ -33,17 +33,68 @@ public:
     using topology_scale = topology_factory::scale_type;
     using layout_listener = signal::slot_type;
 
-    void operator()(layout_type lay_type,
-                    topology_type space_type,
-                    topology_scale scale,
-                    const graph& g,
-                    layout_pointer& layout,
-                    topology_pointer& space);
+    initialize_service(command_history& cmds,
+                       layout_type lay_type,
+                       topology_type space_type,
+                       topology_scale scale,
+                       const graph& g,
+                       layout_pointer& layout,
+                       topology_pointer& space);
+
+    void operator()();
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
 private:
+    class initialize_command : public command
+    {
+    public:
+        initialize_command(signal& s,
+                           layout_type lay_type,
+                           topology_type space_type,
+                           topology_scale scale,
+                           const graph& g,
+                           layout_pointer& layout,
+                           topology_pointer& space);
+
+        virtual ~initialize_command() override = default;
+
+        virtual void execute() override;
+
+        virtual void undo() override;
+        virtual void redo() override { execute(); }
+
+        virtual auto clone() const -> std::unique_ptr<command> override
+        {
+            return std::make_unique<initialize_command>(*this);
+        }
+
+    private:
+        void change_layout(layout_type lay_type,
+                           topology_type space_type,
+                           topology_scale scale);
+
+        signal& m_signal;
+
+        layout_type m_lay_type;
+        topology_type m_space_type;
+        topology_scale m_scale;
+
+        const graph& m_g;
+        layout_pointer& m_layout;
+        topology_pointer& m_space;
+    };
+
+    command_history& m_cmds;
     signal m_signal;
+
+    layout_type m_lay_type;
+    topology_type m_space_type;
+    topology_scale m_scale;
+
+    const graph& m_g;
+    layout_pointer& m_layout;
+    topology_pointer& m_space;
 };
 
 #endif
