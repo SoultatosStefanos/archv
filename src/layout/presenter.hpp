@@ -24,15 +24,17 @@ concept view_concept = requires(Class val, double num, std::string str)
     /* {val.draw_edge(id, id, pos, pos, pos, pos, pos, pos)}; */ // TODO
     {val.update_layout_selection(str)};
     {val.update_topology_selection(str, num)};
-    {val.on_layout_request([](const std::string&) {})};
-    {val.on_topology_request([](const std::string&, double) {})};
+    {val.on_layout_request(std::function<void(const std::string&)>())};
+    {val.on_topology_request(
+        std::function<void(const std::string&, double)>())};
 };
 
 template <typename Class>
 concept update_layout_concept =
     std::invocable<Class, layout_factory::type_name> && requires(Class val)
 {
-    {val.on_layout_response([](const layout&, const topology&) {})};
+    {val.on_layout_response(
+        std::function<void(const layout&, const topology&)>())};
 };
 
 template <typename Class>
@@ -41,7 +43,8 @@ concept update_topology_concept =
                    topology_factory::type_name,
                    topology_factory::scale_type> && requires(Class val)
 {
-    {val.on_layout_response([](const layout&, const topology&) {})};
+    {val.on_layout_response(
+        std::function<void(const layout&, const topology&)>())};
 };
 
 template <typename Class>
