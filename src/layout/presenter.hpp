@@ -26,66 +26,57 @@ concept view_concept =
              typename Class::topology_selection topology_type,
              typename Class::topology_scale_selection topology_scale,
              typename Class::layout_request_listener layout_listener,
-             typename Class::topology_request_listener topology_listener) {
-        {
-            val.draw_vertex(id, pos, pos, pos)
-        };
-        /* {val.draw_edge(id, id, pos, pos, pos, pos, pos, pos)}; */ // TODO
-        {
-            val.update_layout_selection(layout_type)
-        };
-        {
-            val.update_topology_selection(topology_type, topology_scale)
-        };
-        {
-            val.on_layout_request(layout_listener)
-        };
-        {
-            val.on_topology_request(topology_listener)
-        };
-    };
+             typename Class::topology_request_listener topology_listener)
+{
+    {val.draw_vertex(id, pos, pos, pos)};
+    /* {val.draw_edge(id, id, pos, pos, pos, pos, pos, pos)}; */ // TODO
+    {val.update_layout_selection(layout_type)};
+    {val.update_topology_selection(topology_type, topology_scale)};
+    {val.on_layout_request(layout_listener)};
+    {val.on_topology_request(topology_listener)};
+};
 
 template <typename Class>
 concept update_layout_concept =
     std::invocable<Class, layout_factory::type_name> &&
-    requires(Class val, typename Class::layout_listener listener) {
-        {
-            val.on_layout_response(listener)
-        };
-    };
+    requires(Class val, typename Class::layout_listener listener)
+{
+    {val.on_layout_response(listener)};
+};
 
 template <typename Class>
 concept update_topology_concept =
     std::invocable<Class,
                    topology_factory::type_name,
                    topology_factory::scale_type> &&
-    requires(Class val, typename Class::layout_listener listener) {
-        {
-            val.on_layout_response(listener)
-        };
-    };
+    requires(Class val, typename Class::layout_listener listener)
+{
+    {val.on_layout_response(listener)};
+};
 
 template <typename Class, typename View>
 concept layout_formatter_concept =
     requires(Class val,
              layout_factory::type_name type,
-             typename View::layout_selection selection) {
-        // clang-format off
+             typename View::layout_selection selection)
+{
+    // clang-format off
         { val.format(type) } -> std::same_as<decltype(selection)>;
         { val.unformat(selection) } -> std::same_as<decltype(type)>;
-        // clang-format on
-    };
+    // clang-format on
+};
 
 template <typename Class, typename View>
 concept topology_formatter_concept =
     requires(Class val,
              topology_factory::type_name type,
-             typename View::topology_selection selection) {
-        // clang-format off
+             typename View::topology_selection selection)
+{
+    // clang-format off
         { val.format(type) } -> std::same_as<decltype(selection)>;
         { val.unformat(selection) } -> std::same_as<decltype(type)>;
-        // clang-format on
-    };
+    // clang-format on
+};
 
 // ------------------------------------------------------------------- //
 
@@ -159,12 +150,12 @@ template <view_concept View,
           typename LayoutFormatter = detail::layout_formatter<View>,
           typename TopologyFormatter = detail::topology_formatter<View>>
 requires std::move_constructible<View> &&
-         std::move_constructible<UpdateLayoutService> &&
-         std::move_constructible<UpdateTopologyService> &&
-         layout_formatter_concept<LayoutFormatter, View> &&
-         topology_formatter_concept<TopologyFormatter, View> &&
-         std::move_constructible<LayoutFormatter> &&
-         std::move_constructible<TopologyFormatter>
+    std::move_constructible<UpdateLayoutService> &&
+    std::move_constructible<UpdateTopologyService> &&
+    layout_formatter_concept<LayoutFormatter, View> &&
+    topology_formatter_concept<TopologyFormatter, View> &&
+    std::move_constructible<LayoutFormatter> &&
+    std::move_constructible<TopologyFormatter>
 class presenter
 {
 public:
@@ -194,10 +185,12 @@ public:
           m_layout_formatter{std::move(lformatter)},
           m_topology_formatter{std::move(tformatter)}
     {
-        m_view.on_layout_request([this](auto type) { update_layout(type); });
+        m_view.on_layout_request(
+            [this](const auto& type) { update_layout(type); });
 
-        m_view.on_topology_request(
-            [this](auto type, auto scale) { update_topology(type, scale); });
+        m_view.on_topology_request([this](const auto& type, auto scale) {
+            update_topology(type, scale);
+        });
 
         m_update_layout.on_layout_response(
             [this](const auto& l, const auto& t) { update_view(l, t); });

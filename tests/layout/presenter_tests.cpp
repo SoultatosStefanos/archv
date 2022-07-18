@@ -21,9 +21,10 @@ struct dummy_view
     using layout_selection = std::string;
     using topology_selection = std::string;
     using topology_scale_selection = double;
-    using layout_request_listener = std::function<void(layout_selection)>;
-    using topology_request_listener =
-        std::function<void(topology_selection, topology_scale_selection)>;
+    using layout_request_listener =
+        std::function<void(const layout_selection&)>;
+    using topology_request_listener = std::function<void(
+        const topology_selection&, topology_scale_selection)>;
 
     int draw_vertex_called_times = 0;
     void draw_vertex(const vertex_id&, coord, coord, coord)

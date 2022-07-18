@@ -18,14 +18,15 @@ class view
 public:
     using vertex_id = std::string;
     using coord = double;
-    using layout_selection = std::string_view;
-    using topology_selection = std::string_view;
+    using layout_selection = std::string;
+    using topology_selection = std::string;
     using topology_scale_selection = double;
 
 private:
-    using layout_request = boost::signals2::signal<void(layout_selection)>;
+    using layout_request =
+        boost::signals2::signal<void(const layout_selection&)>;
     using topology_request = boost::signals2::signal<void(
-        topology_selection, topology_scale_selection)>;
+        const topology_selection&, topology_scale_selection)>;
 
 public:
     using layout_request_listener = layout_request::slot_type;
@@ -43,8 +44,8 @@ public:
     void on_layout_request(const layout_request_listener& f);
     void on_topology_request(const topology_request_listener& f);
 
-    void send_layout_request(layout_selection l) const;
-    void send_topology_request(topology_selection space,
+    void send_layout_request(const layout_selection& l) const;
+    void send_topology_request(const topology_selection& space,
                                topology_scale_selection scale) const;
 
 private:
