@@ -17,7 +17,7 @@ gursoy_atun_layout::gursoy_atun_layout(const graph& g, const topology& top)
                 boost::weight_map(
                     boost::get(&architecture::dependency::cardinality, g)));
         },
-        top.space());
+        top.variant());
 
     assert(std::all_of(boost::vertices(g).first,
                        boost::vertices(g).second,

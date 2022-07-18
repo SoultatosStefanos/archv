@@ -1,7 +1,6 @@
 set(FILES
 	factories_tests.cpp
-
-	# presenter_tests.cpp
+	presenter_tests.cpp
 	services_tests.cpp
 )
 set(SUBDIRECTORIES)

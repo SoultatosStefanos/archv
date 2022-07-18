@@ -13,24 +13,9 @@ static void init_logging()
 
 auto main(int argc, char* argv[]) -> int
 {
-    try
-    {
-        init_logging();
+    init_logging();
 
-        ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
-        return RUN_ALL_TESTS();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-
-        return EXIT_FAILURE;
-    }
-    catch (...)
-    {
-        std::cerr << "unexpected error\n";
-
-        return EXIT_FAILURE;
-    }
+    return RUN_ALL_TESTS();
 }

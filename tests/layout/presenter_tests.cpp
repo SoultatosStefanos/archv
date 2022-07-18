@@ -18,8 +18,8 @@ struct dummy_view
 {
     using vertex_id = std::string;
     using coord = long double;
-    using layout_selection = const char*;
-    using topology_selection = const char*;
+    using layout_selection = std::string;
+    using topology_selection = std::string;
     using topology_scale_selection = double;
     using layout_request_listener = std::function<void(layout_selection)>;
     using topology_request_listener =
@@ -31,15 +31,18 @@ struct dummy_view
         ++draw_vertex_called_times;
     }
 
-    layout_selection selected_layout = nullptr;
-    void update_layout_selection(layout_selection l) { selected_layout = l; }
+    layout_selection selected_layout;
+    void update_layout_selection(layout_selection l)
+    {
+        selected_layout = std::move(l);
+    }
 
-    topology_selection selected_topology = nullptr;
+    topology_selection selected_topology;
     topology_scale_selection selected_topology_scale;
     void update_topology_selection(topology_selection space,
                                    topology_scale_selection scale)
     {
-        selected_topology = space;
+        selected_topology = std::move(space);
         selected_topology_scale = scale;
     }
 
@@ -55,7 +58,13 @@ struct dummy_update_layout
     void on_layout_response(const layout_listener&) {}
 
     bool called = false;
-    void operator()(layout_factory::type_name) { called = true; }
+    layout_factory::type_name type;
+
+    void operator()(layout_factory::type_name t)
+    {
+        called = true;
+        type = t;
+    }
 };
 
 struct dummy_update_topology
@@ -66,9 +75,15 @@ struct dummy_update_topology
     void on_layout_response(const layout_listener&) {}
 
     bool called = false;
-    void operator()(topology_factory::type_name, topology_factory::scale_type)
+    topology_factory::type_name type;
+    topology_factory::scale_type scale;
+
+    void operator()(topology_factory::type_name t,
+                    topology_factory::scale_type s)
     {
         called = true;
+        type = t;
+        scale = s;
     }
 };
 
@@ -99,30 +114,42 @@ TEST_F(A_layout_presenter,
 }
 
 TEST_F(A_layout_presenter,
-       Given_a_layout_and_topology_sets_the_selected_elements_at_view)
+       Given_a_layout_and_topology_sets_the_formatted_selected_elements_at_view)
 {
     const auto space = cube(10);
     const auto lay = gursoy_atun_layout(g, space);
 
     pres->update_view(lay, space);
 
-    ASSERT_NE(pres->get_view().selected_layout, nullptr);
-    ASSERT_NE(pres->get_view().selected_topology, nullptr);
+    ASSERT_EQ(
+        pres->get_view().selected_layout,
+        pres->get_layout_formatter().format(layout_factory::resolve_type(lay)));
+    ASSERT_EQ(pres->get_view().selected_topology,
+              pres->get_topology_formatter().format(
+                  topology_factory::resolve_type(space)));
     ASSERT_EQ(pres->get_view().selected_topology_scale, 10);
 }
 
 TEST_F(A_layout_presenter, Routes_update_layout_requests)
 {
-    pres->update_layout("majestic layout");
+    pres->update_layout(pres->get_layout_formatter().format(
+        layout_factory::type_name::gursoy_atun));
 
     ASSERT_TRUE(pres->get_layout_updater().called);
+    ASSERT_EQ(pres->get_layout_updater().type,
+              layout_factory::type_name::gursoy_atun);
 }
 
 TEST_F(A_layout_presenter, Routes_update_topology_requests)
 {
-    pres->update_topology("giga hypercube", 1000000);
+    pres->update_topology(pres->get_topology_formatter().format(
+                              topology_factory::type_name::cube),
+                          1000000);
 
     ASSERT_TRUE(pres->get_space_updater().called);
+    ASSERT_EQ(pres->get_space_updater().type,
+              topology_factory::type_name::cube);
+    ASSERT_EQ(pres->get_space_updater().scale, 1000000);
 }
 
 } // namespace

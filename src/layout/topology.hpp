@@ -23,7 +23,7 @@ public:
     using point = typename boost::convex_topology<3>::point_type;
     using cube_variant = boost::cube_topology<std::minstd_rand>;
     using sphere_variant = boost::sphere_topology<std::minstd_rand>;
-    using space_type = std::variant<cube_variant, sphere_variant>;
+    using variant_type = std::variant<cube_variant, sphere_variant>;
     using scale_type = double;
 
     topology() = default;
@@ -34,7 +34,7 @@ public:
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
 
-    virtual auto space() const -> const space_type& = 0;
+    virtual auto variant() const -> const variant_type& = 0;
     virtual auto scale() const -> scale_type = 0;
 
     virtual auto clone() const -> std::unique_ptr<topology> = 0;
@@ -48,7 +48,10 @@ public:
     {}
     virtual ~cube() override = default;
 
-    virtual auto space() const -> const space_type& override { return m_space; }
+    virtual auto variant() const -> const variant_type& override
+    {
+        return m_space;
+    }
     virtual auto scale() const -> scale_type override { return m_scale; }
 
     virtual auto clone() const -> std::unique_ptr<topology> override
@@ -57,7 +60,7 @@ public:
     }
 
 private:
-    space_type m_space;
+    variant_type m_space;
     scale_type m_scale;
 };
 
@@ -69,7 +72,10 @@ public:
     {}
     virtual ~sphere() override = default;
 
-    virtual auto space() const -> const space_type& override { return m_space; }
+    virtual auto variant() const -> const variant_type& override
+    {
+        return m_space;
+    }
     virtual auto scale() const -> scale_type override { return m_scale; }
 
     virtual auto clone() const -> std::unique_ptr<topology> override
@@ -78,7 +84,7 @@ public:
     }
 
 private:
-    space_type m_space;
+    variant_type m_space;
     scale_type m_scale;
 };
 
