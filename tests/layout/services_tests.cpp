@@ -22,9 +22,10 @@ public:
     {
         g = std::make_unique<graph>();
         cmds = std::make_unique<command_history>();
-        s = topology_factory::make_topology(typeid(cube).name(), 10);
+        s = topology_factory::make_topology(topology_factory::type_name::cube,
+                                            10);
         l = layout_factory::make_layout(
-            typeid(gursoy_atun_layout).name(), *g, *s);
+            layout_factory::type_name::gursoy_atun, *g, *s);
     }
 
 protected:
@@ -55,7 +56,7 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name());
+    std::invoke(*service, layout_factory::resolve_type(*l));
 
     ASSERT_EQ(prev, l.get());
 }
@@ -68,7 +69,7 @@ TEST_F(An_update_layout_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, typeid(gursoy_atun_layout).name());
+    std::invoke(*service, layout_factory::resolve_type(*l));
 }
 
 // TODO
@@ -119,7 +120,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(*s).name(), s->scale());
+    std::invoke(*service, topology_factory::resolve_type(*s), s->scale());
 
     ASSERT_EQ(prev, l.get());
 }
@@ -132,18 +133,22 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, typeid(*s).name(), s->scale());
+    std::invoke(*service, topology_factory::resolve_type(*s), s->scale());
 }
 
 TEST_F(An_update_topology_service,
        Will_change_the_layout_and_topology_when_requested_different_type)
 {
     const auto* prev = l.get();
+    const auto& prev_id = typeid(*s);
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    assert(topology_factory::resolve_type(*s) !=
+           topology_factory::type_name::sphere);
+
+    std::invoke(*service, topology_factory::type_name::sphere, 80);
 
     ASSERT_NE(prev, l.get());
-    ASSERT_EQ(typeid(*s), typeid(sphere));
+    ASSERT_NE(typeid(*s), prev_id);
 }
 
 TEST_F(An_update_topology_service,
@@ -154,7 +159,10 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(cube).name(), 80);
+    assert(topology_factory::resolve_type(*s) !=
+           topology_factory::type_name::sphere);
+
+    std::invoke(*service, topology_factory::type_name::sphere, 80);
 }
 
 TEST_F(An_update_topology_service,
@@ -162,7 +170,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, typeid(sphere).name(), 100);
+    std::invoke(*service, topology_factory::resolve_type(*s), 100);
 
     ASSERT_NE(prev, l.get());
 }
@@ -175,40 +183,52 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, typeid(sphere).name(), 50);
+    std::invoke(*service, topology_factory::resolve_type(*s), 50);
 }
 
 TEST_F(An_update_topology_service,
        Will_revert_to_initial_topology_after_requested_different_type_and_undo)
 {
-    assert(typeid(*s) == typeid(cube));
+    assert(topology_factory::resolve_type(*s) !=
+           topology_factory::type_name::sphere);
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    std::invoke(*service, topology_factory::type_name::sphere, 80);
 
-    EXPECT_EQ(typeid(*s), typeid(sphere));
+    EXPECT_EQ(topology_factory::resolve_type(*s),
+              topology_factory::type_name::sphere);
+    EXPECT_EQ(s->scale(), 80);
 
     cmds->undo();
 
-    ASSERT_EQ(typeid(*s), typeid(cube));
+    ASSERT_EQ(topology_factory::resolve_type(*s),
+              topology_factory::type_name::cube);
+    ASSERT_EQ(s->scale(), 10);
 }
 
 TEST_F(
     An_update_topology_service,
     Will_revert_to_changed_topology_after_requested_different_type_and_undo_and_redo)
 {
-    assert(typeid(*s) == typeid(cube));
+    assert(topology_factory::resolve_type(*s) !=
+           topology_factory::type_name::sphere);
 
-    std::invoke(*service, typeid(sphere).name(), 80);
+    std::invoke(*service, topology_factory::type_name::sphere, 80);
 
-    EXPECT_EQ(typeid(*s), typeid(sphere));
+    EXPECT_EQ(topology_factory::resolve_type(*s),
+              topology_factory::type_name::sphere);
+    EXPECT_EQ(s->scale(), 80);
 
     cmds->undo();
 
-    EXPECT_EQ(typeid(*s), typeid(cube));
+    EXPECT_EQ(topology_factory::resolve_type(*s),
+              topology_factory::type_name::cube);
+    EXPECT_EQ(s->scale(), 10);
 
     cmds->redo();
 
-    ASSERT_EQ(typeid(*s), typeid(sphere));
+    ASSERT_EQ(topology_factory::resolve_type(*s),
+              topology_factory::type_name::sphere);
+    ASSERT_EQ(s->scale(), 80);
 }
 
 } // namespace

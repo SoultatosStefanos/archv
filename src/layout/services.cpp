@@ -14,7 +14,7 @@ update_layout_service::update_layout_command::update_layout_command(
     const topology_pointer& space)
     : m_signal{s},
       m_type(type),
-      m_prev_type{typeid(*layout).name()},
+      m_prev_type{layout_factory::resolve_type(*layout)},
       m_g{g},
       m_layout{layout},
       m_space{space}
@@ -22,13 +22,13 @@ update_layout_service::update_layout_command::update_layout_command(
 
 void update_layout_service::update_layout_command::execute()
 {
-    if (m_type != typeid(*m_layout).name())
+    if (m_type != layout_factory::resolve_type(*m_layout))
         change_layout(m_type);
 }
 
 void update_layout_service::update_layout_command::undo()
 {
-    if (m_prev_type != typeid(*m_layout).name())
+    if (m_prev_type != layout_factory::resolve_type(*m_layout))
         change_layout(m_prev_type);
 }
 
@@ -36,8 +36,7 @@ void update_layout_service::update_layout_command::change_layout(type_name type)
 {
     m_layout = layout_factory::make_layout(type, m_g, *m_space);
 
-    BOOST_LOG_TRIVIAL(info)
-        << "layout changed to: " << boost::core::demangle(type.data());
+    BOOST_LOG_TRIVIAL(info) << "layout changed to: " << static_cast<int>(type);
 
     m_signal(*m_layout, *m_space);
 }
@@ -47,7 +46,10 @@ update_layout_service::update_layout_service(command_history& cmds,
                                              layout_pointer& layout,
                                              const topology_pointer& space)
     : m_cmds(cmds), m_g{g}, m_layout{layout}, m_space{space}
-{}
+{
+    assert(layout);
+    assert(space);
+}
 
 void update_layout_service::operator()(type_name type)
 {
@@ -65,7 +67,7 @@ update_topology_service::update_topology_command::update_topology_command(
     : m_signal{s},
       m_type{type},
       m_scale{scale},
-      m_prev_type{typeid(*space).name()},
+      m_prev_type{topology_factory::resolve_type(*space)},
       m_prev_scale{space->scale()},
       m_g{g},
       m_space{space},
@@ -74,13 +76,14 @@ update_topology_service::update_topology_command::update_topology_command(
 
 void update_topology_service::update_topology_command::execute()
 {
-    if (m_type != typeid(*m_space).name() or m_scale != m_space->scale())
+    if (m_type != topology_factory::resolve_type(*m_space) or
+        m_scale != m_space->scale())
         change_topology(m_type, m_scale);
 }
 
 void update_topology_service::update_topology_command::undo()
 {
-    if (m_prev_type != typeid(*m_space).name() or
+    if (m_prev_type != topology_factory::resolve_type(*m_space) or
         m_prev_scale != m_space->scale())
         change_topology(m_prev_type, m_prev_scale);
 }
@@ -89,14 +92,12 @@ void update_topology_service::update_topology_command::change_topology(
     type_name type, double scale)
 {
     m_space = topology_factory::make_topology(type, scale);
+    m_layout = layout_factory::make_layout(
+        layout_factory::resolve_type(*m_layout), m_g, *m_space);
 
-    const auto layout_type = typeid(*m_layout).name();
-    m_layout = layout_factory::make_layout(layout_type, m_g, *m_space);
-
-    BOOST_LOG_TRIVIAL(info)
-        << "topology changed to: " << type << " with scale: " << scale;
-    BOOST_LOG_TRIVIAL(info)
-        << "layout changed to: " << boost::core::demangle(layout_type);
+    BOOST_LOG_TRIVIAL(info) << "topology changed to: " << static_cast<int>(type)
+                            << " with scale: " << scale;
+    BOOST_LOG_TRIVIAL(info) << "layout updated";
 
     m_signal(*m_layout, *m_space);
 }
@@ -107,7 +108,10 @@ update_topology_service::update_topology_service(
     layout_factory::pointer& layout,
     topology_factory::pointer& topology)
     : m_cmds{cmds}, m_g{g}, m_layout{layout}, m_topology{topology}
-{}
+{
+    assert(layout);
+    assert(topology);
+}
 
 void update_topology_service::operator()(type_name type, scale_type scale)
 {
