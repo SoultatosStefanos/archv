@@ -14,81 +14,153 @@ using namespace layout;
 
 namespace lay = layout;
 
-struct dummy_view
+class iview
 {
-    int draw_vertex_called_times = 0;
-    void draw_vertex(const std::string&, double, double, double)
-    {
-        ++draw_vertex_called_times;
-    }
+public:
+    iview() = default;
+    iview(const iview&) = default;
+    iview(iview&&) = default;
+    virtual ~iview() = default;
 
-    std::string selected_layout;
-    void update_layout_selection(std::string l)
-    {
-        selected_layout = std::move(l);
-    }
+    auto operator=(const iview&) -> iview& = default;
+    auto operator=(iview&&) -> iview& = default;
 
-    std::string selected_topology;
-    double selected_topology_scale;
-    void update_topology_selection(std::string space, double scale)
-    {
-        selected_topology = std::move(space);
-        selected_topology_scale = scale;
-    }
+    virtual void draw_vertex(const std::string&, double, double, double) = 0;
+    virtual void update_layout_selection(const std::string&) = 0;
+    virtual void update_topology_selection(const std::string&, double) = 0;
 
-    void on_layout_request(const std::function<void(const std::string&)>&) {}
+    virtual void
+    on_layout_request(const std::function<void(const std::string&)>&) = 0;
 
-    void
-    on_topology_request(const std::function<void(const std::string&, double)>&)
-    {}
+    virtual void on_topology_request(
+        const std::function<void(const std::string&, double)>&) = 0;
 };
 
-struct dummy_update_layout
+class mock_view : public iview
 {
-    void on_layout_response(
-        const std::function<void(const lay::layout&, const topology&)>&)
-    {}
+public:
+    mock_view() = default;
+    ~mock_view() override = default;
 
-    bool called = false;
-    layout_factory::descriptor type;
-    void operator()(layout_factory::descriptor t)
-    {
-        called = true;
-        type = std::move(t);
-    }
+    MOCK_METHOD(void,
+                draw_vertex,
+                (const std::string&, double, double, double),
+                (override));
+
+    MOCK_METHOD(void,
+                update_layout_selection,
+                (const std::string&),
+                (override));
+
+    MOCK_METHOD(void,
+                update_topology_selection,
+                (const std::string&, double),
+                (override));
+
+    MOCK_METHOD(void,
+                on_layout_request,
+                (const std::function<void(const std::string&)>&),
+                (override));
+
+    MOCK_METHOD(void,
+                on_topology_request,
+                (const std::function<void(const std::string&, double)>&),
+                (override));
 };
 
-struct dummy_update_topology
+class iupdate_layout
 {
-    void on_layout_response(
-        const std::function<void(const lay::layout&, const topology&)>&)
-    {}
+public:
+    iupdate_layout() = default;
+    iupdate_layout(const iupdate_layout&) = default;
+    iupdate_layout(iupdate_layout&&) = default;
+    virtual ~iupdate_layout() = default;
 
-    bool called = false;
-    topology_factory::descriptor type;
-    topology_factory::scale_type scale;
-    void operator()(topology_factory::descriptor t,
-                    topology_factory::scale_type s)
-    {
-        called = true;
-        type = std::move(t);
-        scale = s;
-    }
+    auto operator=(const iupdate_layout&) -> iupdate_layout& = default;
+    auto operator=(iupdate_layout&&) -> iupdate_layout& = default;
+
+    virtual void on_layout_response(
+        const std::function<void(const lay::layout&, const topology&)>&) = 0;
+
+    virtual void execute(const layout_factory::descriptor&) = 0;
+};
+
+class mock_update_layout : public iupdate_layout
+{
+public:
+    mock_update_layout() = default;
+    ~mock_update_layout() override = default;
+
+    MOCK_METHOD(
+        void,
+        on_layout_response,
+        (const std::function<void(const lay::layout&, const topology&)>&),
+        (override));
+
+    MOCK_METHOD(void, execute, (const layout_factory::descriptor&), (override));
+};
+
+class iupdate_topology
+{
+public:
+    iupdate_topology() = default;
+    iupdate_topology(const iupdate_topology&) = default;
+    iupdate_topology(iupdate_topology&&) = default;
+    virtual ~iupdate_topology() = default;
+
+    auto operator=(const iupdate_topology&) -> iupdate_topology& = default;
+    auto operator=(iupdate_topology&&) -> iupdate_topology& = default;
+
+    virtual void on_layout_response(
+        const std::function<void(const lay::layout&, const topology&)>&) = 0;
+
+    virtual void execute(const layout_factory::descriptor&,
+                         topology_factory::scale_type) = 0;
+};
+
+class mock_update_topology : public iupdate_topology
+{
+public:
+    mock_update_topology() = default;
+    ~mock_update_topology() override = default;
+
+    MOCK_METHOD(
+        void,
+        on_layout_response,
+        (const std::function<void(const lay::layout&, const topology&)>&),
+        (override));
+
+    MOCK_METHOD(void,
+                execute,
+                (const layout_factory::descriptor&,
+                 topology_factory::scale_type),
+                (override));
 };
 
 class A_layout_presenter : public testing::Test
 {
 public:
-    using test_presenter =
-        presenter<dummy_view, dummy_update_layout, dummy_update_topology>;
+    using test_presenter = presenter<testing::NiceMock<mock_view>,
+                                     testing::NiceMock<mock_update_layout>,
+                                     testing::NiceMock<mock_update_topology>>;
 
-    void SetUp() override { pres = std::make_unique<test_presenter>(g); }
+    void SetUp() override
+    {
+        instance =
+            std::make_unique<test_presenter>(g,
+                                             mocked_view,
+                                             mocked_update_layout_service,
+                                             mocked_update_topology_service);
+    }
 
 protected:
     static constexpr auto vertices_num = 100;
 
     graph g{vertices_num};
-    std::unique_ptr<test_presenter> pres;
+    testing::NiceMock<mock_view> mocked_view;
+    testing::NiceMock<mock_update_layout> mocked_update_layout_service;
+    testing::NiceMock<mock_update_topology> mocked_update_topology_service;
+    std::unique_ptr<test_presenter> instance;
 };
 
 TEST_F(A_layout_presenter,
@@ -97,40 +169,39 @@ TEST_F(A_layout_presenter,
     const auto space = cube(10);
     const auto lay = gursoy_atun_layout(g, space);
 
-    pres->update_view(lay, space);
+    EXPECT_CALL(mocked_view,
+                draw_vertex(testing::_, testing::_, testing::_, testing::_))
+        .Times(vertices_num);
 
-    ASSERT_EQ(pres->get_view().draw_vertex_called_times, vertices_num);
+    instance->update_view(lay, space);
 }
 
 TEST_F(A_layout_presenter,
-       Given_a_layout_and_topology_sets_the_formatted_selected_elements_at_view)
+       Given_a_layout_and_topology_sets_the_selected_elements_at_view)
 {
     const auto space = cube(10);
     const auto lay = gursoy_atun_layout(g, space);
 
-    pres->update_view(lay, space);
+    EXPECT_CALL(mocked_view, update_layout_selection(lay.desc()));
+    EXPECT_CALL(mocked_view, update_topology_selection(space.desc(), 10));
 
-    ASSERT_EQ(pres->get_view().selected_layout, lay.desc());
-    ASSERT_EQ(pres->get_view().selected_topology, space.desc());
-    ASSERT_EQ(pres->get_view().selected_topology_scale, 10);
+    instance->update_view(lay, space);
 }
 
 TEST_F(A_layout_presenter, Routes_update_layout_requests)
 {
-    pres->update_layout(layout_factory::gursoy_atun_desc);
+    EXPECT_CALL(mocked_update_layout_service,
+                execute(layout_factory::gursoy_atun_desc));
 
-    ASSERT_TRUE(pres->get_layout_updater().called);
-    ASSERT_EQ(pres->get_layout_updater().type,
-              layout_factory::gursoy_atun_desc);
+    instance->update_layout(layout_factory::gursoy_atun_desc);
 }
 
 TEST_F(A_layout_presenter, Routes_update_topology_requests)
 {
-    pres->update_topology(topology_factory::cube_desc, 1000000);
+    EXPECT_CALL(mocked_update_topology_service,
+                execute(topology_factory::cube_desc, 1000000));
 
-    ASSERT_TRUE(pres->get_space_updater().called);
-    ASSERT_EQ(pres->get_space_updater().type, topology_factory::cube_desc);
-    ASSERT_EQ(pres->get_space_updater().scale, 1000000);
+    instance->update_topology(topology_factory::cube_desc, 1000000);
 }
 
 } // namespace

@@ -52,7 +52,7 @@ update_layout_service::update_layout_service(command_history& cmds,
     assert(space);
 }
 
-void update_layout_service::operator()(descriptor desc)
+void update_layout_service::execute(descriptor desc)
 {
     m_cmds.execute(std::make_unique<update_layout_command>(
         m_signal, std::move(desc), m_g, m_layout, m_space));
@@ -111,7 +111,7 @@ update_topology_service::update_topology_service(
     assert(topology);
 }
 
-void update_topology_service::operator()(descriptor desc, scale_type scale)
+void update_topology_service::execute(descriptor desc, scale_type scale)
 {
     m_cmds.execute(std::make_unique<update_topology_command>(
         m_signal, std::move(desc), scale, m_g, m_topology, m_layout));

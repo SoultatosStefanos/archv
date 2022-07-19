@@ -55,7 +55,7 @@ TEST_F(An_update_layout_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, l->desc());
+    service->execute(l->desc());
 
     ASSERT_EQ(prev, l.get());
 }
@@ -68,7 +68,7 @@ TEST_F(An_update_layout_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, l->desc());
+    service->execute(l->desc());
 }
 
 // TODO
@@ -119,7 +119,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, s->desc(), s->scale());
+    service->execute(s->desc(), s->scale());
 
     ASSERT_EQ(prev, l.get());
 }
@@ -132,7 +132,7 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, s->desc(), s->scale());
+    service->execute(s->desc(), s->scale());
 }
 
 TEST_F(An_update_topology_service,
@@ -143,7 +143,7 @@ TEST_F(An_update_topology_service,
 
     assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::sphere_desc, 80);
+    service->execute(topology_factory::sphere_desc, 80);
 
     ASSERT_NE(prev, l.get());
     ASSERT_NE(typeid(*s), prev_id);
@@ -159,7 +159,7 @@ TEST_F(An_update_topology_service,
 
     assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::sphere_desc, 80);
+    service->execute(topology_factory::sphere_desc, 80);
 }
 
 TEST_F(An_update_topology_service,
@@ -167,7 +167,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, s->desc(), 100);
+    service->execute(s->desc(), 100);
 
     ASSERT_NE(prev, l.get());
 }
@@ -180,7 +180,7 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, s->desc(), 50);
+    service->execute(s->desc(), 50);
 }
 
 TEST_F(An_update_topology_service,
@@ -188,7 +188,7 @@ TEST_F(An_update_topology_service,
 {
     assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::sphere_desc, 80);
+    service->execute(topology_factory::sphere_desc, 80);
 
     EXPECT_EQ(s->desc(), topology_factory::sphere_desc);
     EXPECT_EQ(s->scale(), 80);
@@ -205,7 +205,7 @@ TEST_F(
 {
     assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::sphere_desc, 80);
+    service->execute(topology_factory::sphere_desc, 80);
 
     EXPECT_EQ(s->desc(), topology_factory::sphere_desc);
     EXPECT_EQ(s->scale(), 80);

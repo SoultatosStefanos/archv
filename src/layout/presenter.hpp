@@ -18,31 +18,29 @@ namespace layout
 // ------------------------- Concepts -------------------------------- //
 
 template <typename Class>
-concept view_concept = requires(Class val, double num, std::string str)
+concept view_concept = requires(Class val)
 {
-    {val.draw_vertex(str, num, num, num)};
+    {val.draw_vertex(std::string(), double(), double(), double())};
     /* {val.draw_edge(id, id, pos, pos, pos, pos, pos, pos)}; */ // TODO
-    {val.update_layout_selection(str)};
-    {val.update_topology_selection(str, num)};
+    {val.update_layout_selection(std::string())};
+    {val.update_topology_selection(std::string(), double())};
     {val.on_layout_request(std::function<void(const std::string&)>())};
     {val.on_topology_request(
         std::function<void(const std::string&, double)>())};
 };
 
 template <typename Class>
-concept update_layout_concept =
-    std::invocable<Class, layout_factory::descriptor> && requires(Class val)
+concept update_layout_concept = requires(Class val)
 {
+    {val.execute(std::string())};
     {val.on_layout_response(
         std::function<void(const layout&, const topology&)>())};
 };
 
 template <typename Class>
-concept update_topology_concept =
-    std::invocable<Class,
-                   topology_factory::descriptor,
-                   topology_factory::scale_type> && requires(Class val)
+concept update_topology_concept = requires(Class val)
 {
+    {val.execute(std::string(), topology_factory::scale_type())};
     {val.on_layout_response(
         std::function<void(const layout&, const topology&)>())};
 };
@@ -52,9 +50,6 @@ concept update_topology_concept =
 template <view_concept View,
           update_layout_concept UpdateLayoutService,
           update_topology_concept UpdateTopologyService>
-requires std::move_constructible<View> &&
-    std::move_constructible<UpdateLayoutService> &&
-    std::move_constructible<UpdateTopologyService>
 class presenter
 {
 public:
@@ -67,13 +62,13 @@ public:
     using update_topology_service = UpdateTopologyService;
 
     presenter(const graph& g,
-              view v = view(),
-              update_layout_service usecase1 = update_layout_service(),
-              update_topology_service usecase2 = update_topology_service())
+              view& v,
+              update_layout_service& usecase1,
+              update_topology_service& usecase2)
         : m_g{g},
-          m_view{std::move(v)},
-          m_update_layout{std::move(usecase1)},
-          m_update_topology{std::move(usecase2)}
+          m_view{v},
+          m_update_layout{usecase1},
+          m_update_topology{usecase2}
     {
         m_view.on_layout_request(
             [this](const auto& type) { update_layout(type); });
@@ -89,28 +84,6 @@ public:
             [this](const auto& l, const auto& t) { update_view(l, t); });
     }
 
-    auto get_view() const -> const view& { return m_view; }
-    auto get_view() -> view& { return m_view; }
-
-    auto get_layout_updater() const -> const update_layout_service&
-    {
-        return m_update_layout;
-    }
-    auto get_layout_updater() -> update_layout_service&
-    {
-        return m_update_layout;
-    }
-
-    auto get_space_updater() const -> const update_topology_service&
-    {
-        return m_update_topology;
-    }
-
-    auto get_space_updater() -> update_topology_service&
-    {
-        return m_update_topology;
-    }
-
     void update_view(const layout& l, const topology& s)
     {
         update_view_selections(l, s);
@@ -119,12 +92,12 @@ public:
 
     void update_layout(std::string selected_layout)
     {
-        m_update_layout(std::move(selected_layout));
+        m_update_layout.execute(std::move(selected_layout));
     }
 
     void update_topology(std::string selected_topology, double selected_scale)
     {
-        m_update_topology(std::move(selected_topology), selected_scale);
+        m_update_topology.execute(std::move(selected_topology), selected_scale);
     }
 
 private:
@@ -145,10 +118,10 @@ private:
 
     const graph& m_g;
 
-    view m_view;
+    view& m_view;
 
-    update_layout_service m_update_layout;
-    update_topology_service m_update_topology;
+    update_layout_service& m_update_layout;
+    update_topology_service& m_update_topology;
 };
 
 } // namespace layout

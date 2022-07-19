@@ -118,7 +118,7 @@ public:
                           layout_pointer& layout,
                           const topology_pointer& space);
 
-    void operator()(descriptor desc);
+    void execute(descriptor desc);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
@@ -184,7 +184,7 @@ public:
                             layout_factory::pointer& layout,
                             topology_factory::pointer& topology);
 
-    void operator()(descriptor desc, scale_type scale);
+    void execute(descriptor desc, scale_type scale);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 

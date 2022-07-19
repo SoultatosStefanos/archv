@@ -98,11 +98,9 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     else if (e.keysym.sym == SDLK_RIGHT)
         m_cmds.redo();
     else if (e.keysym.sym == 'o')
-        layout::core::get().get_presenter().get_view().send_topology_request(
-            "Sphere", 80);
+        layout::core::get().get_view().send_topology_request("Sphere", 80);
     else if (e.keysym.sym == 'p')
-        layout::core::get().get_presenter().get_view().send_topology_request(
-            "Cube", 80);
+        layout::core::get().get_view().send_topology_request("Cube", 80);
 #endif
 
     return true;

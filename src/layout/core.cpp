@@ -13,12 +13,15 @@ void core::initialize(command_history& cmds,
     m_topology = topology_factory::make_topology(topology_desc, scale);
     m_layout = layout_factory::make_layout(layout_desc, g, *m_topology);
 
-    auto&& usecase1 = update_layout_service(cmds, g, m_layout, m_topology);
-    auto&& usecase2 = update_topology_service(cmds, g, m_layout, m_topology);
-    auto&& ui = view(scene);
+    m_update_layout =
+        std::make_unique<update_layout_service>(cmds, g, m_layout, m_topology);
+    m_update_topology = std::make_unique<update_topology_service>(
+        cmds, g, m_layout, m_topology);
+
+    m_view = std::make_unique<view>(scene);
 
     m_presenter = std::make_unique<presenter_type>(
-        g, std::move(ui), std::move(usecase1), std::move(usecase2));
+        g, *m_view, *m_update_layout, *m_update_topology);
 
     m_presenter->update_view(*m_layout, *m_topology);
 }

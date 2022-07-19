@@ -76,6 +76,30 @@ public:
         return *m_topology;
     }
 
+    auto get_update_layout_service() const -> const update_layout_service&
+    {
+        assert(m_update_layout);
+        return *m_update_layout;
+    }
+
+    auto get_update_layout_service() -> update_layout_service&
+    {
+        assert(m_update_layout);
+        return *m_update_layout;
+    }
+
+    auto get_update_topology_service() const -> const update_topology_service&
+    {
+        assert(m_update_topology);
+        return *m_update_topology;
+    }
+
+    auto get_update_topology_service() -> update_topology_service&
+    {
+        assert(m_update_topology);
+        return *m_update_topology;
+    }
+
     auto get_presenter() const -> const presenter_type&
     {
         assert(m_presenter);
@@ -88,6 +112,18 @@ public:
         return *m_presenter;
     }
 
+    auto get_view() const -> const view&
+    {
+        assert(m_view);
+        return *m_view;
+    }
+
+    auto get_view() -> view&
+    {
+        assert(m_view);
+        return *m_view;
+    }
+
 private:
     core() = default;
     ~core() = default;
@@ -96,6 +132,9 @@ private:
     topology_pointer m_topology;
 
     std::unique_ptr<presenter_type> m_presenter;
+    std::unique_ptr<view> m_view;
+    std::unique_ptr<update_layout_service> m_update_layout;
+    std::unique_ptr<update_topology_service> m_update_topology;
 };
 
 } // namespace layout
