@@ -110,7 +110,7 @@ public:
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
-    using type_name = layout_factory::type_name;
+    using descriptor = layout_factory::descriptor;
     using layout_listener = signal::slot_type;
 
     update_layout_service(command_history& cmds,
@@ -118,7 +118,7 @@ public:
                           layout_pointer& layout,
                           const topology_pointer& space);
 
-    void operator()(type_name type);
+    void operator()(descriptor desc);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
@@ -127,7 +127,7 @@ private:
     {
     public:
         update_layout_command(signal& s,
-                              type_name type,
+                              descriptor desc,
                               const graph& g,
                               layout_pointer& layout,
                               const topology_pointer& space);
@@ -145,12 +145,12 @@ private:
         }
 
     private:
-        void change_layout(type_name type);
+        void change_layout(const descriptor& desc);
 
         signal& m_signal;
 
-        type_name m_type;
-        type_name m_prev_type;
+        descriptor m_desc;
+        descriptor m_prev_desc;
 
         const graph& m_g;
         layout_pointer& m_layout;
@@ -175,7 +175,7 @@ public:
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
-    using type_name = topology_factory::type_name;
+    using descriptor = topology_factory::descriptor;
     using scale_type = topology_factory::scale_type;
     using layout_listener = signal::slot_type;
 
@@ -184,7 +184,7 @@ public:
                             layout_factory::pointer& layout,
                             topology_factory::pointer& topology);
 
-    void operator()(type_name type, scale_type scale);
+    void operator()(descriptor desc, scale_type scale);
 
     void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
 
@@ -193,7 +193,7 @@ private:
     {
     public:
         update_topology_command(signal& s,
-                                type_name type,
+                                descriptor desc,
                                 scale_type scale,
                                 const graph& g,
                                 topology_pointer& space,
@@ -212,13 +212,13 @@ private:
         }
 
     private:
-        void change_topology(type_name topology_type, double topology_scale);
+        void change_topology(const descriptor& desc, double topology_scale);
 
         signal& m_signal;
 
-        type_name m_type;
+        descriptor m_desc;
         double m_scale;
-        type_name m_prev_type;
+        descriptor m_prev_desc;
         double m_prev_scale;
 
         const graph& m_g;

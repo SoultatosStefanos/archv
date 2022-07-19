@@ -18,11 +18,9 @@ class layout_factory final // TODO Implement caching
 public:
     using graph = architecture::graph;
     using pointer = std::unique_ptr<layout>;
+    using descriptor = layout::descriptor;
 
-    enum class type_name
-    {
-        gursoy_atun = 0
-    };
+    static constexpr auto gursoy_atun_desc = gursoy_atun_layout::description;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -30,9 +28,7 @@ public:
     auto operator=(const layout_factory&) -> layout_factory& = default;
     auto operator=(layout_factory&&) -> layout_factory& = default;
 
-    static auto resolve_type(const layout& l) -> type_name;
-
-    static auto make_layout(type_name type,
+    static auto make_layout(const descriptor& desc,
                             const graph& g,
                             const topology& space) -> pointer;
 
@@ -45,13 +41,11 @@ class topology_factory final
 {
 public:
     using pointer = std::unique_ptr<topology>;
-    using scale_type = typename topology::scale_type;
+    using scale_type = topology::scale_type;
+    using descriptor = topology::descriptor;
 
-    enum class type_name
-    {
-        cube = 0,
-        sphere
-    };
+    static constexpr auto cube_desc = cube::description;
+    static constexpr auto sphere_desc = sphere::description;
 
     topology_factory(const topology_factory&) = default;
     topology_factory(topology_factory&&) = default;
@@ -59,9 +53,8 @@ public:
     auto operator=(const topology_factory&) -> topology_factory& = default;
     auto operator=(topology_factory&&) -> topology_factory& = default;
 
-    static auto resolve_type(const topology& s) -> type_name;
-
-    static auto make_topology(type_name type, scale_type scale) -> pointer;
+    static auto make_topology(const descriptor& desc, scale_type scale)
+        -> pointer;
 
 private:
     topology_factory() = default;

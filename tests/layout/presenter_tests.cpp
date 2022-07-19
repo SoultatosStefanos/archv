@@ -50,11 +50,11 @@ struct dummy_update_layout
     {}
 
     bool called = false;
-    layout_factory::type_name type;
-    void operator()(layout_factory::type_name t)
+    layout_factory::descriptor type;
+    void operator()(layout_factory::descriptor t)
     {
         called = true;
-        type = t;
+        type = std::move(t);
     }
 };
 
@@ -65,13 +65,13 @@ struct dummy_update_topology
     {}
 
     bool called = false;
-    topology_factory::type_name type;
+    topology_factory::descriptor type;
     topology_factory::scale_type scale;
-    void operator()(topology_factory::type_name t,
+    void operator()(topology_factory::descriptor t,
                     topology_factory::scale_type s)
     {
         called = true;
-        type = t;
+        type = std::move(t);
         scale = s;
     }
 };
@@ -110,34 +110,26 @@ TEST_F(A_layout_presenter,
 
     pres->update_view(lay, space);
 
-    ASSERT_EQ(
-        pres->get_view().selected_layout,
-        pres->get_layout_formatter().format(layout_factory::resolve_type(lay)));
-    ASSERT_EQ(pres->get_view().selected_topology,
-              pres->get_topology_formatter().format(
-                  topology_factory::resolve_type(space)));
+    ASSERT_EQ(pres->get_view().selected_layout, lay.desc());
+    ASSERT_EQ(pres->get_view().selected_topology, space.desc());
     ASSERT_EQ(pres->get_view().selected_topology_scale, 10);
 }
 
 TEST_F(A_layout_presenter, Routes_update_layout_requests)
 {
-    pres->update_layout(pres->get_layout_formatter().format(
-        layout_factory::type_name::gursoy_atun));
+    pres->update_layout(layout_factory::gursoy_atun_desc);
 
     ASSERT_TRUE(pres->get_layout_updater().called);
     ASSERT_EQ(pres->get_layout_updater().type,
-              layout_factory::type_name::gursoy_atun);
+              layout_factory::gursoy_atun_desc);
 }
 
 TEST_F(A_layout_presenter, Routes_update_topology_requests)
 {
-    pres->update_topology(pres->get_topology_formatter().format(
-                              topology_factory::type_name::cube),
-                          1000000);
+    pres->update_topology(topology_factory::cube_desc, 1000000);
 
     ASSERT_TRUE(pres->get_space_updater().called);
-    ASSERT_EQ(pres->get_space_updater().type,
-              topology_factory::type_name::cube);
+    ASSERT_EQ(pres->get_space_updater().type, topology_factory::cube_desc);
     ASSERT_EQ(pres->get_space_updater().scale, 1000000);
 }
 

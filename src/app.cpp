@@ -51,13 +51,12 @@ void app::setup()
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
 
-    layout::core::get().initialize(
-        m_cmds,
-        m_g,
-        *m_scene,
-        layout::layout_factory::type_name::gursoy_atun,
-        layout::topology_factory::type_name::sphere,
-        100);
+    layout::core::get().initialize(m_cmds,
+                                   m_g,
+                                   *m_scene,
+                                   layout::layout_factory::gursoy_atun_desc,
+                                   layout::topology_factory::sphere_desc,
+                                   100);
 }
 
 // FIXME
@@ -98,10 +97,10 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
         m_cmds.undo();
     else if (e.keysym.sym == SDLK_RIGHT)
         m_cmds.redo();
-    else if (e.keysym.sym == SDLK_UP)
+    else if (e.keysym.sym == 'o')
         layout::core::get().get_presenter().get_view().send_topology_request(
             "Sphere", 80);
-    else if (e.keysym.sym == SDLK_DOWN)
+    else if (e.keysym.sym == 'p')
         layout::core::get().get_presenter().get_view().send_topology_request(
             "Cube", 80);
 #endif

@@ -22,10 +22,9 @@ public:
     {
         g = std::make_unique<graph>();
         cmds = std::make_unique<command_history>();
-        s = topology_factory::make_topology(topology_factory::type_name::cube,
-                                            10);
+        s = topology_factory::make_topology(topology_factory::cube_desc, 10);
         l = layout_factory::make_layout(
-            layout_factory::type_name::gursoy_atun, *g, *s);
+            layout_factory::gursoy_atun_desc, *g, *s);
     }
 
 protected:
@@ -52,36 +51,36 @@ protected:
 };
 
 TEST_F(An_update_layout_service,
-       Wont_change_the_layout_when_requested_same_type)
+       Wont_change_the_layout_when_requested_same_desc)
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, layout_factory::resolve_type(*l));
+    std::invoke(*service, l->desc());
 
     ASSERT_EQ(prev, l.get());
 }
 
 TEST_F(An_update_layout_service,
-       Wont_post_a_layout_response_when_requested_same_type)
+       Wont_post_a_layout_response_when_requested_same_desc)
 {
     mock_subscriber mock;
     service->on_layout_response(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, layout_factory::resolve_type(*l));
+    std::invoke(*service, l->desc());
 }
 
 // TODO
 TEST_F(An_update_layout_service,
-       Will_change_the_layout_when_requested_different_type)
+       Will_change_the_layout_when_requested_different_desc)
 {
     SUCCEED();
 }
 
 // TODO
 TEST_F(An_update_layout_service,
-       Will_post_a_layout_response_when_requested_different_type)
+       Will_post_a_layout_response_when_requested_different_desc)
 {
     SUCCEED();
 }
@@ -116,53 +115,51 @@ protected:
 };
 
 TEST_F(An_update_topology_service,
-       Wont_change_the_layout_when_requested_same_type_and_scale)
+       Wont_change_the_layout_when_requested_same_desc_and_scale)
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, topology_factory::resolve_type(*s), s->scale());
+    std::invoke(*service, s->desc(), s->scale());
 
     ASSERT_EQ(prev, l.get());
 }
 
 TEST_F(An_update_topology_service,
-       Wont_post_a_layout_response_when_requested_same_type_and_scale)
+       Wont_post_a_layout_response_when_requested_same_desc_and_scale)
 {
     mock_subscriber mock;
     service->on_layout_response(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
-    std::invoke(*service, topology_factory::resolve_type(*s), s->scale());
+    std::invoke(*service, s->desc(), s->scale());
 }
 
 TEST_F(An_update_topology_service,
-       Will_change_the_layout_and_topology_when_requested_different_type)
+       Will_change_the_layout_and_topology_when_requested_different_desc)
 {
     const auto* prev = l.get();
     const auto& prev_id = typeid(*s);
 
-    assert(topology_factory::resolve_type(*s) !=
-           topology_factory::type_name::sphere);
+    assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::type_name::sphere, 80);
+    std::invoke(*service, topology_factory::sphere_desc, 80);
 
     ASSERT_NE(prev, l.get());
     ASSERT_NE(typeid(*s), prev_id);
 }
 
 TEST_F(An_update_topology_service,
-       Will_post_a_layout_response_when_requested_different_type)
+       Will_post_a_layout_response_when_requested_different_desc)
 {
     mock_subscriber mock;
     service->on_layout_response(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    assert(topology_factory::resolve_type(*s) !=
-           topology_factory::type_name::sphere);
+    assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::type_name::sphere, 80);
+    std::invoke(*service, topology_factory::sphere_desc, 80);
 }
 
 TEST_F(An_update_topology_service,
@@ -170,7 +167,7 @@ TEST_F(An_update_topology_service,
 {
     const auto* prev = l.get();
 
-    std::invoke(*service, topology_factory::resolve_type(*s), 100);
+    std::invoke(*service, s->desc(), 100);
 
     ASSERT_NE(prev, l.get());
 }
@@ -183,51 +180,44 @@ TEST_F(An_update_topology_service,
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
-    std::invoke(*service, topology_factory::resolve_type(*s), 50);
+    std::invoke(*service, s->desc(), 50);
 }
 
 TEST_F(An_update_topology_service,
-       Will_revert_to_initial_topology_after_requested_different_type_and_undo)
+       Will_revert_to_initial_topology_after_requested_different_desc_and_undo)
 {
-    assert(topology_factory::resolve_type(*s) !=
-           topology_factory::type_name::sphere);
+    assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::type_name::sphere, 80);
+    std::invoke(*service, topology_factory::sphere_desc, 80);
 
-    EXPECT_EQ(topology_factory::resolve_type(*s),
-              topology_factory::type_name::sphere);
+    EXPECT_EQ(s->desc(), topology_factory::sphere_desc);
     EXPECT_EQ(s->scale(), 80);
 
     cmds->undo();
 
-    ASSERT_EQ(topology_factory::resolve_type(*s),
-              topology_factory::type_name::cube);
+    ASSERT_EQ(s->desc(), topology_factory::cube_desc);
     ASSERT_EQ(s->scale(), 10);
 }
 
 TEST_F(
     An_update_topology_service,
-    Will_revert_to_changed_topology_after_requested_different_type_and_undo_and_redo)
+    Will_revert_to_changed_topology_after_requested_different_desc_and_undo_and_redo)
 {
-    assert(topology_factory::resolve_type(*s) !=
-           topology_factory::type_name::sphere);
+    assert(s->desc() != topology_factory::sphere_desc);
 
-    std::invoke(*service, topology_factory::type_name::sphere, 80);
+    std::invoke(*service, topology_factory::sphere_desc, 80);
 
-    EXPECT_EQ(topology_factory::resolve_type(*s),
-              topology_factory::type_name::sphere);
+    EXPECT_EQ(s->desc(), topology_factory::sphere_desc);
     EXPECT_EQ(s->scale(), 80);
 
     cmds->undo();
 
-    EXPECT_EQ(topology_factory::resolve_type(*s),
-              topology_factory::type_name::cube);
+    EXPECT_EQ(s->desc(), topology_factory::cube_desc);
     EXPECT_EQ(s->scale(), 10);
 
     cmds->redo();
 
-    ASSERT_EQ(topology_factory::resolve_type(*s),
-              topology_factory::type_name::sphere);
+    ASSERT_EQ(s->desc(), topology_factory::sphere_desc);
     ASSERT_EQ(s->scale(), 80);
 }
 

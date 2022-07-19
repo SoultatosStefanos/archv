@@ -24,8 +24,8 @@ public:
     using graph = architecture::graph;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
-    using layout_type = layout_factory::type_name;
-    using topology_type = topology_factory::type_name;
+    using layout_descriptor = layout_factory::descriptor;
+    using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
     using presenter_type =
         presenter<view, update_layout_service, update_topology_service>;
@@ -48,9 +48,9 @@ public:
     void initialize(command_history& cmds,
                     const graph& g,
                     const Ogre::SceneManager& scene,
-                    layout_type l,
-                    topology_type t,
-                    topology_scale s);
+                    layout_descriptor layout_desc,
+                    topology_descriptor topolgy_desc,
+                    topology_scale scale);
 
     auto get_layout() const -> const layout&
     {

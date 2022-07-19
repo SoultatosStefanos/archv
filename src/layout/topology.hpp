@@ -13,18 +13,32 @@
 namespace layout
 {
 
+class cube;
+class sphere;
+
+class topology_visitor
+{
+public:
+    topology_visitor() = default;
+    topology_visitor(const topology_visitor&) = default;
+    topology_visitor(topology_visitor&&) = default;
+    virtual ~topology_visitor() = default;
+
+    auto operator=(const topology_visitor&) -> topology_visitor& = default;
+    auto operator=(topology_visitor&&) -> topology_visitor& = default;
+
+    virtual void visit(const cube& c) const = 0;
+    virtual void visit(const sphere& s) const = 0;
+};
+
 // In 3D space.
-// Slight boost wrapper for runtime polymorphism.
+// Slight boost adaptor for runtime polymorphism.
 class topology
 {
 public:
-    // NOTE: Must enumerate all spaces here with std::variant since the boost
-    // topologies are not meant to be used polymorphically.
-    using point = typename boost::convex_topology<3>::point_type;
-    using cube_variant = boost::cube_topology<std::minstd_rand>;
-    using sphere_variant = boost::sphere_topology<std::minstd_rand>;
-    using variant_type = std::variant<cube_variant, sphere_variant>;
+    using point_type = typename boost::convex_topology<3>::point_type;
     using scale_type = double;
+    using descriptor = std::string;
 
     topology() = default;
     topology(const topology&) = default;
@@ -34,8 +48,12 @@ public:
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
 
-    virtual auto variant() const -> const variant_type& = 0;
+    // For runtime type identification.
+    virtual auto desc() const -> descriptor = 0;
+
     virtual auto scale() const -> scale_type = 0;
+
+    virtual void accept(const topology_visitor&) const = 0;
 
     virtual auto clone() const -> std::unique_ptr<topology> = 0;
 };
@@ -43,16 +61,25 @@ public:
 class cube : public topology
 {
 public:
-    explicit cube(scale_type scale)
-        : m_space{cube_variant(scale)}, m_scale{scale}
-    {}
+    using data_type = boost::cube_topology<std::minstd_rand>;
+
+    static constexpr auto description = "Cube";
+
+    explicit cube(scale_type scale) : m_cube{scale}, m_scale{scale} {}
     virtual ~cube() override = default;
 
-    virtual auto variant() const -> const variant_type& override
-    {
-        return m_space;
-    }
+    // Raw topology data access.
+    auto data() const -> const data_type& { return m_cube; }
+    auto data() -> data_type& { return m_cube; }
+
+    virtual auto desc() const -> descriptor override { return description; }
+
     virtual auto scale() const -> scale_type override { return m_scale; }
+
+    virtual void accept(const topology_visitor& visitor) const override
+    {
+        visitor.visit(*this);
+    }
 
     virtual auto clone() const -> std::unique_ptr<topology> override
     {
@@ -60,23 +87,32 @@ public:
     }
 
 private:
-    variant_type m_space;
+    data_type m_cube;
     scale_type m_scale;
 };
 
 class sphere : public topology
 {
 public:
-    explicit sphere(scale_type scale)
-        : m_space{sphere_variant(scale)}, m_scale{scale}
-    {}
+    using data_type = boost::sphere_topology<std::minstd_rand>;
+
+    static constexpr auto description = "Sphere";
+
+    explicit sphere(scale_type scale) : m_sphere{scale}, m_scale{scale} {}
     virtual ~sphere() override = default;
 
-    virtual auto variant() const -> const variant_type& override
-    {
-        return m_space;
-    }
+    // Raw topology data access.
+    auto data() const -> const data_type& { return m_sphere; }
+    auto data() -> data_type& { return m_sphere; }
+
+    virtual auto desc() const -> descriptor override { return description; }
+
     virtual auto scale() const -> scale_type override { return m_scale; }
+
+    virtual void accept(const topology_visitor& visitor) const override
+    {
+        visitor.visit(*this);
+    }
 
     virtual auto clone() const -> std::unique_ptr<topology> override
     {
@@ -84,7 +120,7 @@ public:
     }
 
 private:
-    variant_type m_space;
+    data_type m_sphere;
     scale_type m_scale;
 };
 
