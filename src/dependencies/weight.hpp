@@ -1,4 +1,4 @@
-// Contains some useful typedefs to drive the dynamic edge weight management
+// Contains some useful entities to drive the dynamic edge weight management
 // subsystem.
 // Soultatos Stefanos 2022
 
