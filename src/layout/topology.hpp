@@ -10,6 +10,12 @@
 #include <random>
 #include <variant>
 
+// NOTE: The bgl topology abstractions are not meant to be used polymorphically.
+// Plus, we need to access the scale of each topolgy.
+// (No virtual destructors, some functions are not declared at the bases, etc).
+// This file provides a scalable inheritance chain with which the bgl layout
+// algorithms can interface implicitly.
+
 namespace layout
 {
 
