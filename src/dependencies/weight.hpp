@@ -14,9 +14,24 @@ namespace dependencies
 
 using weight_type = int;
 
-using weight_function = std::function<weight_type(graph::vertex_descriptor)>;
+class weight_repo
+{
+public:
+    auto get_weight(const dependency_type& type) const -> weight_type;
+    void set_weight(const dependency_type& type, weight_type weight);
+};
 
-using weight_map = boost::function_property_map<weight_function,
+class weight_dispatcher
+{
+public:
+    using vertex = graph::vertex_descriptor;
+
+    explicit weight_dispatcher(const weight_repo& repo);
+
+    auto operator()(vertex v) const -> weight_type;
+};
+
+using weight_map = boost::function_property_map<weight_dispatcher,
                                                 graph::vertex_descriptor,
                                                 weight_type>;
 
