@@ -2,7 +2,6 @@ set(FILES)
 set(SUBDIRECTORIES
 	architecture
 	clustering
-	generation
 	layout
 	utility
 )

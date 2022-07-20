@@ -1,14 +1,14 @@
 // Contains the basic architecture components (structures).
 // Soultatos Stefanos 2022.
 
-#ifndef ARCHITECTURE_COMPONENTS_HPP
-#define ARCHITECTURE_COMPONENTS_HPP
+#ifndef SYMBOLS_SYMBOLS_HPP
+#define SYMBOLS_SYMBOLS_HPP
 
 #include <string>
 #include <type_traits>
 #include <vector>
 
-namespace architecture
+namespace symbols
 {
 
 struct source_location
@@ -114,19 +114,6 @@ struct structure
     template_args_type template_args;
 };
 
-struct dependency
-{
-    using type = std::string;
-    using cardinality_type = int;
-
-    auto operator==(const dependency&) const -> bool = default;
-    auto operator!=(const dependency&) const -> bool = default;
-
-    type t;
-    cardinality_type cardinality{-1};
-};
-
-
 // NOTE: No invariants to establish, to avoid syntax coupling as much as
 // possible.
 
@@ -134,8 +121,7 @@ static_assert(std::is_aggregate_v<symbol>);
 static_assert(std::is_aggregate_v<definition>);
 static_assert(std::is_aggregate_v<method>);
 static_assert(std::is_aggregate_v<structure>);
-static_assert(std::is_aggregate_v<dependency>);
 
-} // namespace architecture
+} // namespace symbols
 
-#endif // ARCHITECTURE_COMPONENTS_HPP
+#endif // SYMBOLS_SYMBOLS_HPP
