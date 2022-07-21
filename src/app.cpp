@@ -54,6 +54,7 @@ void app::setup()
     layout::core::get().initialize(
         m_cmds,
         m_g,
+        boost::get(boost::vertex_bundle, m_g),
         dependencies::weight_map([](auto) { return 1; }), // FIXME
         *m_scene,
         layout::layout_factory::gursoy_atun_desc,

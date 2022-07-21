@@ -146,17 +146,18 @@ public:
 
     void SetUp() override
     {
-        instance =
-            std::make_unique<test_presenter>(g,
-                                             mocked_view,
-                                             mocked_update_layout_service,
-                                             mocked_update_topology_service);
+        instance = std::make_unique<test_presenter>(
+            g,
+            boost::get(boost::vertex_bundle, g),
+            mocked_view,
+            mocked_update_layout_service,
+            mocked_update_topology_service);
     }
 
 protected:
     static constexpr auto vertices_num = 100;
 
-    graph g{vertices_num};
+    const graph g{vertices_num};
     testing::NiceMock<mock_view> mocked_view;
     testing::NiceMock<mock_update_layout> mocked_update_layout_service;
     testing::NiceMock<mock_update_topology> mocked_update_topology_service;

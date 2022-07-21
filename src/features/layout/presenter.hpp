@@ -58,6 +58,7 @@ class presenter
 {
 public:
     using graph = dependencies::graph;
+    using vertex_id_map = dependencies::vertex_id_map;
     using layout_type = layout_factory::descriptor;
     using topology_type = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
@@ -66,10 +67,12 @@ public:
     using update_topology_service = UpdateTopologyService;
 
     presenter(const graph& g,
+              vertex_id_map vertex_id,
               view& v,
               update_layout_service& usecase1,
               update_topology_service& usecase2)
         : m_g{g},
+          m_vertex_id{vertex_id},
           m_view{v},
           m_update_layout{usecase1},
           m_update_topology{usecase2}
@@ -115,13 +118,13 @@ private:
     {
         for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
         {
-            // FIXME
-            const auto& vertex_id = m_g[v];
+            const auto& vertex_id = boost::get(m_vertex_id, v);
             m_view.draw_vertex(vertex_id, l.x(v), l.y(v), l.z(v));
         }
     }
 
     const graph& m_g;
+    vertex_id_map m_vertex_id;
 
     view& m_view;
 
