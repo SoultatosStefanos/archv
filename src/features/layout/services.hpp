@@ -25,6 +25,7 @@ class update_layout_service
 
 public:
     using graph = dependencies::graph;
+    using weight_map = dependencies::weight_map;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
@@ -34,6 +35,7 @@ public:
 
     update_layout_service(command_history& cmds,
                           const graph& g,
+                          weight_map edge_weight,
                           layout_pointer& layout,
                           const topology_pointer& space);
 
@@ -48,6 +50,7 @@ private:
         update_layout_command(signal& s,
                               descriptor desc,
                               const graph& g,
+                              weight_map edge_weight,
                               layout_pointer& layout,
                               const topology_pointer& space);
 
@@ -72,6 +75,7 @@ private:
         descriptor m_prev_desc;
 
         const graph& m_g;
+        weight_map m_edge_weight;
         layout_pointer& m_layout;
         const topology_pointer& m_space;
     };
@@ -79,6 +83,7 @@ private:
     signal m_signal;
     command_history& m_cmds;
     const graph& m_g;
+    weight_map m_edge_weight;
     layout_pointer& m_layout;
     const topology_pointer& m_space;
 };
@@ -94,6 +99,7 @@ class update_topology_service
 
 public:
     using graph = dependencies::graph;
+    using weight_map = dependencies::weight_map;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
@@ -104,6 +110,7 @@ public:
 
     update_topology_service(command_history& cmds,
                             const graph& g,
+                            weight_map edge_weight,
                             layout_pointer& layout,
                             topology_pointer& topology);
 
@@ -119,6 +126,7 @@ private:
                                 descriptor desc,
                                 scale_type scale,
                                 const graph& g,
+                                weight_map edge_weight,
                                 topology_pointer& space,
                                 layout_pointer& l);
 
@@ -145,6 +153,7 @@ private:
         double m_prev_scale;
 
         const graph& m_g;
+        weight_map m_edge_weight;
         topology_pointer& m_space;
         layout_pointer& m_layout;
     };
@@ -152,6 +161,7 @@ private:
     signal m_signal;
     command_history& m_cmds;
     const graph& m_g;
+    weight_map m_edge_weight;
     layout_pointer& m_layout;
     topology_pointer& m_topology;
 };

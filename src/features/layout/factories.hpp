@@ -21,6 +21,7 @@ class layout_factory final // TODO Implement caching
 {
 public:
     using graph = dependencies::graph;
+    using weight_map = dependencies::weight_map;
     using pointer = std::unique_ptr<layout>;
     using descriptor = layout::descriptor;
 
@@ -34,7 +35,8 @@ public:
 
     static auto make_layout(const descriptor& desc,
                             const graph& g,
-                            const topology& space) -> pointer;
+                            const topology& space,
+                            weight_map edge_weight) -> pointer;
 
 private:
     layout_factory() = default;

@@ -9,29 +9,27 @@ namespace features::layout
 // NOTE: Mind the different overloaded data() calls in each identical
 // implementation.
 
-void gursoy_atun_layout::apply_gursoy_atun::visit(const cube& c) const
+void gursoy_atun_layout::gursoy_atun_visitor::visit(const cube& c) const
 {
-    // FIXME
-    boost::gursoy_atun_layout(
-        m_g,
-        c.data(),
-        boost::make_assoc_property_map(m_map),
-        boost::weight_map(dependencies::weight_map([](auto) { return 1; })));
+    boost::gursoy_atun_layout(m_g,
+                              c.data(),
+                              boost::make_assoc_property_map(m_map),
+                              boost::weight_map(m_edge_weight));
 }
 
-void gursoy_atun_layout::apply_gursoy_atun::visit(const sphere& s) const
+void gursoy_atun_layout::gursoy_atun_visitor::visit(const sphere& s) const
 {
-    // FIXME
-    boost::gursoy_atun_layout(
-        m_g,
-        s.data(),
-        boost::make_assoc_property_map(m_map),
-        boost::weight_map(dependencies::weight_map([](auto) { return 1; })));
+    boost::gursoy_atun_layout(m_g,
+                              s.data(),
+                              boost::make_assoc_property_map(m_map),
+                              boost::weight_map(m_edge_weight));
 }
 
-gursoy_atun_layout::gursoy_atun_layout(const graph& g, const topology& top)
+gursoy_atun_layout::gursoy_atun_layout(const graph& g,
+                                       const topology& top,
+                                       weight_map edge_weight)
 {
-    top.accept(apply_gursoy_atun(g, m_map));
+    top.accept(gursoy_atun_visitor(g, edge_weight, m_map));
 
     assert(std::all_of(boost::vertices(g).first,
                        boost::vertices(g).second,

@@ -5,18 +5,20 @@ namespace features::layout
 
 void core::initialize(command_history& cmds,
                       const graph& g,
+                      weight_map edge_weight,
                       const Ogre::SceneManager& scene,
                       layout_descriptor layout_desc,
                       topology_descriptor topology_desc,
                       topology_scale scale)
 {
     m_topology = topology_factory::make_topology(topology_desc, scale);
-    m_layout = layout_factory::make_layout(layout_desc, g, *m_topology);
+    m_layout =
+        layout_factory::make_layout(layout_desc, g, *m_topology, edge_weight);
 
-    m_update_layout =
-        std::make_unique<update_layout_service>(cmds, g, m_layout, m_topology);
+    m_update_layout = std::make_unique<update_layout_service>(
+        cmds, g, edge_weight, m_layout, m_topology);
     m_update_topology = std::make_unique<update_topology_service>(
-        cmds, g, m_layout, m_topology);
+        cmds, g, edge_weight, m_layout, m_topology);
 
     m_view = std::make_unique<view>(scene);
 

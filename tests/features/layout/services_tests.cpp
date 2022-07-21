@@ -21,10 +21,15 @@ public:
     void SetUp() override
     {
         g = std::make_unique<graph>();
+
         cmds = std::make_unique<command_history>();
+
         s = topology_factory::make_topology(topology_factory::cube_desc, 10);
-        l = layout_factory::make_layout(
-            layout_factory::gursoy_atun_desc, *g, *s);
+
+        l = layout_factory::make_layout(layout_factory::gursoy_atun_desc,
+                                        *g,
+                                        *s,
+                                        weight_map([](auto) { return 1; }));
     }
 
 protected:
@@ -43,7 +48,9 @@ public:
     void SetUp() override
     {
         Given_a_graph_cmds_topology_and_layout::SetUp();
-        service = std::make_unique<update_layout_service>(*cmds, *g, l, s);
+
+        service = std::make_unique<update_layout_service>(
+            *cmds, *g, weight_map([](auto) { return 1; }), l, s);
     }
 
 protected:
@@ -107,7 +114,8 @@ public:
     void SetUp() override
     {
         Given_a_graph_cmds_topology_and_layout::SetUp();
-        service = std::make_unique<update_topology_service>(*cmds, *g, l, s);
+        service = std::make_unique<update_topology_service>(
+            *cmds, *g, weight_map([](auto) { return 1; }), l, s);
     }
 
 protected:

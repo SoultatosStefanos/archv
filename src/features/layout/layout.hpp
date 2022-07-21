@@ -73,9 +73,14 @@ public:
 class gursoy_atun_layout : public layout
 {
 public:
+    using weight_map = dependencies::weight_map;
+
     static constexpr auto description = "Gursoy Atun";
 
-    gursoy_atun_layout(const graph& g, const topology& space);
+    gursoy_atun_layout(const graph& g,
+                       const topology& space,
+                       weight_map edge_weight);
+
     virtual ~gursoy_atun_layout() override = default;
 
     virtual auto desc() const -> descriptor override { return description; }
@@ -111,19 +116,23 @@ public:
 private:
     using position_map = std::unordered_map<vertex, topology::point_type>;
 
-    class apply_gursoy_atun : public topology_visitor
+    class gursoy_atun_visitor : public topology_visitor
     {
     public:
-        apply_gursoy_atun(const graph& g, position_map& map)
-            : m_g{g}, m_map{map}
+        gursoy_atun_visitor(const graph& g,
+                            weight_map edge_weight,
+                            position_map& map)
+            : m_g{g}, m_edge_weight{edge_weight}, m_map{map}
         {}
-        virtual ~apply_gursoy_atun() override = default;
+
+        virtual ~gursoy_atun_visitor() override = default;
 
         virtual void visit(const cube& c) const override;
         virtual void visit(const sphere& s) const override;
 
     private:
         const graph& m_g;
+        weight_map m_edge_weight;
         position_map& m_map;
     };
 

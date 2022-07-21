@@ -167,7 +167,8 @@ TEST_F(A_layout_presenter,
        Given_a_layout_and_topology_draws_each_vertex_on_view)
 {
     const auto space = cube(10);
-    const auto lay = gursoy_atun_layout(g, space);
+    const auto lay =
+        gursoy_atun_layout(g, space, weight_map([](auto) { return 1; }));
 
     EXPECT_CALL(mocked_view,
                 draw_vertex(testing::_, testing::_, testing::_, testing::_))
@@ -180,7 +181,8 @@ TEST_F(A_layout_presenter,
        Given_a_layout_and_topology_sets_the_selected_elements_at_view)
 {
     const auto space = cube(10);
-    const auto lay = gursoy_atun_layout(g, space);
+    const auto lay =
+        gursoy_atun_layout(g, space, weight_map([](auto) { return 1; }));
 
     EXPECT_CALL(mocked_view, update_layout_selection(lay.desc()));
     EXPECT_CALL(mocked_view, update_topology_selection(space.desc(), 10));

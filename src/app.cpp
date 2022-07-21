@@ -51,12 +51,14 @@ void app::setup()
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
 
-    layout::core::get().initialize(m_cmds,
-                                   m_g,
-                                   *m_scene,
-                                   layout::layout_factory::gursoy_atun_desc,
-                                   layout::topology_factory::sphere_desc,
-                                   100);
+    layout::core::get().initialize(
+        m_cmds,
+        m_g,
+        dependencies::weight_map([](auto) { return 1; }), // FIXME
+        *m_scene,
+        layout::layout_factory::gursoy_atun_desc,
+        layout::topology_factory::sphere_desc,
+        100);
 }
 
 // FIXME

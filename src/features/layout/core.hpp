@@ -22,6 +22,7 @@ class core final
 public:
     using command_history = utility::command_history;
     using graph = dependencies::graph;
+    using weight_map = dependencies::weight_map;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using layout_descriptor = layout_factory::descriptor;
@@ -48,6 +49,7 @@ public:
 
     void initialize(command_history& cmds,
                     const graph& g,
+                    weight_map edge_weight,
                     const Ogre::SceneManager& scene,
                     layout_descriptor layout_desc,
                     topology_descriptor topolgy_desc,

@@ -10,12 +10,14 @@ update_layout_service::update_layout_command::update_layout_command(
     signal& s,
     descriptor desc,
     const graph& g,
+    weight_map edge_weight,
     layout_pointer& layout,
     const topology_pointer& space)
     : m_signal{s},
       m_desc(std::move(desc)),
       m_prev_desc{layout->desc()},
       m_g{g},
+      m_edge_weight{edge_weight},
       m_layout{layout},
       m_space{space}
 {}
@@ -35,7 +37,7 @@ void update_layout_service::update_layout_command::undo()
 void update_layout_service::update_layout_command::change_layout(
     const descriptor& desc)
 {
-    m_layout = layout_factory::make_layout(desc, m_g, *m_space);
+    m_layout = layout_factory::make_layout(desc, m_g, *m_space, m_edge_weight);
 
     BOOST_LOG_TRIVIAL(info) << "layout changed to: " << desc;
 
@@ -44,9 +46,14 @@ void update_layout_service::update_layout_command::change_layout(
 
 update_layout_service::update_layout_service(command_history& cmds,
                                              const graph& g,
+                                             weight_map edge_weight,
                                              layout_pointer& layout,
                                              const topology_pointer& space)
-    : m_cmds(cmds), m_g{g}, m_layout{layout}, m_space{space}
+    : m_cmds(cmds),
+      m_g{g},
+      m_edge_weight{edge_weight},
+      m_layout{layout},
+      m_space{space}
 {
     assert(layout);
     assert(space);
@@ -55,7 +62,7 @@ update_layout_service::update_layout_service(command_history& cmds,
 void update_layout_service::execute(descriptor desc)
 {
     m_cmds.execute(std::make_unique<update_layout_command>(
-        m_signal, std::move(desc), m_g, m_layout, m_space));
+        m_signal, std::move(desc), m_g, m_edge_weight, m_layout, m_space));
 }
 
 update_topology_service::update_topology_command::update_topology_command(
@@ -63,6 +70,7 @@ update_topology_service::update_topology_command::update_topology_command(
     descriptor desc,
     scale_type scale,
     const graph& g,
+    weight_map edge_weight,
     topology_pointer& space,
     layout_pointer& l)
     : m_signal{s},
@@ -71,6 +79,7 @@ update_topology_service::update_topology_command::update_topology_command(
       m_prev_desc{space->desc()},
       m_prev_scale{space->scale()},
       m_g{g},
+      m_edge_weight{edge_weight},
       m_space{space},
       m_layout{l}
 {}
@@ -91,7 +100,8 @@ void update_topology_service::update_topology_command::change_topology(
     const descriptor& desc, double scale)
 {
     m_space = topology_factory::make_topology(desc, scale);
-    m_layout = layout_factory::make_layout(m_layout->desc(), m_g, *m_space);
+    m_layout = layout_factory::make_layout(
+        m_layout->desc(), m_g, *m_space, m_edge_weight);
 
     BOOST_LOG_TRIVIAL(info)
         << "topology changed to: " << desc << " with scale: " << scale;
@@ -103,9 +113,14 @@ void update_topology_service::update_topology_command::change_topology(
 update_topology_service::update_topology_service(
     command_history& cmds,
     const graph& g,
+    weight_map edge_weight,
     layout_factory::pointer& layout,
     topology_factory::pointer& topology)
-    : m_cmds{cmds}, m_g{g}, m_layout{layout}, m_topology{topology}
+    : m_cmds{cmds},
+      m_g{g},
+      m_edge_weight{edge_weight},
+      m_layout{layout},
+      m_topology{topology}
 {
     assert(layout);
     assert(topology);
@@ -113,8 +128,13 @@ update_topology_service::update_topology_service(
 
 void update_topology_service::execute(descriptor desc, scale_type scale)
 {
-    m_cmds.execute(std::make_unique<update_topology_command>(
-        m_signal, std::move(desc), scale, m_g, m_topology, m_layout));
+    m_cmds.execute(std::make_unique<update_topology_command>(m_signal,
+                                                             std::move(desc),
+                                                             scale,
+                                                             m_g,
+                                                             m_edge_weight,
+                                                             m_topology,
+                                                             m_layout));
 }
 
 } // namespace features::layout

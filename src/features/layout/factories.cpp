@@ -11,12 +11,13 @@ namespace features::layout
 
 auto layout_factory::make_layout(const descriptor& desc,
                                  const graph& g,
-                                 const topology& space) -> pointer
+                                 const topology& space,
+                                 weight_map edge_weight) -> pointer
 {
 
     if (desc == gursoy_atun_desc)
     {
-        return std::make_unique<gursoy_atun_layout>(g, space);
+        return std::make_unique<gursoy_atun_layout>(g, space, edge_weight);
     }
     else
     {

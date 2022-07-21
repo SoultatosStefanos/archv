@@ -13,8 +13,10 @@ using namespace features::layout;
 
 TEST(Layout_factory, Produces_a_gursoy_atun_given_gursoy_atun_desc)
 {
-    auto l = layout_factory::make_layout(
-        layout_factory::gursoy_atun_desc, graph(), cube(0));
+    auto l = layout_factory::make_layout(layout_factory::gursoy_atun_desc,
+                                         graph(),
+                                         cube(0),
+                                         weight_map([](auto) { return 1; }));
 
     ASSERT_NE(l, nullptr);
     ASSERT_NO_THROW(dynamic_cast<gursoy_atun_layout&>(*l));
