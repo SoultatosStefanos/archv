@@ -248,7 +248,7 @@ namespace
 
 } // namespace
 
-auto derialize_symbols(const Json::Value& root) -> symbol_table
+auto deserialize_symbols(const Json::Value& root) -> symbol_table
 {
     symbol_table st;
 

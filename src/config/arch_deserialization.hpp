@@ -45,7 +45,7 @@ using json_value_info = boost::error_info<struct tage_json_value, Json::Value>;
  * Deserializers                                           *
  ***********************************************************/
 
-auto derialize_symbols(const Json::Value& root) -> symbols::symbol_table;
+auto deserialize_symbols(const Json::Value& root) -> symbols::symbol_table;
 
 auto deserialize_dependencies(const Json::Value& root,
                               const symbols::symbol_table& st)
