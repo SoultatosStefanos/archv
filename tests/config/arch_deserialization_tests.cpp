@@ -1,6 +1,7 @@
 #include "config/arch_deserialization.hpp"
 #include "utility/all.hpp"
 
+#include <boost/graph/isomorphism.hpp>
 #include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -127,6 +128,28 @@ TEST(Deserialize_symbols, sample_graph_1)
     ASSERT_EQ(actual, expected);
 }
 
+// See data/tests/sample_graph_1.json
+auto build_sample_graph_1(const symbol_table& st) -> graph
+{
+    graph g;
+
+    for (const auto& [id, _] : st)
+        boost::add_vertex(id, g);
+
+    return g;
+}
+
+// See data/tests/sample_graph_1.json
+TEST(Deserialize_dependencies, sample_graph_1)
+{
+    const auto root = read_json_root("../../data/tests/sample_graph_1.json");
+    const auto sample_st = build_sample_st_1();
+    const auto expected = build_sample_graph_1(sample_st);
+    const auto [actual, _] = deserialize_dependencies(root, sample_st);
+
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
+}
+
 // See data/tests/sample_graph_2.json
 auto build_sample_st_2() -> symbol_table
 {
@@ -167,6 +190,54 @@ TEST(Deserialize_symbols, sample_graph_2)
     const auto actual = deserialize_symbols(root);
 
     ASSERT_EQ(actual, expected);
+}
+
+// See data/tests/sample_graph_2.json
+auto build_sample_graph_2(const symbol_table& st) -> graph
+{
+    graph g;
+    vertex_table cache;
+
+    for (const auto& [id, _] : st)
+        cache[id] = boost::add_vertex(id, g);
+
+    boost::add_edge(cache.at("CS::CS_1::class_A"),
+                    cache.at("CS::CS_1::class_B"),
+                    "ClassField",
+                    g);
+
+    boost::add_edge(cache.at("CS::CS_1::class_X"),
+                    cache.at("CS::CS_1::class_B"),
+                    "Inherit",
+                    g);
+
+    boost::add_edge(cache.at("CS::CS_1::class_X"),
+                    cache.at("CS::CS_1::class_A"),
+                    "Inherit",
+                    g);
+
+    return g;
+}
+
+// See data/tests/sample_graph_1.json
+TEST(Deserialize_dependencies, sample_graph_2)
+{
+
+    const auto root = read_json_root("../../data/tests/sample_graph_2.json");
+    const auto sample_st = build_sample_st_2();
+    const auto expected = build_sample_graph_2(sample_st);
+    const auto [actual, _] = deserialize_dependencies(root, sample_st);
+
+    ASSERT_TRUE(boost::isomorphism(actual, expected));
+    ASSERT_TRUE(std::equal(
+        boost::edges(actual).first,
+        boost::edges(actual).second,
+        boost::edges(expected).first,
+        boost::edges(expected).second,
+        [&](auto e1, auto e2) {
+            return boost::get(boost::get(boost::edge_bundle, actual), e1) ==
+                   boost::get(boost::get(boost::edge_bundle, actual), e2);
+        }));
 }
 
 } // namespace
