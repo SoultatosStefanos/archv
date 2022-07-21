@@ -3,7 +3,6 @@ set(SUBDIRECTORIES
 	clustering
 	inspection
 	layout
-	rendering
 	shared
 	volume
 	weight

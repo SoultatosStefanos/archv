@@ -5,11 +5,14 @@
 #define SYMBOLS_SYMBOLS_HPP
 
 #include <string>
-#include <type_traits>
 #include <vector>
 
 namespace symbols
 {
+
+/***********************************************************
+ * Source Location/Info                                    *
+ ***********************************************************/
 
 struct source_location
 {
@@ -24,6 +27,10 @@ struct source_location
     line_type line{-1};
     column_type col{-1};
 };
+
+/***********************************************************
+ * Symbol                                                  *
+ ***********************************************************/
 
 struct symbol
 {
@@ -47,6 +54,10 @@ using composites = std::vector<T>;
 
 using references = std::vector<symbol::id_type>;
 
+/***********************************************************
+ * Definition                                              *
+ ***********************************************************/
+
 struct definition
 {
     using id_type = symbol::id_type;
@@ -60,6 +71,10 @@ struct definition
     full_type full_t;
     type t;
 };
+
+/***********************************************************
+ * Method                                                  *
+ ***********************************************************/
 
 struct method
 {
@@ -90,6 +105,10 @@ struct method
     bool is_virtual{false};
 };
 
+/***********************************************************
+ * Structure                                               *
+ ***********************************************************/
+
 struct structure
 {
     using id_type = symbol::id_type;
@@ -113,14 +132,6 @@ struct structure
     friends_type friends;
     template_args_type template_args;
 };
-
-// NOTE: No invariants to establish, to avoid syntax coupling as much as
-// possible.
-
-static_assert(std::is_aggregate_v<symbol>);
-static_assert(std::is_aggregate_v<definition>);
-static_assert(std::is_aggregate_v<method>);
-static_assert(std::is_aggregate_v<structure>);
 
 } // namespace symbols
 

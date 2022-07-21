@@ -1,7 +1,6 @@
 set(FILES
 	all.hpp
 	graph.hpp
-	weight.hpp
 )
 set(SUBDIRECTORIES)
 

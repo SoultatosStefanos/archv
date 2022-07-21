@@ -5,6 +5,5 @@
 #define DEPENDENCIES_ALL_HPP
 
 #include "graph.hpp"
-#include "weight.hpp"
 
 #endif // DEPENDENCIES_ALL_HPP

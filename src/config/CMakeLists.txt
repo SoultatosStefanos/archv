@@ -1,4 +1,7 @@
-set(FILES)
+set(FILES
+	arch_deserialization.cpp
+	arch_deserialization.hpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
