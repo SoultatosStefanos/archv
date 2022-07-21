@@ -1,8 +1,10 @@
 set(FILES)
 set(SUBDIRECTORIES
-	architecture
-	clustering
-	layout
+	config
+	dependencies
+
+	# features
+	symbols
 	utility
 )
 
@@ -15,8 +17,8 @@ if(FILES)
 endif()
 
 set(EXEC main)
-set(EXEC_FILES main.cpp app.hpp app.cpp)
 
+# set(EXEC_FILES main.cpp app.hpp app.cpp)
 if(EXEC_FILES)
 	add_executable(${EXEC} ${EXEC_FILES})
 	target_link_libraries(${EXEC} PUBLIC ${PROJECT_NAME})
