@@ -4,8 +4,8 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "architecture/all.hpp"
-#include "layout/all.hpp"
+#include "dependencies/all.hpp"
+#include "features/layout/all.hpp"
 #include "utility/all.hpp"
 
 #include <Ogre.h>
@@ -19,7 +19,7 @@ class app : public OgreBites::ApplicationContext,
             public OgreBites::InputListener
 {
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
 
     explicit app(const graph& g);
     virtual ~app() override = default;

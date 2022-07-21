@@ -1,9 +1,5 @@
 set(FILES
-	all.hpp
-	path.hpp
-	random.hpp
-	undo_redo.cpp
-	undo_redo.hpp
+	arch_deserialization_tests.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -12,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${TESTS} PRIVATE ${FILES})
 endif()

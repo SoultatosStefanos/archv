@@ -1,11 +1,12 @@
-set(FILES
-	all.hpp
-	path.hpp
-	random.hpp
-	undo_redo.cpp
-	undo_redo.hpp
+set(FILES)
+set(SUBDIRECTORIES
+	clustering
+	inspection
+	layout
+	shared
+	volume
+	weight
 )
-set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

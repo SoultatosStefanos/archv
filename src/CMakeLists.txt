@@ -1,9 +1,9 @@
 set(FILES)
 set(SUBDIRECTORIES
-	architecture
-	clustering
-	generation
-	layout
+	config
+	dependencies
+	features
+	symbols
 	utility
 )
 

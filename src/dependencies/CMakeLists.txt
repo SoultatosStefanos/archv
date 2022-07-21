@@ -1,9 +1,6 @@
 set(FILES
 	all.hpp
-	path.hpp
-	random.hpp
-	undo_redo.cpp
-	undo_redo.hpp
+	graph.hpp
 )
 set(SUBDIRECTORIES)
 

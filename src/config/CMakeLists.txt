@@ -1,9 +1,10 @@
 set(FILES
 	all.hpp
-	path.hpp
-	random.hpp
-	undo_redo.cpp
-	undo_redo.hpp
+	arch_deserialization.cpp
+	arch_deserialization.hpp
+	archives.cpp
+	archives.hpp
+	error.hpp
 )
 set(SUBDIRECTORIES)
 

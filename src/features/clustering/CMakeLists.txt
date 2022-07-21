@@ -1,10 +1,4 @@
-set(FILES
-	all.hpp
-	path.hpp
-	random.hpp
-	undo_redo.cpp
-	undo_redo.hpp
-)
+set(FILES)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
