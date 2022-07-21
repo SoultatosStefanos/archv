@@ -36,6 +36,9 @@ using graph = boost::adjacency_list<boost::vecS,
 // NOTE: Using property map typedefs as an alternative static interface to
 // templates across the codebase.
 
+// NOTE: Property maps are cheap to copy by design, thus they are passed by
+// value.
+
 // Enforces const correctness.
 using vertex_id_map =
     decltype(boost::get(boost::vertex_bundle, std::declval<graph>()));

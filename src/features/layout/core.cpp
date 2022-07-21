@@ -8,8 +8,8 @@ void core::initialize(command_history& cmds,
                       vertex_id_map vertex_id,
                       weight_map edge_weight,
                       const Ogre::SceneManager& scene,
-                      layout_descriptor layout_desc,
-                      topology_descriptor topology_desc,
+                      const layout_descriptor& layout_desc,
+                      const topology_descriptor& topology_desc,
                       topology_scale scale)
 {
     m_topology = topology_factory::make_topology(topology_desc, scale);

@@ -53,8 +53,8 @@ public:
                     vertex_id_map vertex_id,
                     weight_map edge_weight,
                     const Ogre::SceneManager& scene,
-                    layout_descriptor layout_desc,
-                    topology_descriptor topolgy_desc,
+                    const layout_descriptor& layout_desc,
+                    const topology_descriptor& topolgy_desc,
                     topology_scale scale);
 
     auto get_layout() const -> const layout&

@@ -1,7 +1,6 @@
 #include "arch_deserialization.hpp"
 
 #include <boost/log/trivial.hpp>
-#include <ranges>
 
 namespace config
 {
@@ -269,9 +268,8 @@ auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
     vertex_table vertices;
 
     // vertices
-    for (const auto& structure :
-         std::ranges::views::values(std::ranges::views::all(st)))
-        vertices[structure.sym.id] = boost::add_vertex(structure.sym.id, g);
+    for (const auto& [id, _] : st)
+        vertices[id] = boost::add_vertex(id, g);
 
     // edges
     for (const auto& val : get(root, "dependencies"))
