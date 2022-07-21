@@ -1,8 +1,7 @@
 #include "app.hpp"
-#include "architecture/all.hpp"
-#include "clustering/all.hpp"
-#include "generation/generation.hpp"
-#include "layout/all.hpp"
+#include "config/all.hpp"
+#include "dependencies/all.hpp"
+#include "symbols/all.hpp"
 #include "utility/all.hpp"
 
 #include <boost/exception/all.hpp>
@@ -27,8 +26,8 @@ static void init_logging()
 
 auto main(int argc, char const* argv[]) -> int
 {
-    using namespace architecture;
-    using namespace generation;
+    using namespace dependencies;
+    using namespace config;
     using namespace utility;
 
     try
@@ -42,7 +41,9 @@ auto main(int argc, char const* argv[]) -> int
 
         init_logging();
 
-        const auto [g, vertex_cache] = generate_graph(jsons.get(argv[1]));
+        const auto st = deserialize_symbols(json_archive::get().at(argv[1]));
+        const auto [g, vertex_cache] =
+            deserialize_dependencies(json_archive::get().at(argv[1]), st);
 
         app arch_visualizer{g};
 

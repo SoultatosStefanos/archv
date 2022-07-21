@@ -4,6 +4,7 @@
 
 using namespace Ogre;
 using namespace OgreBites;
+using namespace features;
 
 app::app(const graph& g) : ApplicationContext("Architecture Visualizer"), m_g{g}
 {}
@@ -41,8 +42,7 @@ void app::setup()
     for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
     {
         auto* entity = m_scene->createEntity("ogrehead.mesh");
-        auto* node =
-            m_scene->getRootSceneNode()->createChildSceneNode(m_g[v].sym.id);
+        auto* node = m_scene->getRootSceneNode()->createChildSceneNode(m_g[v]);
         node->attachObject(entity);
         node->setScale(0.15, 0.15, 0.15);
     }
@@ -92,7 +92,7 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 
     if (e.keysym.sym == quit_sym)
         getRoot()->queueEndRendering();
-#if (0) // FIXME
+#if (1) // FIXME
     else if (e.keysym.sym == SDLK_LEFT)
         m_cmds.undo();
     else if (e.keysym.sym == SDLK_RIGHT)
