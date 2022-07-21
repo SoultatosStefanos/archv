@@ -1,5 +1,4 @@
-// Contains some useful entities to drive the dynamic edge weight management
-// subsystem.
+// Contains ant interface for accessing the dependencies edge weight values.
 // Soultatos Stefanos 2022
 
 #ifndef DEPENDENCIES_WEIGHT_HPP
@@ -8,32 +7,18 @@
 #include "graph.hpp"
 
 #include <boost/property_map/function_property_map.hpp>
+#include <functional>
 
 namespace dependencies
 {
 
-using weight_type = int;
+using weight = int;
 
-class weight_repo
-{
-public:
-    auto get_weight(const dependency_type& type) const -> weight_type;
-    void set_weight(const dependency_type& type, weight_type weight);
-};
+using weight_function = std::function<weight(graph::edge_descriptor)>;
 
-class weight_dispatcher
-{
-public:
-    using vertex = graph::vertex_descriptor;
-
-    explicit weight_dispatcher(const weight_repo& repo);
-
-    auto operator()(vertex v) const -> weight_type;
-};
-
-using weight_map = boost::function_property_map<weight_dispatcher,
-                                                graph::vertex_descriptor,
-                                                weight_type>;
+// An edge weight property map adaptor through a uniform function.
+using weight_map = boost::
+    function_property_map<weight_function, graph::edge_descriptor, weight>;
 
 } // namespace dependencies
 

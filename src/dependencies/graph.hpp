@@ -9,14 +9,14 @@
 namespace dependencies
 {
 
-using id_type = std::string;
+using module_id = std::string;
 
 using dependency_type = std::string;
 
 using graph = boost::adjacency_list<boost::vecS,
                                     boost::vecS,
                                     boost::directedS,
-                                    id_type,
+                                    module_id,
                                     dependency_type>;
 
 } // namespace dependencies

@@ -1,10 +1,12 @@
 set(FILES)
-set(SUBDIRECTORIES)
+set(SUBDIRECTORIES
+	layout
+)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${TESTS} PRIVATE ${FILES})
 endif()

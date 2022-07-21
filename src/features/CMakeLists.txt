@@ -1,5 +1,13 @@
 set(FILES)
-set(SUBDIRECTORIES)
+set(SUBDIRECTORIES
+	clustering
+	inspection
+	layout
+	rendering
+	shared
+	volume
+	weight
+)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

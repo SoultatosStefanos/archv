@@ -1,4 +1,9 @@
-set(FILES)
+set(FILES
+	all.hpp
+	symbol_table.cpp
+	symbol_table.hpp
+	symbols.hpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
