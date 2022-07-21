@@ -32,6 +32,8 @@ TODOS
 
 		Layered Label Propagation
 
+	- Dynamic Weight Management
+
 	- GRAPH LAYOUT
 
 		Add Topologies
@@ -66,5 +68,14 @@ TODOS
 
 	Input subsystem
 
-	Ogre input handling
+	Ogre input handling <- DONE
+
+21 / 07 / 2022
+
+	See MyGUI
+
+	Implement Layout Factory Caching
+
+	Implement Layout Revert To Defaults Use Case
+
 
