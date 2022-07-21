@@ -1,5 +1,5 @@
-#include "architecture/all.hpp"
-#include "layout/services.hpp"
+#include "dependencies/all.hpp"
+#include "features/layout/services.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>
@@ -8,12 +8,12 @@
 namespace
 {
 
-using namespace architecture;
-using namespace layout;
+using namespace dependencies;
+using namespace features::layout;
 using namespace utility;
 using namespace testing;
 
-namespace lay = layout;
+namespace lay = features::layout;
 
 class Given_a_graph_cmds_topology_and_layout : public Test
 {

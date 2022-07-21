@@ -1,5 +1,5 @@
-#include "architecture/graph.hpp"
-#include "layout/factories.hpp"
+#include "dependencies/graph.hpp"
+#include "features/layout/factories.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>
@@ -8,8 +8,8 @@
 namespace
 {
 
-using namespace architecture;
-using namespace layout;
+using namespace dependencies;
+using namespace features::layout;
 
 TEST(Layout_factory, Produces_a_gursoy_atun_given_gursoy_atun_desc)
 {

@@ -1,4 +1,4 @@
-#include "layout/presenter.hpp"
+#include "features/layout/presenter.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>
@@ -8,11 +8,11 @@
 namespace
 {
 
-using namespace architecture;
+using namespace dependencies;
 using namespace utility;
-using namespace layout;
+using namespace features::layout;
 
-namespace lay = layout;
+namespace lay = features::layout;
 
 class iview
 {

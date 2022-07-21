@@ -4,19 +4,23 @@
 #ifndef LAYOUT_FACTORIES_HPP
 #define LAYOUT_FACTORIES_HPP
 
-#include "architecture/graph.hpp"
+#include "dependencies/graph.hpp"
 #include "layout.hpp"
 #include "topology.hpp"
 
 #include <memory>
 
-namespace layout
+namespace features::layout
 {
+
+/***********************************************************
+ * Layout Factory                                          *
+ ***********************************************************/
 
 class layout_factory final // TODO Implement caching
 {
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using pointer = std::unique_ptr<layout>;
     using descriptor = layout::descriptor;
 
@@ -36,6 +40,10 @@ private:
     layout_factory() = default;
     ~layout_factory() = default;
 };
+
+/***********************************************************
+ * Topology Factory                                        *
+ ***********************************************************/
 
 class topology_factory final
 {
@@ -61,6 +69,6 @@ private:
     ~topology_factory() = default;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_FACTORIES_HPP

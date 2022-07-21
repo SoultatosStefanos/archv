@@ -1,6 +1,6 @@
 #include "core.hpp"
 
-namespace layout
+namespace features::layout
 {
 
 void core::initialize(command_history& cmds,
@@ -20,10 +20,10 @@ void core::initialize(command_history& cmds,
 
     m_view = std::make_unique<view>(scene);
 
-    m_presenter = std::make_unique<presenter_type>(
+    m_presenter = std::make_unique<core_presenter>(
         g, *m_view, *m_update_layout, *m_update_topology);
 
     m_presenter->update_view(*m_layout, *m_topology);
 }
 
-} // namespace layout
+} // namespace features::layout

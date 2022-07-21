@@ -1,19 +1,22 @@
-// Contains the application specific usecases (interactors/services) of the
-// layout subsystem.
+// Contains the application specific usecases of the layout subsystem.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_SERVICES_HPP
 #define LAYOUT_SERVICES_HPP
 
-#include "architecture/graph.hpp"
+#include "dependencies/graph.hpp"
 #include "factories.hpp"
 #include "layout.hpp"
 #include "utility/undo_redo.hpp"
 
 #include <boost/signals2/signal.hpp>
 
-namespace layout
+namespace features::layout
 {
+
+/***********************************************************
+ * Update Layout Use Case                                  *
+ ***********************************************************/
 
 class update_layout_service
 {
@@ -21,7 +24,7 @@ class update_layout_service
         boost::signals2::signal<void(const layout&, const topology&)>;
 
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
@@ -80,13 +83,17 @@ private:
     const topology_pointer& m_space;
 };
 
+/***********************************************************
+ * Update Topology Use Case                                *
+ ***********************************************************/
+
 class update_topology_service
 {
     using signal =
         boost::signals2::signal<void(const layout&, const topology&)>;
 
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using command_history = utility::command_history;
     using command = utility::command;
     using layout_pointer = layout_factory::pointer;
@@ -97,8 +104,8 @@ public:
 
     update_topology_service(command_history& cmds,
                             const graph& g,
-                            layout_factory::pointer& layout,
-                            topology_factory::pointer& topology);
+                            layout_pointer& layout,
+                            topology_pointer& topology);
 
     void execute(descriptor desc, scale_type scale);
 
@@ -145,10 +152,10 @@ private:
     signal m_signal;
     command_history& m_cmds;
     const graph& m_g;
-    layout_factory::pointer& m_layout;
-    topology_factory::pointer& m_topology;
+    layout_pointer& m_layout;
+    topology_pointer& m_topology;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_SERVICES_HPP

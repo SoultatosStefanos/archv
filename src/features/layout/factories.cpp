@@ -6,7 +6,7 @@
 #include <typeinfo>
 #include <unordered_map>
 
-namespace layout
+namespace features::layout
 {
 
 auto layout_factory::make_layout(const descriptor& desc,
@@ -45,4 +45,4 @@ auto topology_factory::make_topology(const descriptor& desc, scale_type scale)
     }
 }
 
-} // namespace layout
+} // namespace features::layout

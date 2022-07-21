@@ -2,8 +2,7 @@ set(FILES)
 set(SUBDIRECTORIES
 	config
 	dependencies
-
-	# features
+	features
 	symbols
 	utility
 )

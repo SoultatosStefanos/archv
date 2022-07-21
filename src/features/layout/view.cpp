@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace layout
+namespace features::layout
 {
 
 view::view(const Ogre::SceneManager& scene) : m_scene{scene} {}
@@ -34,4 +34,4 @@ void view::update_topology_selection(std::string s, double scale)
     [[maybe_unused]] auto _ = std::move(s);
 }
 
-} // namespace layout
+} // namespace features::layout

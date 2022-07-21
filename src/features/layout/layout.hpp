@@ -4,12 +4,12 @@
 #ifndef LAYOUT_LAYOUT_HPP
 #define LAYOUT_LAYOUT_HPP
 
-#include "architecture/graph.hpp"
+#include "dependencies/graph.hpp"
 #include "topology.hpp"
 
 #include <memory>
 
-namespace layout
+namespace features::layout
 {
 
 class gursoy_atun_layout;
@@ -32,7 +32,7 @@ public:
 class layout
 {
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using vertex = graph::vertex_descriptor;
     using coord = double;
     using descriptor = std::string;
@@ -56,6 +56,10 @@ public:
 
     virtual auto clone() const -> std::unique_ptr<layout> = 0;
 };
+
+/***********************************************************
+ * Gursoy Atun Algorithm                                   *
+ ***********************************************************/
 
 // Assigns a position, at a 3d space, to each graph vertex.
 // Distributes vertices uniformly within a topology, keeping vertices close
@@ -126,6 +130,6 @@ private:
     position_map m_map;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_LAYOUT_HPP

@@ -4,7 +4,7 @@
 #ifndef LAYOUT_PRESENTER_HPP
 #define LAYOUT_PRESENTER_HPP
 
-#include "architecture/graph.hpp"
+#include "dependencies/graph.hpp"
 #include "factories.hpp"
 
 #include <cassert>
@@ -12,10 +12,12 @@
 #include <functional>
 #include <unordered_map>
 
-namespace layout
+namespace features::layout
 {
 
-// ------------------------- Concepts -------------------------------- //
+/***********************************************************
+ * Presenter Concepts                                      *
+ ***********************************************************/
 
 template <typename Class>
 concept view_concept = requires(Class val)
@@ -45,7 +47,9 @@ concept update_topology_concept = requires(Class val)
         std::function<void(const layout&, const topology&)>())};
 };
 
-// ------------------------------------------------------------------- //
+/***********************************************************
+ * Presenter                                               *
+ ***********************************************************/
 
 template <view_concept View,
           update_layout_concept UpdateLayoutService,
@@ -53,7 +57,7 @@ template <view_concept View,
 class presenter
 {
 public:
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using layout_type = layout_factory::descriptor;
     using topology_type = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
@@ -111,7 +115,8 @@ private:
     {
         for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
         {
-            const auto& vertex_id = m_g[v].sym.id;
+            // FIXME
+            const auto& vertex_id = m_g[v];
             m_view.draw_vertex(vertex_id, l.x(v), l.y(v), l.z(v));
         }
     }
@@ -124,6 +129,6 @@ private:
     update_topology_service& m_update_topology;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_PRESENTER_HPP

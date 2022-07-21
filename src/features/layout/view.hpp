@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 
-namespace layout
+namespace features::layout
 {
 
 class view
@@ -63,6 +63,6 @@ private:
     const Ogre::SceneManager& m_scene;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_VIEW_HPP

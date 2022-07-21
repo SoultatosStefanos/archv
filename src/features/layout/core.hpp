@@ -14,20 +14,21 @@
 #include <cassert>
 #include <memory>
 
-namespace layout
+namespace features::layout
 {
 
 class core final
 {
 public:
     using command_history = utility::command_history;
-    using graph = architecture::graph;
+    using graph = dependencies::graph;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using layout_descriptor = layout_factory::descriptor;
     using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
-    using presenter_type =
+
+    using core_presenter =
         presenter<view, update_layout_service, update_topology_service>;
 
     static_assert(std::is_default_constructible_v<layout_pointer>);
@@ -100,13 +101,13 @@ public:
         return *m_update_topology;
     }
 
-    auto get_presenter() const -> const presenter_type&
+    auto get_presenter() const -> const core_presenter&
     {
         assert(m_presenter);
         return *m_presenter;
     }
 
-    auto get_presenter() -> presenter_type&
+    auto get_presenter() -> core_presenter&
     {
         assert(m_presenter);
         return *m_presenter;
@@ -131,12 +132,12 @@ private:
     layout_pointer m_layout;
     topology_pointer m_topology;
 
-    std::unique_ptr<presenter_type> m_presenter;
+    std::unique_ptr<core_presenter> m_presenter;
     std::unique_ptr<view> m_view;
     std::unique_ptr<update_layout_service> m_update_layout;
     std::unique_ptr<update_topology_service> m_update_topology;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_CORE_HPP

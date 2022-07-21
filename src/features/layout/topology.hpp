@@ -16,7 +16,7 @@
 // This file provides a scalable inheritance chain with which the bgl layout
 // algorithms can interface implicitly.
 
-namespace layout
+namespace features::layout
 {
 
 class cube;
@@ -64,6 +64,10 @@ public:
     virtual auto clone() const -> std::unique_ptr<topology> = 0;
 };
 
+/***********************************************************
+ * Cube Topology                                           *
+ ***********************************************************/
+
 class cube : public topology
 {
 public:
@@ -96,6 +100,10 @@ private:
     data_type m_cube;
     scale_type m_scale;
 };
+
+/***********************************************************
+ * Sphere Topology                                         *
+ ***********************************************************/
 
 class sphere : public topology
 {
@@ -130,6 +138,6 @@ private:
     scale_type m_scale;
 };
 
-} // namespace layout
+} // namespace features::layout
 
 #endif // LAYOUT_TOPOLOGY_HPP

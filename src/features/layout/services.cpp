@@ -3,7 +3,7 @@
 #include <boost/core/demangle.hpp>
 #include <boost/log/trivial.hpp>
 
-namespace layout
+namespace features::layout
 {
 
 update_layout_service::update_layout_command::update_layout_command(
@@ -117,4 +117,4 @@ void update_topology_service::execute(descriptor desc, scale_type scale)
         m_signal, std::move(desc), scale, m_g, m_topology, m_layout));
 }
 
-} // namespace layout
+} // namespace features::layout
