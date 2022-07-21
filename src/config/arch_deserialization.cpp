@@ -1,7 +1,6 @@
 #include "arch_deserialization.hpp"
 
-#include "utility/json.hpp"
-
+#include <boost/log/trivial.hpp>
 #include <ranges>
 
 namespace config
@@ -12,7 +11,53 @@ using namespace symbols;
 
 namespace
 {
-    using namespace utility;
+    inline auto get(const Json::Value& val, const char* at) -> Json::Value
+    {
+        assert(at);
+
+        BOOST_LOG_TRIVIAL(debug) << "reading json value member: " << at;
+
+        if (!val.isMember(at))
+            BOOST_THROW_EXCEPTION(json_member_not_found()
+                                  << json_member_info(at)
+                                  << json_value_info(val));
+
+        return val[at];
+    }
+
+    // Safe json value type conversion
+    template <typename T>
+    inline auto as(const Json::Value& val, bool required = true) -> T
+    {
+        if (!required and val.isNull())
+            return T{};
+
+        if (!val.is<T>())
+            BOOST_THROW_EXCEPTION(invalid_json_value_type()
+                                  << json_type_info(val.type())
+                                  << json_value_info(val));
+
+        return val.as<T>();
+    }
+
+    // Traverse json objects with ids.
+    template <typename BinaryOperation>
+    requires std::invocable<BinaryOperation,
+                            std::decay_t<Json::String>,
+                            std::decay_t<Json::Value>>
+    void for_each_object(const Json::Value& val, BinaryOperation func)
+    {
+        if (val.isNull())
+            return;
+
+        if (val.isArray())
+            BOOST_THROW_EXCEPTION(invalid_json_value_type()
+                                  << json_type_info(val.type())
+                                  << json_value_info(val));
+
+        for (auto iter = std::begin(val); iter != std::end(val); ++iter)
+            func(iter.name(), *iter);
+    }
 
     inline void deserialize_source_location(const Json::Value& val,
                                             source_location& loc)
@@ -105,7 +150,7 @@ namespace
 
         if (!val.isArray())
             BOOST_THROW_EXCEPTION(invalid_json_value_type()
-                                  << json_value_type_info(val.type())
+                                  << json_type_info(val.type())
                                   << json_value_info(val));
 
         std::transform(std::begin(val),
@@ -207,9 +252,10 @@ auto derialize_symbols(const Json::Value& root) -> symbol_table
 {
     symbol_table st;
 
-    for_each_object(root, [&st](const auto& id, const auto& val) {
-        st.insert(read_structure(id, val));
-    });
+    for_each_object(get(root, "structures"),
+                    [&st](const auto& id, const auto& val) {
+                        st.insert(read_structure(id, val));
+                    });
 
     return st;
 }
@@ -228,7 +274,7 @@ auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
         vertices[structure.sym.id] = boost::add_vertex(structure.sym.id, g);
 
     // edges
-    for (const auto& val : root)
+    for (const auto& val : get(root, "dependencies"))
     {
         const auto& from = as<module_id>(get(val, "from"));
         const auto& to = as<module_id>(get(val, "to"));

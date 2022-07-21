@@ -1,8 +1,5 @@
 set(FILES
 	all.hpp
-	flyweight.cpp
-	flyweight.hpp
-	json.hpp
 	path.hpp
 	random.hpp
 	undo_redo.cpp

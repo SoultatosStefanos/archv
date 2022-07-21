@@ -1,6 +1,10 @@
 set(FILES
+	all.hpp
 	arch_deserialization.cpp
 	arch_deserialization.hpp
+	archives.cpp
+	archives.hpp
+	error.hpp
 )
 set(SUBDIRECTORIES)
 
