@@ -17,6 +17,7 @@ using weight = int;
 using weight_function = std::function<weight(graph::edge_descriptor)>;
 
 // An edge weight property map adaptor through a uniform function.
+// NOTE: Can be efficiently passed by value.
 using weight_map = boost::
     function_property_map<weight_function, graph::edge_descriptor, weight>;
 
