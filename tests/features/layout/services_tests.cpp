@@ -60,11 +60,11 @@ protected:
 TEST_F(An_update_layout_service,
        Wont_change_the_layout_when_requested_same_desc)
 {
-    const auto* prev = l.get();
+    const auto* prev = l;
 
     service->execute(l->desc());
 
-    ASSERT_EQ(prev, l.get());
+    ASSERT_EQ(prev, l);
 }
 
 TEST_F(An_update_layout_service,
@@ -125,11 +125,11 @@ protected:
 TEST_F(An_update_topology_service,
        Wont_change_the_layout_when_requested_same_desc_and_scale)
 {
-    const auto* prev = l.get();
+    const auto* prev = l;
 
     service->execute(s->desc(), s->scale());
 
-    ASSERT_EQ(prev, l.get());
+    ASSERT_EQ(prev, l);
 }
 
 TEST_F(An_update_topology_service,
@@ -146,14 +146,14 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_and_topology_when_requested_different_desc)
 {
-    const auto* prev = l.get();
+    const auto* prev = l;
     const auto& prev_id = typeid(*s);
 
     assert(s->desc() != topology_factory::sphere_desc);
 
     service->execute(topology_factory::sphere_desc, 80);
 
-    ASSERT_NE(prev, l.get());
+    ASSERT_NE(prev, l);
     ASSERT_NE(typeid(*s), prev_id);
 }
 
@@ -173,11 +173,11 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_when_requested_different_scale)
 {
-    const auto* prev = l.get();
+    const auto* prev = l;
 
     service->execute(s->desc(), 100);
 
-    ASSERT_NE(prev, l.get());
+    ASSERT_NE(prev, l);
 }
 
 TEST_F(An_update_topology_service,

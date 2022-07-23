@@ -9,6 +9,7 @@
 #include "topology.hpp"
 
 #include <memory>
+#include <utility>
 
 namespace features::layout
 {
@@ -17,12 +18,12 @@ namespace features::layout
  * Layout Factory                                          *
  ***********************************************************/
 
-class layout_factory final // TODO Implement caching
+class layout_factory final
 {
 public:
     using graph = dependencies::graph;
     using weight_map = dependencies::weight_map;
-    using pointer = std::unique_ptr<layout>;
+    using pointer = layout*;
     using descriptor = layout::descriptor;
 
     static constexpr auto gursoy_atun_desc = gursoy_atun_layout::description;
