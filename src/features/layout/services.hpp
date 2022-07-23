@@ -166,6 +166,94 @@ private:
     topology_pointer& m_topology;
 };
 
+/***********************************************************
+ * Revert to Defaults Use Case                             *
+ ***********************************************************/
+
+class revert_to_defaults_service
+{
+    using signal =
+        boost::signals2::signal<void(const layout&, const topology&)>;
+
+public:
+    using graph = dependencies::graph;
+    using weight_map = dependencies::weight_map;
+    using command_history = utility::command_history;
+    using command = utility::command;
+    using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
+    using layout_descriptor = layout_factory::descriptor;
+    using topology_descriptor = topology_factory::descriptor;
+    using topology_scale = topology_factory::scale_type;
+    using layout_listener = signal::slot_type;
+
+    revert_to_defaults_service(command_history& cmds,
+                               const graph& g,
+                               weight_map edge_weight,
+                               layout_descriptor layout_desc,
+                               topology_descriptor topology_desc,
+                               topology_scale topology_scale,
+                               layout_pointer& layout,
+                               topology_pointer& space);
+
+    void execute();
+
+    void on_layout_response(const layout_listener& f) { m_signal.connect(f); }
+
+private:
+    class revert_to_defaults_command : public command
+    {
+    public:
+        revert_to_defaults_command(signal& s,
+                                   const graph& g,
+                                   weight_map edge_weight,
+                                   layout_descriptor layout_desc,
+                                   topology_descriptor topology_desc,
+                                   topology_scale topology_scale,
+                                   layout_pointer& layout,
+                                   topology_pointer& space);
+
+        virtual ~revert_to_defaults_command() override = default;
+
+        virtual void execute() override;
+
+        virtual void undo() override;
+        virtual void redo() override { execute(); }
+
+        virtual auto clone() const -> std::unique_ptr<command> override
+        {
+            return std::make_unique<revert_to_defaults_command>(*this);
+        }
+
+    private:
+        void change_layout(const layout_descriptor& layout_desc,
+                           const topology_descriptor& topology_desc,
+                           topology_scale topology_scale);
+
+        signal& m_signal;
+        const graph& m_g;
+        weight_map m_edge_weight;
+        layout_descriptor m_layout_desc;
+        layout_descriptor m_prev_layout_desc;
+        topology_descriptor m_topology_desc;
+        topology_descriptor m_prev_topology_desc;
+        topology_scale m_topology_scale;
+        topology_scale m_prev_topology_scale;
+        layout_pointer& m_layout;
+        topology_pointer& m_topology;
+    };
+
+    signal m_signal;
+    command_history& m_cmds;
+    const graph& m_g;
+    weight_map m_edge_weight;
+    layout_descriptor m_layout_desc;
+    topology_descriptor m_topology_desc;
+    topology_scale m_topology_scale;
+    layout_pointer& m_layout;
+    topology_pointer& m_topology;
+};
+
 } // namespace features::layout
 
 #endif // LAYOUT_SERVICES_HPP

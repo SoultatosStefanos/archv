@@ -137,4 +137,91 @@ void update_topology_service::execute(descriptor desc, scale_type scale)
                                                              m_layout));
 }
 
+revert_to_defaults_service::revert_to_defaults_command::
+    revert_to_defaults_command(signal& s,
+                               const graph& g,
+                               weight_map edge_weight,
+                               layout_descriptor layout_desc,
+                               topology_descriptor topology_desc,
+                               topology_scale topology_scale,
+                               layout_pointer& layout,
+                               topology_pointer& space)
+    : m_signal{s},
+      m_g{g},
+      m_edge_weight{edge_weight},
+      m_layout_desc{layout_desc},
+      m_prev_layout_desc{layout->desc()},
+      m_topology_desc{topology_desc},
+      m_prev_topology_desc{space->desc()},
+      m_topology_scale{topology_scale},
+      m_prev_topology_scale{space->scale()},
+      m_layout{layout},
+      m_topology{space}
+{}
+
+void revert_to_defaults_service::revert_to_defaults_command::execute()
+{
+    if (m_layout_desc != m_layout->desc() or
+        m_topology_desc != m_topology->desc() or
+        m_topology_scale != m_topology->scale())
+        change_layout(m_layout_desc, m_topology_desc, m_topology_scale);
+}
+
+void revert_to_defaults_service::revert_to_defaults_command::undo()
+{
+    if (m_prev_layout_desc != m_layout->desc() or
+        m_prev_topology_desc != m_topology->desc() or
+        m_prev_topology_scale != m_topology->scale())
+        change_layout(
+            m_prev_layout_desc, m_prev_topology_desc, m_prev_topology_scale);
+}
+
+void revert_to_defaults_service::revert_to_defaults_command::change_layout(
+    const layout_descriptor& layout_desc,
+    const topology_descriptor& topology_desc,
+    topology_scale topology_scale)
+{
+    m_topology = topology_factory::make_topology(topology_desc, topology_scale);
+    m_layout = layout_factory::make_layout(
+        layout_desc, m_g, *m_topology, m_edge_weight);
+
+    BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_desc
+                            << " with scale: " << topology_scale;
+    BOOST_LOG_TRIVIAL(info) << "layout changed to: " << layout_desc;
+
+    m_signal(*m_layout, *m_topology);
+}
+
+revert_to_defaults_service::revert_to_defaults_service(
+    command_history& cmds,
+    const graph& g,
+    weight_map edge_weight,
+    layout_descriptor layout_desc,
+    topology_descriptor topology_desc,
+    topology_scale topology_scale,
+    layout_pointer& layout,
+    topology_pointer& space)
+    : m_cmds{cmds},
+      m_g{g},
+      m_edge_weight{edge_weight},
+      m_layout_desc{std::move(layout_desc)},
+      m_topology_desc{std::move(topology_desc)},
+      m_topology_scale{topology_scale},
+      m_layout{layout},
+      m_topology{space}
+{}
+
+void revert_to_defaults_service::execute()
+{
+    m_cmds.execute(
+        std::make_unique<revert_to_defaults_command>(m_signal,
+                                                     m_g,
+                                                     m_edge_weight,
+                                                     m_layout_desc,
+                                                     m_topology_desc,
+                                                     m_topology_scale,
+                                                     m_layout,
+                                                     m_topology));
+}
+
 } // namespace features::layout

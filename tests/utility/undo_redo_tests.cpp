@@ -134,7 +134,7 @@ TEST_F(Given_a_command_history, Redoes_cmds_in_lifo)
 TEST_F(Given_a_command_history,
        Undoing_n_commands_after_executing_them_undoes_them_all)
 {
-    const auto n = urandom(10, 1000);
+    const auto n = urandom(2, 10);
     std::vector<std::unique_ptr<nice_mock_command>> mock_commands(n);
     for (auto& cmd : mock_commands)
         cmd = std::make_unique<nice_mock_command>();
@@ -155,7 +155,7 @@ TEST_F(Given_a_command_history,
 TEST_F(Given_a_command_history,
        Redoing_n_commands_after_undoing_them_redoes_them_all)
 {
-    const auto n = urandom(10, 1000);
+    const auto n = urandom(2, 10);
     std::vector<std::unique_ptr<nice_mock_command>> mock_commands(n);
     for (auto& cmd : mock_commands)
         cmd = std::make_unique<nice_mock_command>();

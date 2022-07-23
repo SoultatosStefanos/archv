@@ -229,4 +229,136 @@ TEST_F(
     ASSERT_EQ(s->scale(), 80);
 }
 
+class A_revert_to_defaults_service
+    : public Given_a_graph_cmds_topology_and_layout
+{
+public:
+    using mock_subscriber =
+        NiceMock<MockFunction<void(const lay::layout&, const topology&)>>;
+
+    void SetUp() override
+    {
+        Given_a_graph_cmds_topology_and_layout::SetUp();
+
+        service = std::make_unique<revert_to_defaults_service>(
+            *cmds,
+            *g,
+            weight_map([](auto) { return 1; }),
+            l->desc(),
+            s->desc(),
+            s->scale(),
+            l,
+            s);
+    }
+
+protected:
+    std::unique_ptr<revert_to_defaults_service> service;
+};
+
+TEST_F(
+    A_revert_to_defaults_service,
+    Will_not_change_the_layout_or_topology_if_all_descriptors_and_the_scale_match_the_current)
+{
+    auto* prev_layout = l;
+    auto* prev_topology = s.get();
+
+    service->execute();
+
+    ASSERT_EQ(prev_layout, l);
+    ASSERT_EQ(prev_topology, s.get());
+}
+
+TEST_F(
+    A_revert_to_defaults_service,
+    Will_not_post_a_layout_change_if_all_descriptors_and_the_scale_match_the_current)
+{
+    mock_subscriber mock;
+    service->on_layout_response(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
+
+    service->execute();
+}
+
+// TODO
+TEST_F(
+    A_revert_to_defaults_service,
+    Will_change_the_layout_and_topology_if_the_layout_descriptor_doesnt_match_the_current)
+{
+    SUCCEED();
+}
+
+TEST_F(
+    A_revert_to_defaults_service,
+    Will_post_a_layout_change_if_the_topology_descriptor_doesnt_match_the_current)
+{
+    mock_subscriber mock;
+    service->on_layout_response(mock.AsStdFunction());
+
+    s = topology_factory::make_topology(topology_factory::sphere_desc,
+                                        s->scale());
+
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
+
+    service->execute();
+}
+
+TEST_F(A_revert_to_defaults_service,
+       Will_post_a_layout_change_if_the_topology_scale_doesnt_match_the_current)
+{
+    mock_subscriber mock;
+    service->on_layout_response(mock.AsStdFunction());
+
+    s = topology_factory::make_topology(s->desc(), 1000);
+
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
+
+    service->execute();
+}
+
+TEST_F(A_revert_to_defaults_service,
+       Will_revert_to_initial_topology_after_posting_change_and_undo)
+{
+    s = topology_factory::make_topology(topology_factory::sphere_desc, 1000);
+    l = layout_factory::make_layout(layout_factory::gursoy_atun_desc,
+                                    *g,
+                                    *s,
+                                    weight_map([](auto) { return 1; }));
+
+    service->execute();
+
+    EXPECT_EQ(s->desc(), topology_factory::cube_desc);
+    EXPECT_EQ(s->scale(), 10);
+
+    cmds->undo();
+
+    ASSERT_EQ(s->desc(), topology_factory::sphere_desc);
+    ASSERT_EQ(s->scale(), 1000);
+}
+
+TEST_F(A_revert_to_defaults_service,
+       Will_revert_to_changed_topology_after_posting_chang_undo_and_redo)
+{
+    s = topology_factory::make_topology(topology_factory::sphere_desc, 1000);
+    l = layout_factory::make_layout(layout_factory::gursoy_atun_desc,
+                                    *g,
+                                    *s,
+                                    weight_map([](auto) { return 1; }));
+
+    service->execute();
+
+    EXPECT_EQ(s->desc(), topology_factory::cube_desc);
+    EXPECT_EQ(s->scale(), 10);
+
+    cmds->undo();
+
+    EXPECT_EQ(s->desc(), topology_factory::sphere_desc);
+    EXPECT_EQ(s->scale(), 1000);
+
+    cmds->redo();
+
+    ASSERT_EQ(s->desc(), topology_factory::cube_desc);
+    ASSERT_EQ(s->scale(), 10);
+}
+
 } // namespace
