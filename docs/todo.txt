@@ -74,7 +74,7 @@ TODOS
 
 	See MyGUI
 
-	Implement Layout Factory Caching
+	Implement Layout Factory Caching <- DONE
 
 	Implement Layout Revert To Defaults Use Case
 
