@@ -76,6 +76,6 @@ TODOS
 
 	Implement Layout Factory Caching <- DONE
 
-	Implement Layout Revert To Defaults Use Case
+	Implement Layout Revert To Defaults Use Case <- DONE
 
 

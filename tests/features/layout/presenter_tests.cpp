@@ -34,6 +34,9 @@ public:
 
     virtual void on_topology_request(
         const std::function<void(const std::string&, double)>&) = 0;
+
+    virtual void
+    on_revert_to_defaults_request(const std::function<void()>&) = 0;
 };
 
 class mock_view : public iview
@@ -65,6 +68,11 @@ public:
     MOCK_METHOD(void,
                 on_topology_request,
                 (const std::function<void(const std::string&, double)>&),
+                (override));
+
+    MOCK_METHOD(void,
+                on_revert_to_defaults_request,
+                (const std::function<void()>&),
                 (override));
 };
 
@@ -137,12 +145,47 @@ public:
                 (override));
 };
 
+class irevert_to_defaults
+{
+public:
+    irevert_to_defaults() = default;
+    irevert_to_defaults(const irevert_to_defaults&) = default;
+    irevert_to_defaults(irevert_to_defaults&&) = default;
+    virtual ~irevert_to_defaults() = default;
+
+    auto operator=(const irevert_to_defaults&)
+        -> irevert_to_defaults& = default;
+    auto operator=(irevert_to_defaults&&) -> irevert_to_defaults& = default;
+
+    virtual void on_layout_response(
+        const std::function<void(const lay::layout&, const topology&)>&) = 0;
+
+    virtual void execute() = 0;
+};
+
+class mock_revert_to_defaults : public irevert_to_defaults
+{
+public:
+    mock_revert_to_defaults() = default;
+    ~mock_revert_to_defaults() override = default;
+
+    MOCK_METHOD(
+        void,
+        on_layout_response,
+        (const std::function<void(const lay::layout&, const topology&)>&),
+        (override));
+
+    MOCK_METHOD(void, execute, (), (override));
+};
+
 class A_layout_presenter : public testing::Test
 {
 public:
-    using test_presenter = presenter<testing::NiceMock<mock_view>,
-                                     testing::NiceMock<mock_update_layout>,
-                                     testing::NiceMock<mock_update_topology>>;
+    using test_presenter =
+        presenter<testing::NiceMock<mock_view>,
+                  testing::NiceMock<mock_update_layout>,
+                  testing::NiceMock<mock_update_topology>,
+                  testing::NiceMock<mock_revert_to_defaults>>;
 
     void SetUp() override
     {
@@ -151,7 +194,8 @@ public:
             boost::get(boost::vertex_bundle, g),
             mocked_view,
             mocked_update_layout_service,
-            mocked_update_topology_service);
+            mocked_update_topology_service,
+            mocked_defaults_service);
     }
 
 protected:
@@ -161,6 +205,7 @@ protected:
     testing::NiceMock<mock_view> mocked_view;
     testing::NiceMock<mock_update_layout> mocked_update_layout_service;
     testing::NiceMock<mock_update_topology> mocked_update_topology_service;
+    testing::NiceMock<mock_revert_to_defaults> mocked_defaults_service;
     std::unique_ptr<test_presenter> instance;
 };
 
@@ -205,6 +250,13 @@ TEST_F(A_layout_presenter, Routes_update_topology_requests)
                 execute(topology_factory::cube_desc, 1000000));
 
     instance->update_topology(topology_factory::cube_desc, 1000000);
+}
+
+TEST_F(A_layout_presenter, Routes_revert_to_defaults_requests)
+{
+    EXPECT_CALL(mocked_defaults_service, execute());
+
+    instance->revert_to_defaults();
 }
 
 } // namespace

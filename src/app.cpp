@@ -104,6 +104,8 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
         layout::core::get().get_view().send_topology_request("Sphere", 80);
     else if (e.keysym.sym == 'p')
         layout::core::get().get_view().send_topology_request("Cube", 80);
+    else if (e.keysym.sym == 'r')
+        layout::core::get().get_view().send_revert_to_defaults_request();
 #endif
 
     return true;

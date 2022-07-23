@@ -18,10 +18,12 @@ class view
     using layout_request = boost::signals2::signal<void(const std::string&)>;
     using space_request =
         boost::signals2::signal<void(const std::string&, double)>;
+    using defaults_request = boost::signals2::signal<void()>;
 
 public:
     using layout_request_listener = layout_request::slot_type;
     using topology_request_listener = space_request::slot_type;
+    using defaults_request_listener = defaults_request::slot_type;
 
     explicit view(const Ogre::SceneManager& scene);
 
@@ -41,6 +43,11 @@ public:
         m_topology_signal.connect(f);
     }
 
+    void on_revert_to_defaults_request(const defaults_request_listener& f)
+    {
+        m_defaults_signal.connect(f);
+    }
+
     void send_layout_request(const std::string& l) const
     {
         BOOST_LOG_TRIVIAL(info) << "layout selected with type: " << l;
@@ -56,9 +63,17 @@ public:
         m_topology_signal(space, scale);
     }
 
+    void send_revert_to_defaults_request() const
+    {
+        BOOST_LOG_TRIVIAL(info) << "selected revert to defaults";
+
+        m_defaults_signal();
+    }
+
 private:
     layout_request m_layout_signal;
     space_request m_topology_signal;
+    defaults_request m_defaults_signal;
 
     const Ogre::SceneManager& m_scene;
 };

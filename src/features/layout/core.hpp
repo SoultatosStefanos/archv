@@ -30,8 +30,10 @@ public:
     using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
 
-    using core_presenter =
-        presenter<view, update_layout_service, update_topology_service>;
+    using core_presenter = presenter<view,
+                                     update_layout_service,
+                                     update_topology_service,
+                                     revert_to_defaults_service>;
 
     static_assert(std::is_default_constructible_v<layout_pointer>);
     static_assert(std::is_default_constructible_v<topology_pointer>);
@@ -57,73 +59,85 @@ public:
                     const topology_descriptor& topolgy_desc,
                     topology_scale scale);
 
-    auto get_layout() const -> const layout&
+    auto get_layout() const -> const auto&
     {
         assert(m_layout);
         return *m_layout;
     }
 
-    auto get_layout() -> layout&
+    auto get_layout() -> auto&
     {
         assert(m_layout);
         return *m_layout;
     }
 
-    auto get_topology() const -> const topology&
+    auto get_topology() const -> const auto&
     {
         assert(m_topology);
         return *m_topology;
     }
 
-    auto get_topology() -> topology&
+    auto get_topology() -> auto&
     {
         assert(m_topology);
         return *m_topology;
     }
 
-    auto get_update_layout_service() const -> const update_layout_service&
+    auto get_update_layout_service() const -> const auto&
     {
         assert(m_update_layout);
         return *m_update_layout;
     }
 
-    auto get_update_layout_service() -> update_layout_service&
+    auto get_update_layout_service() -> auto&
     {
         assert(m_update_layout);
         return *m_update_layout;
     }
 
-    auto get_update_topology_service() const -> const update_topology_service&
+    auto get_update_topology_service() const -> const auto&
     {
         assert(m_update_topology);
         return *m_update_topology;
     }
 
-    auto get_update_topology_service() -> update_topology_service&
+    auto get_update_topology_service() -> auto&
     {
         assert(m_update_topology);
         return *m_update_topology;
     }
 
-    auto get_presenter() const -> const core_presenter&
+    auto get_revert_to_defaults_service() const -> const auto&
+    {
+        assert(m_revert_to_defaults);
+        return *m_revert_to_defaults;
+    }
+
+    auto get_revert_to_defaults_service() -> auto&
+    {
+        assert(m_revert_to_defaults);
+        return *m_revert_to_defaults;
+    }
+
+    auto get_presenter() const -> const auto&
     {
         assert(m_presenter);
         return *m_presenter;
     }
 
-    auto get_presenter() -> core_presenter&
+    auto get_presenter() -> auto&
     {
         assert(m_presenter);
         return *m_presenter;
     }
 
-    auto get_view() const -> const view&
+    auto get_view() const -> const auto&
     {
         assert(m_view);
         return *m_view;
     }
 
-    auto get_view() -> view&
+    auto get_view() -> auto&
     {
         assert(m_view);
         return *m_view;
@@ -140,6 +154,7 @@ private:
     std::unique_ptr<view> m_view;
     std::unique_ptr<update_layout_service> m_update_layout;
     std::unique_ptr<update_topology_service> m_update_topology;
+    std::unique_ptr<revert_to_defaults_service> m_revert_to_defaults;
 };
 
 } // namespace features::layout

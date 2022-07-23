@@ -29,6 +29,7 @@ concept view_concept = requires(Class val)
     {val.on_layout_request(std::function<void(const std::string&)>())};
     {val.on_topology_request(
         std::function<void(const std::string&, double)>())};
+    {val.on_revert_to_defaults_request(std::function<void()>())};
 };
 
 template <typename Class>
@@ -47,13 +48,22 @@ concept update_topology_concept = requires(Class val)
         std::function<void(const layout&, const topology&)>())};
 };
 
+template <typename Class>
+concept revert_to_defaults_concept = requires(Class val)
+{
+    {val.execute()};
+    {val.on_layout_response(
+        std::function<void(const layout&, const topology&)>())};
+};
+
 /***********************************************************
  * Presenter                                               *
  ***********************************************************/
 
 template <view_concept View,
           update_layout_concept UpdateLayoutService,
-          update_topology_concept UpdateTopologyService>
+          update_topology_concept UpdateTopologyService,
+          revert_to_defaults_concept RevertToDefaultsService>
 class presenter
 {
 public:
@@ -65,17 +75,20 @@ public:
     using view = View;
     using update_layout_service = UpdateLayoutService;
     using update_topology_service = UpdateTopologyService;
+    using revert_to_defaults_service = RevertToDefaultsService;
 
     presenter(const graph& g,
               vertex_id_map vertex_id,
               view& v,
               update_layout_service& usecase1,
-              update_topology_service& usecase2)
+              update_topology_service& usecase2,
+              revert_to_defaults_service& usecase3)
         : m_g{g},
           m_vertex_id{vertex_id},
           m_view{v},
           m_update_layout{usecase1},
-          m_update_topology{usecase2}
+          m_update_topology{usecase2},
+          m_revert_to_defaults{usecase3}
     {
         m_view.on_layout_request(
             [this](const auto& type) { update_layout(type); });
@@ -84,10 +97,15 @@ public:
             update_topology(type, scale);
         });
 
+        m_view.on_revert_to_defaults_request([this] { revert_to_defaults(); });
+
         m_update_layout.on_layout_response(
             [this](const auto& l, const auto& t) { update_view(l, t); });
 
         m_update_topology.on_layout_response(
+            [this](const auto& l, const auto& t) { update_view(l, t); });
+
+        m_revert_to_defaults.on_layout_response(
             [this](const auto& l, const auto& t) { update_view(l, t); });
     }
 
@@ -106,6 +124,8 @@ public:
     {
         m_update_topology.execute(std::move(selected_topology), selected_scale);
     }
+
+    void revert_to_defaults() { m_revert_to_defaults.execute(); }
 
 private:
     void update_view_selections(const layout& l, const topology& s)
@@ -130,6 +150,7 @@ private:
 
     update_layout_service& m_update_layout;
     update_topology_service& m_update_topology;
+    revert_to_defaults_service& m_revert_to_defaults;
 };
 
 } // namespace features::layout

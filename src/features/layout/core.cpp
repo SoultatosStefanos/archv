@@ -18,13 +18,28 @@ void core::initialize(command_history& cmds,
 
     m_update_layout = std::make_unique<update_layout_service>(
         cmds, g, edge_weight, m_layout, m_topology);
+
     m_update_topology = std::make_unique<update_topology_service>(
         cmds, g, edge_weight, m_layout, m_topology);
 
+    m_revert_to_defaults =
+        std::make_unique<revert_to_defaults_service>(cmds,
+                                                     g,
+                                                     edge_weight,
+                                                     layout_desc,
+                                                     topology_desc,
+                                                     scale,
+                                                     m_layout,
+                                                     m_topology);
+
     m_view = std::make_unique<view>(scene);
 
-    m_presenter = std::make_unique<core_presenter>(
-        g, vertex_id, *m_view, *m_update_layout, *m_update_topology);
+    m_presenter = std::make_unique<core_presenter>(g,
+                                                   vertex_id,
+                                                   *m_view,
+                                                   *m_update_layout,
+                                                   *m_update_topology,
+                                                   *m_revert_to_defaults);
 
     m_presenter->update_view(*m_layout, *m_topology);
 }
