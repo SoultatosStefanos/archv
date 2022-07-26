@@ -6,10 +6,8 @@
 
 #include "factories.hpp"
 #include "layout.hpp"
-#include "presenter.hpp"
 #include "services.hpp"
 #include "topology.hpp"
-#include "view.hpp"
 
 #include <cassert>
 #include <memory>
@@ -17,26 +15,17 @@
 namespace features::layout
 {
 
+// A facade for the layout management subsystem.
 class core final
 {
+    using signal =
+        boost::signals2::signal<void(const layout&, const topology&)>;
+
 public:
     using command_history = utility::command_history;
     using graph = dependencies::graph;
-    using vertex_id_map = dependencies::vertex_id_map;
     using weight_map = dependencies::weight_map;
-    using layout_pointer = layout_factory::pointer;
-    using topology_pointer = topology_factory::pointer;
-    using layout_descriptor = layout_factory::descriptor;
-    using topology_descriptor = topology_factory::descriptor;
-    using topology_scale = topology_factory::scale_type;
-
-    using core_presenter = presenter<view,
-                                     update_layout_service,
-                                     update_topology_service,
-                                     revert_to_defaults_service>;
-
-    static_assert(std::is_default_constructible_v<layout_pointer>);
-    static_assert(std::is_default_constructible_v<topology_pointer>);
+    using slot_type = signal::slot_type;
 
     core(const core&) = delete;
     core(core&&) = delete;
@@ -52,106 +41,32 @@ public:
 
     void initialize(command_history& cmds,
                     const graph& g,
-                    vertex_id_map vertex_id,
                     weight_map edge_weight,
-                    const Ogre::SceneManager& scene,
-                    const layout_descriptor& layout_desc,
-                    const topology_descriptor& topolgy_desc,
-                    topology_scale scale);
+                    const std::string& layout_type,
+                    const std::string& topolgy_type,
+                    double topology_scale);
+    void reset();
 
-    auto get_layout() const -> const auto&
-    {
-        assert(m_layout);
-        return *m_layout;
-    }
+    auto get_layout_type() const -> std::string;
+    auto get_topology_type() const -> std::string;
+    auto get_topology_scale() const -> double;
 
-    auto get_layout() -> auto&
-    {
-        assert(m_layout);
-        return *m_layout;
-    }
+    void update_layout(const std::string& type);
+    void update_topology(const std::string& type, double scale);
+    void revert_to_defaults();
 
-    auto get_topology() const -> const auto&
-    {
-        assert(m_topology);
-        return *m_topology;
-    }
-
-    auto get_topology() -> auto&
-    {
-        assert(m_topology);
-        return *m_topology;
-    }
-
-    auto get_update_layout_service() const -> const auto&
-    {
-        assert(m_update_layout);
-        return *m_update_layout;
-    }
-
-    auto get_update_layout_service() -> auto&
-    {
-        assert(m_update_layout);
-        return *m_update_layout;
-    }
-
-    auto get_update_topology_service() const -> const auto&
-    {
-        assert(m_update_topology);
-        return *m_update_topology;
-    }
-
-    auto get_update_topology_service() -> auto&
-    {
-        assert(m_update_topology);
-        return *m_update_topology;
-    }
-
-    auto get_revert_to_defaults_service() const -> const auto&
-    {
-        assert(m_revert_to_defaults);
-        return *m_revert_to_defaults;
-    }
-
-    auto get_revert_to_defaults_service() -> auto&
-    {
-        assert(m_revert_to_defaults);
-        return *m_revert_to_defaults;
-    }
-
-    auto get_presenter() const -> const auto&
-    {
-        assert(m_presenter);
-        return *m_presenter;
-    }
-
-    auto get_presenter() -> auto&
-    {
-        assert(m_presenter);
-        return *m_presenter;
-    }
-
-    auto get_view() const -> const auto&
-    {
-        assert(m_view);
-        return *m_view;
-    }
-
-    auto get_view() -> auto&
-    {
-        assert(m_view);
-        return *m_view;
-    }
+    void connect(const slot_type& slot);
 
 private:
+    using layout_pointer = layout_factory::pointer;
+    using topology_pointer = topology_factory::pointer;
+
     core() = default;
     ~core() = default;
 
     layout_pointer m_layout;
     topology_pointer m_topology;
 
-    std::unique_ptr<core_presenter> m_presenter;
-    std::unique_ptr<view> m_view;
     std::unique_ptr<update_layout_service> m_update_layout;
     std::unique_ptr<update_topology_service> m_update_topology;
     std::unique_ptr<revert_to_defaults_service> m_revert_to_defaults;

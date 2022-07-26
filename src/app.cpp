@@ -1,6 +1,6 @@
 #include "app.hpp"
 
-#include <OgreManualObject.h>
+#include <OGRE/OgreManualObject.h>
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -51,15 +51,25 @@ void app::setup()
     m_cameraman = new CameraMan(cam_node);
     addInputListener(m_cameraman);
 
-    layout::core::get().initialize(
+    initialize_layout();
+}
+
+void app::initialize_layout()
+{
+    features::layout::core::get().initialize(
         m_cmds,
         m_g,
-        boost::get(boost::vertex_bundle, m_g),
         dependencies::weight_map([](auto) { return 1; }), // FIXME
-        *m_scene,
-        layout::layout_factory::gursoy_atun_desc,
-        layout::topology_factory::sphere_desc,
+        "Gursoy Atun",
+        "Sphere",
         100);
+
+    features::layout::core::get().connect(
+        [this](const features::layout::layout& l, const auto&) {
+            for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
+                m_scene->getSceneNode(m_g[v])->setPosition(
+                    l.x(v), l.y(v), l.z(v));
+        });
 }
 
 // FIXME
@@ -101,11 +111,11 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     else if (e.keysym.sym == SDLK_RIGHT)
         m_cmds.redo();
     else if (e.keysym.sym == 'o')
-        layout::core::get().get_view().send_topology_request("Sphere", 80);
+        layout::core::get().update_topology("Sphere", 80);
     else if (e.keysym.sym == 'p')
-        layout::core::get().get_view().send_topology_request("Cube", 80);
+        layout::core::get().update_topology("Cube", 80);
     else if (e.keysym.sym == 'r')
-        layout::core::get().get_view().send_revert_to_defaults_request();
+        layout::core::get().revert_to_defaults();
 #endif
 
     return true;

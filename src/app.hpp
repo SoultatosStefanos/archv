@@ -8,10 +8,10 @@
 #include "features/layout/all.hpp"
 #include "utility/all.hpp"
 
-#include <Ogre.h>
-#include <OgreApplicationContext.h>
-#include <OgreCameraMan.h>
-#include <OgreInput.h>
+#include <OGRE/Bites/OgreApplicationContext.h>
+#include <OGRE/Bites/OgreCameraMan.h>
+#include <OGRE/Bites/OgreInput.h>
+#include <OGRE/Ogre.h>
 #include <memory>
 
 // The heart of the application.
@@ -31,6 +31,8 @@ public:
 
 private:
     using command_history = utility::command_history;
+
+    void initialize_layout();
 
     const graph& m_g;
 

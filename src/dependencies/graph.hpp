@@ -44,7 +44,7 @@ using vertex_id_map =
     decltype(boost::get(boost::vertex_bundle, std::declval<graph>()));
 
 // Enforces const correctness.
-using edge_dependency_map =
+using edge_type_map =
     decltype(boost::get(boost::edge_bundle, std::declval<graph>()));
 
 using weight = int;
