@@ -6,12 +6,9 @@ set(FILES
 	factories.hpp
 	layout.cpp
 	layout.hpp
-	presenter.hpp
 	services.cpp
 	services.hpp
 	topology.hpp
-	view.cpp
-	view.hpp
 )
 set(SUBDIRECTORIES)
 

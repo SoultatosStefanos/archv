@@ -7,9 +7,7 @@
 #include "core.hpp"
 #include "factories.hpp"
 #include "layout.hpp"
-#include "presenter.hpp"
 #include "services.hpp"
 #include "topology.hpp"
-#include "view.hpp"
 
 #endif // LAYOUT_ALL_HPP

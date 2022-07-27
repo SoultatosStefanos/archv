@@ -5,16 +5,14 @@ namespace features::layout
 
 void core::initialize(command_history& cmds,
                       const graph& g,
-                      vertex_id_map vertex_id,
                       weight_map edge_weight,
-                      const Ogre::SceneManager& scene,
-                      const layout_descriptor& layout_desc,
-                      const topology_descriptor& topology_desc,
-                      topology_scale scale)
+                      const std::string& layout_type,
+                      const std::string& topolgy_type,
+                      double topology_scale)
 {
-    m_topology = topology_factory::make_topology(topology_desc, scale);
+    m_topology = topology_factory::make_topology(topolgy_type, topology_scale);
     m_layout =
-        layout_factory::make_layout(layout_desc, g, *m_topology, edge_weight);
+        layout_factory::make_layout(layout_type, g, *m_topology, edge_weight);
 
     m_update_layout = std::make_unique<update_layout_service>(
         cmds, g, edge_weight, m_layout, m_topology);
@@ -26,22 +24,63 @@ void core::initialize(command_history& cmds,
         std::make_unique<revert_to_defaults_service>(cmds,
                                                      g,
                                                      edge_weight,
-                                                     layout_desc,
-                                                     topology_desc,
-                                                     scale,
+                                                     layout_type,
+                                                     topolgy_type,
+                                                     topology_scale,
                                                      m_layout,
                                                      m_topology);
 
-    m_view = std::make_unique<view>(scene);
+    m_update_layout->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
+    m_update_topology->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
+    m_revert_to_defaults->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
+}
 
-    m_presenter = std::make_unique<core_presenter>(g,
-                                                   vertex_id,
-                                                   *m_view,
-                                                   *m_update_layout,
-                                                   *m_update_topology,
-                                                   *m_revert_to_defaults);
+void core::reset()
+{
+    m_topology.reset();
+    m_layout.reset();
+    m_update_layout.reset();
+    m_update_topology.reset();
+    m_revert_to_defaults.reset();
+}
 
-    m_presenter->update_view(*m_layout, *m_topology);
+auto core::get_layout_type() const -> std::string
+{
+    assert(m_layout);
+    return m_layout->desc();
+}
+
+auto core::get_topology_type() const -> std::string
+{
+    assert(m_topology);
+    return m_topology->desc();
+}
+
+auto core::get_topology_scale() const -> double
+{
+    assert(m_topology);
+    return m_topology->scale();
+}
+
+void core::update_layout(const std::string& type)
+{
+    assert(m_update_layout);
+    m_update_layout->execute(type);
+}
+
+void core::update_topology(const std::string& type, double scale)
+{
+    assert(m_update_topology);
+    m_update_topology->execute(type, scale);
+}
+
+void core::revert_to_defaults()
+{
+    assert(m_revert_to_defaults);
+    m_revert_to_defaults->execute();
 }
 
 } // namespace features::layout

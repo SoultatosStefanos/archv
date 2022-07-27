@@ -23,7 +23,7 @@ class layout_factory final
 public:
     using graph = dependencies::graph;
     using weight_map = dependencies::weight_map;
-    using pointer = layout*;
+    using pointer = std::unique_ptr<layout>;
     using descriptor = layout::descriptor;
 
     static constexpr auto gursoy_atun_desc = gursoy_atun_layout::description;

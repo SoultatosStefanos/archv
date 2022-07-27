@@ -60,7 +60,7 @@ protected:
 TEST_F(An_update_layout_service,
        Wont_change_the_layout_when_requested_same_desc)
 {
-    const auto* prev = l;
+    const auto& prev = l;
 
     service->execute(l->desc());
 
@@ -71,7 +71,7 @@ TEST_F(An_update_layout_service,
        Wont_post_a_layout_response_when_requested_same_desc)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
@@ -125,7 +125,7 @@ protected:
 TEST_F(An_update_topology_service,
        Wont_change_the_layout_when_requested_same_desc_and_scale)
 {
-    const auto* prev = l;
+    const auto& prev = l;
 
     service->execute(s->desc(), s->scale());
 
@@ -136,7 +136,7 @@ TEST_F(An_update_topology_service,
        Wont_post_a_layout_response_when_requested_same_desc_and_scale)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
@@ -146,14 +146,14 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_and_topology_when_requested_different_desc)
 {
-    const auto* prev = l;
+    const auto* prev = l.get();
     const auto& prev_id = typeid(*s);
 
     assert(s->desc() != topology_factory::sphere_desc);
 
     service->execute(topology_factory::sphere_desc, 80);
 
-    ASSERT_NE(prev, l);
+    ASSERT_NE(prev, l.get());
     ASSERT_NE(typeid(*s), prev_id);
 }
 
@@ -161,7 +161,7 @@ TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_desc)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
@@ -173,18 +173,18 @@ TEST_F(An_update_topology_service,
 TEST_F(An_update_topology_service,
        Will_change_the_layout_when_requested_different_scale)
 {
-    const auto* prev = l;
+    const auto* prev = l.get();
 
     service->execute(s->desc(), 100);
 
-    ASSERT_NE(prev, l);
+    ASSERT_NE(prev, l.get());
 }
 
 TEST_F(An_update_topology_service,
        Will_post_a_layout_response_when_requested_different_scale)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(1);
 
@@ -259,13 +259,13 @@ TEST_F(
     A_revert_to_defaults_service,
     Will_not_change_the_layout_or_topology_if_all_descriptors_and_the_scale_match_the_current)
 {
-    auto* prev_layout = l;
-    auto* prev_topology = s.get();
+    auto& prev_layout = l;
+    auto& prev_topology = s;
 
     service->execute();
 
     ASSERT_EQ(prev_layout, l);
-    ASSERT_EQ(prev_topology, s.get());
+    ASSERT_EQ(prev_topology, s);
 }
 
 TEST_F(
@@ -273,7 +273,7 @@ TEST_F(
     Will_not_post_a_layout_change_if_all_descriptors_and_the_scale_match_the_current)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(0);
 
@@ -293,7 +293,7 @@ TEST_F(
     Will_post_a_layout_change_if_the_topology_descriptor_doesnt_match_the_current)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     s = topology_factory::make_topology(topology_factory::sphere_desc,
                                         s->scale());
@@ -307,7 +307,7 @@ TEST_F(A_revert_to_defaults_service,
        Will_post_a_layout_change_if_the_topology_scale_doesnt_match_the_current)
 {
     mock_subscriber mock;
-    service->on_layout_response(mock.AsStdFunction());
+    service->connect(mock.AsStdFunction());
 
     s = topology_factory::make_topology(s->desc(), 1000);
 
