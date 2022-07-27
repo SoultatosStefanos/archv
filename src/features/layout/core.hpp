@@ -26,6 +26,7 @@ public:
     using graph = dependencies::graph;
     using weight_map = dependencies::weight_map;
     using slot_type = signal::slot_type;
+    using connection = boost::signals2::connection;
 
     core(const core&) = delete;
     core(core&&) = delete;
@@ -55,7 +56,10 @@ public:
     void update_topology(const std::string& type, double scale);
     void revert_to_defaults();
 
-    void connect(const slot_type& slot);
+    auto connect(const slot_type& slot) -> connection
+    {
+        return m_signal.connect(slot);
+    }
 
 private:
     using layout_pointer = layout_factory::pointer;
@@ -63,6 +67,8 @@ private:
 
     core() = default;
     ~core() = default;
+
+    signal m_signal;
 
     layout_pointer m_layout;
     topology_pointer m_topology;

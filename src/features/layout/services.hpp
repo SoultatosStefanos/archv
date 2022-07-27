@@ -32,6 +32,7 @@ public:
     using topology_pointer = topology_factory::pointer;
     using descriptor = layout_factory::descriptor;
     using slot_type = signal::slot_type;
+    using connection = boost::signals2::connection;
 
     update_layout_service(command_history& cmds,
                           const graph& g,
@@ -41,7 +42,10 @@ public:
 
     void execute(descriptor desc);
 
-    void connect(const slot_type& f) { m_signal.connect(f); }
+    auto connect(const slot_type& f) -> connection
+    {
+        return m_signal.connect(f);
+    }
 
 private:
     class update_layout_command : public command
@@ -107,6 +111,7 @@ public:
     using descriptor = topology_factory::descriptor;
     using scale_type = topology_factory::scale_type;
     using slot_type = signal::slot_type;
+    using connection = boost::signals2::connection;
 
     update_topology_service(command_history& cmds,
                             const graph& g,
@@ -116,7 +121,10 @@ public:
 
     void execute(descriptor desc, scale_type scale);
 
-    void connect(const slot_type& f) { m_signal.connect(f); }
+    auto connect(const slot_type& f) -> connection
+    {
+        return m_signal.connect(f);
+    }
 
 private:
     class update_topology_command : public command
@@ -186,6 +194,7 @@ public:
     using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
     using slot_type = signal::slot_type;
+    using connection = boost::signals2::connection;
 
     revert_to_defaults_service(command_history& cmds,
                                const graph& g,
@@ -198,7 +207,10 @@ public:
 
     void execute();
 
-    void connect(const slot_type& f) { m_signal.connect(f); }
+    auto connect(const slot_type& f) -> connection
+    {
+        return m_signal.connect(f);
+    }
 
 private:
     class revert_to_defaults_command : public command

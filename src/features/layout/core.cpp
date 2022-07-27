@@ -29,6 +29,13 @@ void core::initialize(command_history& cmds,
                                                      topology_scale,
                                                      m_layout,
                                                      m_topology);
+
+    m_update_layout->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
+    m_update_topology->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
+    m_revert_to_defaults->connect(
+        [this](const auto& l, const auto& s) { m_signal(l, s); });
 }
 
 void core::reset()
@@ -74,17 +81,6 @@ void core::revert_to_defaults()
 {
     assert(m_revert_to_defaults);
     m_revert_to_defaults->execute();
-}
-
-void core::connect(const slot_type& slot)
-{
-    assert(m_update_layout);
-    assert(m_update_topology);
-    assert(m_revert_to_defaults);
-
-    m_update_layout->connect(slot);
-    m_update_topology->connect(slot);
-    m_revert_to_defaults->connect(slot);
 }
 
 } // namespace features::layout
