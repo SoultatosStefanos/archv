@@ -8,6 +8,8 @@
 #include "features/layout/all.hpp"
 #include "utility/all.hpp"
 
+#include <MYGUI/MyGUI.h>
+#include <MYGUI/MyGUI_OgrePlatform.h>
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreInput.h>
@@ -37,9 +39,11 @@ private:
     void setup_entities();
     void setup_command_history();
     void setup_layout();
+    void setup_gui();
     void setup_input();
 
     void shutdown_input();
+    void shutdown_gui();
     void shutdown_layout();
     void shutdown_command_history();
     void shutdown_entities();
@@ -60,6 +64,9 @@ private:
     std::unique_ptr<features::layout::core> m_layout_sys;
 
     std::unique_ptr<OgreBites::CameraMan> m_cameraman;
+
+    std::unique_ptr<MyGUI::Gui> m_gui;
+    std::unique_ptr<MyGUI::OgrePlatform> m_platform;
 };
 
 #endif // APP_HPP
