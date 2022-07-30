@@ -8,8 +8,6 @@
 using namespace Ogre;
 using namespace OgreBites;
 
-app::app() : ApplicationContext("ARCHV") {}
-
 /***********************************************************
  * Instance Names                                          *
  ***********************************************************/
@@ -25,6 +23,8 @@ static constexpr auto cam_node_name = "Cam Node";
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
+
+app::app() : ApplicationContext("ARCHV") {}
 
 void app::setup()
 {
@@ -112,7 +112,7 @@ void app::shutdown_camera() const
     auto* scene = getRoot()->getSceneManager(scene_name);
     assert(scene);
 
-    scene->destroySceneNode(cam_node_name);
+    scene->getRootSceneNode()->removeAndDestroyChild(cam_node_name);
     scene->destroyCamera(cam_name);
 }
 
@@ -121,7 +121,7 @@ void app::shutdown_lighting() const
     auto* scene = getRoot()->getSceneManager(scene_name);
     assert(scene);
 
-    scene->destroySceneNode(light_node_name);
+    scene->getRootSceneNode()->removeAndDestroyChild(light_node_name);
     scene->destroyLight(light_name);
 }
 
