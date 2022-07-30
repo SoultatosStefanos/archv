@@ -27,7 +27,15 @@ set(JSONCPP_LIBS libjsoncpp.so)
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
-set(BOOST_LIBS ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 
-set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS})
+set(BOOST_LIBS ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
+set(MYGUI_LIBRARIES
+  libMyGUIEngine.so
+  libMyGUI.OgrePlatform.so
+)
+
+set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS} ${MYGUI_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
+
+add_executable(archv_exe src/main.cpp src/app.cpp)
+target_link_libraries(archv_exe PUBLIC ${PROJECT_NAME})

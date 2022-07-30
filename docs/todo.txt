@@ -72,10 +72,16 @@ TODOS
 
 21 / 07 / 2022
 
-	See MyGUI
+	See MyGUI <- DONE
 
 	Implement Layout Factory Caching <- DONE
 
 	Implement Layout Revert To Defaults Use Case <- DONE
+
+29 / 07 / 2022
+
+	Clean up the app fix fullscreen
+
+	Make a mock gui
 
 

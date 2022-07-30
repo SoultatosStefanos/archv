@@ -16,7 +16,7 @@ namespace features::layout
 {
 
 // A facade for the layout management subsystem.
-class core final
+class core
 {
     using signal =
         boost::signals2::signal<void(const layout&, const topology&)>;
@@ -28,54 +28,34 @@ public:
     using slot_type = signal::slot_type;
     using connection = boost::signals2::connection;
 
-    core(const core&) = delete;
-    core(core&&) = delete;
+    core(command_history& cmds,
+         const graph& g,
+         weight_map edge_weight,
+         const std::string& layout_type,
+         const std::string& topolgy_type,
+         double topology_scale);
 
-    auto operator=(const core&) -> core& = delete;
-    auto operator=(core&&) -> core& = delete;
-
-    static auto get() -> core&
-    {
-        static core singleton;
-        return singleton;
-    }
-
-    void initialize(command_history& cmds,
-                    const graph& g,
-                    weight_map edge_weight,
-                    const std::string& layout_type,
-                    const std::string& topolgy_type,
-                    double topology_scale);
-    void reset();
-
-    auto get_layout_type() const -> std::string;
-    auto get_topology_type() const -> std::string;
-    auto get_topology_scale() const -> double;
+    auto get_layout() const -> const layout&;
+    auto get_topology() const -> const topology&;
 
     void update_layout(const std::string& type);
     void update_topology(const std::string& type, double scale);
     void revert_to_defaults();
 
-    auto connect(const slot_type& slot) -> connection
-    {
-        return m_signal.connect(slot);
-    }
+    auto connect(const slot_type& slot) -> connection;
 
 private:
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
 
-    core() = default;
-    ~core() = default;
-
     signal m_signal;
 
-    layout_pointer m_layout;
     topology_pointer m_topology;
+    layout_pointer m_layout;
 
-    std::unique_ptr<update_layout_service> m_update_layout;
-    std::unique_ptr<update_topology_service> m_update_topology;
-    std::unique_ptr<revert_to_defaults_service> m_revert_to_defaults;
+    update_layout_service m_update_layout;
+    update_topology_service m_update_topology;
+    revert_to_defaults_service m_revert_to_defaults;
 };
 
 } // namespace features::layout

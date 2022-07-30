@@ -45,11 +45,11 @@ auto main(int argc, char const* argv[]) -> int
         const auto [g, vertex_cache] =
             deserialize_dependencies(json_archive::get().at(argv[1]), st);
 
-        app arch_visualizer{g};
+        app archv{g};
 
-        arch_visualizer.initApp();
-        arch_visualizer.getRoot()->startRendering();
-        arch_visualizer.closeApp();
+        archv.initApp();
+        archv.getRoot()->startRendering();
+        archv.closeApp();
 
         return EXIT_SUCCESS;
     }

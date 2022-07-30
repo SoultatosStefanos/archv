@@ -8,38 +8,65 @@
 #include "features/layout/all.hpp"
 #include "utility/all.hpp"
 
+#include <MYGUI/MyGUI.h>
+#include <MYGUI/MyGUI_OgrePlatform.h>
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreInput.h>
 #include <OGRE/Ogre.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
 #include <memory>
 
-// The heart of the application.
 class app : public OgreBites::ApplicationContext,
             public OgreBites::InputListener
 {
 public:
-    using graph = dependencies::graph;
-
-    explicit app(const graph& g);
+    explicit app(const dependencies::graph& g);
     virtual ~app() override = default;
 
     virtual void setup() override;
     virtual void shutdown() override;
 
-    virtual auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
+    virtual auto keyPressed(const OgreBites::KeyboardEvent& evt)
+        -> bool override;
 
 private:
-    using command_history = utility::command_history;
+    void setup_scene();
+    void setup_lighting();
+    void setup_camera();
+    void setup_resources();
+    void setup_entities();
+    void setup_command_history();
+    void setup_layout();
+    void setup_gui();
+    void setup_input();
 
-    void initialize_layout();
+    void shutdown_input();
+    void shutdown_gui();
+    void shutdown_layout();
+    void shutdown_command_history();
+    void shutdown_entities();
+    void shutdown_resources();
+    void shutdown_camera();
+    void shutdown_lighting();
+    void shutdown_scene();
 
-    const graph& m_g;
+    const dependencies::graph& m_g;
 
-    Ogre::SceneManager* m_scene{nullptr};
-    OgreBites::CameraMan* m_cameraman{nullptr};
+    Ogre::SceneManager* m_scene = nullptr;
+    Ogre::Light* m_light = nullptr;
+    Ogre::SceneNode* m_light_node = nullptr;
+    Ogre::Camera* m_cam = nullptr;
+    Ogre::SceneNode* m_cam_node = nullptr;
 
-    command_history m_cmds;
+    std::unique_ptr<utility::command_history> m_cmds;
+    std::unique_ptr<features::layout::core> m_layout_sys;
+
+    std::unique_ptr<OgreBites::CameraMan> m_cameraman;
+
+    std::unique_ptr<MyGUI::Gui> m_gui;
+    std::unique_ptr<MyGUI::OgrePlatform> m_platform;
 };
 
 #endif // APP_HPP
