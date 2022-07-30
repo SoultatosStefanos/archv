@@ -1,6 +1,7 @@
 set(FILES)
 set(SUBDIRECTORIES
 	clustering
+	gui
 	inspection
 	layout
 	shared

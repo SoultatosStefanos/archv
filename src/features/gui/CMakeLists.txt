@@ -1,4 +1,7 @@
-set(FILES)
+set(FILES
+	gui.cpp
+	gui.hpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
