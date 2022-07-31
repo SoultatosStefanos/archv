@@ -1,7 +1,6 @@
 #include "app.hpp"
+#include "architecture/all.hpp"
 #include "config/all.hpp"
-#include "dependencies/all.hpp"
-#include "symbols/all.hpp"
 #include "utility/all.hpp"
 
 #include <boost/exception/all.hpp>
@@ -26,7 +25,7 @@ static void init_logging()
 
 auto main(int argc, char const* argv[]) -> int
 {
-    using namespace dependencies;
+    using namespace architecture;
     using namespace config;
     using namespace utility;
 

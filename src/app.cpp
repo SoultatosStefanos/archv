@@ -12,7 +12,7 @@ using namespace OgreBites;
  * Setup                                                   *
  ***********************************************************/
 
-app::app(const dependencies::graph& g) : ApplicationContext("ARCHV"), m_g{g} {}
+app::app(const architecture::graph& g) : ApplicationContext("ARCHV"), m_g{g} {}
 
 void app::setup()
 {
@@ -87,25 +87,26 @@ void app::setup_command_history()
 
 void app::setup_layout()
 {
-    m_layout_sys = std::make_unique<features::layout::core>(
+    m_layout_sys = std::make_unique<layout::core>(
         *m_cmds,
         m_g,
-        dependencies::weight_map([](auto) { return 1; }),
+        architecture::weight_map([](auto) { return 1; }),
         "Gursoy Atun", // TODO Config
         "Sphere",      // TODO Config
         100);          // TODO Config
 
-    const auto draw_nodes = [this](const features::layout::layout& l) {
+    const auto draw_nodes = [this](const layout::layout& l) {
         for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
             m_scene->getSceneNode(m_g[v])->setPosition(l.x(v), l.y(v), l.z(v));
     };
 
-    m_layout_sys->connect(
-        [draw_nodes](const auto& l, const auto&) { draw_nodes(l); });
+    m_layout_sys->connect_to_layout(
+        [draw_nodes](const auto& l) { draw_nodes(l); });
 
     draw_nodes(m_layout_sys->get_layout());
 }
 
+// TODO Config
 void app::setup_gui()
 {
     m_platform = std::make_unique<MyGUI::OgrePlatform>();
@@ -240,7 +241,7 @@ auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
     if (e.keysym.sym == SDLK_ESCAPE)
         getRoot()->queueEndRendering();
-#if (0) // FIXME
+#if (1) // FIXME
     else if (e.keysym.sym == SDLK_LEFT)
         m_cmds->undo();
     else if (e.keysym.sym == SDLK_RIGHT)

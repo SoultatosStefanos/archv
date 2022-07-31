@@ -1,5 +1,6 @@
 set(FILES
-	json_archive.cpp
+	deserialization.cpp
+	symbol_table.cpp
 )
 set(SUBDIRECTORIES)
 

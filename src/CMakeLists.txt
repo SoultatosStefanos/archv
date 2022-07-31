@@ -1,9 +1,8 @@
 set(FILES)
 set(SUBDIRECTORIES
+	architecture
 	config
-	dependencies
-	features
-	symbols
+	layout
 	utility
 )
 

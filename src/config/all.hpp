@@ -4,8 +4,6 @@
 #ifndef CONFIG_ALL_HPP
 #define CONFIG_ALL_HPP
 
-#include "arch_deserialization.hpp"
-#include "archives.hpp"
-#include "error.hpp"
+#include "json_archive.hpp"
 
 #endif // CONFIG_ALL_HPP
