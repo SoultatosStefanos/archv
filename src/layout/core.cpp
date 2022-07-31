@@ -65,7 +65,6 @@ public:
     using graph = update_layout_service::graph;
     using weight_map = update_layout_service::weight_map;
     using command_history = update_layout_service::command_history;
-    using command = update_layout_service::command;
     using layout_pointer = update_layout_service::layout_pointer;
     using topology_pointer = update_layout_service::topology_pointer;
     using descriptor = update_layout_service::descriptor;
@@ -172,7 +171,6 @@ public:
     using graph = update_topology_service::graph;
     using weight_map = update_topology_service::weight_map;
     using command_history = update_topology_service::command_history;
-    using command = update_topology_service::command;
     using layout_pointer = update_topology_service::layout_pointer;
     using topology_pointer = update_topology_service::topology_pointer;
     using descriptor = update_topology_service::descriptor;
@@ -295,7 +293,6 @@ public:
     using graph = revert_to_defaults_service::graph;
     using weight_map = revert_to_defaults_service::weight_map;
     using command_history = revert_to_defaults_service::command_history;
-    using command = revert_to_defaults_service::command;
     using layout_pointer = revert_to_defaults_service::layout_pointer;
     using topology_pointer = revert_to_defaults_service::topology_pointer;
     using layout_descriptor = revert_to_defaults_service::layout_descriptor;
