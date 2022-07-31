@@ -34,18 +34,18 @@ protected:
 };
 
 TEST_F(a_dependencies_core,
-       wont_emit_dependency_and_weight_when_setting_same_value)
+       wont_emit_dependency_and_weight_when_updating_same_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
 
     EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(0);
 
-    sys->set_weight(set_dependency, set_weight);
+    sys->update_weight(set_dependency, set_weight);
 }
 
 TEST_F(a_dependencies_core,
-       will_emit_dependency_and_weight_when_setting_different_value)
+       will_emit_dependency_and_weight_when_updating_different_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -56,27 +56,27 @@ TEST_F(a_dependencies_core,
 
     EXPECT_CALL(mock, Call(set_dependency, new_weight)).Times(1);
 
-    sys->set_weight(set_dependency, new_weight);
+    sys->update_weight(set_dependency, new_weight);
 }
 
 TEST_F(a_dependencies_core,
-       will_return_updated_repo_after_successfully_setting_and_querying)
+       will_return_updated_repo_after_successfully_updating_and_querying)
 {
     constexpr auto new_weight = 200;
 
     static_assert(new_weight != set_weight);
 
-    sys->set_weight(set_dependency, new_weight);
+    sys->update_weight(set_dependency, new_weight);
 
     ASSERT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 }
 
-TEST_F(a_dependencies_core, will_revert_to_set_value_after_setting_and_undo)
+TEST_F(a_dependencies_core, will_revert_to_set_value_after_updating_and_undo)
 {
     constexpr auto new_weight = 200;
     static_assert(new_weight != set_weight);
 
-    sys->set_weight(set_dependency, new_weight);
+    sys->update_weight(set_dependency, new_weight);
 
     EXPECT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 
@@ -86,12 +86,12 @@ TEST_F(a_dependencies_core, will_revert_to_set_value_after_setting_and_undo)
 }
 
 TEST_F(a_dependencies_core,
-       will_revert_to_changed_value_after_setting_and_undo_and_redo)
+       will_revert_to_changed_value_after_updating_and_undo_and_redo)
 {
     constexpr auto new_weight = 200;
     static_assert(new_weight != set_weight);
 
-    sys->set_weight(set_dependency, new_weight);
+    sys->update_weight(set_dependency, new_weight);
 
     EXPECT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 

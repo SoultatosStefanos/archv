@@ -1,23 +1,24 @@
-// Contains a facade class for the dynamic dependency scoring subsystem.
+// Contains a private core submodule.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_CORE_HPP
-#define DEPENDENCIES_CORE_HPP
+#ifndef DEPENDENCIES_CORE_PRIVATE_HPP
+#define DEPENDENCIES_CORE_PRIVATE_HPP
 
-#include "core_private.hpp"
-#include "utility/all.hpp"
+#include "utility/undo_redo.hpp"
 #include "weight_repo.hpp"
 
 #include <boost/signals2/signal.hpp>
 
-namespace dependencies
+namespace dependencies::detail
 {
 
 /***********************************************************
- * Core                                                    *
+ * Update Weight Use Case                                  *
  ***********************************************************/
 
-class core
+class update_weight_command;
+
+class update_weight_service
 {
     using signal = boost::signals2::signal<void(
         const weight_repo::dependency_type&, weight_repo::weight)>;
@@ -26,29 +27,28 @@ public:
     using command_history = utility::command_history;
     using dependency_type = weight_repo::dependency_type;
     using weight = weight_repo::weight;
-    using hash_table = weight_repo::hash_table;
     using slot_type = signal::slot_type;
     using connection = boost::signals2::connection;
 
-    explicit core(command_history& cmds, hash_table table = hash_table());
+    update_weight_service(command_history& cmds, weight_repo& repo);
 
-    auto get_repo() const -> const weight_repo& { return m_repo; }
-
-    void update_weight(const dependency_type& type, weight score);
+    void operator()(const dependency_type& type, weight score);
 
     auto connect(const slot_type& slot) -> connection
     {
         return m_signal.connect(slot);
     }
 
+    friend class update_weight_command;
+
 private:
     signal m_signal;
 
-    weight_repo m_repo;
+    command_history& m_cmds;
 
-    detail::update_weight_service m_update_weight;
+    weight_repo& m_repo;
 };
 
-} // namespace dependencies
+} // namespace dependencies::detail
 
-#endif // DEPENDENCIES_CORE_HPP
+#endif // DEPENDENCIES_CORE_PRIVATE_HPP

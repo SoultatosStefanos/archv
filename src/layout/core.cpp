@@ -187,7 +187,6 @@ public:
     virtual ~update_topology_command() override = default;
 
     virtual void execute() override;
-
     virtual void undo() override;
     virtual void redo() override { execute(); }
 
@@ -311,7 +310,6 @@ public:
     virtual ~revert_to_defaults_command() override = default;
 
     virtual void execute() override;
-
     virtual void undo() override;
     virtual void redo() override { execute(); }
 
