@@ -35,7 +35,7 @@ public:
     auto get_repo() const -> const weight_repo& { return m_repo; }
 
     void update_weight(const dependency_type& type, weight score);
-    void revert_to_defaults();
+    void revert_to_defaults(); // Can be quite expensive.
 
     auto connect(const slot_type& slot) -> connection
     {
@@ -48,6 +48,7 @@ private:
     weight_repo m_repo;
 
     detail::update_weight_service m_update_weight;
+    detail::revert_to_defaults_service m_revert_to_defaults;
 };
 
 } // namespace dependencies

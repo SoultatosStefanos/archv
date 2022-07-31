@@ -49,6 +49,42 @@ private:
     weight_repo& m_repo;
 };
 
+/***********************************************************
+ * Revert To Defaults Use Case                             *
+ ***********************************************************/
+
+class revert_to_defaults_command;
+
+class revert_to_defaults_service
+{
+    using signal = boost::signals2::signal<void(
+        const weight_repo::dependency_type&, weight_repo::weight)>;
+
+public:
+    using command_history = utility::command_history;
+    using slot_type = signal::slot_type;
+    using connection = boost::signals2::connection;
+
+    revert_to_defaults_service(command_history& cmds, weight_repo& repo);
+
+    void operator()();
+
+    auto connect(const slot_type& slot) -> connection
+    {
+        return m_signal.connect(slot);
+    }
+
+    friend class revert_to_defaults_command;
+
+private:
+    signal m_signal;
+
+    command_history& m_cmds;
+
+    weight_repo& m_repo;
+    weight_repo m_initial_repo;
+};
+
 } // namespace dependencies::detail
 
 #endif // DEPENDENCIES_CORE_PRIVATE_HPP

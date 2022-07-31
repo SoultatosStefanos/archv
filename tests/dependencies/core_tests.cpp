@@ -105,12 +105,12 @@ TEST_F(a_dependencies_core,
 }
 
 TEST_F(a_dependencies_core,
-       wont_emit_dependency_and_weight_when_reverting_initially)
+       will_emit_dependency_and_weight_when_reverting_initially)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(0);
+    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(1);
 
     sys->revert_to_defaults();
 }
@@ -126,7 +126,7 @@ TEST_F(a_dependencies_core,
 
     sys->update_weight(set_dependency, new_weight);
 
-    EXPECT_CALL(mock, Call(set_dependency, new_weight)).Times(1);
+    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(1);
 
     sys->revert_to_defaults();
 }
