@@ -27,7 +27,8 @@ protected:
     static constexpr auto set_dependency = "inheritance";
     static constexpr auto set_weight = 100;
 
-    const core::hash_table table{{set_dependency, set_weight}};
+    const core::hash_table table{
+        {set_dependency, set_weight}, {"dummy1", 1}, {"dummy2", 2}};
     std::unique_ptr<command_history> cmds;
 
     std::unique_ptr<core> sys;
@@ -105,18 +106,18 @@ TEST_F(a_dependencies_core,
 }
 
 TEST_F(a_dependencies_core,
-       will_emit_dependency_and_weight_when_reverting_initially)
+       will_emit_all_dependencies_and_weights_when_reverting_initially)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(1);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(table.size());
 
     sys->revert_to_defaults();
 }
 
 TEST_F(a_dependencies_core,
-       will_emit_dependency_and_weight_when_reverting_from_changed_value)
+       will_emit_all_dependencies_and_weights_when_reverting_from_changed_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -126,7 +127,7 @@ TEST_F(a_dependencies_core,
 
     sys->update_weight(set_dependency, new_weight);
 
-    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(1);
+    EXPECT_CALL(mock, Call(testing::_, testing::_)).Times(table.size());
 
     sys->revert_to_defaults();
 }
