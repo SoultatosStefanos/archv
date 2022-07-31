@@ -1,11 +1,8 @@
-set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	layout
-	utility
+set(FILES
+	core.cpp
+	weight_repo.cpp
 )
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

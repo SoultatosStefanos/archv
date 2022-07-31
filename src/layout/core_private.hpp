@@ -81,7 +81,6 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = layout_factory::descriptor;
@@ -127,7 +126,6 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = topology_factory::descriptor;
@@ -174,7 +172,6 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using command = utility::command;
     using layout_pointer = layout_factory::pointer;
     using topology_pointer = topology_factory::pointer;
     using layout_descriptor = layout_factory::descriptor;
