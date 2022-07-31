@@ -1,3 +1,6 @@
+// Contains a 3D cube topology class.
+// Soultatos Stefanos 2022
+
 #ifndef LAYOUT_CUBE_HPP
 #define LAYOUT_CUBE_HPP
 

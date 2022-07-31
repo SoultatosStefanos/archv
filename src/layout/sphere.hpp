@@ -1,3 +1,6 @@
+// Contains a 3D sphere topology class.
+// Soultatos Stefanos 2022
+
 #ifndef LAYOUT_SPHERE_HPP
 #define LAYOUT_SPHERE_HPP
 

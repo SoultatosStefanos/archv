@@ -1,3 +1,6 @@
+// Contains a 3D layout class implementing the gursoy atun algorithm.
+// Soultatos Stefanos 2022
+
 #ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 #define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 

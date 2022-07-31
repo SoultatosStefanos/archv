@@ -1,3 +1,6 @@
+// Contains a 3D layout visitor interface.
+// Soultatos Stefanos 2022
+
 #ifndef LAYOUT_LAYOUT_VISITOR_HPP
 #define LAYOUT_LAYOUT_VISITOR_HPP
 

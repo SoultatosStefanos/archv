@@ -1,3 +1,6 @@
+// Contains a private core submodule.
+// Soultatos Stefanos 2022
+
 #ifndef LAYOUT_CORE_PRIVATE_HPP
 #define LAYOUT_CORE_PRIVATE_HPP
 
