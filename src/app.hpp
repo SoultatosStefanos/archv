@@ -4,8 +4,8 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "dependencies/all.hpp"
-#include "features/layout/all.hpp"
+#include "architecture/all.hpp"
+#include "layout/all.hpp"
 #include "utility/all.hpp"
 
 #include <MYGUI/MyGUI.h>
@@ -22,7 +22,7 @@ class app : public OgreBites::ApplicationContext,
             public OgreBites::InputListener
 {
 public:
-    explicit app(const dependencies::graph& g);
+    explicit app(const architecture::graph& g);
     virtual ~app() override = default;
 
     virtual void setup() override;
@@ -52,7 +52,7 @@ private:
     void shutdown_lighting();
     void shutdown_scene();
 
-    const dependencies::graph& m_g;
+    const architecture::graph& m_g;
 
     Ogre::SceneManager* m_scene = nullptr;
     Ogre::Light* m_light = nullptr;
@@ -61,7 +61,7 @@ private:
     Ogre::SceneNode* m_cam_node = nullptr;
 
     std::unique_ptr<utility::command_history> m_cmds;
-    std::unique_ptr<features::layout::core> m_layout_sys;
+    std::unique_ptr<layout::core> m_layout_sys;
 
     std::unique_ptr<OgreBites::CameraMan> m_cameraman;
 

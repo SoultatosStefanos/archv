@@ -25,7 +25,7 @@ public:
     MOCK_METHOD(std::unique_ptr<command>, clone, (), (const, override));
 };
 
-class Given_a_command_history : public Test
+class undo_redo : public Test
 {
 public:
     using nice_mock_command = NiceMock<mock_command>;
@@ -36,17 +36,17 @@ protected:
     std::unique_ptr<command_history> cmd_history;
 };
 
-TEST_F(Given_a_command_history, Undoing_initially_does_nothing)
+TEST_F(undo_redo, undoing_initially_does_nothing)
 {
     ASSERT_NO_FATAL_FAILURE(cmd_history->undo());
 }
 
-TEST_F(Given_a_command_history, Redoing_initially_does_nothing)
+TEST_F(undo_redo, redoing_initially_does_nothing)
 {
     ASSERT_NO_FATAL_FAILURE(cmd_history->redo());
 }
 
-TEST_F(Given_a_command_history, Executing_a_cmd_through_it_executes_cmd)
+TEST_F(undo_redo, executing_a_cmd_through_it_executes_cmd)
 {
     auto cmd = std::make_unique<nice_mock_command>();
 
@@ -55,7 +55,7 @@ TEST_F(Given_a_command_history, Executing_a_cmd_through_it_executes_cmd)
     cmd_history->execute(std::move(cmd));
 }
 
-TEST_F(Given_a_command_history, Undoing_cmd_after_executing_it_undoes_it)
+TEST_F(undo_redo, undoing_cmd_after_executing_it_undoes_it)
 {
     auto cmd = std::make_unique<nice_mock_command>();
 
@@ -66,7 +66,7 @@ TEST_F(Given_a_command_history, Undoing_cmd_after_executing_it_undoes_it)
     cmd_history->undo();
 }
 
-TEST_F(Given_a_command_history, Redoing_cmd_after_executing_it_does_nothing)
+TEST_F(undo_redo, redoing_cmd_after_executing_it_does_nothing)
 {
     auto cmd = std::make_unique<nice_mock_command>();
 
@@ -77,7 +77,7 @@ TEST_F(Given_a_command_history, Redoing_cmd_after_executing_it_does_nothing)
     cmd_history->redo();
 }
 
-TEST_F(Given_a_command_history, Redoing_cmd_after_undoing_it_redoes_it)
+TEST_F(undo_redo, redoing_cmd_after_undoing_it_redoes_it)
 {
     auto cmd = std::make_unique<nice_mock_command>();
 
@@ -90,7 +90,7 @@ TEST_F(Given_a_command_history, Redoing_cmd_after_undoing_it_redoes_it)
     cmd_history->redo();
 }
 
-TEST_F(Given_a_command_history, Executes_cmds_in_order)
+TEST_F(undo_redo, executes_cmds_in_order)
 {
     auto cmd1 = std::make_unique<nice_mock_command>();
     auto cmd2 = std::make_unique<nice_mock_command>();
@@ -102,7 +102,7 @@ TEST_F(Given_a_command_history, Executes_cmds_in_order)
     cmd_history->execute(std::move(cmd2));
 }
 
-TEST_F(Given_a_command_history, Undoes_cmds_in_lifo)
+TEST_F(undo_redo, undoes_cmds_in_lifo)
 {
     auto cmd1 = std::make_unique<nice_mock_command>();
     auto cmd2 = std::make_unique<nice_mock_command>();
@@ -115,7 +115,7 @@ TEST_F(Given_a_command_history, Undoes_cmds_in_lifo)
     cmd_history->undo();
 }
 
-TEST_F(Given_a_command_history, Redoes_cmds_in_lifo)
+TEST_F(undo_redo, redoes_cmds_in_lifo)
 {
     auto cmd1 = std::make_unique<nice_mock_command>();
     auto cmd2 = std::make_unique<nice_mock_command>();
@@ -131,8 +131,7 @@ TEST_F(Given_a_command_history, Redoes_cmds_in_lifo)
     cmd_history->redo();
 }
 
-TEST_F(Given_a_command_history,
-       Undoing_n_commands_after_executing_them_undoes_them_all)
+TEST_F(undo_redo, undoing_n_commands_after_executing_them_undoes_them_all)
 {
     const auto n = urandom(2, 10);
     std::vector<std::unique_ptr<nice_mock_command>> mock_commands(n);
@@ -152,8 +151,7 @@ TEST_F(Given_a_command_history,
         cmd_history->undo();
 }
 
-TEST_F(Given_a_command_history,
-       Redoing_n_commands_after_undoing_them_redoes_them_all)
+TEST_F(undo_redo, redoing_n_commands_after_undoing_them_redoes_them_all)
 {
     const auto n = urandom(2, 10);
     std::vector<std::unique_ptr<nice_mock_command>> mock_commands(n);
@@ -177,8 +175,7 @@ TEST_F(Given_a_command_history,
         cmd_history->redo();
 }
 
-TEST_F(Given_a_command_history,
-       After_undoing_and_executing_once_redo_does_nothing)
+TEST_F(undo_redo, after_undoing_and_executing_once_redo_does_nothing)
 {
     auto cmd = std::make_unique<nice_mock_command>();
     auto cmd2 = std::make_unique<nice_mock_command>();
@@ -192,8 +189,7 @@ TEST_F(Given_a_command_history,
     cmd_history->redo();
 }
 
-TEST_F(Given_a_command_history,
-       After_undoing_n_times_and_executing_once_redo_does_nothing)
+TEST_F(undo_redo, after_undoing_n_times_and_executing_once_redo_does_nothing)
 {
     const auto n = urandom(2, 10);
     std::vector<std::unique_ptr<nice_mock_command>> mock_commands(n);

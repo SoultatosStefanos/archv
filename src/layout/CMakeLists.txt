@@ -1,5 +1,8 @@
 set(FILES
-	json_archive.cpp
+	core.cpp
+	cube.cpp
+	gursoy_atun_layout.cpp
+	sphere.cpp
 )
 set(SUBDIRECTORIES)
 

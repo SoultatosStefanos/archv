@@ -1,5 +1,5 @@
 set(FILES
-	json_archive.cpp
+	core_tests.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -8,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${TESTS} PRIVATE ${FILES})
 endif()
