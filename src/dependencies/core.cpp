@@ -104,4 +104,6 @@ void core::update_weight(const dependency_type& type, weight score)
     m_update_weight(type, score);
 }
 
+void core::revert_to_defaults() {}
+
 } // namespace dependencies

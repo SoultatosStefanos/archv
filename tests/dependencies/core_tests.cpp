@@ -104,4 +104,67 @@ TEST_F(a_dependencies_core,
     ASSERT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 }
 
+TEST_F(a_dependencies_core,
+       wont_emit_dependency_and_weight_when_reverting_initially)
+{
+    mock_slot mock;
+    sys->connect(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(set_dependency, set_weight)).Times(0);
+
+    sys->revert_to_defaults();
+}
+
+TEST_F(a_dependencies_core,
+       will_emit_dependency_and_weight_when_reverting_from_changed_value)
+{
+    mock_slot mock;
+    sys->connect(mock.AsStdFunction());
+
+    constexpr auto new_weight = 200;
+    static_assert(new_weight != set_weight);
+
+    sys->update_weight(set_dependency, new_weight);
+
+    EXPECT_CALL(mock, Call(set_dependency, new_weight)).Times(1);
+
+    sys->revert_to_defaults();
+}
+
+TEST_F(a_dependencies_core,
+       will_revert_to_changed_value_after_reverting_and_undo)
+{
+    constexpr auto new_weight = 200;
+    static_assert(new_weight != set_weight);
+
+    sys->update_weight(set_dependency, new_weight);
+    sys->revert_to_defaults();
+
+    EXPECT_EQ(sys->get_repo().get_weight(set_dependency), set_weight);
+
+    cmds->undo();
+
+    ASSERT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
+}
+
+TEST_F(a_dependencies_core,
+       will_revert_to_initial_value_after_reverting_and_undo_and_redo)
+{
+    constexpr auto new_weight = 200;
+    static_assert(new_weight != set_weight);
+
+    sys->update_weight(set_dependency, new_weight);
+    sys->revert_to_defaults();
+
+    EXPECT_EQ(sys->get_repo().get_weight(set_dependency), set_weight);
+
+    cmds->undo();
+
+    EXPECT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
+
+    cmds->redo();
+
+    ASSERT_EQ(sys->get_repo().get_weight(set_dependency), set_weight);
+}
+
 } // namespace
