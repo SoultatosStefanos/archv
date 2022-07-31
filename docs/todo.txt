@@ -80,8 +80,17 @@ TODOS
 
 29 / 07 / 2022
 
-	Clean up the app fix fullscreen
+	Clean up the app fix fullscreen <- DONE
 
-	Make a mock gui
+	Make a mock gui <- DONE
+
+
+31 / 07 / 2022
+
+	OIS Input
+
+	Make responsive GUI
+
+	Make demo with responsive GUI and a feature
 
 
