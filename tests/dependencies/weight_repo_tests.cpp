@@ -35,6 +35,18 @@ TEST_F(given_a_weight_repo,
     ASSERT_EQ(repo->get_weight(dependency), weight);
 }
 
+TEST_F(given_a_weight_repo,
+       querying_weight_of_set_twice_dependency_results_to_assigned_weight)
+{
+    static constexpr auto dependency = "aaa";
+    static constexpr auto weight = 22;
+
+    repo->set_weight(dependency, weight);
+    repo->set_weight(dependency, weight);
+
+    ASSERT_EQ(repo->get_weight(dependency), weight);
+}
+
 TEST(a_weight_repo, can_be_constructed_from_a_hash_table)
 {
     weight_repo::hash_table table{{"a", 2}, {"b", 3}};

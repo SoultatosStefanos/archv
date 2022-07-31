@@ -1,4 +1,5 @@
 set(FILES
+	core_tests.cpp
 	weight_repo_tests.cpp
 )
 set(SUBDIRECTORIES)
