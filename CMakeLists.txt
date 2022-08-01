@@ -34,7 +34,11 @@ set(MYGUI_LIBRARIES
   libMyGUI.OgrePlatform.so
 )
 
-set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS} ${MYGUI_LIBRARIES})
+set(OIS_LIBRARIES
+  libOIS.so
+)
+
+set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS} ${MYGUI_LIBRARIES} ${OIS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 
 add_executable(archv_main src/main.cpp src/app.cpp)
