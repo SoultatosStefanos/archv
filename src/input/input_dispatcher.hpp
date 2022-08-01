@@ -71,16 +71,20 @@ private:
     auto keyReleased(const OIS::KeyEvent& e) -> bool override;
 
     auto mouseMoved(const OIS::MouseEvent& e) -> bool override;
+
     auto mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
         -> bool override;
+
     auto mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
         -> bool override;
 
     auto povMoved(const OIS::JoyStickEvent& e, int pov) -> bool override;
     auto axisMoved(const OIS::JoyStickEvent& e, int axis) -> bool override;
     auto sliderMoved(const OIS::JoyStickEvent& e, int id) -> bool override;
+
     auto buttonPressed(const OIS::JoyStickEvent& e, int button)
         -> bool override;
+
     auto buttonReleased(const OIS::JoyStickEvent& e, int button)
         -> bool override;
 
