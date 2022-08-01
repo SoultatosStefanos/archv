@@ -13,10 +13,6 @@
 namespace dependencies
 {
 
-/***********************************************************
- * Core                                                    *
- ***********************************************************/
-
 class core
 {
     using signal = boost::signals2::signal<void(

@@ -11,10 +11,6 @@
 namespace layout
 {
 
-/***********************************************************
- * Gursoy Atun Algorithm                                   *
- ***********************************************************/
-
 // Assigns a position, at a 3d space, to each graph vertex.
 // Distributes vertices uniformly within a topology, keeping vertices close
 // to their neighbours.
