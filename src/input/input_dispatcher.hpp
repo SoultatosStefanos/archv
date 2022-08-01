@@ -67,18 +67,22 @@ private:
     void destroy_keyboard();
     void destroy_input_system();
 
-    auto keyPressed(const OIS::KeyEvent& e) -> bool;
-    auto keyReleased(const OIS::KeyEvent& e) -> bool;
+    auto keyPressed(const OIS::KeyEvent& e) -> bool override;
+    auto keyReleased(const OIS::KeyEvent& e) -> bool override;
 
-    auto mouseMoved(const OIS::MouseEvent& e) -> bool;
-    auto mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id) -> bool;
-    auto mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id) -> bool;
+    auto mouseMoved(const OIS::MouseEvent& e) -> bool override;
+    auto mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+        -> bool override;
+    auto mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+        -> bool override;
 
-    auto povMoved(const OIS::JoyStickEvent& e, int pov) -> bool;
-    auto axisMoved(const OIS::JoyStickEvent& e, int axis) -> bool;
-    auto sliderMoved(const OIS::JoyStickEvent& e, int id) -> bool;
-    auto buttonPressed(const OIS::JoyStickEvent& e, int button) -> bool;
-    auto buttonReleased(const OIS::JoyStickEvent& e, int button) -> bool;
+    auto povMoved(const OIS::JoyStickEvent& e, int pov) -> bool override;
+    auto axisMoved(const OIS::JoyStickEvent& e, int axis) -> bool override;
+    auto sliderMoved(const OIS::JoyStickEvent& e, int id) -> bool override;
+    auto buttonPressed(const OIS::JoyStickEvent& e, int button)
+        -> bool override;
+    auto buttonReleased(const OIS::JoyStickEvent& e, int button)
+        -> bool override;
 
     OIS::InputManager* m_input_system = nullptr;
 
