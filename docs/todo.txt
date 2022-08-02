@@ -87,9 +87,9 @@ TODOS
 
 31 / 07 / 2022
 
-	OIS Input
+	OIS Input <- DONE
 
-	Make responsive GUI
+	Make responsive GUI <- DONE
 
 	Make demo with responsive GUI and a feature
 
