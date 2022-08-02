@@ -1,6 +1,9 @@
 #include "layout/core.hpp"
-#include "utility/all.hpp"
+#include "utility/undo_redo.hpp"
 
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/property_map/function_property_map.hpp>
+#include <functional>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
@@ -9,7 +12,6 @@ namespace lay = layout;
 
 using namespace testing;
 using namespace layout;
-using namespace architecture;
 using namespace utility;
 
 namespace
@@ -18,6 +20,16 @@ namespace
 class a_layout_core : public Test
 {
 protected:
+    using graph = boost::adjacency_list<boost::vecS,
+                                        boost::vecS,
+                                        boost::directedS,
+                                        boost::no_property,
+                                        boost::no_property>;
+
+    using weight_function = std::function<int(graph::edge_descriptor)>;
+    using weight_map = boost::
+        function_property_map<weight_function, graph::edge_descriptor, int>;
+
     using mock_layout_slot =
         NiceMock<MockFunction<void(const lay::layout<graph>&)>>;
     using mock_topology_slot = NiceMock<MockFunction<void(const topology&)>>;

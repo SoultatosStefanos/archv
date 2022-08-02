@@ -4,9 +4,9 @@
 #ifndef LAYOUT_CORE_HPP
 #define LAYOUT_CORE_HPP
 
-#include "architecture/graph.hpp"
 #include "core_private.hpp"
 
+#include <boost/graph/graph_concepts.hpp>
 #include <cassert>
 #include <memory>
 
@@ -17,6 +17,12 @@ namespace layout
 template <typename Graph, typename WeightMap>
 class core
 {
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept<
+            WeightMap,
+            typename boost::graph_traits<Graph>::edge_descriptor>) );
+
     using layout_signal = boost::signals2::signal<void(const layout<Graph>&)>;
     using topology_signal = boost::signals2::signal<void(const topology&)>;
 

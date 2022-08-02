@@ -4,7 +4,6 @@
 #ifndef LAYOUT_CORE_PRIVATE_HPP
 #define LAYOUT_CORE_PRIVATE_HPP
 
-#include "architecture/graph.hpp"
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "topology.hpp"

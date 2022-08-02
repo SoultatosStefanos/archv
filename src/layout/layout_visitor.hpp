@@ -4,6 +4,8 @@
 #ifndef LAYOUT_LAYOUT_VISITOR_HPP
 #define LAYOUT_LAYOUT_VISITOR_HPP
 
+#include <boost/graph/graph_concepts.hpp>
+
 namespace layout
 {
 

@@ -10,7 +10,6 @@
 #include "sphere.hpp"
 #include "topology_visitor.hpp"
 
-#include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
 
 namespace layout::detail
