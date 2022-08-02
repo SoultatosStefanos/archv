@@ -223,16 +223,18 @@ private:
  * Update Topology Use Case                                *
  ***********************************************************/
 
+template <typename Graph, typename WeightMap>
 class update_topology_command;
 
+template <typename Graph, typename WeightMap>
 class update_topology_service
 {
-    using signal = boost::signals2::signal<void(
-        const layout<architecture::graph>&, const topology&)>;
+    using signal =
+        boost::signals2::signal<void(const layout<Graph>&, const topology&)>;
 
 public:
-    using graph = architecture::graph;
-    using weight_map = architecture::weight_map;
+    using graph = Graph;
+    using weight_map = WeightMap;
     using command_history = utility::command_history;
     using layout_pointer = typename layout_factory<graph>::pointer;
     using topology_pointer = topology_factory::pointer;
@@ -245,16 +247,36 @@ public:
                             const graph& g,
                             weight_map edge_weight,
                             layout_pointer& layout,
-                            topology_pointer& topology);
+                            topology_pointer& topology)
+        : m_cmds{cmds},
+          m_g{g},
+          m_edge_weight{edge_weight},
+          m_layout{layout},
+          m_topology{topology}
+    {
+        assert(layout);
+        assert(topology);
+    }
 
-    void operator()(descriptor desc, scale_type scale);
+    void operator()(descriptor desc, scale_type scale)
+    {
+        m_cmds.execute(
+            std::make_unique<update_topology_command<graph, weight_map>>(
+                m_signal,
+                std::move(desc),
+                scale,
+                m_g,
+                m_edge_weight,
+                m_topology,
+                m_layout));
+    }
 
     auto connect(const slot_type& f) -> connection
     {
         return m_signal.connect(f);
     }
 
-    friend class update_topology_command;
+    friend class update_topology_command<Graph, WeightMap>;
 
 private:
     signal m_signal;
@@ -263,6 +285,83 @@ private:
     weight_map m_edge_weight;
     layout_pointer& m_layout;
     topology_pointer& m_topology;
+};
+
+template <typename Graph, typename WeightMap>
+class update_topology_command : public utility::command
+{
+public:
+    using graph = Graph;
+    using weight_map = WeightMap;
+    using signal = typename update_topology_service<graph, weight_map>::signal;
+    using command_history = utility::command_history;
+    using layout_pointer = typename layout_factory<graph>::pointer;
+    using topology_pointer = topology_factory::pointer;
+    using descriptor = topology_factory::descriptor;
+    using scale_type = topology_factory::scale_type;
+
+    update_topology_command(signal& s,
+                            descriptor desc,
+                            scale_type scale,
+                            const graph& g,
+                            weight_map edge_weight,
+                            topology_pointer& space,
+                            layout_pointer& l)
+        : m_signal{s},
+          m_desc{std::move(desc)},
+          m_scale{scale},
+          m_prev_desc{space->desc()},
+          m_prev_scale{space->scale()},
+          m_g{g},
+          m_edge_weight{edge_weight},
+          m_space{space},
+          m_layout{l}
+    {}
+
+    virtual ~update_topology_command() override = default;
+
+    virtual void execute() override
+    {
+        if (m_desc != m_space->desc() or m_scale != m_space->scale())
+            change_topology(m_desc, m_scale);
+    }
+    virtual void undo() override
+    {
+        if (m_prev_desc != m_space->desc() or m_prev_scale != m_space->scale())
+            change_topology(m_prev_desc, m_prev_scale);
+    }
+    virtual void redo() override { execute(); }
+
+    virtual auto clone() const -> std::unique_ptr<command> override
+    {
+        return std::make_unique<update_topology_command>(*this);
+    }
+
+private:
+    void change_topology(const descriptor& desc, double scale)
+    {
+        m_space = topology_factory::make_topology(desc, scale);
+        m_layout = layout_factory<graph>::make_layout(
+            m_layout->desc(), m_g, *m_space, m_edge_weight);
+
+        BOOST_LOG_TRIVIAL(info)
+            << "topology changed to: " << desc << " with scale: " << scale;
+        BOOST_LOG_TRIVIAL(info) << "layout updated";
+
+        m_signal(*m_layout, *m_space);
+    }
+
+    signal& m_signal;
+
+    descriptor m_desc;
+    double m_scale;
+    descriptor m_prev_desc;
+    double m_prev_scale;
+
+    const graph& m_g;
+    weight_map m_edge_weight;
+    topology_pointer& m_space;
+    layout_pointer& m_layout;
 };
 
 /***********************************************************

@@ -72,7 +72,7 @@ private:
     layout_pointer m_layout;
 
     detail::update_layout_service<graph, weight_map> m_update_layout;
-    detail::update_topology_service m_update_topology;
+    detail::update_topology_service<graph, weight_map> m_update_topology;
     detail::revert_to_defaults_service m_revert_to_defaults;
 };
 
