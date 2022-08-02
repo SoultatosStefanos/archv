@@ -18,8 +18,8 @@ static void init_logging()
     namespace logging = boost::log;
 
 #ifdef NDEBUG
-    logging::core::get()->set_filter(logging::trivial::severity >=
-                                     logging::trivial::info);
+    logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::info);
 #endif
 }
 
@@ -41,10 +41,10 @@ auto main(int argc, char const* argv[]) -> int
         init_logging();
 
         const auto st = deserialize_symbols(json_archive::get().at(argv[1]));
-        const auto [g, vertex_cache] =
-            deserialize_dependencies(json_archive::get().at(argv[1]), st);
+        const auto [g, vertex_cache]
+            = deserialize_dependencies(json_archive::get().at(argv[1]), st);
 
-        app archv{g};
+        app archv { g };
 
         archv.initApp();
         archv.getRoot()->startRendering();

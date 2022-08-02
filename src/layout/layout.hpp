@@ -1,4 +1,4 @@
-// Containes an architecture graph 3D layout interface.
+// Contains a graph 3D layout interface.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_LAYOUT_HPP
@@ -10,18 +10,18 @@
 namespace layout
 {
 
-template <typename Graph>
+template < typename Graph >
 class layout_visitor;
 
 // In 3D space.
-template <typename Graph>
+template < typename Graph >
 class layout
 {
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
 public:
     using graph = Graph;
-    using vertex = typename boost::graph_traits<graph>::vertex_descriptor;
+    using vertex = typename boost::graph_traits< graph >::vertex_descriptor;
     using coord = double;
     using descriptor = std::string;
 
@@ -40,12 +40,12 @@ public:
     virtual auto y(vertex v) const -> coord = 0;
     virtual auto z(vertex v) const -> coord = 0;
 
-    virtual void accept(const layout_visitor<graph>& visitor) const = 0;
+    virtual void accept(const layout_visitor< graph >& visitor) const = 0;
 
-    virtual auto clone() const -> std::unique_ptr<layout<graph>> = 0;
+    virtual auto clone() const -> std::unique_ptr< layout< graph > > = 0;
 };
 
-template <typename Layout>
+template < typename Layout >
 struct layout_traits
 {
     using graph = typename Layout::graph;

@@ -11,18 +11,19 @@
 namespace dependencies::detail
 {
 
-template <typename Graph, typename DependencyMap>
+template < typename Graph, typename DependencyMap >
 class weight_dispatcher
 {
 public:
     using graph = Graph;
     using dependency_map = DependencyMap;
-    using edge_type = typename boost::graph_traits<graph>::edge_descriptor;
+    using edge_type = typename boost::graph_traits< graph >::edge_descriptor;
     using weight = weight_repo::weight;
 
     weight_dispatcher(const weight_repo& repo, dependency_map edge_dependency)
-        : m_repo{repo}, m_edge_dependency{edge_dependency}
-    {}
+    : m_repo { repo }, m_edge_dependency { edge_dependency }
+    {
+    }
 
     auto operator()(edge_type e) const -> weight
     {

@@ -12,7 +12,9 @@ using namespace OgreBites;
  * Setup                                                   *
  ***********************************************************/
 
-app::app(const architecture::graph& g) : ApplicationContext("ARCHV"), m_g{g} {}
+app::app(const architecture::graph& g) : ApplicationContext("ARCHV"), m_g { g }
+{
+}
 
 void app::setup()
 {
@@ -82,12 +84,12 @@ void app::setup_entities()
 
 void app::setup_command_history()
 {
-    m_cmds = std::make_unique<utility::command_history>();
+    m_cmds = std::make_unique< utility::command_history >();
 }
 
 void app::setup_layout()
 {
-    m_layout_sys = std::make_unique<layout::core<graph, weight_map>>(
+    m_layout_sys = std::make_unique< layout::core< graph, weight_map > >(
         *m_cmds,
         m_g,
         weight_map([](auto) { return 1; }),
@@ -95,13 +97,14 @@ void app::setup_layout()
         "Sphere",      // TODO Config
         100);          // TODO Config
 
-    const auto draw_nodes = [this](const auto& l) {
+    const auto draw_nodes = [this](const auto& l)
+    {
         for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
             m_scene->getSceneNode(m_g[v])->setPosition(l.x(v), l.y(v), l.z(v));
     };
 
-    m_layout_sys->connect_to_layout(
-        [draw_nodes](const auto& l) { draw_nodes(l); });
+    m_layout_sys->connect_to_layout([draw_nodes](const auto& l)
+                                    { draw_nodes(l); });
 
     draw_nodes(m_layout_sys->get_layout());
 }
@@ -109,46 +112,46 @@ void app::setup_layout()
 // TODO Config
 void app::setup_gui()
 {
-    m_platform = std::make_unique<MyGUI::OgrePlatform>();
+    m_platform = std::make_unique< MyGUI::OgrePlatform >();
     m_platform->initialise(getRenderWindow(), m_scene);
-    m_gui = std::make_unique<MyGUI::Gui>();
+    m_gui = std::make_unique< MyGUI::Gui >();
     m_gui->initialise();
 
-    auto* menu_bar = m_gui->createWidget<MyGUI::MenuBar>(
+    auto* menu_bar = m_gui->createWidget< MyGUI::MenuBar >(
         "MenuBar", 20, 40, 1880, 60, MyGUI::Align::Default, "Main");
 
-    auto* layout_top_btn = menu_bar->createWidget<MyGUI::Button>(
+    auto* layout_top_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 0, 0, 270, 60, MyGUI::Align::Left, "Main");
     layout_top_btn->setCaption("Layout / Topology");
 
-    menu_bar->createWidget<MyGUI::Widget>(
+    menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 270, 10, 40, 40, MyGUI::Align::Left, "Main");
 
-    auto* clustering_btn = menu_bar->createWidget<MyGUI::Button>(
+    auto* clustering_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 270, 0, 270, 60, MyGUI::Align::Left, "Main");
     clustering_btn->setCaption("Clustering");
 
-    menu_bar->createWidget<MyGUI::Widget>(
+    menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 540, 10, 40, 40, MyGUI::Align::Left, "Main");
 
-    auto* code_inspection_btn = menu_bar->createWidget<MyGUI::Button>(
+    auto* code_inspection_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 540, 0, 270, 60, MyGUI::Align::Left, "Main");
     code_inspection_btn->setCaption("Code Inspection");
 
-    menu_bar->createWidget<MyGUI::Widget>(
+    menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 810, 10, 40, 40, MyGUI::Align::Left, "Main");
 
-    menu_bar->createWidget<MyGUI::Widget>(
+    menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 1630, 10, 40, 40, MyGUI::Align::Left, "Main");
 
-    auto* settings_btn = menu_bar->createWidget<MyGUI::Button>(
+    auto* settings_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 1630, 0, 270, 60, MyGUI::Align::Left, "Main");
     settings_btn->setCaption("Settings");
 }
 
 void app::setup_input()
 {
-    m_cameraman = std::make_unique<CameraMan>(m_cam_node);
+    m_cameraman = std::make_unique< CameraMan >(m_cam_node);
 
     addInputListener(m_cameraman.get());
     addInputListener(this);
@@ -189,15 +192,9 @@ void app::shutdown_gui()
     m_gui.reset();
 }
 
-void app::shutdown_layout()
-{
-    m_layout_sys.reset();
-}
+void app::shutdown_layout() { m_layout_sys.reset(); }
 
-void app::shutdown_command_history()
-{
-    m_cmds.reset();
-}
+void app::shutdown_command_history() { m_cmds.reset(); }
 
 void app::shutdown_entities()
 {

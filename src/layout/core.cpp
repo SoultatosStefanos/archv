@@ -13,13 +13,13 @@ namespace layout::detail
 auto topology_factory::make_topology(const descriptor& desc, scale_type scale)
     -> pointer
 {
-    if (desc == topology_traits<cube>::desc())
+    if (desc == topology_traits< cube >::desc())
     {
-        return std::make_unique<cube>(scale);
+        return std::make_unique< cube >(scale);
     }
-    else if (desc == topology_traits<sphere>::desc())
+    else if (desc == topology_traits< sphere >::desc())
     {
-        return std::make_unique<sphere>(scale);
+        return std::make_unique< sphere >(scale);
     }
     else
     {

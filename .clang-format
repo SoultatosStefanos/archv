@@ -1,44 +1,26 @@
-ColumnLimit: 80
-
-UseTab: Never
-IndentWidth: 4
-AccessModifierOffset: -4
-NamespaceIndentation: Inner
-
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterNamespace: true
-  AfterEnum: true
-  AfterStruct: true
-  AfterClass: true
-  SplitEmptyFunction: false
-  SplitEmptyNamespace: false
-  AfterControlStatement: true
-  AfterFunction: true
-  AfterUnion: true
-  BeforeElse: true
-  BeforeWhile: true
-  BeforeCatch: true
+AlwaysBreakTemplateDeclarations: Yes
 
 
-AlwaysBreakTemplateDeclarations: true
+BasedOnStyle: WebKit
+Standard: c++20
+AlignAfterOpenBracket: AlwaysBreak
+AlignEscapedNewlinesLeft: false
+AlwaysBreakAfterDefinitionReturnType: None
+BreakBeforeBraces: Allman
 BreakConstructorInitializersBeforeComma: false
+ColumnLimit: 80
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
-AllowShortBlocksOnASingleLine: false
-AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-
-PointerAlignment: Left
-AlignConsecutiveAssignments: false
+ConstructorInitializerIndentWidth: 0
+IndentCaseLabels: false
+SortIncludes: true
 AlignTrailingComments: true
 
-SpaceAfterCStyleCast: true
-CommentPragmas: '^ NO-FORMAT:'
+SpacesInAngles: true
 
-BinPackArguments: false
 BinPackParameters: false
+BinPackArguments: false
 
 IncludeBlocks: Regroup
-
 IndentRequires: false
+
+UseTab: Never

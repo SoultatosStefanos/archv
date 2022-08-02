@@ -14,17 +14,18 @@ namespace layout
 {
 
 // A facade for the layout management subsystem.
-template <typename Graph, typename WeightMap>
+template < typename Graph, typename WeightMap >
 class core
 {
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept<
             WeightMap,
-            typename boost::graph_traits<Graph>::edge_descriptor>) );
+            typename boost::graph_traits< Graph >::edge_descriptor >));
 
-    using layout_signal = boost::signals2::signal<void(const layout<Graph>&)>;
-    using topology_signal = boost::signals2::signal<void(const topology&)>;
+    using layout_signal
+        = boost::signals2::signal< void(const layout< Graph >&) >;
+    using topology_signal = boost::signals2::signal< void(const topology&) >;
 
 public:
     using command_history = utility::command_history;
@@ -34,31 +35,36 @@ public:
     using topology_slot_type = topology_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    core(command_history& cmds,
-         const graph& g,
-         weight_map edge_weight,
-         const std::string& layout_type,
-         const std::string& topolgy_type,
-         double topology_scale)
-        : m_topology{detail::topology_factory::make_topology(topolgy_type,
-                                                             topology_scale)},
-          m_layout{detail::layout_factory<graph>::make_layout(
-              layout_type, g, *m_topology, edge_weight)},
-          m_update_layout{cmds, g, edge_weight, m_layout, m_topology},
-          m_update_topology{cmds, g, edge_weight, m_layout, m_topology},
-          m_revert_to_defaults{cmds, g, edge_weight, m_layout, m_topology}
+    core(
+        command_history& cmds,
+        const graph& g,
+        weight_map edge_weight,
+        const std::string& layout_type,
+        const std::string& topolgy_type,
+        double topology_scale)
+    : m_topology { detail::topology_factory::make_topology(
+        topolgy_type, topology_scale) }
+    , m_layout { detail::layout_factory< graph >::make_layout(
+          layout_type, g, *m_topology, edge_weight) }
+    , m_update_layout { cmds, g, edge_weight, m_layout, m_topology }
+    , m_update_topology { cmds, g, edge_weight, m_layout, m_topology }
+    , m_revert_to_defaults { cmds, g, edge_weight, m_layout, m_topology }
     {
         m_update_layout.connect([this](const auto& l) { m_layout_signal(l); });
 
-        m_update_topology.connect([this](const auto& l, const auto& s) {
-            m_layout_signal(l);
-            m_topology_signal(s);
-        });
+        m_update_topology.connect(
+            [this](const auto& l, const auto& s)
+            {
+                m_layout_signal(l);
+                m_topology_signal(s);
+            });
 
-        m_revert_to_defaults.connect([this](const auto& l, const auto& s) {
-            m_layout_signal(l);
-            m_topology_signal(s);
-        });
+        m_revert_to_defaults.connect(
+            [this](const auto& l, const auto& s)
+            {
+                m_layout_signal(l);
+                m_topology_signal(s);
+            });
     }
 
     auto get_layout() const -> const auto&
@@ -96,7 +102,7 @@ public:
     }
 
 private:
-    using layout_pointer = typename detail::layout_factory<graph>::pointer;
+    using layout_pointer = typename detail::layout_factory< graph >::pointer;
     using topology_pointer = detail::topology_factory::pointer;
 
     layout_signal m_layout_signal;
@@ -105,9 +111,10 @@ private:
     topology_pointer m_topology;
     layout_pointer m_layout;
 
-    detail::update_layout_service<graph, weight_map> m_update_layout;
-    detail::update_topology_service<graph, weight_map> m_update_topology;
-    detail::revert_to_defaults_service<graph, weight_map> m_revert_to_defaults;
+    detail::update_layout_service< graph, weight_map > m_update_layout;
+    detail::update_topology_service< graph, weight_map > m_update_topology;
+    detail::revert_to_defaults_service< graph, weight_map >
+        m_revert_to_defaults;
 };
 
 } // namespace layout

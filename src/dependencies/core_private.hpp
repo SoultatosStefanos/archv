@@ -20,8 +20,8 @@ class update_weight_command;
 
 class update_weight_service
 {
-    using signal = boost::signals2::signal<void(
-        const weight_repo::dependency_type&, weight_repo::weight)>;
+    using signal = boost::signals2::signal< void(
+        const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
     using command_history = utility::command_history;
@@ -57,8 +57,8 @@ class revert_to_defaults_command;
 
 class revert_to_defaults_service
 {
-    using signal = boost::signals2::signal<void(
-        const weight_repo::dependency_type&, weight_repo::weight)>;
+    using signal = boost::signals2::signal< void(
+        const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
     using command_history = utility::command_history;

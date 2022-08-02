@@ -17,41 +17,45 @@ namespace
 class a_dynamic_weight_map : public Test
 {
 protected:
-    using graph = boost::adjacency_list<boost::vecS,
-                                        boost::vecS,
-                                        boost::directedS,
-                                        boost::no_property,
-                                        boost::no_property>;
+    using graph = boost::adjacency_list<
+        boost::vecS,
+        boost::vecS,
+        boost::directedS,
+        boost::no_property,
+        boost::no_property >;
 
     using dependency_type = weight_repo::dependency_type;
-    using dependency_function =
-        std::function<dependency_type(graph::edge_descriptor)>;
-    using dependency_map = boost::function_property_map<dependency_function,
-                                                        graph::edge_descriptor,
-                                                        dependency_type>;
+
+    using dependency_function
+        = std::function< dependency_type(graph::edge_descriptor) >;
+
+    using dependency_map = boost::function_property_map<
+        dependency_function,
+        graph::edge_descriptor,
+        dependency_type >;
 
     void SetUp() override
     {
-        g = std::make_unique<graph>();
+        g = std::make_unique< graph >();
 
         edge = boost::add_edge(boost::add_vertex(*g), boost::add_vertex(*g), *g)
                    .first;
 
-        repo = std::make_unique<weight_repo>();
+        repo = std::make_unique< weight_repo >();
         repo->set_weight(let_dependency, let_weight);
     }
 
     static constexpr auto let_dependency = "Inheritance";
     static constexpr auto let_weight = 100;
 
-    std::unique_ptr<graph> g;
+    std::unique_ptr< graph > g;
     graph::edge_descriptor edge;
-    std::unique_ptr<weight_repo> repo;
+    std::unique_ptr< weight_repo > repo;
 };
 
 TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 {
-    const auto weight_map = make_dynamic_weight_map<graph>(
+    const auto weight_map = make_dynamic_weight_map< graph >(
         *repo, dependency_map([](auto) { return let_dependency; }));
 
     ASSERT_EQ(boost::get(weight_map, edge), let_weight);
@@ -59,7 +63,7 @@ TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 
 TEST_F(a_dynamic_weight_map, reflects_changes_of_the_repo)
 {
-    const auto weight_map = make_dynamic_weight_map<graph>(
+    const auto weight_map = make_dynamic_weight_map< graph >(
         *repo, dependency_map([](auto) { return let_dependency; }));
 
     EXPECT_EQ(boost::get(weight_map, edge), let_weight);

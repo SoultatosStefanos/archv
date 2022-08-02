@@ -14,30 +14,31 @@ namespace dependencies
 {
 
 // A runtime managed edge-weight property map from a weight repository.
-template <typename Graph, typename DependencyMap>
+template < typename Graph, typename DependencyMap >
 using dynamic_weight_map = boost::function_property_map<
-    detail::weight_dispatcher<Graph, DependencyMap>,
-    typename boost::graph_traits<Graph>::edge_descriptor,
-    weight_repo::weight>;
+    detail::weight_dispatcher< Graph, DependencyMap >,
+    typename boost::graph_traits< Graph >::edge_descriptor,
+    weight_repo::weight >;
 
 // Creates a runtime managed edge-weight property map from a weight repository.
-template <typename Graph, typename DependencyMap>
-inline auto make_dynamic_weight_map(const weight_repo& repo,
-                                    DependencyMap edge_dependency)
+template < typename Graph, typename DependencyMap >
+inline auto
+make_dynamic_weight_map(const weight_repo& repo, DependencyMap edge_dependency)
 {
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept<Graph>) );
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept<
             DependencyMap,
-            typename boost::graph_traits<Graph>::edge_descriptor>) );
+            typename boost::graph_traits< Graph >::edge_descriptor >));
 
     static_assert(std::is_convertible_v<
-                  typename boost::property_traits<DependencyMap>::value_type,
-                  weight_repo::dependency_type>);
+                  typename boost::property_traits< DependencyMap >::value_type,
+                  weight_repo::dependency_type >);
 
-    return dynamic_weight_map<Graph, DependencyMap>(
-        detail::weight_dispatcher<Graph, DependencyMap>(repo, edge_dependency));
+    return dynamic_weight_map< Graph, DependencyMap >(
+        detail::weight_dispatcher< Graph, DependencyMap >(
+            repo, edge_dependency));
 }
 
 } // namespace dependencies

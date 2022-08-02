@@ -34,9 +34,9 @@ public:
 
 private:
     using graph = architecture::graph;
-    using weight_function = std::function<int(graph::edge_descriptor)>;
+    using weight_function = std::function< int(graph::edge_descriptor) >;
     using weight_map = boost::
-        function_property_map<weight_function, graph::edge_descriptor, int>;
+        function_property_map< weight_function, graph::edge_descriptor, int >;
 
     void setup_scene();
     void setup_lighting();
@@ -66,13 +66,13 @@ private:
     Ogre::Camera* m_cam = nullptr;
     Ogre::SceneNode* m_cam_node = nullptr;
 
-    std::unique_ptr<utility::command_history> m_cmds;
-    std::unique_ptr<layout::core<graph, weight_map>> m_layout_sys;
+    std::unique_ptr< utility::command_history > m_cmds;
+    std::unique_ptr< layout::core< graph, weight_map > > m_layout_sys;
 
-    std::unique_ptr<OgreBites::CameraMan> m_cameraman;
+    std::unique_ptr< OgreBites::CameraMan > m_cameraman;
 
-    std::unique_ptr<MyGUI::Gui> m_gui;
-    std::unique_ptr<MyGUI::OgrePlatform> m_platform;
+    std::unique_ptr< MyGUI::Gui > m_gui;
+    std::unique_ptr< MyGUI::OgrePlatform > m_platform;
 };
 
 #endif // APP_HPP

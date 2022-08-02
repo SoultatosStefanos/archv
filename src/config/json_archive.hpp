@@ -29,7 +29,7 @@ struct invalid_json_file : virtual json_archive_error
  * Error Info                                              *
  ***********************************************************/
 
-using json_file_info = boost::error_info<struct tag_file, std::string_view>;
+using json_file_info = boost::error_info< struct tag_file, std::string_view >;
 
 /***********************************************************
  * Json Archive                                            *
@@ -53,7 +53,7 @@ public:
     auto at(std::string_view fname) const -> const Json::Value&;
 
 private:
-    using pool = std::unordered_map<std::string_view, Json::Value>;
+    using pool = std::unordered_map< std::string_view, Json::Value >;
 
     json_archive() = default;
     ~json_archive() = default;

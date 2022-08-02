@@ -16,7 +16,7 @@
 namespace layout::detail
 {
 
-template <typename Graph, typename WeightMap, typename PositionMap>
+template < typename Graph, typename WeightMap, typename PositionMap >
 class gursoy_atun_visitor : public topology_visitor
 {
 public:
@@ -24,11 +24,11 @@ public:
     using weight_map = WeightMap;
     using position_map = PositionMap;
 
-    gursoy_atun_visitor(const graph& g,
-                        weight_map edge_weight,
-                        position_map map)
-        : m_g{g}, m_edge_weight{edge_weight}, m_map{map}
-    {}
+    gursoy_atun_visitor(
+        const graph& g, weight_map edge_weight, position_map map)
+    : m_g { g }, m_edge_weight { edge_weight }, m_map { map }
+    {
+    }
 
     virtual ~gursoy_atun_visitor() override = default;
 

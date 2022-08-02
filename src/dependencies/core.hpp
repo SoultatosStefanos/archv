@@ -13,14 +13,10 @@
 namespace dependencies
 {
 
-/***********************************************************
- * Core                                                    *
- ***********************************************************/
-
 class core
 {
-    using signal = boost::signals2::signal<void(
-        const weight_repo::dependency_type&, weight_repo::weight)>;
+    using signal = boost::signals2::signal< void(
+        const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
     using command_history = utility::command_history;
