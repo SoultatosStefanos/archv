@@ -26,23 +26,23 @@ public:
     virtual void undo() = 0;
     virtual void redo() = 0;
 
-    virtual auto clone() const -> std::unique_ptr<command> = 0;
+    virtual auto clone() const -> std::unique_ptr< command > = 0;
 };
 
 class command_history
 {
 public:
-    void execute(std::unique_ptr<command> cmd);
+    void execute(std::unique_ptr< command > cmd);
 
     void undo();
     void redo();
 
 private:
-    using cache = std::list<std::unique_ptr<command>>;
+    using cache = std::list< std::unique_ptr< command > >;
     using cache_iterator = cache::iterator;
 
     cache m_history;
-    cache_iterator m_i{std::end(m_history)};
+    cache_iterator m_i { std::end(m_history) };
 };
 
 } // namespace utility

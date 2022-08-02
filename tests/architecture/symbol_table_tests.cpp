@@ -15,9 +15,9 @@ namespace
 class given_a_symbol_table : public Test
 {
 protected:
-    void SetUp() override { st = std::make_unique<symbol_table>(); }
+    void SetUp() override { st = std::make_unique< symbol_table >(); }
 
-    std::unique_ptr<symbol_table> st;
+    std::unique_ptr< symbol_table > st;
 };
 
 TEST_F(given_a_symbol_table, an_unsuccesful_lookup_returns_nullptr)

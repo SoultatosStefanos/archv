@@ -18,7 +18,7 @@ auto read_json_root(std::string_view to)
     const auto path = resolve_path(to);
     assert(std::filesystem::exists(path));
 
-    std::ifstream archive{path};
+    std::ifstream archive { path };
     assert(archive.good());
 
     Json::Value root;
@@ -57,7 +57,7 @@ auto build_sample_st_1() -> symbol_table
     field.sym.id = "CS::CS_1::class_A::b";
     field.sym.name = "b";
     field.sym.name_space = "CS::CS_1::";
-    field.sym.source = {"classes_simple.cpp", 23, 29};
+    field.sym.source = { "classes_simple.cpp", 23, 29 };
     field.sym.access = "private";
     field.full_t = "class CS::CS_1::class_B";
     field.t = "CS::CS_1::class_B";
@@ -66,7 +66,7 @@ auto build_sample_st_1() -> symbol_table
     arg.sym.id = "b";
     arg.sym.name = "b";
     arg.sym.name_space = "CS::CS_1::";
-    arg.sym.source = {"friends.cpp", 58, 23};
+    arg.sym.source = { "friends.cpp", 58, 23 };
     arg.full_t = "friends::B";
     arg.t = "friends::B";
 
@@ -74,7 +74,7 @@ auto build_sample_st_1() -> symbol_table
     def.sym.id = "x";
     def.sym.name = "x";
     def.sym.name_space = "CS::CS_1::";
-    def.sym.source = {"friends.cpp", 58, 23};
+    def.sym.source = { "friends.cpp", 58, 23 };
     def.full_t = "friends::B";
     def.t = "friends::B";
 
@@ -82,11 +82,11 @@ auto build_sample_st_1() -> symbol_table
     m.sym.id = "CS::CS_1::class_A::class_A(class CS::CS_1::class_A &&)";
     m.sym.name = "class_A";
     m.sym.name_space = "CS::CS_1::";
-    m.sym.source = {"classes_simple.cpp", 23, 11};
+    m.sym.source = { "classes_simple.cpp", 23, 11 };
     m.sym.access = "public";
-    m.arguments = {std::move(arg)};
+    m.arguments = { std::move(arg) };
     m.branches = 10;
-    m.definitions = {std::move(def)};
+    m.definitions = { std::move(def) };
     m.lines = 20;
     m.literals = 30;
     m.loops = 40;
@@ -94,22 +94,22 @@ auto build_sample_st_1() -> symbol_table
     m.t = "Constructor_Trivial";
     m.ret_type = "void";
     m.statements = 60;
-    m.template_args = {"bool", "int", "char"};
+    m.template_args = { "bool", "int", "char" };
     m.is_virtual = true;
 
     structure class_a;
     class_a.sym.id = "CS::CS_1::class_A";
     class_a.sym.name = "class_A";
     class_a.sym.name_space = "CS::CS_1::";
-    class_a.sym.source = {"classes_simple.cpp", 23, 11};
+    class_a.sym.source = { "classes_simple.cpp", 23, 11 };
     class_a.sym.access = "unknown";
     class_a.t = "Class";
-    class_a.methods = {std::move(m)};
-    class_a.fields = {std::move(field)};
-    class_a.bases = {"std::runtime_error"};
-    class_a.nested = {"CS::CS_1::class_A::Foo"};
-    class_a.friends = {"std::map"};
-    class_a.template_args = {"int"};
+    class_a.methods = { std::move(m) };
+    class_a.fields = { std::move(field) };
+    class_a.bases = { "std::runtime_error" };
+    class_a.nested = { "CS::CS_1::class_A::Foo" };
+    class_a.friends = { "std::map" };
+    class_a.template_args = { "int" };
 
     st.insert(std::move(class_a));
 
@@ -158,19 +158,22 @@ auto build_sample_st_2() -> symbol_table
     class_a.sym.id = "CS::CS_1::class_A";
     class_a.sym.name = "class_A";
     class_a.sym.name_space = "CS::CS_1::";
-    class_a.sym.source = {.file = "classes_simple.cpp", .line = 23, .col = 11};
+    class_a.sym.source
+        = { .file = "classes_simple.cpp", .line = 23, .col = 11 };
     class_a.t = "Class";
 
     class_b.sym.id = "CS::CS_1::class_B";
     class_b.sym.name = "class_B";
     class_b.sym.name_space = "CS::CS_1::";
-    class_b.sym.source = {.file = "classes_simple.cpp", .line = 22, .col = 11};
+    class_b.sym.source
+        = { .file = "classes_simple.cpp", .line = 22, .col = 11 };
     class_b.t = "Class";
 
     class_x.sym.id = "CS::CS_1::class_X";
     class_x.sym.name = "class_X";
     class_x.sym.name_space = "CS::CS_1::";
-    class_x.sym.source = {.file = "classes_simple.cpp", .line = 25, .col = 11};
+    class_x.sym.source
+        = { .file = "classes_simple.cpp", .line = 25, .col = 11 };
     class_x.t = "Class";
 
     st.insert(std::move(class_a));
@@ -194,25 +197,28 @@ TEST(arch_deserialization, symbols_sample_graph_2)
 auto build_sample_graph_2(const symbol_table& st) -> graph
 {
     graph g;
-    vertex_table cache;
+    vertex_id_cache cache;
 
     for (const auto& [id, _] : st)
         cache[id] = boost::add_vertex(id, g);
 
-    boost::add_edge(cache.at("CS::CS_1::class_A"),
-                    cache.at("CS::CS_1::class_B"),
-                    "ClassField",
-                    g);
+    boost::add_edge(
+        cache.at("CS::CS_1::class_A"),
+        cache.at("CS::CS_1::class_B"),
+        "ClassField",
+        g);
 
-    boost::add_edge(cache.at("CS::CS_1::class_X"),
-                    cache.at("CS::CS_1::class_B"),
-                    "Inherit",
-                    g);
+    boost::add_edge(
+        cache.at("CS::CS_1::class_X"),
+        cache.at("CS::CS_1::class_B"),
+        "Inherit",
+        g);
 
-    boost::add_edge(cache.at("CS::CS_1::class_X"),
-                    cache.at("CS::CS_1::class_A"),
-                    "Inherit",
-                    g);
+    boost::add_edge(
+        cache.at("CS::CS_1::class_X"),
+        cache.at("CS::CS_1::class_A"),
+        "Inherit",
+        g);
 
     return g;
 }
@@ -232,9 +238,10 @@ TEST(arch_deserialization, dependencies_sample_graph_2)
         boost::edges(actual).second,
         boost::edges(expected).first,
         boost::edges(expected).second,
-        [&](auto e1, auto e2) {
-            return boost::get(boost::get(boost::edge_bundle, actual), e1) ==
-                   boost::get(boost::get(boost::edge_bundle, actual), e2);
+        [&](auto e1, auto e2)
+        {
+            return boost::get(boost::get(boost::edge_bundle, actual), e1)
+                == boost::get(boost::get(boost::edge_bundle, actual), e2);
         }));
 }
 

@@ -1,23 +1,44 @@
-// Contains a function for creating a managed architecture graph weight map.
+// Contains a function for creating a dynamic managed graph weight map.
 // Soultatos Stefanos 2022
 
 #ifndef DEPENDENCIES_WEIGHT_MAP_HPP
 #define DEPENDENCIES_WEIGHT_MAP_HPP
 
-#include "architecture/graph.hpp"
+#include "weight_map_private.hpp"
 #include "weight_repo.hpp"
+
+#include <boost/graph/graph_concepts.hpp>
+#include <boost/property_map/function_property_map.hpp>
 
 namespace dependencies
 {
 
+// A runtime managed edge-weight property map from a weight repository.
+template < typename Graph, typename DependencyMap >
+using dynamic_weight_map = boost::function_property_map<
+    detail::weight_dispatcher< Graph, DependencyMap >,
+    typename boost::graph_traits< Graph >::edge_descriptor,
+    weight_repo::weight >;
+
 // Creates a runtime managed edge-weight property map from a weight repository.
-inline auto make_dynamic_weight_map(const weight_repo& repo,
-                                    architecture::edge_type_map edge_type)
+template < typename Graph, typename DependencyMap >
+inline auto
+make_dynamic_weight_map(const weight_repo& repo, DependencyMap edge_dependency)
 {
-    return architecture::weight_map([&repo, edge_type](auto edge) {
-        const auto& dependency = boost::get(edge_type, edge);
-        return repo.get_weight(dependency);
-    });
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
+
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept<
+            DependencyMap,
+            typename boost::graph_traits< Graph >::edge_descriptor >));
+
+    static_assert(std::is_convertible_v<
+                  typename boost::property_traits< DependencyMap >::value_type,
+                  weight_repo::dependency_type >);
+
+    return dynamic_weight_map< Graph, DependencyMap >(
+        detail::weight_dispatcher< Graph, DependencyMap >(
+            repo, edge_dependency));
 }
 
 } // namespace dependencies

@@ -32,7 +32,7 @@ public:
     auto operator!=(const symbol_table&) const -> bool = default;
 
 private:
-    using hash_table = std::unordered_map<key_type, value_type>;
+    using hash_table = std::unordered_map< key_type, value_type >;
 
     hash_table m_table;
 };

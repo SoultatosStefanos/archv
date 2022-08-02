@@ -1,9 +1,4 @@
 // Containes an architecture graph 3D topology interface.
-// The bgl topology abstractions are not meant to be used polymorphically.
-// Plus, we need to access the scale of each topolgy.
-// (No virtual destructors, some functions are not declared at the bases, etc).
-// This file provides a scalable inheritance chain with which the bgl layout
-// algorithms can interface implicitly.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_TOPOLOGY_HPP
@@ -11,8 +6,13 @@
 
 #include <boost/graph/topology.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
-#include <concepts>
 #include <memory>
+
+// NOTE: The bgl topology abstractions are not meant to be used polymorphically.
+// Plus, we need to access the scale of each topolgy.
+// (No virtual destructors, some functions are not declared at the bases, etc).
+// This file provides a scalable inheritance chain with which the bgl layout
+// algorithms can interface implicitly.
 
 namespace layout
 {
@@ -24,7 +24,7 @@ class topology_visitor;
 class topology
 {
 public:
-    using point_type = typename boost::convex_topology<3>::point_type;
+    using point_type = typename boost::convex_topology< 3 >::point_type;
     using scale_type = double;
     using descriptor = std::string;
 
@@ -43,11 +43,10 @@ public:
 
     virtual void accept(const topology_visitor&) const = 0;
 
-    virtual auto clone() const -> std::unique_ptr<topology> = 0;
+    virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };
 
-template <typename Topology>
-requires std::derived_from<Topology, topology>
+template < typename Topology >
 struct topology_traits
 {
     using point_type = typename Topology::point_type;

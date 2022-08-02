@@ -5,6 +5,8 @@
 namespace layout
 {
 
+cube::cube(scale_type scale) : m_cube{scale}, m_scale{scale} {}
+
 void cube::accept(const topology_visitor& visitor) const
 {
     visitor.visit(*this);

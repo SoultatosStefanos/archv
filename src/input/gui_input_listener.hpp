@@ -13,19 +13,14 @@ namespace input
 class gui_input_listener : public OgreBites::InputListener
 {
 public:
-    using base = OgreBites::InputListener;
-    using keyboard_event = OgreBites::KeyboardEvent;
-    using mouse_motion_event = OgreBites::MouseMotionEvent;
-    using mouse_button_event = OgreBites::MouseButtonEvent;
-
     virtual ~gui_input_listener() override = default;
 
-    virtual auto keyPressed(const keyboard_event& e) -> bool override;
-    virtual auto keyReleased(const keyboard_event& e) -> bool override;
+    auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
+    auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
 
-    virtual auto mouseMoved(const mouse_motion_event& e) -> bool override;
-    virtual auto mousePressed(const mouse_button_event& e) -> bool override;
-    virtual auto mouseReleased(const mouse_button_event& e) -> bool override;
+    auto mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool override;
+    auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool override;
+    auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
 };
 
 } // namespace input

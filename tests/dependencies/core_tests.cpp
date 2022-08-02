@@ -16,26 +16,28 @@ class a_dependencies_core : public Test
 {
 protected:
     using mock_slot = NiceMock<
-        MockFunction<void(const core::dependency_type&, core::weight)>>;
+        MockFunction< void(const core::dependency_type&, core::weight) > >;
 
     void SetUp() override
     {
-        cmds = std::make_unique<command_history>();
-        sys = std::make_unique<core>(*cmds, table);
+        cmds = std::make_unique< command_history >();
+        sys = std::make_unique< core >(*cmds, table);
     }
 
     static constexpr auto set_dependency = "inheritance";
     static constexpr auto set_weight = 100;
 
-    const core::hash_table table{
-        {set_dependency, set_weight}, {"dummy1", 1}, {"dummy2", 2}};
-    std::unique_ptr<command_history> cmds;
+    const core::hash_table table { { set_dependency, set_weight },
+                                   { "dummy1", 1 },
+                                   { "dummy2", 2 } };
+    std::unique_ptr< command_history > cmds;
 
-    std::unique_ptr<core> sys;
+    std::unique_ptr< core > sys;
 };
 
-TEST_F(a_dependencies_core,
-       wont_emit_dependency_and_weight_when_updating_same_value)
+TEST_F(
+    a_dependencies_core,
+    wont_emit_dependency_and_weight_when_updating_same_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -45,8 +47,9 @@ TEST_F(a_dependencies_core,
     sys->update_weight(set_dependency, set_weight);
 }
 
-TEST_F(a_dependencies_core,
-       will_emit_dependency_and_weight_when_updating_different_value)
+TEST_F(
+    a_dependencies_core,
+    will_emit_dependency_and_weight_when_updating_different_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -60,8 +63,9 @@ TEST_F(a_dependencies_core,
     sys->update_weight(set_dependency, new_weight);
 }
 
-TEST_F(a_dependencies_core,
-       will_return_updated_repo_after_successfully_updating_and_querying)
+TEST_F(
+    a_dependencies_core,
+    will_return_updated_repo_after_successfully_updating_and_querying)
 {
     constexpr auto new_weight = 200;
 
@@ -86,8 +90,9 @@ TEST_F(a_dependencies_core, will_revert_to_set_value_after_updating_and_undo)
     ASSERT_EQ(sys->get_repo().get_weight(set_dependency), set_weight);
 }
 
-TEST_F(a_dependencies_core,
-       will_revert_to_changed_value_after_updating_and_undo_and_redo)
+TEST_F(
+    a_dependencies_core,
+    will_revert_to_changed_value_after_updating_and_undo_and_redo)
 {
     constexpr auto new_weight = 200;
     static_assert(new_weight != set_weight);
@@ -105,8 +110,9 @@ TEST_F(a_dependencies_core,
     ASSERT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 }
 
-TEST_F(a_dependencies_core,
-       will_emit_all_dependencies_and_weights_when_reverting_initially)
+TEST_F(
+    a_dependencies_core,
+    will_emit_all_dependencies_and_weights_when_reverting_initially)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -116,8 +122,9 @@ TEST_F(a_dependencies_core,
     sys->revert_to_defaults();
 }
 
-TEST_F(a_dependencies_core,
-       will_emit_all_dependencies_and_weights_when_reverting_from_changed_value)
+TEST_F(
+    a_dependencies_core,
+    will_emit_all_dependencies_and_weights_when_reverting_from_changed_value)
 {
     mock_slot mock;
     sys->connect(mock.AsStdFunction());
@@ -132,8 +139,8 @@ TEST_F(a_dependencies_core,
     sys->revert_to_defaults();
 }
 
-TEST_F(a_dependencies_core,
-       will_revert_to_changed_value_after_reverting_and_undo)
+TEST_F(
+    a_dependencies_core, will_revert_to_changed_value_after_reverting_and_undo)
 {
     constexpr auto new_weight = 200;
     static_assert(new_weight != set_weight);
@@ -148,8 +155,9 @@ TEST_F(a_dependencies_core,
     ASSERT_EQ(sys->get_repo().get_weight(set_dependency), new_weight);
 }
 
-TEST_F(a_dependencies_core,
-       will_revert_to_initial_value_after_reverting_and_undo_and_redo)
+TEST_F(
+    a_dependencies_core,
+    will_revert_to_initial_value_after_reverting_and_undo_and_redo)
 {
     constexpr auto new_weight = 200;
     static_assert(new_weight != set_weight);

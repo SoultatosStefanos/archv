@@ -1,7 +1,6 @@
 set(FILES
 	core.cpp
 	cube.cpp
-	gursoy_atun_layout.cpp
 	sphere.cpp
 )
 set(SUBDIRECTORIES)

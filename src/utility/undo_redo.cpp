@@ -5,7 +5,7 @@
 namespace utility
 {
 
-void command_history::execute(std::unique_ptr<command> cmd)
+void command_history::execute(std::unique_ptr< command > cmd)
 {
     assert(cmd);
 

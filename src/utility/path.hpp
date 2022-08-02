@@ -12,12 +12,13 @@ namespace utility
 
 // Resolve path from a source location, to a realtive target location.
 // Useful for out of source builds.
-inline auto resolve_path(std::string_view to,
-                         const std::experimental::source_location& from =
-                             std::experimental::source_location::current())
+inline auto resolve_path(
+    std::string_view to,
+    const std::experimental::source_location& from
+    = std::experimental::source_location::current())
 {
-    return std::filesystem::absolute(from.file_name()).parent_path() /
-           std::filesystem::path{to};
+    return std::filesystem::absolute(from.file_name()).parent_path()
+        / std::filesystem::path { to };
 }
 
 } // namespace utility

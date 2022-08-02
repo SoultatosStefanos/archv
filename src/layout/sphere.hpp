@@ -14,11 +14,11 @@ namespace layout
 class sphere : public topology
 {
 public:
-    using data_type = boost::sphere_topology<std::minstd_rand>;
+    using data_type = boost::sphere_topology< std::minstd_rand >;
 
     static constexpr auto description = "Sphere";
 
-    explicit sphere(scale_type scale) : m_sphere{scale}, m_scale{scale} {}
+    explicit sphere(scale_type scale);
     virtual ~sphere() override = default;
 
     // Raw topology data access.
@@ -31,7 +31,7 @@ public:
 
     virtual void accept(const topology_visitor& visitor) const override;
 
-    virtual auto clone() const -> std::unique_ptr<topology> override;
+    virtual auto clone() const -> std::unique_ptr< topology > override;
 
 private:
     data_type m_sphere;

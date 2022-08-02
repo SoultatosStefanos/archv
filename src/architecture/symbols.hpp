@@ -24,8 +24,8 @@ struct source_location
     auto operator!=(const source_location&) const -> bool = default;
 
     file_type file;
-    line_type line{-1};
-    column_type col{-1};
+    line_type line { -1 };
+    column_type col { -1 };
 };
 
 /***********************************************************
@@ -46,13 +46,13 @@ struct symbol
     name_type name;
     namespace_type name_space;
     source_location source;
-    access_specifier access{"unknown"};
+    access_specifier access { "unknown" };
 };
 
-template <typename T>
-using composites = std::vector<T>;
+template < typename T >
+using composites = std::vector< T >;
 
-using references = std::vector<symbol::id_type>;
+using references = std::vector< symbol::id_type >;
 
 /***********************************************************
  * Definition                                              *
@@ -81,8 +81,8 @@ struct method
     using id_type = symbol::id_type;
     using type = std::string;
     using return_type = std::string;
-    using arguments_type = composites<definition>;
-    using definitions_type = composites<definition>;
+    using arguments_type = composites< definition >;
+    using definitions_type = composites< definition >;
     using template_args_type = references;
     using count_type = int;
     using depth_type = int;
@@ -96,13 +96,13 @@ struct method
     arguments_type arguments;
     definitions_type definitions;
     template_args_type template_args;
-    count_type literals{-1};
-    count_type statements{-1};
-    count_type branches{-1};
-    count_type loops{-1};
-    count_type lines{-1};
-    depth_type max_scope{-1};
-    bool is_virtual{false};
+    count_type literals { -1 };
+    count_type statements { -1 };
+    count_type branches { -1 };
+    count_type loops { -1 };
+    count_type lines { -1 };
+    depth_type max_scope { -1 };
+    bool is_virtual { false };
 };
 
 /***********************************************************
@@ -113,8 +113,8 @@ struct structure
 {
     using id_type = symbol::id_type;
     using type = std::string;
-    using methods_type = composites<method>;
-    using fields_type = composites<definition>;
+    using methods_type = composites< method >;
+    using fields_type = composites< definition >;
     using bases_type = references;
     using nested_type = references;
     using friends_type = references;

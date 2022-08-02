@@ -5,7 +5,7 @@
 namespace dependencies
 {
 
-weight_repo::weight_repo(hash_table table) : m_map{std::move(table)} {}
+weight_repo::weight_repo(hash_table table) : m_map { std::move(table) } { }
 
 auto weight_repo::get_weight(const dependency_type& type) const -> weight
 {

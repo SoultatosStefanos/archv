@@ -4,9 +4,12 @@
 #ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 #define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 
-#include "architecture/graph.hpp"
+#include "gursoy_atun_layout_private.hpp"
 #include "layout.hpp"
 #include "topology.hpp"
+
+#include <boost/graph/adjacency_list.hpp>
+#include <cassert>
 
 namespace layout
 {
@@ -21,21 +24,37 @@ namespace layout
 //
 // Convenience boost adaptor for our architecture, in 3D space.
 
-namespace detail
+template < typename Graph >
+class gursoy_atun_layout : public layout< Graph >
 {
-    class gursoy_atun_visitor;
-}
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
-class gursoy_atun_layout : public layout
-{
 public:
-    using weight_map = architecture::weight_map;
+    using base = layout< Graph >;
+    using graph = typename base::graph;
+    using vertex = typename base::vertex;
+    using coord = typename base::coord;
+    using descriptor = typename base::descriptor;
 
     static constexpr auto description = "Gursoy Atun";
 
-    gursoy_atun_layout(const graph& g,
-                       const topology& space,
-                       weight_map edge_weight);
+    template < typename WeightMap >
+    gursoy_atun_layout(
+        const graph& g, const topology& space, WeightMap edge_weight)
+    {
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadablePropertyMapConcept<
+                WeightMap,
+                typename boost::graph_traits< graph >::edge_descriptor >));
+
+        space.accept(detail::gursoy_atun_visitor(
+            g, edge_weight, boost::make_assoc_property_map(m_map)));
+
+        assert(std::all_of(
+            boost::vertices(g).first,
+            boost::vertices(g).second,
+            [this](auto v) { return m_map.contains(v); }));
+    }
 
     virtual ~gursoy_atun_layout() override = default;
 
@@ -59,14 +78,18 @@ public:
         return m_map.at(v)[2];
     }
 
-    virtual void accept(const layout_visitor& visitor) const override;
+    virtual void accept(const layout_visitor< graph >& visitor) const override
+    {
+        visitor.visit(*this);
+    }
 
-    virtual auto clone() const -> std::unique_ptr<layout> override;
-
-    friend class detail::gursoy_atun_visitor;
+    virtual auto clone() const -> std::unique_ptr< layout< graph > > override
+    {
+        return std::make_unique< gursoy_atun_layout< graph > >(*this);
+    }
 
 private:
-    using position_map = std::unordered_map<vertex, topology::point_type>;
+    using position_map = std::unordered_map< vertex, topology::point_type >;
 
     position_map m_map;
 };

@@ -15,7 +15,7 @@ class weight_repo
 public:
     using dependency_type = std::string;
     using weight = int;
-    using hash_table = std::unordered_map<dependency_type, weight>;
+    using hash_table = std::unordered_map< dependency_type, weight >;
 
     weight_repo() = default;
     explicit weight_repo(hash_table table);

@@ -14,12 +14,12 @@ namespace layout
 class cube : public topology
 {
 public:
-    using point_type = typename boost::convex_topology<3>::point_type;
-    using data_type = boost::cube_topology<std::minstd_rand>;
+    using point_type = typename boost::convex_topology< 3 >::point_type;
+    using data_type = boost::cube_topology< std::minstd_rand >;
 
     static constexpr auto description = "Cube";
 
-    explicit cube(scale_type scale) : m_cube{scale}, m_scale{scale} {}
+    explicit cube(scale_type scale);
     virtual ~cube() override = default;
 
     // Raw topology data access.
@@ -32,7 +32,7 @@ public:
 
     virtual void accept(const topology_visitor& visitor) const override;
 
-    virtual auto clone() const -> std::unique_ptr<topology> override;
+    virtual auto clone() const -> std::unique_ptr< topology > override;
 
 private:
     data_type m_cube;
