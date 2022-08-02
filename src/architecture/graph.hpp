@@ -27,6 +27,16 @@ using graph = boost::adjacency_list<boost::vecS,
                                     structure::id_type,
                                     dependency_type>;
 
+/***********************************************************
+ * Property Maps                                           *
+ ***********************************************************/
+
+using id_map =
+    decltype(boost::get(boost::vertex_bundle, std::declval<graph>()));
+
+using dependency_map =
+    decltype(boost::get(boost::edge_bundle, std::declval<graph>()));
+
 } // namespace architecture
 
 #endif // ARCHITECTURE_GRAPH_HPP

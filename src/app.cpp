@@ -87,15 +87,15 @@ void app::setup_command_history()
 
 void app::setup_layout()
 {
-    m_layout_sys = std::make_unique<layout::core>(
+    m_layout_sys = std::make_unique<layout::core<graph, weight_map>>(
         *m_cmds,
         m_g,
-        architecture::weight_map([](auto) { return 1; }),
+        weight_map([](auto) { return 1; }),
         "Gursoy Atun", // TODO Config
         "Sphere",      // TODO Config
         100);          // TODO Config
 
-    const auto draw_nodes = [this](const layout::layout& l) {
+    const auto draw_nodes = [this](const auto& l) {
         for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
             m_scene->getSceneNode(m_g[v])->setPosition(l.x(v), l.y(v), l.z(v));
     };

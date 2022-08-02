@@ -37,5 +37,5 @@ set(MYGUI_LIBRARIES
 set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS} ${MYGUI_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
 
-# add_executable(archv_main src/main.cpp src/app.cpp)
-# target_link_libraries(archv_main PUBLIC ${PROJECT_NAME})
+add_executable(archv_main src/main.cpp src/app.cpp)
+target_link_libraries(archv_main PUBLIC ${PROJECT_NAME})
