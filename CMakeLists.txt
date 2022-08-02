@@ -6,6 +6,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(archv CXX)
 
+# compiler flags
 if(MSVC)
   add_compile_options(/W4 /WX)
 else()
@@ -14,28 +15,37 @@ endif()
 
 add_library(${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME} PUBLIC src)
-
 set(SUBDIRECTORIES src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
 
-set(JSONCPP_LIBS libjsoncpp.so)
+# make the src/ directory visible for include directives
+target_include_directories(${PROJECT_NAME} PUBLIC src)
 
+# find cmake configs locally
+find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
-find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
+# define 3rd party targets
+set(BOOST_LIBRARIES ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
+set(JSONCPP_LIBRARIES libjsoncpp.so)
+set(MYGUI_LIBRARIES libMyGUIEngine.so libMyGUI.OgrePlatform.so)
 
-set(BOOST_LIBS ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
-set(MYGUI_LIBRARIES
-  libMyGUIEngine.so
-  libMyGUI.OgrePlatform.so
-)
+# merge 3rd party targets
+set(THIRD_PARTY_LIBRARIES ${JSONCPP_LIBRARIES} ${OGRE_LIBRARIES} ${BOOST_LIBRARIES} ${MYGUI_LIBRARIES})
 
-set(LIBS ${JSONCPP_LIBS} ${OGRE_LIBRARIES} ${BOOST_LIBS} ${MYGUI_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS})
+# link 3rd party libraries
+target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
-add_executable(archv_main src/main.cpp src/app.cpp)
-target_link_libraries(archv_main PUBLIC ${PROJECT_NAME})
+# setup driver target
+set(DRIVER archv_main)
+set(DRIVER_FILES src/main.cpp src/app.cpp)
+
+if(DRIVER_FILES)
+  add_executable(${DRIVER} ${DRIVER_FILES})
+endif()
+
+# link driver with public library
+target_link_libraries(${DRIVER} PUBLIC ${PROJECT_NAME})
