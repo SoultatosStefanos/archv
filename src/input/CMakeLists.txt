@@ -1,6 +1,5 @@
 set(FILES
-	gui_input_handler.cpp
-	input_dispatcher.cpp
+	gui_input_listener.cpp
 )
 set(SUBDIRECTORIES)
 

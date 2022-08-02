@@ -4,7 +4,6 @@
 #ifndef INPUT_ALL_HPP
 #define INPUT_ALL_HPP
 
-#include "gui_input_handler.hpp"
-#include "input_dispatcher.hpp"
+#include "gui_input_listener.hpp"
 
 #endif // INPUT_ALL_HPP
