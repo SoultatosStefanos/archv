@@ -5,12 +5,12 @@
 #include <gtest/gtest.h>
 #include <memory>
 
+namespace lay = layout;
+
 using namespace testing;
 using namespace layout;
 using namespace architecture;
 using namespace utility;
-
-namespace lay = layout;
 
 namespace
 {
@@ -18,7 +18,8 @@ namespace
 class a_layout_core : public Test
 {
 protected:
-    using mock_layout_slot = NiceMock<MockFunction<void(const lay::layout&)>>;
+    using mock_layout_slot =
+        NiceMock<MockFunction<void(const lay::layout<graph>&)>>;
     using mock_topology_slot = NiceMock<MockFunction<void(const topology&)>>;
 
     void SetUp() override

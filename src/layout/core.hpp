@@ -16,7 +16,8 @@ namespace layout
 // A facade for the layout management subsystem.
 class core
 {
-    using layout_signal = boost::signals2::signal<void(const layout&)>;
+    using layout_signal =
+        boost::signals2::signal<void(const layout<architecture::graph>&)>;
     using topology_signal = boost::signals2::signal<void(const topology&)>;
 
 public:
@@ -34,7 +35,7 @@ public:
          const std::string& topolgy_type,
          double topology_scale);
 
-    auto get_layout() const -> const layout&
+    auto get_layout() const -> const layout<graph>&
     {
         assert(m_layout);
         return *m_layout;

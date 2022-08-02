@@ -19,9 +19,10 @@ auto layout_factory::make_layout(const descriptor& desc,
                                  const topology& space,
                                  weight_map edge_weight) -> pointer
 {
-    if (desc == layout_traits<gursoy_atun_layout>::desc())
+    if (desc == layout_traits<gursoy_atun_layout<graph>>::desc())
     {
-        return std::make_unique<gursoy_atun_layout>(g, space, edge_weight);
+        return std::make_unique<gursoy_atun_layout<graph>>(
+            g, space, edge_weight);
     }
     else
     {

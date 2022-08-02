@@ -23,8 +23,8 @@ class layout_factory final
 public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
-    using pointer = std::unique_ptr<layout>;
-    using descriptor = layout::descriptor;
+    using pointer = std::unique_ptr<layout<graph>>;
+    using descriptor = typename layout<graph>::descriptor;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -75,7 +75,8 @@ class update_layout_command;
 
 class update_layout_service
 {
-    using signal = boost::signals2::signal<void(const layout&)>;
+    using signal =
+        boost::signals2::signal<void(const layout<architecture::graph>&)>;
 
 public:
     using graph = architecture::graph;
@@ -119,8 +120,8 @@ class update_topology_command;
 
 class update_topology_service
 {
-    using signal =
-        boost::signals2::signal<void(const layout&, const topology&)>;
+    using signal = boost::signals2::signal<void(
+        const layout<architecture::graph>&, const topology&)>;
 
 public:
     using graph = architecture::graph;
@@ -165,8 +166,8 @@ class revert_to_defaults_command;
 
 class revert_to_defaults_service
 {
-    using signal =
-        boost::signals2::signal<void(const layout&, const topology&)>;
+    using signal = boost::signals2::signal<void(
+        const layout<architecture::graph>&, const topology&)>;
 
 public:
     using graph = architecture::graph;
