@@ -1,3 +1,4 @@
+#include "architecture/graph.hpp"
 #include "dependencies/weight_map.hpp"
 #include "utility/all.hpp"
 
@@ -41,7 +42,8 @@ protected:
 TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 {
     const auto edge_dependency = edge_type_map();
-    const auto weight_map = make_dynamic_weight_map(*repo, edge_dependency);
+    const auto weight_map =
+        make_dynamic_weight_map<graph>(*repo, edge_dependency);
 
     ASSERT_EQ(boost::get(weight_map, edge), dependency_weight);
 }
@@ -49,7 +51,8 @@ TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 TEST_F(a_dynamic_weight_map, reflects_changes_of_the_repo)
 {
     const auto edge_dependency = edge_type_map();
-    const auto weight_map = make_dynamic_weight_map(*repo, edge_dependency);
+    const auto weight_map =
+        make_dynamic_weight_map<graph>(*repo, edge_dependency);
 
     EXPECT_EQ(boost::get(weight_map, edge), dependency_weight);
 
