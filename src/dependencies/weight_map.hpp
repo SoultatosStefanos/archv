@@ -63,9 +63,7 @@ inline auto make_dynamic_weight_map(const weight_repo& repo,
                   typename boost::property_traits<DependencyMap>::value_type,
                   weight_repo::dependency_type>);
 
-    using dynamic_weight_map = dynamic_weight_map<Graph, DependencyMap>;
-
-    return dynamic_weight_map(
+    return dynamic_weight_map<Graph, DependencyMap>(
         detail::weight_dispatcher<Graph, DependencyMap>(repo, edge_dependency));
 }
 
