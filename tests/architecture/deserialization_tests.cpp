@@ -194,7 +194,7 @@ TEST(arch_deserialization, symbols_sample_graph_2)
 auto build_sample_graph_2(const symbol_table& st) -> graph
 {
     graph g;
-    vertex_table cache;
+    vertex_id_cache cache;
 
     for (const auto& [id, _] : st)
         cache[id] = boost::add_vertex(id, g);

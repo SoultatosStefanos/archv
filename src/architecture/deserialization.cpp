@@ -257,12 +257,10 @@ auto deserialize_symbols(const Json::Value& root) -> symbol_table
 }
 
 auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
-    -> std::pair<graph, vertex_table>
+    -> std::pair<graph, vertex_id_cache>
 {
-    static_assert(std::is_convertible_v<structure::id_type, module_id>);
-
     graph g;
-    vertex_table vertices;
+    vertex_id_cache vertices;
 
     // vertices
     for (const auto& [id, _] : st)
@@ -271,8 +269,8 @@ auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
     // edges
     for (const auto& val : get(root, "dependencies"))
     {
-        const auto& from = as<module_id>(get(val, "from"));
-        const auto& to = as<module_id>(get(val, "to"));
+        const auto& from = as<graph::vertex_bundled>(get(val, "from"));
+        const auto& to = as<graph::vertex_bundled>(get(val, "to"));
 
         dependency_type type;
         for_each_object(get(val, "types"),
