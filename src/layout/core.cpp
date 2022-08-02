@@ -11,28 +11,6 @@ namespace layout::detail
 {
 
 /***********************************************************
- * Layout Factory                                          *
- ***********************************************************/
-
-auto layout_factory::make_layout(const descriptor& desc,
-                                 const graph& g,
-                                 const topology& space,
-                                 weight_map edge_weight) -> pointer
-{
-    if (desc == layout_traits<gursoy_atun_layout<graph>>::desc())
-    {
-        return std::make_unique<gursoy_atun_layout<graph>>(
-            g, space, edge_weight);
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(fatal) << "invalid layout description: " << desc;
-        assert(false);
-        return nullptr;
-    }
-}
-
-/***********************************************************
  * Topology Factory                                        *
  ***********************************************************/
 
@@ -128,7 +106,8 @@ void update_layout_command::undo()
 
 void update_layout_command::change_layout(const descriptor& desc)
 {
-    m_layout = layout_factory::make_layout(desc, m_g, *m_space, m_edge_weight);
+    m_layout =
+        layout_factory<graph>::make_layout(desc, m_g, *m_space, m_edge_weight);
 
     BOOST_LOG_TRIVIAL(info) << "layout changed to: " << desc;
 
@@ -246,7 +225,7 @@ void update_topology_command::change_topology(const descriptor& desc,
                                               double scale)
 {
     m_space = topology_factory::make_topology(desc, scale);
-    m_layout = layout_factory::make_layout(
+    m_layout = layout_factory<graph>::make_layout(
         m_layout->desc(), m_g, *m_space, m_edge_weight);
 
     BOOST_LOG_TRIVIAL(info)
@@ -382,7 +361,7 @@ void revert_to_defaults_command::change_layout(
     topology_scale topology_scale)
 {
     m_topology = topology_factory::make_topology(topology_desc, topology_scale);
-    m_layout = layout_factory::make_layout(
+    m_layout = layout_factory<graph>::make_layout(
         layout_desc, m_g, *m_topology, m_edge_weight);
 
     BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_desc
@@ -433,7 +412,7 @@ core::core(command_history& cmds,
            double topology_scale)
     : m_topology{detail::topology_factory::make_topology(topolgy_type,
                                                          topology_scale)},
-      m_layout{detail::layout_factory::make_layout(
+      m_layout{detail::layout_factory<graph>::make_layout(
           layout_type, g, *m_topology, edge_weight)},
       m_update_layout{cmds, g, edge_weight, m_layout, m_topology},
       m_update_topology{cmds, g, edge_weight, m_layout, m_topology},

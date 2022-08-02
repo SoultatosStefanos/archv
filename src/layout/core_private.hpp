@@ -5,11 +5,14 @@
 #define LAYOUT_CORE_PRIVATE_HPP
 
 #include "architecture/graph.hpp"
+#include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "topology.hpp"
 #include "utility/undo_redo.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <boost/signals2/signal.hpp>
+#include <cassert>
 
 namespace layout::detail
 {
@@ -18,11 +21,11 @@ namespace layout::detail
  * Layout Factory                                          *
  ***********************************************************/
 
+template <typename Graph>
 class layout_factory final
 {
 public:
-    using graph = architecture::graph;
-    using weight_map = architecture::weight_map;
+    using graph = Graph;
     using pointer = std::unique_ptr<layout<graph>>;
     using descriptor = typename layout<graph>::descriptor;
 
@@ -32,10 +35,24 @@ public:
     auto operator=(const layout_factory&) -> layout_factory& = default;
     auto operator=(layout_factory&&) -> layout_factory& = default;
 
+    template <typename WeightMap>
     static auto make_layout(const descriptor& desc,
                             const graph& g,
                             const topology& space,
-                            weight_map edge_weight) -> pointer;
+                            WeightMap edge_weight) -> pointer
+    {
+        if (desc == layout_traits<gursoy_atun_layout<graph>>::desc())
+        {
+            return std::make_unique<gursoy_atun_layout<graph>>(
+                g, space, edge_weight);
+        }
+        else
+        {
+            BOOST_LOG_TRIVIAL(fatal) << "invalid layout description: " << desc;
+            assert(false);
+            return nullptr;
+        }
+    }
 
 private:
     layout_factory() = default;
@@ -82,9 +99,9 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using layout_pointer = layout_factory::pointer;
+    using layout_pointer = typename layout_factory<graph>::pointer;
     using topology_pointer = topology_factory::pointer;
-    using descriptor = layout_factory::descriptor;
+    using descriptor = typename layout_factory<graph>::descriptor;
     using slot_type = signal::slot_type;
     using connection = boost::signals2::connection;
 
@@ -127,7 +144,7 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using layout_pointer = layout_factory::pointer;
+    using layout_pointer = typename layout_factory<graph>::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = topology_factory::descriptor;
     using scale_type = topology_factory::scale_type;
@@ -173,9 +190,9 @@ public:
     using graph = architecture::graph;
     using weight_map = architecture::weight_map;
     using command_history = utility::command_history;
-    using layout_pointer = layout_factory::pointer;
+    using layout_pointer = typename layout_factory<graph>::pointer;
     using topology_pointer = topology_factory::pointer;
-    using layout_descriptor = layout_factory::descriptor;
+    using layout_descriptor = typename layout_factory<graph>::descriptor;
     using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
     using slot_type = signal::slot_type;

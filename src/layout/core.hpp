@@ -62,7 +62,7 @@ public:
     }
 
 private:
-    using layout_pointer = detail::layout_factory::pointer;
+    using layout_pointer = typename detail::layout_factory<graph>::pointer;
     using topology_pointer = detail::topology_factory::pointer;
 
     layout_signal m_layout_signal;
