@@ -88,16 +88,17 @@ private:
  * Update Layout Use Case                                  *
  ***********************************************************/
 
+template <typename Graph, typename WeightMap>
 class update_layout_command;
 
+template <typename Graph, typename WeightMap>
 class update_layout_service
 {
-    using signal =
-        boost::signals2::signal<void(const layout<architecture::graph>&)>;
+    using signal = boost::signals2::signal<void(const layout<Graph>&)>;
 
 public:
-    using graph = architecture::graph;
-    using weight_map = architecture::weight_map;
+    using graph = Graph;
+    using weight_map = WeightMap;
     using command_history = utility::command_history;
     using layout_pointer = typename layout_factory<graph>::pointer;
     using topology_pointer = topology_factory::pointer;
@@ -109,20 +110,109 @@ public:
                           const graph& g,
                           weight_map edge_weight,
                           layout_pointer& layout,
-                          const topology_pointer& space);
+                          const topology_pointer& space)
+        : m_cmds(cmds),
+          m_g{g},
+          m_edge_weight{edge_weight},
+          m_layout{layout},
+          m_space{space}
+    {
+        assert(layout);
+        assert(space);
+    }
 
-    void operator()(descriptor desc);
+    void operator()(descriptor desc)
+    {
+        m_cmds.execute(
+            std::make_unique<update_layout_command<graph, weight_map>>(
+                m_signal,
+                std::move(desc),
+                m_g,
+                m_edge_weight,
+                m_layout,
+                m_space));
+    }
 
     auto connect(const slot_type& f) -> connection
     {
         return m_signal.connect(f);
     }
 
-    friend class update_layout_command;
+    friend class update_layout_command<graph, weight_map>;
 
 private:
     signal m_signal;
     command_history& m_cmds;
+    const graph& m_g;
+    weight_map m_edge_weight;
+    layout_pointer& m_layout;
+    const topology_pointer& m_space;
+};
+
+template <typename Graph, typename WeightMap>
+class update_layout_command : public utility::command
+{
+public:
+    using graph = Graph;
+    using weight_map = WeightMap;
+    using signal = typename update_layout_service<graph, weight_map>::signal;
+    using command_history = utility::command_history;
+    using layout_pointer = typename layout_factory<graph>::pointer;
+    using topology_pointer = topology_factory::pointer;
+    using descriptor = typename layout_factory<graph>::descriptor;
+
+    update_layout_command(signal& s,
+                          descriptor desc,
+                          const graph& g,
+                          weight_map edge_weight,
+                          layout_pointer& layout,
+                          const topology_pointer& space)
+        : m_signal{s},
+          m_desc{desc},
+          m_prev_desc{layout->desc()},
+          m_g{g},
+          m_edge_weight{edge_weight},
+          m_layout{layout},
+          m_space{space}
+    {}
+
+    virtual ~update_layout_command() override = default;
+
+    virtual void execute() override
+    {
+        if (m_desc != m_layout->desc())
+            change_layout(m_desc);
+    }
+
+    virtual void undo() override
+    {
+        if (m_prev_desc != m_layout->desc())
+            change_layout(m_prev_desc);
+    }
+
+    virtual void redo() override { execute(); }
+
+    virtual auto clone() const -> std::unique_ptr<command> override
+    {
+        return std::make_unique<update_layout_command>(*this);
+    }
+
+private:
+    void change_layout(const descriptor& desc)
+    {
+        m_layout = layout_factory<graph>::make_layout(
+            desc, m_g, *m_space, m_edge_weight);
+
+        BOOST_LOG_TRIVIAL(info) << "layout changed to: " << desc;
+
+        m_signal(*m_layout);
+    }
+
+    signal& m_signal;
+
+    descriptor m_desc;
+    descriptor m_prev_desc;
+
     const graph& m_g;
     weight_map m_edge_weight;
     layout_pointer& m_layout;

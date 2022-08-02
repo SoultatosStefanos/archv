@@ -1,11 +1,7 @@
 #include "core.hpp"
 
 #include "cube.hpp"
-#include "gursoy_atun_layout.hpp"
 #include "sphere.hpp"
-
-#include <boost/log/trivial.hpp>
-#include <cassert>
 
 namespace layout::detail
 {
@@ -31,113 +27,6 @@ auto topology_factory::make_topology(const descriptor& desc, scale_type scale)
         assert(false);
         return nullptr;
     }
-}
-
-/***********************************************************
- * Update Layout Use Case                                  *
- ***********************************************************/
-
-class update_layout_command : public utility::command
-{
-public:
-    using signal = update_layout_service::signal;
-    using graph = update_layout_service::graph;
-    using weight_map = update_layout_service::weight_map;
-    using command_history = update_layout_service::command_history;
-    using layout_pointer = update_layout_service::layout_pointer;
-    using topology_pointer = update_layout_service::topology_pointer;
-    using descriptor = update_layout_service::descriptor;
-
-    update_layout_command(signal& s,
-                          descriptor desc,
-                          const graph& g,
-                          weight_map edge_weight,
-                          layout_pointer& layout,
-                          const topology_pointer& space);
-
-    virtual ~update_layout_command() override = default;
-
-    virtual void execute() override;
-    virtual void undo() override;
-    virtual void redo() override { execute(); }
-
-    virtual auto clone() const -> std::unique_ptr<command> override;
-
-private:
-    void change_layout(const descriptor& desc);
-
-    signal& m_signal;
-
-    descriptor m_desc;
-    descriptor m_prev_desc;
-
-    const graph& m_g;
-    weight_map m_edge_weight;
-    layout_pointer& m_layout;
-    const topology_pointer& m_space;
-};
-
-update_layout_command::update_layout_command(signal& s,
-                                             descriptor desc,
-                                             const graph& g,
-                                             weight_map edge_weight,
-                                             layout_pointer& layout,
-                                             const topology_pointer& space)
-    : m_signal{s},
-      m_desc{desc},
-      m_prev_desc{layout->desc()},
-      m_g{g},
-      m_edge_weight{edge_weight},
-      m_layout{layout},
-      m_space{space}
-{}
-
-void update_layout_command::execute()
-{
-    if (m_desc != m_layout->desc())
-        change_layout(m_desc);
-}
-
-void update_layout_command::undo()
-{
-    if (m_prev_desc != m_layout->desc())
-        change_layout(m_prev_desc);
-}
-
-void update_layout_command::change_layout(const descriptor& desc)
-{
-    m_layout =
-        layout_factory<graph>::make_layout(desc, m_g, *m_space, m_edge_weight);
-
-    BOOST_LOG_TRIVIAL(info) << "layout changed to: " << desc;
-
-    m_signal(*m_layout);
-}
-
-auto update_layout_command::clone() const -> std::unique_ptr<command>
-{
-    return std::make_unique<update_layout_command>(*this);
-}
-
-update_layout_service::update_layout_service(command_history& cmds,
-                                             const graph& g,
-                                             weight_map edge_weight,
-                                             layout_pointer& layout,
-                                             const topology_pointer& space)
-    : m_cmds(cmds),
-      m_g{g},
-      m_edge_weight{edge_weight},
-      m_layout{layout},
-      m_space{space}
-{
-    assert(layout);
-    assert(space);
-}
-
-void update_layout_service::operator()(descriptor desc)
-{
-    m_cmds.execute(std::make_unique<update_layout_command>(
-        m_signal, std::move(desc), m_g, m_edge_weight, m_layout, m_space));
 }
 
 /***********************************************************
