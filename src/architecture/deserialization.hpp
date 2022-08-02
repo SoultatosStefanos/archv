@@ -48,8 +48,12 @@ using json_value_info = boost::error_info<struct tage_json_value, Json::Value>;
 
 auto deserialize_symbols(const Json::Value& root) -> symbol_table;
 
+// Keeps track of each vertex desciptor by structure id.
+using vertex_id_cache =
+    std::unordered_map<graph::vertex_bundled, graph::vertex_descriptor>;
+
 auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
-    -> std::pair<graph, vertex_table>;
+    -> std::pair<graph, vertex_id_cache>;
 
 } // namespace architecture
 

@@ -9,7 +9,6 @@
 #include "topology.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
 
 namespace layout
