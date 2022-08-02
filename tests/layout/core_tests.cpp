@@ -27,12 +27,13 @@ protected:
         cmds = std::make_unique<command_history>();
         g = std::make_unique<graph>();
 
-        sys = std::make_unique<core>(*cmds,
-                                     *g,
-                                     weight_map([](auto) { return 1; }),
-                                     initial_layout_type,
-                                     initial_topology_type,
-                                     initial_topology_scale);
+        sys = std::make_unique<core<graph, weight_map>>(
+            *cmds,
+            *g,
+            weight_map([](auto) { return 1; }),
+            initial_layout_type,
+            initial_topology_type,
+            initial_topology_scale);
     }
 
     static constexpr auto initial_layout_type = "Gursoy Atun";
@@ -42,7 +43,7 @@ protected:
     std::unique_ptr<command_history> cmds;
     std::unique_ptr<graph> g;
 
-    std::unique_ptr<core> sys;
+    std::unique_ptr<core<graph, weight_map>> sys;
 };
 
 TEST_F(a_layout_core,
