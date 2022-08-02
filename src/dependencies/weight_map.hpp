@@ -1,4 +1,4 @@
-// Contains a function for creating a managed architecture graph weight map.
+// Contains a function for creating a dynamic managed graph weight map.
 // Soultatos Stefanos 2022
 
 #ifndef DEPENDENCIES_WEIGHT_MAP_HPP
@@ -40,8 +40,9 @@ namespace detail
 
 } // namespace detail
 
+// A runtime managed edge-weight property map from a weight repository.
 template <typename Graph, typename DependencyMap>
-using weight_map = boost::function_property_map<
+using dynamic_weight_map = boost::function_property_map<
     detail::weight_dispatcher<Graph, DependencyMap>,
     typename boost::graph_traits<Graph>::edge_descriptor,
     weight_repo::weight>;
@@ -62,9 +63,9 @@ inline auto make_dynamic_weight_map(const weight_repo& repo,
                   typename boost::property_traits<DependencyMap>::value_type,
                   weight_repo::dependency_type>);
 
-    using weight_map = weight_map<Graph, DependencyMap>;
+    using dynamic_weight_map = dynamic_weight_map<Graph, DependencyMap>;
 
-    return weight_map(
+    return dynamic_weight_map(
         detail::weight_dispatcher<Graph, DependencyMap>(repo, edge_dependency));
 }
 
