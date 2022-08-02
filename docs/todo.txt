@@ -93,4 +93,22 @@ TODOS
 
 	Make demo with responsive GUI and a feature
 
+02 / 08 / 2022
+
+	Application specific OgreBites::InputListener (fullscreen/exit/pause etc)
+
+	Move OgreBites::Cameraman somewhere at input/ ?
+
+	Make GUI package
+
+	Make scene package
+
+	Fix cursor alignment issues with MYGUI (SDL_ShowCursor() = bandaid)
+
+	Make GUI popup
+
+	Freeze + zoomout scene when opening GUI
+
+	Logging with GUI
+
 
