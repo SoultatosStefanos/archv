@@ -24,3 +24,5 @@ IncludeBlocks: Regroup
 IndentRequires: false
 
 UseTab: Never
+
+FixNamespaceComments: true

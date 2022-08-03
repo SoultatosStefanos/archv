@@ -114,8 +114,7 @@
 
 	+ [x] Write logs to archv.log file switch file every now and then
 
+	+ [n] Application specific input listener (fullscreen/exit/pause etc)
+
 	+ [ ] Make GUI popup
 
-	+ [ ] Freeze cameraman on popup menu
-
-	+ [ ] Application specific input listener (fullscreen/exit/pause etc)
