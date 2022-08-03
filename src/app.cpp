@@ -152,7 +152,7 @@ void app::setup_gui()
 
 void app::setup_input()
 {
-    SDL_ShowCursor(false); // Ciao cursor alignment issues.
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     m_cameraman = std::make_unique< CameraMan >(m_cam_node);
     m_gui_input_listener = std::make_unique< input::gui_input_listener >();

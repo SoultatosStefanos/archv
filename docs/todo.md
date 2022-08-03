@@ -110,8 +110,12 @@
 
 # 03 / 08 / 2022
 
-	+ [ ] Fix cursor alignment issues with MYGUI
+	+ [x] Fix cursor alignment issues with MYGUI
+
+	+ [ ] Write logs to archv.log file switch file every now and then
 
 	+ [ ] Make GUI popup
+
+	+ [ ] Freeze cameraman on popup menu
 
 	+ [ ] Application specific input listener (fullscreen/exit/pause etc)
