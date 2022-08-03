@@ -116,5 +116,6 @@
 
 	+ [n] Application specific input listener (fullscreen/exit/pause etc)
 
-	+ [ ] Make GUI popup
+	+ [x] Introduce states
 
+	+ [ ] Make GUI popup
