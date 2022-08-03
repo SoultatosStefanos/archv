@@ -22,6 +22,8 @@ auto state_machine::get_active_state() const -> state*
 void state_machine::start(state* s)
 {
     assert(s);
+    assert(!has_active_state());
+
     push_state_frame(s);
 }
 
