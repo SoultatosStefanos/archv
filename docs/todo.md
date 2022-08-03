@@ -112,7 +112,7 @@
 
 	+ [x] Fix cursor alignment issues with MYGUI
 
-	+ [ ] Write logs to archv.log file switch file every now and then
+	+ [x] Write logs to archv.log file switch file every now and then
 
 	+ [ ] Make GUI popup
 

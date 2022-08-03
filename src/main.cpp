@@ -6,7 +6,10 @@
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
+#include <boost/log/sinks.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
 #include <cstdlib>
 #include <filesystem>
 #include <string_view>
@@ -17,10 +20,19 @@ static void init_logging()
 {
     namespace logging = boost::log;
 
+    logging::add_file_log(
+        logging::keywords::file_name = "archv%N.log",
+        logging::keywords::rotation_size = 10 * 1024 * 1024, // 10 MiB.
+        logging::keywords::format = "[%TimeStamp%] [%Severity%]   %Message%");
+
 #ifdef NDEBUG
     logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::info);
+#else
+    logging::core::get()->set_filter(
+        logging::trivial::severity >= logging::trivial::debug);
 #endif
+    logging::add_common_attributes();
 }
 
 auto main(int argc, char const* argv[]) -> int
