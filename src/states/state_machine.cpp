@@ -2,6 +2,7 @@
 
 #include "state.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace states
@@ -60,6 +61,8 @@ void state_machine::push_state_frame(state_frame s)
     s->enter();
     m_state_stack.push(s);
 
+    BOOST_LOG_TRIVIAL(debug) << "entered new state";
+
     assert(has_active_state());
 }
 
@@ -70,6 +73,8 @@ void state_machine::pop_state_frame()
 
     m_state_stack.top()->exit();
     m_state_stack.pop();
+
+    BOOST_LOG_TRIVIAL(debug) << "exited active state";
 }
 
 } // namespace states
