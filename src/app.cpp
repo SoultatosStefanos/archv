@@ -2,6 +2,7 @@
 
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Ogre.h>
+#include <SDL2/SDL_mouse.h>
 #include <cassert>
 #include <memory>
 
@@ -151,9 +152,13 @@ void app::setup_gui()
 
 void app::setup_input()
 {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
     m_cameraman = std::make_unique< CameraMan >(m_cam_node);
+    m_gui_input_listener = std::make_unique< input::gui_input_listener >();
 
     addInputListener(m_cameraman.get());
+    addInputListener(m_gui_input_listener.get());
     addInputListener(this);
 }
 
@@ -179,8 +184,10 @@ void app::shutdown_input()
 {
     removeInputListener(this);
     removeInputListener(m_cameraman.get());
+    removeInputListener(m_gui_input_listener.get());
 
     m_cameraman.reset();
+    m_gui_input_listener.reset();
 }
 
 void app::shutdown_gui()

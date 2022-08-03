@@ -1,12 +1,7 @@
-set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	input
-	layout
-	utility
+set(FILES
+	gui_input_listener.cpp
 )
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

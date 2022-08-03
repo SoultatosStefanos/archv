@@ -5,6 +5,7 @@
 #define APP_HPP
 
 #include "architecture/all.hpp"
+#include "input/gui_input_listener.hpp"
 #include "layout/all.hpp"
 #include "utility/all.hpp"
 
@@ -73,6 +74,8 @@ private:
 
     std::unique_ptr< MyGUI::Gui > m_gui;
     std::unique_ptr< MyGUI::OgrePlatform > m_platform;
+
+    std::unique_ptr< input::gui_input_listener > m_gui_input_listener;
 };
 
 #endif // APP_HPP
