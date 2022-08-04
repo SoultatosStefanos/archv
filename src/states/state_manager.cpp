@@ -3,7 +3,6 @@
 #include "state.hpp"
 #include "state_machine.hpp"
 
-#include <OGRE/Ogre.h>
 #include <cassert>
 
 namespace states
@@ -23,19 +22,11 @@ auto state_manager::get_initial_state() const -> state*
     return m_state_map.at(initial_state_type).get();
 }
 
-void state_manager::prepare_state(state_type, Ogre::Root&, state_machine&)
+void state_manager::deregister_state(state_type type)
 {
-    // TODO
+    m_state_map.erase(type);
 }
 
-void state_manager::prepare_all_states(Ogre::Root& root, state_machine& sm)
-{
-    prepare_state(state_type::intro, root, sm);
-    prepare_state(state_type::menu, root, sm);
-    prepare_state(state_type::running, root, sm);
-    prepare_state(state_type::paused, root, sm);
-}
-
-void state_manager::reset_all_states() { m_state_map.clear(); }
+void state_manager::clear_all_states() { m_state_map.clear(); }
 
 } // namespace states

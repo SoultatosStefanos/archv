@@ -7,12 +7,8 @@
 
 #include <concepts>
 #include <memory>
+#include <string>
 #include <unordered_map>
-
-namespace Ogre
-{
-class Root;
-}
 
 namespace states
 {
@@ -34,23 +30,22 @@ public:
     auto get_state(state_type type) const -> state*;
     auto get_initial_state() const -> state*;
 
-    void prepare_state(state_type type, Ogre::Root& root, state_machine& sm);
-    void prepare_all_states(Ogre::Root& root, state_machine& sm);
+    template < typename State, typename... Args >
+    requires std::derived_from< State, state >
+    void register_state(state_type type, Args&&... args)
+    {
+        if (!m_state_map.contains(type))
+            m_state_map[type]
+                = std::make_unique< State >(std::forward< Args >(args)...);
+    }
 
-    void reset_all_states();
+    void deregister_state(state_type type);
+
+    void clear_all_states();
 
 private:
     using state_map
         = std::unordered_map< state_type, std::unique_ptr< state > >;
-
-    template < typename State >
-    requires std::derived_from< State, state >
-        && std::constructible_from< State, Ogre::Root&, state_machine& >
-    void store_state(state_type type, Ogre::Root& root, state_machine& sm)
-    {
-        if (!m_state_map.contains(type))
-            m_state_map[type] = std::make_unique< State >(root, sm);
-    }
 
     state_map m_state_map;
 };
