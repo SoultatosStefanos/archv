@@ -1,4 +1,4 @@
-// Contains a class responsible for drawing entities during the
+// Contains a class responsible for drawing the entities and scene during the
 // visualization/running/rendering state of the application.
 // Soultatos Stefanos 2022
 

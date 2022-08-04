@@ -178,14 +178,30 @@ auto rendering_state::keyPressed(const KeyboardEvent& e) -> bool
     assert(m_cameraman);
     m_cameraman->keyPressed(e);
 
+    // FIXME
+
     assert(m_machine.get_active_state() == this);
 
     static constexpr auto paused_key { 'p' };
+    static constexpr auto quit_key { SDLK_ESCAPE };
 
-    if (e.keysym.sym == paused_key)
+    const auto pressed_key = e.keysym.sym;
+
+    switch (pressed_key)
+    {
+    case paused_key:
         m_machine.transition_to(m_paused_state);
+        assert(m_machine.get_active_state() == m_paused_state);
+        break;
 
-    assert(m_machine.get_active_state() == m_paused_state);
+    case quit_key:
+        m_machine.fallback();
+        m_root.queueEndRendering();
+        break;
+
+    default:
+        break;
+    }
 
     return true;
 }
