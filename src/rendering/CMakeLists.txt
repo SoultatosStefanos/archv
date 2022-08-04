@@ -1,6 +1,5 @@
 set(FILES
-	state_event_dispatcher.cpp
-	state_machine.cpp
+	rendering_state.cpp
 )
 set(SUBDIRECTORIES)
 

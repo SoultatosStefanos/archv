@@ -1,0 +1,265 @@
+#include "rendering_state.hpp"
+
+#include "states/state_machine.hpp"
+
+#include <OGRE/Bites/OgreCameraMan.h>
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreEntity.h>
+#include <OGRE/OgreLight.h>
+#include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
+#include <boost/log/trivial.hpp>
+#include <cassert>
+
+using namespace Ogre;
+using namespace OgreBites;
+
+namespace rendering
+{
+
+rendering_state::rendering_state(
+    vertices ids,
+    Root& root,
+    RenderWindow& window,
+    states::state_machine& machine,
+    states::state* paused_state)
+: m_ids { std::move(ids) }
+, m_root { root }
+, m_window { window }
+, m_machine { machine }
+, m_paused_state { paused_state }
+{
+    assert(m_paused_state);
+}
+
+/***********************************************************
+ * Setup                                                   *
+ ***********************************************************/
+
+void rendering_state::enter()
+{
+    setup_scene();
+    setup_lighting();
+    setup_camera();
+    setup_entities();
+    setup_input();
+}
+
+void rendering_state::setup_scene()
+{
+    m_scene = m_root.createSceneManager();
+    assert(m_scene);
+
+    RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
+}
+
+void rendering_state::setup_lighting()
+{
+    m_scene->setAmbientLight(ColourValue(0.5, 0.5, 0.5)); // TODO Config
+
+    m_light = m_scene->createLight();
+    assert(m_light);
+
+    m_light_node = m_scene->getRootSceneNode()->createChildSceneNode();
+    assert(m_light_node);
+    m_light_node->attachObject(m_light);
+    m_light_node->setPosition(20, 80, 50); // TODO Config
+}
+
+void rendering_state::setup_camera()
+{
+    m_cam = m_scene->createCamera("camera");
+    assert(m_cam);
+    m_cam->setNearClipDistance(5);   // TODO Config
+    m_cam->setAutoAspectRatio(true); // TODO Config
+
+    m_cam_node = m_scene->getRootSceneNode()->createChildSceneNode();
+    assert(m_cam_node);
+    m_cam_node->attachObject(m_cam);
+    m_cam_node->setPosition(0, 0, 140); // TODO Config
+
+    m_window.addViewport(m_cam);
+}
+
+void rendering_state::setup_entities()
+{
+    for (const auto& id : m_ids)
+    {
+        auto* entity = m_scene->createEntity("ogrehead.mesh"); // TODO Config
+        auto* node = m_scene->getRootSceneNode()->createChildSceneNode(id);
+        node->attachObject(entity);
+        node->setScale(0.15, 0.15, 0.15); // TODO Config
+    }
+}
+
+void rendering_state::setup_input()
+{
+    m_cameraman = std::make_unique< CameraMan >(m_cam_node);
+}
+
+/***********************************************************
+ * Shutdown                                                *
+ ***********************************************************/
+
+void rendering_state::exit()
+{
+    shutdown_input();
+    shutdown_entities();
+    shutdown_camera();
+    shutdown_lighting();
+    shutdown_scene();
+}
+
+void rendering_state::shutdown_input() { m_cameraman.reset(); }
+
+void rendering_state::shutdown_entities()
+{
+    for (const auto& id : m_ids)
+        m_scene->getRootSceneNode()->removeAndDestroyChild(id);
+
+    m_scene->destroyEntity("ogrehead.mesh"); // TODO Config
+}
+
+void rendering_state::shutdown_camera()
+{
+    m_window.removeViewport(0);
+
+    m_scene->getRootSceneNode()->removeAndDestroyChild(m_cam_node);
+    m_scene->destroyCamera(m_cam);
+}
+
+void rendering_state::shutdown_lighting()
+{
+    m_scene->getRootSceneNode()->removeAndDestroyChild(m_light_node);
+    m_scene->destroyLight(m_light);
+}
+
+void rendering_state::shutdown_scene()
+{
+    RTShader::ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
+    m_root.destroySceneManager(m_scene);
+}
+
+void rendering_state::pause()
+{
+    // TODO zoom out
+}
+
+void rendering_state::resume()
+{
+    // TODO zoom in
+}
+
+void rendering_state::position_vertex(
+    const vertex_id& id, double x, double y, double z)
+{
+    assert(m_scene->hasEntity(id));
+    m_scene->getSceneNode(id)->setPosition(x, y, z);
+
+    BOOST_LOG_TRIVIAL(debug) << "vertex " << id << " drawn at (" << x << ", "
+                             << y << ", " << z << ')';
+}
+
+/***********************************************************
+ * Input                                                   *
+ ***********************************************************/
+
+void rendering_state::frameRendered(const FrameEvent& e)
+{
+    assert(m_cameraman);
+    m_cameraman->frameRendered(e);
+}
+
+auto rendering_state::keyPressed(const KeyboardEvent& e) -> bool
+{
+    assert(m_cameraman);
+    m_cameraman->keyPressed(e);
+
+    assert(m_machine.get_active_state() == this);
+
+    static constexpr auto paused_key { 'p' };
+
+    if (e.keysym.sym == paused_key)
+        m_machine.transition_to(m_paused_state);
+
+    assert(m_machine.get_active_state() == m_paused_state);
+
+    return true;
+}
+
+auto rendering_state::keyReleased(const KeyboardEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->keyReleased(e);
+}
+
+auto rendering_state::touchMoved(const TouchFingerEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->touchMoved(e);
+}
+
+auto rendering_state::touchPressed(const TouchFingerEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->touchPressed(e);
+}
+
+auto rendering_state::touchReleased(const TouchFingerEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->touchReleased(e);
+}
+
+auto rendering_state::mouseMoved(const MouseMotionEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->mouseMoved(e);
+}
+
+auto rendering_state::mouseWheelRolled(const MouseWheelEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->mouseWheelRolled(e);
+}
+
+auto rendering_state::mousePressed(const MouseButtonEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->mousePressed(e);
+}
+
+auto rendering_state::mouseReleased(const MouseButtonEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->mouseReleased(e);
+}
+
+auto rendering_state::textInput(const TextInputEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->textInput(e);
+}
+
+auto rendering_state::axisMoved(const OgreBites::AxisEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->axisMoved(e);
+}
+
+auto rendering_state::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->buttonPressed(e);
+}
+
+auto rendering_state::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
+{
+    assert(m_cameraman);
+    return m_cameraman->buttonReleased(e);
+}
+
+} // namespace rendering

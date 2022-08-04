@@ -7,6 +7,5 @@
 #include "state.hpp"
 #include "state_event_dispatcher.hpp"
 #include "state_machine.hpp"
-#include "state_manager.hpp"
 
 #endif // STATES_ALL_HPP

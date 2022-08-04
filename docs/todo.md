@@ -118,4 +118,9 @@
 
 	+ [x] Introduce states
 
+
+# 04 / 08 / 2022
+
+	+ [ ] Seperate app into states
+
 	+ [ ] Make GUI popup
