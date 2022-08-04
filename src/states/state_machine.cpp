@@ -15,7 +15,7 @@ auto state_machine::has_active_state() const -> bool
 
 auto state_machine::get_active_state() const -> state*
 {
-    assert(m_state_stack.top());
+    assert(!m_state_stack.empty());
     return m_state_stack.top();
 }
 
@@ -25,11 +25,15 @@ void state_machine::start(state* s)
     assert(!has_active_state());
 
     push_state_frame(s);
+    m_started = true;
+
+    assert(started());
 }
 
 void state_machine::commit_transition_to(state* s)
 {
     assert(s);
+    assert(started());
 
     if (has_active_state())
         pop_state_frame();
@@ -40,6 +44,7 @@ void state_machine::commit_transition_to(state* s)
 void state_machine::transition_to(state* s)
 {
     assert(s);
+    assert(started());
 
     if (has_active_state())
         get_active_state()->pause();
@@ -49,6 +54,8 @@ void state_machine::transition_to(state* s)
 
 void state_machine::fallback()
 {
+    assert(started());
+
     if (has_active_state())
         pop_state_frame();
 

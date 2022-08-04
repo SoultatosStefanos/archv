@@ -14,6 +14,8 @@ class state;
 class state_machine
 {
 public:
+    auto started() const -> bool { return m_started; }
+
     auto has_active_state() const -> bool;
     auto get_active_state() const -> state*;
 
@@ -30,6 +32,7 @@ private:
     void pop_state_frame();
 
     state_stack m_state_stack;
+    bool m_started { false };
 };
 
 } // namespace states

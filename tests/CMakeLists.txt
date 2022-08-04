@@ -15,6 +15,7 @@ set(SUBDIRECTORIES
   architecture
   dependencies
   layout
+  states
   utility
 )
 
