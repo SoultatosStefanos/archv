@@ -2,10 +2,10 @@
 // visualization/running/rendering state of the application.
 // Soultatos Stefanos 2022
 
-#ifndef RENDERING_RENDERING_STATE_HPP
-#define RENDERING_RENDERING_STATE_HPP
+#ifndef STATES_RENDERING_STATE_HPP
+#define STATES_RENDERING_STATE_HPP
 
-#include "states/state.hpp"
+#include "state.hpp"
 
 #include <OGRE/Bites/OgreInput.h>
 #include <memory>
@@ -32,10 +32,10 @@ namespace states
 class state_machine;
 }
 
-namespace rendering
+namespace states
 {
 
-class rendering_state : public states::state
+class rendering_state : public state
 {
 public:
     using vertex_id = std::string;
@@ -45,8 +45,8 @@ public:
         vertices ids,
         Ogre::Root& root,
         Ogre::RenderWindow& window,
-        states::state_machine& machine,
-        states::state* paused_state);
+        state_machine& machine,
+        state* paused_state);
 
     virtual ~rendering_state() override = default;
 
@@ -90,8 +90,8 @@ private:
 
     Ogre::Root& m_root;
     Ogre::RenderWindow& m_window;
-    states::state_machine& m_machine;
-    states::state* m_paused_state { nullptr };
+    state_machine& m_machine;
+    state* m_paused_state { nullptr };
 
     Ogre::SceneManager* m_scene { nullptr };
     Ogre::Light* m_light { nullptr };
@@ -102,6 +102,6 @@ private:
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
 };
 
-} // namespace rendering
+} // namespace states
 
-#endif // RENDERING_RENDERING_STATE_HPP
+#endif // STATES_RENDERING_STATE_HPP

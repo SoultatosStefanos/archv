@@ -1,6 +1,6 @@
 #include "rendering_state.hpp"
 
-#include "states/state_machine.hpp"
+#include "state_machine.hpp"
 
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/OgreCamera.h>
@@ -17,15 +17,15 @@
 using namespace Ogre;
 using namespace OgreBites;
 
-namespace rendering
+namespace states
 {
 
 rendering_state::rendering_state(
     vertices ids,
     Root& root,
     RenderWindow& window,
-    states::state_machine& machine,
-    states::state* paused_state)
+    state_machine& machine,
+    state* paused_state)
 : m_ids { std::move(ids) }
 , m_root { root }
 , m_window { window }
@@ -278,4 +278,4 @@ auto rendering_state::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
     return m_cameraman->buttonReleased(e);
 }
 
-} // namespace rendering
+} // namespace states

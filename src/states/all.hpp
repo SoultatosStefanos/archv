@@ -4,6 +4,7 @@
 #ifndef STATES_ALL_HPP
 #define STATES_ALL_HPP
 
+#include "rendering_state.hpp"
 #include "state.hpp"
 #include "state_event_dispatcher.hpp"
 #include "state_machine.hpp"

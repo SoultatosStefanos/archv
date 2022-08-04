@@ -5,7 +5,6 @@ set(SUBDIRECTORIES
 	dependencies
 	input
 	layout
-	rendering
 	states
 	utility
 )
