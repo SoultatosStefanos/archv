@@ -1,4 +1,5 @@
 set(FILES
+	paused_state.cpp
 	state_event_dispatcher.cpp
 	state_machine.cpp
 	rendering_state.cpp

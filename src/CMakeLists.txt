@@ -3,7 +3,6 @@ set(SUBDIRECTORIES
 	architecture
 	config
 	dependencies
-	input
 	layout
 	states
 	utility

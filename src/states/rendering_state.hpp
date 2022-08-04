@@ -46,7 +46,7 @@ public:
         Ogre::Root& root,
         Ogre::RenderWindow& window,
         state_machine& machine,
-        state* paused_state);
+        state* paused_state = nullptr);
 
     virtual ~rendering_state() override = default;
 
@@ -58,20 +58,13 @@ public:
 
     void position_vertex(const vertex_id& id, double x, double y, double z);
 
-    void frameRendered(const Ogre::FrameEvent& e);
+    void frameRendered(const Ogre::FrameEvent& e) override;
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
-    auto touchMoved(const OgreBites::TouchFingerEvent& e) -> bool override;
-    auto touchPressed(const OgreBites::TouchFingerEvent& e) -> bool override;
-    auto touchReleased(const OgreBites::TouchFingerEvent& e) -> bool override;
     auto mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool override;
     auto mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool override;
     auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool override;
     auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
-    auto textInput(const OgreBites::TextInputEvent& e) -> bool override;
-    auto axisMoved(const OgreBites::AxisEvent& e) -> bool override;
-    auto buttonPressed(const OgreBites::ButtonEvent& e) -> bool override;
-    auto buttonReleased(const OgreBites::ButtonEvent& e) -> bool override;
 
 private:
     void setup_scene();

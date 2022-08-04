@@ -32,7 +32,6 @@ rendering_state::rendering_state(
 , m_machine { machine }
 , m_paused_state { paused_state }
 {
-    assert(m_paused_state);
 }
 
 /***********************************************************
@@ -190,8 +189,11 @@ auto rendering_state::keyPressed(const KeyboardEvent& e) -> bool
     switch (pressed_key)
     {
     case paused_key:
-        m_machine.transition_to(m_paused_state);
-        assert(m_machine.get_active_state() == m_paused_state);
+        if (m_paused_state)
+        {
+            m_machine.transition_to(m_paused_state);
+            assert(m_machine.get_active_state() == m_paused_state);
+        }
         break;
 
     case quit_key:
@@ -210,24 +212,6 @@ auto rendering_state::keyReleased(const KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->keyReleased(e);
-}
-
-auto rendering_state::touchMoved(const TouchFingerEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->touchMoved(e);
-}
-
-auto rendering_state::touchPressed(const TouchFingerEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->touchPressed(e);
-}
-
-auto rendering_state::touchReleased(const TouchFingerEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->touchReleased(e);
 }
 
 auto rendering_state::mouseMoved(const MouseMotionEvent& e) -> bool
@@ -252,30 +236,6 @@ auto rendering_state::mouseReleased(const MouseButtonEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseReleased(e);
-}
-
-auto rendering_state::textInput(const TextInputEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->textInput(e);
-}
-
-auto rendering_state::axisMoved(const OgreBites::AxisEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->axisMoved(e);
-}
-
-auto rendering_state::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->buttonPressed(e);
-}
-
-auto rendering_state::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
-{
-    assert(m_cameraman);
-    return m_cameraman->buttonReleased(e);
 }
 
 } // namespace states
