@@ -32,7 +32,7 @@ public:
         state_machine& machine,
         state* menu_state = nullptr);
 
-    virtual ~paused_state() = default;
+    virtual ~paused_state() override = default;
 
     virtual void enter() override;
     virtual void exit() override;

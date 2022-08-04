@@ -8,6 +8,7 @@
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
+#include <boost/log/trivial.hpp>
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -34,12 +35,10 @@ void paused_state::enter()
     setup_gui();
 }
 
-void paused_state::setup_scene()
+void paused_state::setup_scene() // FIXME
 {
-    m_scene = m_root.createSceneManager();
+    m_scene = m_root.getSceneManager("bob");
     assert(m_scene);
-
-    RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
 }
 
 // TODO Config
@@ -52,6 +51,8 @@ void paused_state::setup_gui()
 
     auto* menu_bar = m_gui->createWidget< MyGUI::MenuBar >(
         "MenuBar", 20, 40, 1880, 60, MyGUI::Align::Default, "Main");
+
+    menu_bar->setVisible(false);
 
     auto* layout_top_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 0, 0, 270, 60, MyGUI::Align::Left, "Main");
@@ -138,6 +139,10 @@ namespace
 auto paused_state::keyPressed(const KeyboardEvent& e) -> bool
 {
     native_manager().injectKeyPress(translate(e.keysym.sym), e.type);
+
+    if (e.keysym.sym == 'p')
+        m_machine.fallback();
+
     return true;
 }
 

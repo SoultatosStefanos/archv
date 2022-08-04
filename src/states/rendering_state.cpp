@@ -47,9 +47,10 @@ void rendering_state::enter()
     setup_input();
 }
 
-void rendering_state::setup_scene()
+void rendering_state::setup_scene() // FIXME
 {
-    m_scene = m_root.createSceneManager();
+    m_scene = m_root.createSceneManager(
+        DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "bob");
     assert(m_scene);
 
     RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
@@ -87,6 +88,8 @@ void rendering_state::setup_entities()
 {
     for (const auto& id : m_ids)
     {
+        BOOST_LOG_TRIVIAL(debug) << "created entity: " << id;
+
         auto* entity = m_scene->createEntity("ogrehead.mesh"); // TODO Config
         auto* node = m_scene->getRootSceneNode()->createChildSceneNode(id);
         node->attachObject(entity);
@@ -155,7 +158,7 @@ void rendering_state::resume()
 void rendering_state::position_vertex(
     const vertex_id& id, double x, double y, double z)
 {
-    assert(m_scene->hasEntity(id));
+    assert(m_scene->hasSceneNode(id));
     m_scene->getSceneNode(id)->setPosition(x, y, z);
 
     BOOST_LOG_TRIVIAL(debug) << "vertex " << id << " drawn at (" << x << ", "
