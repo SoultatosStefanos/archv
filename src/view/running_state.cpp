@@ -150,6 +150,7 @@ void running_state::shutdown_scene()
 void running_state::pause()
 {
     SDL_ShowCursor(false);
+    m_cameraman->manualStop();
     // TODO zoom out
 }
 
