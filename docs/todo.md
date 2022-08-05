@@ -135,6 +135,6 @@
 
 		+ [x] Reimplement app
 		
-		+ [ ] Implement paused state
+		+ [x] Implement paused state
 
 	+ [ ] Make GUI popup

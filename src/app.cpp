@@ -7,6 +7,10 @@
 
 app::app(const std::string& name) : base(name) { }
 
+/***********************************************************
+ * Setup                                                   *
+ ***********************************************************/
+
 void app::setup()
 {
     base::setup();
@@ -107,6 +111,10 @@ void app::draw_layout(const layout::layout< graph >& l)
     }
 }
 
+/***********************************************************
+ * Shutdown                                                *
+ ***********************************************************/
+
 void app::shutdown()
 {
     shutdown_view();
@@ -152,7 +160,15 @@ void app::shutdown_architecture()
     BOOST_LOG_TRIVIAL(info) << "shutdown architecture";
 }
 
+/***********************************************************
+ * Main loop                                               *
+ ***********************************************************/
+
 void app::go() { getRoot()->startRendering(); }
+
+/***********************************************************
+ * Accessors                                               *
+ ***********************************************************/
 
 auto app::get_view_manager() const -> const view_manager&
 {
