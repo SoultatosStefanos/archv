@@ -20,23 +20,44 @@ paused_state::paused_state(
 {
 }
 
+paused_state::~paused_state()
+{
+    if (m_gui)
+        shutdown_gui();
+
+    shutdown_gui_platform();
+
+    shutdown_scene();
+}
+
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
 
 void paused_state::enter()
 {
-    //
+    setup_scene();
+
+    if (!m_platform)
+        setup_gui_platform();
+
     setup_gui();
+}
+
+void paused_state::setup_gui_platform()
+{
+    m_platform = new MyGUI::OgrePlatform();
+    m_platform->initialise(&m_window, m_scene);
+}
+
+void paused_state::setup_scene()
+{
+    m_scene = m_root.getSceneManager("running_state");
 }
 
 // TODO Config
 void paused_state::setup_gui()
 {
-    m_scene = m_root.getSceneManager("primary");
-
-    m_platform = new MyGUI::OgrePlatform();
-    m_platform->initialise(&m_window, m_scene);
     m_gui = new MyGUI::Gui();
     m_gui->initialise();
 
@@ -78,23 +99,25 @@ void paused_state::setup_gui()
 
 void paused_state::exit()
 {
-    //
     shutdown_gui();
+    shutdown_scene();
+}
+
+void paused_state::shutdown_gui_platform()
+{
+    m_platform->shutdown();
+    delete m_platform;
+    m_platform = nullptr;
 }
 
 void paused_state::shutdown_gui()
 {
-    m_platform->shutdown();
     m_gui->shutdown();
-
-    delete m_platform;
-    m_platform = nullptr;
-
     delete m_gui;
     m_gui = nullptr;
-
-    m_scene = nullptr;
 }
+
+void paused_state::shutdown_scene() { m_scene = nullptr; }
 
 void paused_state::pause() { }
 

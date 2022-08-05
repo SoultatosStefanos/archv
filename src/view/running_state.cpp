@@ -51,8 +51,9 @@ void running_state::enter()
 
 void running_state::setup_scene()
 {
-    m_scene = m_root.createSceneManager(
-        DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "primary");
+    const auto type = DefaultSceneManagerFactory::FACTORY_TYPE_NAME;
+    m_scene = m_root.createSceneManager(type, "running_state");
+
     assert(m_scene);
 
     RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);

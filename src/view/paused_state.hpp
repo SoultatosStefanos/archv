@@ -14,6 +14,8 @@
 #include <OGRE/OgreSceneManager.h>
 #include <memory>
 
+// NOTE: Expects a scene manager called: 'running_state' from root.
+
 namespace view
 {
 
@@ -27,7 +29,13 @@ public:
         state_machine& machine,
         state* menu_state = nullptr);
 
-    virtual ~paused_state() override = default;
+    paused_state(const paused_state&) = delete;
+    paused_state(paused_state&&) = delete;
+
+    virtual ~paused_state() override;
+
+    auto operator=(const paused_state&) -> paused_state& = delete;
+    auto operator=(paused_state&&) -> paused_state& = delete;
 
     virtual void enter() override;
     virtual void exit() override;
@@ -42,9 +50,13 @@ public:
     auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
 
 private:
+    void setup_scene();
+    void setup_gui_platform();
     void setup_gui();
 
     void shutdown_gui();
+    void shutdown_gui_platform();
+    void shutdown_scene();
 
     Ogre::Root& m_root; // Obtained from global context
     Ogre::RenderWindow& m_window;
