@@ -121,7 +121,7 @@
 
 # 05 / 08 / 2022
 
-	+ [ ] Seperate app into states
+	+ [x] Seperate app into states
 
 		+ [x] Introduce testing/utility package
 
@@ -137,4 +137,15 @@
 		
 		+ [x] Implement paused state
 
-	+ [ ] Make GUI popup
+	+ [x] Make GUI popup
+
+
+# 06 / 08 / 2022
+
+	+ [ ] Zoom out on running state pause
+
+	+ [ ] Finish GUI Mockup
+
+	+ [ ] Interactive app with GUI Mockup
+
+	+ [ ] Introduce configs for the views
