@@ -7,25 +7,16 @@
 
 #include "state.hpp"
 
+#include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreInput.h>
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreLight.h>
+#include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
 #include <memory>
 #include <vector>
-
-namespace Ogre
-{
-class Root;
-class RenderWindow;
-class SceneManager;
-class Light;
-class SceneNode;
-class Camera;
-class SceneNode;
-} // namespace Ogre
-
-namespace OgreBites
-{
-class CameraMan;
-}
 
 namespace view
 {
@@ -40,7 +31,6 @@ public:
 
     running_state(
         vertices ids,
-        Ogre::Root& root,
         Ogre::RenderWindow& window,
         state_machine& machine,
         state* paused_state = nullptr);
@@ -78,7 +68,7 @@ private:
 
     vertices m_ids;
 
-    Ogre::Root& m_root;
+    Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;
     state_machine& m_machine;
     state* m_paused_state { nullptr };

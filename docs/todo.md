@@ -131,7 +131,7 @@
 
 		+ [x] Implement allfwd.hpp files at each package
 
-		+ [ ] Implement running state
+		+ [x] Implement running state
 
 		+ [ ] Reimplement app
 		

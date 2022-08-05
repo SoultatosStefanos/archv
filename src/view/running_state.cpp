@@ -23,12 +23,11 @@ namespace view
 
 running_state::running_state(
     vertices ids,
-    Root& root,
     RenderWindow& window,
     state_machine& machine,
     state* paused_state)
 : m_ids { std::move(ids) }
-, m_root { root }
+, m_root { Root::getSingleton() }
 , m_window { window }
 , m_machine { machine }
 , m_paused_state { paused_state }
@@ -50,11 +49,10 @@ void running_state::enter()
 
 void running_state::setup_scene() // FIXME
 {
-    m_scene = m_root.createSceneManager(
-        DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "bob");
+    m_scene = m_root.createSceneManager();
     assert(m_scene);
 
-    RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
+    RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
 }
 
 void running_state::setup_lighting()
