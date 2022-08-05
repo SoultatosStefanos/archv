@@ -12,6 +12,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
+#include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
 
@@ -48,9 +49,10 @@ void running_state::enter()
     setup_input();
 }
 
-void running_state::setup_scene() // FIXME
+void running_state::setup_scene()
 {
-    m_scene = m_root.createSceneManager();
+    m_scene = m_root.createSceneManager(
+        DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "primary");
     assert(m_scene);
 
     RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
@@ -147,11 +149,13 @@ void running_state::shutdown_scene()
 
 void running_state::pause()
 {
+    SDL_ShowCursor(false);
     // TODO zoom out
 }
 
 void running_state::resume()
 {
+    SDL_ShowCursor(true);
     // TODO zoom in
 }
 
