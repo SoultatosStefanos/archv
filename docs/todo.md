@@ -129,4 +129,8 @@
 
 		+ [ ] Implement allfwd.hpp files at each package
 
+		+ [ ] Implement running state
+
+		+ [ ] Implement paused state
+
 	+ [ ] Make GUI popup
