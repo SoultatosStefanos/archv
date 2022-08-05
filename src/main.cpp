@@ -1,7 +1,4 @@
 #include "app.hpp"
-#include "architecture/all.hpp"
-#include "config/all.hpp"
-#include "utility/all.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
@@ -12,10 +9,6 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <cstdlib>
-#include <filesystem>
-#include <string_view>
-
-// NOTE: Demo currently
 
 static void init_logging()
 {
@@ -37,31 +30,15 @@ static void init_logging()
 #endif
 }
 
-auto main(int argc, char const* argv[]) -> int
+auto main() -> int
 {
-    using namespace architecture;
-    using namespace config;
-    using namespace utility;
-
     try
     {
-        if (argc != 2)
-        {
-            std::cout << "usage: `./<exec> <json file path>`\n";
-
-            return EXIT_FAILURE;
-        }
-
         init_logging();
 
-        const auto st = deserialize_symbols(json_archive::get().at(argv[1]));
-        const auto [g, vertex_cache]
-            = deserialize_dependencies(json_archive::get().at(argv[1]), st);
-
-        app archv { g };
-
+        app archv;
         archv.initApp();
-        archv.getRoot()->startRendering();
+        archv.go();
         archv.closeApp();
 
         return EXIT_SUCCESS;

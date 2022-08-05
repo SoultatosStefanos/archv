@@ -133,7 +133,7 @@
 
 		+ [x] Implement running state
 
-		+ [ ] Reimplement app
+		+ [x] Reimplement app
 		
 		+ [ ] Implement paused state
 

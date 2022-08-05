@@ -6,20 +6,13 @@
 
 #include "state.hpp"
 
+#include <MYGUI/MyGUI.h>
+#include <MYGUI/MyGUI_OgrePlatform.h>
+#include <OGRE/Bites/OgreCameraMan.h>
+#include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreSceneManager.h>
 #include <memory>
-
-namespace Ogre
-{
-class SceneManager;
-class Root;
-class RenderWindow;
-} // namespace Ogre
-
-namespace MyGUI
-{
-class Gui;
-class OgrePlatform;
-} // namespace MyGUI
 
 namespace view
 {
@@ -30,7 +23,6 @@ class paused_state : public state
 {
 public:
     paused_state(
-        Ogre::Root& root,
         Ogre::RenderWindow& window,
         state_machine& machine,
         state* menu_state = nullptr);
@@ -56,7 +48,7 @@ private:
     void shutdown_gui();
     void shutdown_scene();
 
-    Ogre::Root& m_root;
+    Ogre::Root& m_root; // Obtained from global context
     Ogre::RenderWindow& m_window;
     state_machine& m_machine;
     state* m_menu_state { nullptr };

@@ -20,8 +20,8 @@ public:
     {
     }
 
-    auto get_symbol_table() const -> const symbol_table&;
-    auto get_graph() const -> const graph&;
+    auto get_symbol_table() const -> const symbol_table& { return m_st; }
+    auto get_graph() const -> const graph& { return m_g; }
 
 private:
     symbol_table m_st;

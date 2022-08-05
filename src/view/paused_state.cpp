@@ -2,11 +2,6 @@
 
 #include "state_machine.hpp"
 
-#include <MYGUI/MyGUI.h>
-#include <MYGUI/MyGUI_OgrePlatform.h>
-#include <OGRE/OgreRenderWindow.h>
-#include <OGRE/OgreRoot.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
 #include <boost/log/trivial.hpp>
 
@@ -17,8 +12,8 @@ namespace view
 {
 
 paused_state::paused_state(
-    Root& root, RenderWindow& window, state_machine& machine, state* menu_state)
-: m_root { root }
+    RenderWindow& window, state_machine& machine, state* menu_state)
+: m_root { Root::getSingleton() }
 , m_window { window }
 , m_machine { machine }
 , m_menu_state { menu_state }
