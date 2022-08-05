@@ -9,30 +9,12 @@
  * Subsystems                                              *
  ***********************************************************/
 
-namespace view
-{
-class core;
-}; // namespace view
-
-namespace undo_redo
-{
-class command_history;
-} // namespace undo_redo
-
-namespace architecture
-{
-class core;
-} // namespace architecture
-
-namespace dependencies
-{
-class core;
-} // namespace dependencies
-
-namespace layout
-{
-class core;
-} // namespace layout
+#include "architecture/allfwd.hpp"
+#include "config/allfwd.hpp"
+#include "dependencies/allfwd.hpp"
+#include "layout/allfwd.hpp"
+#include "undo_redo/allfwd.hpp"
+#include "view/allfwd.hpp"
 
 /***********************************************************
  * Application                                             *

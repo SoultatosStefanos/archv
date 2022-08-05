@@ -129,7 +129,7 @@
 
 		+ [x] Introduce manager class for architecture package
 
-		+ [ ] Implement allfwd.hpp files at each package
+		+ [x] Implement allfwd.hpp files at each package
 
 		+ [ ] Implement running state
 
