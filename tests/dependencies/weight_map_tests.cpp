@@ -1,7 +1,7 @@
 #include "dependencies/weight_map.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/property_map/function_property_map.hpp>
+#include <boost/graph/property_maps/constant_property_map.hpp>
 #include <functional>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -25,14 +25,8 @@ protected:
         boost::no_property >;
 
     using dependency_type = weight_repo::dependency_type;
-
-    using dependency_function
-        = std::function< dependency_type(graph::edge_descriptor) >;
-
-    using dependency_map = boost::function_property_map<
-        dependency_function,
-        graph::edge_descriptor,
-        dependency_type >;
+    using dependency_map = boost::
+        constant_property_map< graph::edge_descriptor, dependency_type >;
 
     void SetUp() override
     {
@@ -56,7 +50,7 @@ protected:
 TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 {
     const auto weight_map = make_dynamic_weight_map< graph >(
-        *repo, dependency_map([](auto) { return let_dependency; }));
+        *repo, dependency_map(let_dependency));
 
     ASSERT_EQ(boost::get(weight_map, edge), let_weight);
 }
@@ -64,7 +58,7 @@ TEST_F(a_dynamic_weight_map, resolves_weights_in_respect_to_the_repo)
 TEST_F(a_dynamic_weight_map, reflects_changes_of_the_repo)
 {
     const auto weight_map = make_dynamic_weight_map< graph >(
-        *repo, dependency_map([](auto) { return let_dependency; }));
+        *repo, dependency_map(let_dependency));
 
     EXPECT_EQ(boost::get(weight_map, edge), let_weight);
 

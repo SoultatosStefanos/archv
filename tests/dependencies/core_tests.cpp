@@ -1,5 +1,5 @@
 #include "dependencies/core.hpp"
-#include "utility/all.hpp"
+#include "undo_redo/all.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -7,7 +7,7 @@
 
 using namespace testing;
 using namespace dependencies;
-using namespace utility;
+using namespace undo_redo;
 
 namespace
 {

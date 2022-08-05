@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_CORE_PRIVATE_HPP
 #define DEPENDENCIES_CORE_PRIVATE_HPP
 
-#include "utility/undo_redo.hpp"
+#include "undo_redo/all.hpp"
 #include "weight_repo.hpp"
 
 #include <boost/signals2/signal.hpp>
@@ -24,7 +24,7 @@ class update_weight_service
         const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using dependency_type = weight_repo::dependency_type;
     using weight = weight_repo::weight;
     using slot_type = signal::slot_type;
@@ -61,7 +61,7 @@ class revert_to_defaults_service
         const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using slot_type = signal::slot_type;
     using connection = boost::signals2::connection;
 

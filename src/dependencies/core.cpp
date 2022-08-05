@@ -9,7 +9,7 @@ namespace dependencies::detail
  * Update Weight Use Case                                  *
  ***********************************************************/
 
-class update_weight_command : public utility::command
+class update_weight_command : public undo_redo::command
 {
 public:
     using signal = update_weight_service::signal;
@@ -89,7 +89,7 @@ void update_weight_service::operator()(
  * Revert To Defaults Use Case                             *
  ***********************************************************/
 
-class revert_to_defaults_command : public utility::command
+class revert_to_defaults_command : public undo_redo::command
 {
 public:
     using signal = revert_to_defaults_service::signal;

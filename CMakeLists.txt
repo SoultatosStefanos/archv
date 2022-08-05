@@ -21,8 +21,8 @@ foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
 
-# make the src/ directory visible for include directives
-target_include_directories(${PROJECT_NAME} PUBLIC src)
+# make the src/ directory visible for include directives, as well as the tests/ (for testing utilites)
+target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)

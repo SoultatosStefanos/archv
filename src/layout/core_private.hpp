@@ -7,7 +7,7 @@
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "topology.hpp"
-#include "utility/undo_redo.hpp"
+#include "undo_redo/all.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/signals2/signal.hpp>
@@ -100,7 +100,7 @@ class update_layout_service
 public:
     using graph = Graph;
     using weight_map = WeightMap;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = typename layout_factory< graph >::descriptor;
@@ -152,13 +152,13 @@ private:
 };
 
 template < typename Graph, typename WeightMap >
-class update_layout_command : public utility::command
+class update_layout_command : public undo_redo::command
 {
 public:
     using graph = Graph;
     using weight_map = WeightMap;
     using signal = typename update_layout_service< graph, weight_map >::signal;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = typename layout_factory< graph >::descriptor;
@@ -239,7 +239,7 @@ class update_topology_service
 public:
     using graph = Graph;
     using weight_map = WeightMap;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = topology_factory::descriptor;
@@ -290,14 +290,14 @@ private:
 };
 
 template < typename Graph, typename WeightMap >
-class update_topology_command : public utility::command
+class update_topology_command : public undo_redo::command
 {
 public:
     using graph = Graph;
     using weight_map = WeightMap;
     using signal =
         typename update_topology_service< graph, weight_map >::signal;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = topology_factory::descriptor;
@@ -387,7 +387,7 @@ class revert_to_defaults_service
 public:
     using graph = Graph;
     using weight_map = WeightMap;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using layout_descriptor = typename layout_factory< graph >::descriptor;
@@ -447,14 +447,14 @@ private:
 };
 
 template < typename Graph, typename WeightMap >
-class revert_to_defaults_command : public utility::command
+class revert_to_defaults_command : public undo_redo::command
 {
 public:
     using graph = Graph;
     using weight_map = WeightMap;
     using signal =
         typename revert_to_defaults_service< Graph, WeightMap >::signal;
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using layout_descriptor = typename layout_factory< graph >::descriptor;

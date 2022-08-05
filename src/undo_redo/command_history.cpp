@@ -1,8 +1,10 @@
-#include "undo_redo.hpp"
+#include "command_history.hpp"
+
+#include "command.hpp"
 
 #include <cassert>
 
-namespace utility
+namespace undo_redo
 {
 
 void command_history::execute(std::unique_ptr< command > cmd)
@@ -35,4 +37,4 @@ void command_history::redo()
         (*m_i++)->redo();
 }
 
-} // namespace utility
+} // namespace undo_redo

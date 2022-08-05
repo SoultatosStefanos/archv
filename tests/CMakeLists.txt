@@ -15,6 +15,7 @@ set(SUBDIRECTORIES
   architecture
   dependencies
   layout
+  undo_redo
   utility
   view
 )
