@@ -119,8 +119,14 @@
 	+ [x] Introduce states
 
 
-# 04 / 08 / 2022
+# 05 / 08 / 2022
 
 	+ [ ] Seperate app into states
+
+		+ [ ] Introduce undo/redo package
+
+		+ [ ] Introduce manager class for architecture package
+
+		+ [ ] Implement allfwd.hpp files at each package
 
 	+ [ ] Make GUI popup
