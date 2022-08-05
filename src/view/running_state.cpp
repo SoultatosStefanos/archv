@@ -32,6 +32,7 @@ running_state::running_state(
 , m_machine { machine }
 , m_paused_state { paused_state }
 {
+    assert(m_paused_state);
 }
 
 /***********************************************************
@@ -191,11 +192,8 @@ auto running_state::keyPressed(const KeyboardEvent& e) -> bool
     switch (pressed_key)
     {
     case paused_key:
-        if (m_paused_state)
-        {
-            m_machine.transition_to(m_paused_state);
-            assert(m_machine.get_active_state() == m_paused_state);
-        }
+        m_machine.transition_to(m_paused_state);
+        assert(m_machine.get_active_state() == m_paused_state);
         break;
 
     case quit_key:

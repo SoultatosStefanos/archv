@@ -22,8 +22,8 @@ public:
 
     explicit core(vertices ids, Ogre::RenderWindow& win)
     : m_dispatcher { m_sm }
-    , m_running { std::move(ids), win, m_sm }
     , m_paused { win, m_sm }
+    , m_running { std::move(ids), win, m_sm, &m_paused }
     {
         m_sm.start(&m_running);
     }
@@ -40,8 +40,8 @@ public:
 private:
     state_machine m_sm;
     state_event_dispatcher m_dispatcher;
-    running_state m_running;
     paused_state m_paused;
+    running_state m_running;
 };
 
 } // namespace view

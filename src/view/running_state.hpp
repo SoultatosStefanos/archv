@@ -33,7 +33,7 @@ public:
         vertices ids,
         Ogre::RenderWindow& window,
         state_machine& machine,
-        state* paused_state = nullptr);
+        state* paused_state);
 
     virtual ~running_state() override = default;
 

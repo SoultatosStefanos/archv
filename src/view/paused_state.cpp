@@ -26,8 +26,8 @@ paused_state::paused_state(
 
 void paused_state::enter()
 {
-    setup_scene();
-    setup_gui();
+    // setup_scene();
+    // setup_gui();
 }
 
 void paused_state::setup_scene() // FIXME
@@ -84,8 +84,8 @@ void paused_state::setup_gui()
 
 void paused_state::exit()
 {
-    shutdown_gui();
-    shutdown_scene();
+    // shutdown_gui();
+    // shutdown_scene();
 }
 
 void paused_state::shutdown_gui()
@@ -133,7 +133,7 @@ namespace
 
 auto paused_state::keyPressed(const KeyboardEvent& e) -> bool
 {
-    native_manager().injectKeyPress(translate(e.keysym.sym), e.type);
+    //  native_manager().injectKeyPress(translate(e.keysym.sym), e.type);
 
     if (e.keysym.sym == 'p')
         m_machine.fallback();
@@ -143,25 +143,25 @@ auto paused_state::keyPressed(const KeyboardEvent& e) -> bool
 
 auto paused_state::keyReleased(const KeyboardEvent& e) -> bool
 {
-    native_manager().injectKeyRelease(translate(e.keysym.sym));
+    //  native_manager().injectKeyRelease(translate(e.keysym.sym));
     return true;
 }
 
 auto paused_state::mouseMoved(const MouseMotionEvent& e) -> bool
 {
-    native_manager().injectMouseMove(e.x, e.y, 0); // 2D
+    //  native_manager().injectMouseMove(e.x, e.y, 0); // 2D
     return true;
 }
 
 auto paused_state::mousePressed(const MouseButtonEvent& e) -> bool
 {
-    native_manager().injectMousePress(e.x, e.y, translate(e.button));
+    //  native_manager().injectMousePress(e.x, e.y, translate(e.button));
     return true;
 }
 
 auto paused_state::mouseReleased(const MouseButtonEvent& e) -> bool
 {
-    native_manager().injectMouseRelease(e.x, e.y, translate(e.button));
+    //  native_manager().injectMouseRelease(e.x, e.y, translate(e.button));
     return true;
 }
 
