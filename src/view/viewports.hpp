@@ -1,4 +1,4 @@
-// Contains a utilities for viewport management.
+// Contains utilities for viewport management.
 // Soultatos Stefanos 2022
 
 #ifndef VIEW_VIEWPORTS_HPP

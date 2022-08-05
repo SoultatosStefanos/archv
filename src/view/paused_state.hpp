@@ -42,20 +42,18 @@ public:
     auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
 
 private:
-    void setup_scene();
     void setup_gui();
 
     void shutdown_gui();
-    void shutdown_scene();
 
     Ogre::Root& m_root; // Obtained from global context
     Ogre::RenderWindow& m_window;
     state_machine& m_machine;
     state* m_menu_state { nullptr };
 
-    Ogre::SceneManager* m_scene;
-    std::unique_ptr< MyGUI::OgrePlatform > m_platform;
-    std::unique_ptr< MyGUI::Gui > m_gui;
+    Ogre::SceneManager* m_scene { nullptr };
+    MyGUI::OgrePlatform* m_platform { nullptr };
+    MyGUI::Gui* m_gui { nullptr };
 };
 
 } // namespace view
