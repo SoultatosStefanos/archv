@@ -1,13 +1,13 @@
 // Distributes all headers from this directory.
 // Soultatos Stefanos 2022
 
-#ifndef STATES_ALL_HPP
-#define STATES_ALL_HPP
+#ifndef VIEW_ALL_HPP
+#define VIEW_ALL_HPP
 
 #include "paused_state.hpp"
-#include "rendering_state.hpp"
+#include "running_state.hpp"
 #include "state.hpp"
 #include "state_event_dispatcher.hpp"
 #include "state_machine.hpp"
 
-#endif // STATES_ALL_HPP
+#endif // VIEW_ALL_HPP

@@ -1,11 +1,11 @@
-#include "states/state.hpp"
-#include "states/state_machine.hpp"
+#include "view/state.hpp"
+#include "view/state_machine.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 
-using namespace states;
+using namespace view;
 using namespace testing;
 
 namespace

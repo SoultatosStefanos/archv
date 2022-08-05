@@ -3,7 +3,7 @@
 #include "state.hpp"
 #include "state_machine.hpp"
 
-namespace states
+namespace view
 {
 
 state_event_dispatcher::state_event_dispatcher(const state_machine& sm)
@@ -110,4 +110,4 @@ auto state_event_dispatcher::axisMoved(const OgreBites::AxisEvent& e) -> bool
                                    : false;
 }
 
-} // namespace states
+} // namespace view

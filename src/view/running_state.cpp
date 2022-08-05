@@ -1,6 +1,7 @@
-#include "rendering_state.hpp"
+#include "running_state.hpp"
 
 #include "state_machine.hpp"
+#include "viewports.hpp"
 
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/OgreCamera.h>
@@ -17,10 +18,10 @@
 using namespace Ogre;
 using namespace OgreBites;
 
-namespace states
+namespace view
 {
 
-rendering_state::rendering_state(
+running_state::running_state(
     vertices ids,
     Root& root,
     RenderWindow& window,
@@ -38,7 +39,7 @@ rendering_state::rendering_state(
  * Setup                                                   *
  ***********************************************************/
 
-void rendering_state::enter()
+void running_state::enter()
 {
     setup_scene();
     setup_lighting();
@@ -47,7 +48,7 @@ void rendering_state::enter()
     setup_input();
 }
 
-void rendering_state::setup_scene() // FIXME
+void running_state::setup_scene() // FIXME
 {
     m_scene = m_root.createSceneManager(
         DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "bob");
@@ -56,7 +57,7 @@ void rendering_state::setup_scene() // FIXME
     RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
 }
 
-void rendering_state::setup_lighting()
+void running_state::setup_lighting()
 {
     m_scene->setAmbientLight(ColourValue(0.5, 0.5, 0.5)); // TODO Config
 
@@ -69,7 +70,7 @@ void rendering_state::setup_lighting()
     m_light_node->setPosition(20, 80, 50); // TODO Config
 }
 
-void rendering_state::setup_camera()
+void running_state::setup_camera()
 {
     m_cam = m_scene->createCamera("camera");
     assert(m_cam);
@@ -81,10 +82,10 @@ void rendering_state::setup_camera()
     m_cam_node->attachObject(m_cam);
     m_cam_node->setPosition(0, 0, 140); // TODO Config
 
-    m_window.addViewport(m_cam);
+    change_viewport(&m_window, m_cam);
 }
 
-void rendering_state::setup_entities()
+void running_state::setup_entities()
 {
     for (const auto& id : m_ids)
     {
@@ -97,7 +98,7 @@ void rendering_state::setup_entities()
     }
 }
 
-void rendering_state::setup_input()
+void running_state::setup_input()
 {
     m_cameraman = std::make_unique< CameraMan >(m_cam_node);
 }
@@ -106,7 +107,7 @@ void rendering_state::setup_input()
  * Shutdown                                                *
  ***********************************************************/
 
-void rendering_state::exit()
+void running_state::exit()
 {
     shutdown_input();
     shutdown_entities();
@@ -115,9 +116,9 @@ void rendering_state::exit()
     shutdown_scene();
 }
 
-void rendering_state::shutdown_input() { m_cameraman.reset(); }
+void running_state::shutdown_input() { m_cameraman.reset(); }
 
-void rendering_state::shutdown_entities()
+void running_state::shutdown_entities()
 {
     for (const auto& id : m_ids)
         m_scene->getRootSceneNode()->removeAndDestroyChild(id);
@@ -125,7 +126,7 @@ void rendering_state::shutdown_entities()
     m_scene->destroyEntity("ogrehead.mesh"); // TODO Config
 }
 
-void rendering_state::shutdown_camera()
+void running_state::shutdown_camera()
 {
     m_window.removeViewport(0);
 
@@ -133,29 +134,29 @@ void rendering_state::shutdown_camera()
     m_scene->destroyCamera(m_cam);
 }
 
-void rendering_state::shutdown_lighting()
+void running_state::shutdown_lighting()
 {
     m_scene->getRootSceneNode()->removeAndDestroyChild(m_light_node);
     m_scene->destroyLight(m_light);
 }
 
-void rendering_state::shutdown_scene()
+void running_state::shutdown_scene()
 {
     RTShader::ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
     m_root.destroySceneManager(m_scene);
 }
 
-void rendering_state::pause()
+void running_state::pause()
 {
     // TODO zoom out
 }
 
-void rendering_state::resume()
+void running_state::resume()
 {
     // TODO zoom in
 }
 
-void rendering_state::position_vertex(
+void running_state::position_vertex(
     const vertex_id& id, double x, double y, double z)
 {
     assert(m_scene->hasSceneNode(id));
@@ -169,13 +170,13 @@ void rendering_state::position_vertex(
  * Input                                                   *
  ***********************************************************/
 
-void rendering_state::frameRendered(const FrameEvent& e)
+void running_state::frameRendered(const FrameEvent& e)
 {
     assert(m_cameraman);
     m_cameraman->frameRendered(e);
 }
 
-auto rendering_state::keyPressed(const KeyboardEvent& e) -> bool
+auto running_state::keyPressed(const KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
     m_cameraman->keyPressed(e);
@@ -211,34 +212,34 @@ auto rendering_state::keyPressed(const KeyboardEvent& e) -> bool
     return true;
 }
 
-auto rendering_state::keyReleased(const KeyboardEvent& e) -> bool
+auto running_state::keyReleased(const KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->keyReleased(e);
 }
 
-auto rendering_state::mouseMoved(const MouseMotionEvent& e) -> bool
+auto running_state::mouseMoved(const MouseMotionEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseMoved(e);
 }
 
-auto rendering_state::mouseWheelRolled(const MouseWheelEvent& e) -> bool
+auto running_state::mouseWheelRolled(const MouseWheelEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseWheelRolled(e);
 }
 
-auto rendering_state::mousePressed(const MouseButtonEvent& e) -> bool
+auto running_state::mousePressed(const MouseButtonEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mousePressed(e);
 }
 
-auto rendering_state::mouseReleased(const MouseButtonEvent& e) -> bool
+auto running_state::mouseReleased(const MouseButtonEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseReleased(e);
 }
 
-} // namespace states
+} // namespace view

@@ -4,8 +4,8 @@ set(SUBDIRECTORIES
 	config
 	dependencies
 	layout
-	states
 	utility
+	view
 )
 
 foreach(VAR ${SUBDIRECTORIES})

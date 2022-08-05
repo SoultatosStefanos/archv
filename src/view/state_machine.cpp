@@ -5,7 +5,7 @@
 #include <boost/log/trivial.hpp>
 #include <cassert>
 
-namespace states
+namespace view
 {
 
 auto state_machine::has_active_state() const -> bool
@@ -86,4 +86,4 @@ void state_machine::pop_state_frame()
     BOOST_LOG_TRIVIAL(debug) << "exited active state";
 }
 
-} // namespace states
+} // namespace view

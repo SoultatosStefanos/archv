@@ -15,8 +15,8 @@ set(SUBDIRECTORIES
   architecture
   dependencies
   layout
-  states
   utility
+  view
 )
 
 foreach(VAR ${SUBDIRECTORIES})

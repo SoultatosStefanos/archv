@@ -13,7 +13,7 @@
 using namespace Ogre;
 using namespace OgreBites;
 
-namespace states
+namespace view
 {
 
 paused_state::paused_state(
@@ -170,4 +170,4 @@ auto paused_state::mouseReleased(const MouseButtonEvent& e) -> bool
     return true;
 }
 
-} // namespace states
+} // namespace view

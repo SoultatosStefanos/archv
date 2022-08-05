@@ -1,6 +1,9 @@
 // Contains the application paused state that provides the UI.
 // Soultatos Stefanos 2022
 
+#ifndef VIEW_PAUSED_STATE_HPP
+#define VIEW_PAUSED_STATE_HPP
+
 #include "state.hpp"
 
 #include <memory>
@@ -18,7 +21,7 @@ class Gui;
 class OgrePlatform;
 } // namespace MyGUI
 
-namespace states
+namespace view
 {
 
 class state_machine;
@@ -63,4 +66,6 @@ private:
     std::unique_ptr< MyGUI::Gui > m_gui;
 };
 
-} // namespace states
+} // namespace view
+
+#endif // VIEW_PAUSED_STATE_HPP

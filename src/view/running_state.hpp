@@ -2,8 +2,8 @@
 // visualization/running/rendering state of the application.
 // Soultatos Stefanos 2022
 
-#ifndef STATES_RENDERING_STATE_HPP
-#define STATES_RENDERING_STATE_HPP
+#ifndef VIEW_RUNNING_STATE_HPP
+#define VIEW_RUNNING_STATE_HPP
 
 #include "state.hpp"
 
@@ -27,28 +27,25 @@ namespace OgreBites
 class CameraMan;
 }
 
-namespace states
+namespace view
 {
+
 class state_machine;
-}
 
-namespace states
-{
-
-class rendering_state : public state
+class running_state : public state
 {
 public:
     using vertex_id = std::string;
     using vertices = std::vector< vertex_id >;
 
-    rendering_state(
+    running_state(
         vertices ids,
         Ogre::Root& root,
         Ogre::RenderWindow& window,
         state_machine& machine,
         state* paused_state = nullptr);
 
-    virtual ~rendering_state() override = default;
+    virtual ~running_state() override = default;
 
     virtual void enter() override;
     virtual void exit() override;
@@ -95,6 +92,6 @@ private:
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
 };
 
-} // namespace states
+} // namespace view
 
-#endif // STATES_RENDERING_STATE_HPP
+#endif // VIEW_RUNNING_STATE_HPP
