@@ -118,4 +118,34 @@
 
 	+ [x] Introduce states
 
-	+ [ ] Make GUI popup
+
+# 05 / 08 / 2022
+
+	+ [x] Seperate app into states
+
+		+ [x] Introduce testing/utility package
+
+		+ [x] Introduce undo/redo package
+
+		+ [x] Introduce manager class for architecture package
+
+		+ [x] Implement allfwd.hpp files at each package
+
+		+ [x] Implement running state
+
+		+ [x] Reimplement app
+		
+		+ [x] Implement paused state
+
+	+ [x] Make GUI popup
+
+
+# 06 / 08 / 2022
+
+	+ [ ] Zoom out on running state pause
+
+	+ [ ] Finish GUI Mockup
+
+	+ [ ] Interactive app with GUI Mockup
+
+	+ [ ] Introduce configs for the views

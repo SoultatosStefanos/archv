@@ -1,7 +1,5 @@
 set(FILES
-	state_event_dispatcher.cpp
-	state_machine.cpp
-	state_manager.cpp
+	command_history.cpp
 )
 set(SUBDIRECTORIES)
 

@@ -1,6 +1,4 @@
-set(FILES
-	undo_redo_tests.cpp
-)
+set(FILES)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})

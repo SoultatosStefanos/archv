@@ -1,165 +1,114 @@
 #include "app.hpp"
 
-#include <OGRE/Bites/OgreCameraMan.h>
-#include <OGRE/Ogre.h>
-#include <SDL2/SDL_mouse.h>
-#include <cassert>
-#include <memory>
+#include <OGRE/OgreRoot.h>
+#include <boost/log/trivial.hpp>
 
-using namespace Ogre;
-using namespace OgreBites;
+// TODO Get hardcoded data from config
+
+app::app(const std::string& name) : base(name) { }
 
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
 
-app::app(const architecture::graph& g) : ApplicationContext("ARCHV"), m_g { g }
-{
-}
-
 void app::setup()
 {
-    ApplicationContext::setup();
-    setup_scene();
-    setup_lighting();
-    setup_camera();
-    setup_resources();
-    setup_entities();
-    setup_command_history();
+    base::setup();
+    setup_architecture();
+    setup_commands();
+    setup_dependencies();
     setup_layout();
-    setup_gui();
-    setup_input();
+    setup_view();
 }
 
-void app::setup_scene()
+void app::setup_architecture()
 {
-    m_scene = getRoot()->createSceneManager();
-    assert(m_scene);
+    const auto& root = config::json_archive::get().at(ARCHV_INPUT_GRAPH_PATH);
 
-    RTShader::ShaderGenerator::getSingletonPtr()->addSceneManager(m_scene);
+    auto st = architecture::deserialize_symbols(root);
+    auto [g, _] = architecture::deserialize_dependencies(root, st);
+
+    m_arch_manager
+        = std::make_unique< arch_manager >(std::move(st), std::move(g));
+
+    BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
 
-void app::setup_lighting()
+void app::setup_commands()
 {
-    m_scene->setAmbientLight(ColourValue(0.5, 0.5, 0.5)); // TODO Config
+    m_cmd_manager = std::make_unique< command_manager >();
 
-    m_light = m_scene->createLight();
-    assert(m_light);
-
-    m_light_node = m_scene->getRootSceneNode()->createChildSceneNode();
-    assert(m_light_node);
-    m_light_node->attachObject(m_light);
-    m_light_node->setPosition(20, 80, 50); // TODO Config
+    BOOST_LOG_TRIVIAL(info) << "setup commands";
 }
 
-void app::setup_camera()
+void app::setup_dependencies()
 {
-    m_cam = m_scene->createCamera("camera");
-    assert(m_cam);
-    m_cam->setNearClipDistance(5);   // TODO Config
-    m_cam->setAutoAspectRatio(true); // TODO Config
+    auto deps_table
+        = dependencies::core::hash_table { { "Inherit", 1 },
+                                           { "Friend", 1 },
+                                           { "NestedClass", 1 },
+                                           { "ClassField", 1 },
+                                           { "ClassTemplateParent", 1 },
+                                           { "ClassTemplateArg", 1 },
+                                           { "MethodReturn", 1 },
+                                           { "MethodArg", 1 },
+                                           { "MethodDefinition", 1 },
+                                           { "MemberExpr", 1 },
+                                           { "MethodTemplateArgs", 1 } };
 
-    m_cam_node = m_scene->getRootSceneNode()->createChildSceneNode();
-    assert(m_cam_node);
-    m_cam_node->attachObject(m_cam);
-    m_cam_node->setPosition(0, 0, 140); // TODO Config
+    m_deps_manager = std::make_unique< deps_manager >(
+        get_cmd_manager(), std::move(deps_table));
 
-    getRenderWindow()->addViewport(m_cam);
-}
-
-void app::setup_resources()
-{
-    ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-}
-
-void app::setup_entities()
-{
-    for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
-    {
-        auto* entity = m_scene->createEntity("ogrehead.mesh"); // TODO Config
-        auto* node = m_scene->getRootSceneNode()->createChildSceneNode(m_g[v]);
-        node->attachObject(entity);
-        node->setScale(0.15, 0.15, 0.15); // TODO Config
-    }
-}
-
-void app::setup_command_history()
-{
-    m_cmds = std::make_unique< utility::command_history >();
+    BOOST_LOG_TRIVIAL(info) << "setup dependencies";
 }
 
 void app::setup_layout()
 {
-    m_layout_sys = std::make_unique< layout::core< graph, weight_map > >(
-        *m_cmds,
-        m_g,
-        weight_map([](auto) { return 1; }),
-        "Gursoy Atun", // TODO Config
-        "Sphere",      // TODO Config
-        100);          // TODO Config
+    auto weight_map = dependencies::make_dynamic_weight_map< graph >(
+        get_deps_manager().get_repo(),
+        boost::get(boost::edge_bundle, get_arch_manager().get_graph()));
 
-    const auto draw_nodes = [this](const auto& l)
+    m_layout_manager = std::make_unique< layout_manager >(
+        get_cmd_manager(),
+        get_arch_manager().get_graph(),
+        std::move(weight_map),
+        "Gursoy Atun",
+        "Sphere",
+        100);
+
+    BOOST_LOG_TRIVIAL(info) << "setup layout";
+}
+
+void app::setup_view()
+{
+    auto view_model = view_manager::vertices();
+    std::transform(
+        boost::vertices(get_arch_manager().get_graph()).first,
+        boost::vertices(get_arch_manager().get_graph()).second,
+        std::back_inserter(view_model),
+        [this](auto v) { return get_arch_manager().get_graph()[v]; });
+
+    m_view_manager = std::make_unique< view_manager >(
+        std::move(view_model), *getRenderWindow());
+
+    get_layout_manager().connect_to_layout([this](const auto& l)
+                                           { draw_layout(l); });
+
+    draw_layout(get_layout_manager().get_layout());
+
+    addInputListener(&get_view_manager().get_event_dispatcher());
+
+    BOOST_LOG_TRIVIAL(info) << "setup view";
+}
+
+void app::draw_layout(const layout::layout< graph >& l)
+{
+    for (auto v : boost::make_iterator_range(
+             boost::vertices(get_arch_manager().get_graph())))
     {
-        for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
-            m_scene->getSceneNode(m_g[v])->setPosition(l.x(v), l.y(v), l.z(v));
-    };
-
-    m_layout_sys->connect_to_layout([draw_nodes](const auto& l)
-                                    { draw_nodes(l); });
-
-    draw_nodes(m_layout_sys->get_layout());
-}
-
-// TODO Config
-void app::setup_gui()
-{
-    m_platform = std::make_unique< MyGUI::OgrePlatform >();
-    m_platform->initialise(getRenderWindow(), m_scene);
-    m_gui = std::make_unique< MyGUI::Gui >();
-    m_gui->initialise();
-
-    auto* menu_bar = m_gui->createWidget< MyGUI::MenuBar >(
-        "MenuBar", 20, 40, 1880, 60, MyGUI::Align::Default, "Main");
-
-    auto* layout_top_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 0, 0, 270, 60, MyGUI::Align::Left, "Main");
-    layout_top_btn->setCaption("Layout / Topology");
-
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 270, 10, 40, 40, MyGUI::Align::Left, "Main");
-
-    auto* clustering_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 270, 0, 270, 60, MyGUI::Align::Left, "Main");
-    clustering_btn->setCaption("Clustering");
-
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 540, 10, 40, 40, MyGUI::Align::Left, "Main");
-
-    auto* code_inspection_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 540, 0, 270, 60, MyGUI::Align::Left, "Main");
-    code_inspection_btn->setCaption("Code Inspection");
-
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 810, 10, 40, 40, MyGUI::Align::Left, "Main");
-
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 1630, 10, 40, 40, MyGUI::Align::Left, "Main");
-
-    auto* settings_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 1630, 0, 270, 60, MyGUI::Align::Left, "Main");
-    settings_btn->setCaption("Settings");
-}
-
-void app::setup_input()
-{
-    SDL_SetRelativeMouseMode(SDL_TRUE);
-
-    m_cameraman = std::make_unique< CameraMan >(m_cam_node);
-    m_gui_input_listener = std::make_unique< input::gui_input_listener >();
-
-    addInputListener(m_cameraman.get());
-    addInputListener(m_gui_input_listener.get());
-    addInputListener(this);
+        get_view_manager().get_running_state().position_vertex(
+            get_arch_manager().get_graph()[v], l.x(v), l.y(v), l.z(v));
+    }
 }
 
 /***********************************************************
@@ -168,95 +117,115 @@ void app::setup_input()
 
 void app::shutdown()
 {
-    shutdown_input();
-    shutdown_gui();
+    shutdown_view();
     shutdown_layout();
-    shutdown_command_history();
-    shutdown_entities();
-    shutdown_resources();
-    shutdown_camera();
-    shutdown_lighting();
-    shutdown_scene();
-    ApplicationContext::shutdown();
+    shutdown_dependencies();
+    shutdown_commands();
+    shutdown_architecture();
+    base::shutdown();
 }
 
-void app::shutdown_input()
+void app::shutdown_view()
 {
-    removeInputListener(this);
-    removeInputListener(m_cameraman.get());
-    removeInputListener(m_gui_input_listener.get());
+    m_view_manager.reset();
 
-    m_cameraman.reset();
-    m_gui_input_listener.reset();
+    BOOST_LOG_TRIVIAL(info) << "shutdown view";
 }
 
-void app::shutdown_gui()
+void app::shutdown_layout()
 {
-    m_platform->shutdown();
-    m_gui->shutdown();
+    m_layout_manager.reset();
 
-    m_platform.reset();
-    m_gui.reset();
+    BOOST_LOG_TRIVIAL(info) << "shutdown layout";
 }
 
-void app::shutdown_layout() { m_layout_sys.reset(); }
-
-void app::shutdown_command_history() { m_cmds.reset(); }
-
-void app::shutdown_entities()
+void app::shutdown_dependencies()
 {
-    for (auto v : boost::make_iterator_range(boost::vertices(m_g)))
-        m_scene->getRootSceneNode()->removeAndDestroyChild(m_g[v]);
+    m_deps_manager.reset();
 
-    m_scene->destroyEntity("ogrehead.mesh"); // TODO Config
+    BOOST_LOG_TRIVIAL(info) << "shutdown dependencies";
 }
 
-void app::shutdown_resources()
+void app::shutdown_commands()
 {
-    ResourceGroupManager::getSingleton().shutdownAll();
+    m_cmd_manager.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown commands";
 }
 
-void app::shutdown_camera()
+void app::shutdown_architecture()
 {
-    getRenderWindow()->removeViewport(0);
+    m_arch_manager.reset();
 
-    m_scene->getRootSceneNode()->removeAndDestroyChild(m_cam_node);
-    m_scene->destroyCamera(m_cam);
-}
-
-void app::shutdown_lighting()
-{
-    m_scene->getRootSceneNode()->removeAndDestroyChild(m_light_node);
-    m_scene->destroyLight(m_light);
-}
-
-void app::shutdown_scene()
-{
-    RTShader::ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
-    getRoot()->destroySceneManager(m_scene);
+    BOOST_LOG_TRIVIAL(info) << "shutdown architecture";
 }
 
 /***********************************************************
- * Input                                                   *
+ * Main loop                                               *
  ***********************************************************/
 
-// TODO Config
-auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
-{
-    if (e.keysym.sym == SDLK_ESCAPE)
-        getRoot()->queueEndRendering();
-#if (1) // FIXME
-    else if (e.keysym.sym == SDLK_LEFT)
-        m_cmds->undo();
-    else if (e.keysym.sym == SDLK_RIGHT)
-        m_cmds->redo();
-    else if (e.keysym.sym == 'o')
-        m_layout_sys->update_topology("Sphere", 80);
-    else if (e.keysym.sym == 'p')
-        m_layout_sys->update_topology("Cube", 80);
-    else if (e.keysym.sym == 'r')
-        m_layout_sys->revert_to_defaults();
-#endif
+void app::go() { getRoot()->startRendering(); }
 
-    return true;
+/***********************************************************
+ * Accessors                                               *
+ ***********************************************************/
+
+auto app::get_view_manager() const -> const view_manager&
+{
+    assert(m_view_manager);
+    return *m_view_manager;
+}
+
+auto app::get_view_manager() -> view_manager&
+{
+    assert(m_view_manager);
+    return *m_view_manager;
+}
+
+auto app::get_cmd_manager() const -> const command_manager&
+{
+    assert(m_cmd_manager);
+    return *m_cmd_manager;
+}
+
+auto app::get_cmd_manager() -> command_manager&
+{
+    assert(m_cmd_manager);
+    return *m_cmd_manager;
+}
+
+auto app::get_arch_manager() const -> const arch_manager&
+{
+    assert(m_arch_manager);
+    return *m_arch_manager;
+}
+
+auto app::get_arch_manager() -> arch_manager&
+{
+    assert(m_arch_manager);
+    return *m_arch_manager;
+}
+
+auto app::get_deps_manager() const -> const deps_manager&
+{
+    assert(m_deps_manager);
+    return *m_deps_manager;
+}
+
+auto app::get_deps_manager() -> deps_manager&
+{
+    assert(m_deps_manager);
+    return *m_deps_manager;
+}
+
+auto app::get_layout_manager() const -> const layout_manager&
+{
+    assert(m_layout_manager);
+    return *m_layout_manager;
+}
+
+auto app::get_layout_manager() -> layout_manager&
+{
+    assert(m_layout_manager);
+    return *m_layout_manager;
 }

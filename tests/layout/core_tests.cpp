@@ -1,5 +1,5 @@
 #include "layout/core.hpp"
-#include "utility/undo_redo.hpp"
+#include "undo_redo/all.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/property_map/function_property_map.hpp>
@@ -12,7 +12,7 @@ namespace lay = layout;
 
 using namespace testing;
 using namespace layout;
-using namespace utility;
+using namespace undo_redo;
 
 namespace
 {

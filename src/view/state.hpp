@@ -1,12 +1,12 @@
 // Contains an interface for an application's scene.
 // Soultatos Stefanos 2022
 
-#ifndef STATES_STATE_HPP
-#define STATES_STATE_HPP
+#ifndef VIEW_STATE_HPP
+#define VIEW_STATE_HPP
 
 #include <OGRE/Bites/OgreInput.h>
 
-namespace states
+namespace view
 {
 
 class state : public OgreBites::InputListener
@@ -27,6 +27,6 @@ public:
     virtual void resume() = 0;
 };
 
-} // namespace states
+} // namespace view
 
-#endif // STATES_STATE_HPP
+#endif // VIEW_STATE_HPP

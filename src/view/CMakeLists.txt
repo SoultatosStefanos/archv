@@ -1,12 +1,10 @@
-set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	layout
-	undo_redo
-	view
+set(FILES
+	paused_state.cpp
+	state_event_dispatcher.cpp
+	state_machine.cpp
+	running_state.cpp
 )
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

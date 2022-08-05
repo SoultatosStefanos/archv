@@ -2,12 +2,12 @@
 // current active state.
 // Soultatos Stefanos 2022
 
-#ifndef STATES_STATE_EVENT_DISPATCHER_HPP
-#define STATES_STATE_EVENT_DISPATCHER_HPP
+#ifndef VIEW_STATE_EVENT_DISPATCHER_HPP
+#define VIEW_STATE_EVENT_DISPATCHER_HPP
 
 #include <OGRE/Bites/OgreInput.h>
 
-namespace states
+namespace view
 {
 
 class state;
@@ -38,6 +38,6 @@ private:
     const state_machine& m_sm;
 };
 
-} // namespace states
+} // namespace view
 
-#endif // STATES_STATE_EVENT_DISPATCHER_HPP
+#endif // VIEW_STATE_EVENT_DISPATCHER_HPP

@@ -5,7 +5,7 @@
 #define DEPENDENCIES_CORE_HPP
 
 #include "core_private.hpp"
-#include "utility/all.hpp"
+#include "undo_redo/all.hpp"
 #include "weight_repo.hpp"
 
 #include <boost/signals2/signal.hpp>
@@ -19,7 +19,7 @@ class core
         const weight_repo::dependency_type&, weight_repo::weight) >;
 
 public:
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using dependency_type = weight_repo::dependency_type;
     using weight = weight_repo::weight;
     using hash_table = weight_repo::hash_table;

@@ -28,7 +28,7 @@ class core
     using topology_signal = boost::signals2::signal< void(const topology&) >;
 
 public:
-    using command_history = utility::command_history;
+    using command_history = undo_redo::command_history;
     using graph = Graph;
     using weight_map = WeightMap;
     using layout_slot_type = layout_signal::slot_type;
