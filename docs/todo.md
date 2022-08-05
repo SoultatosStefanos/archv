@@ -123,6 +123,8 @@
 
 	+ [ ] Seperate app into states
 
+		+ [ ] Introduce testing/utility package
+
 		+ [ ] Introduce undo/redo package
 
 		+ [ ] Introduce manager class for architecture package
