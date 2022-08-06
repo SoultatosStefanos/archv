@@ -61,66 +61,96 @@ void paused_state::setup_gui()
     m_gui = new MyGUI::Gui();
     m_gui->initialise();
 
-    auto* menu_bar = m_gui->createWidget< MyGUI::MenuBar >(
-        "MenuBar", 20, 40, 1880, 60, MyGUI::Align::Default, "Main");
+    // Menubar
 
-    auto* layout_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 0, 0, 270, 60, MyGUI::Align::Left, "Main");
-    layout_btn->setCaption("Layout / Topology");
-    layout_btn->setFontHeight(20);
+    auto* menubar = m_gui->createWidget< MyGUI::MenuBar >(
+        "MenuBar",
+        20,
+        40,
+        1880,
+        60,
+        MyGUI::Align::HStretch | MyGUI::Align::Top,
+        "Main");
 
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 270, 10, 40, 40, MyGUI::Align::Left, "Main");
+    // Layout
 
-    auto* clustering_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 270, 0, 270, 60, MyGUI::Align::Left, "Main");
-    clustering_btn->setCaption("Clustering");
-    clustering_btn->setFontHeight(20);
+    auto* layout_btn
+        = menubar->addItem("Layout / Topology", MyGUI::MenuItemType::Popup);
 
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 540, 10, 40, 40, MyGUI::Align::Left, "Main");
+    auto* p = layout_btn->createWidget< MyGUI::PopupMenu >(
+        MyGUI::WidgetStyle::Popup,
+        "PopupMenu",
+        MyGUI::IntCoord(),
+        MyGUI::Align::Default,
+        "Popup");
 
-    auto* code_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 540, 0, 270, 60, MyGUI::Align::Left, "Main");
-    code_btn->setCaption("Code Inspection");
-    code_btn->setFontHeight(20);
+    p->setPopupAccept(true);
 
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 810, 10, 40, 40, MyGUI::Align::Left, "Main");
+    auto* la = p->addItem("Layout", MyGUI::MenuItemType::Popup);
 
-    menu_bar->createWidget< MyGUI::Widget >(
-        "MenuBarSeparator", 1630, 10, 40, 40, MyGUI::Align::Left, "Main");
+    auto* p1 = la->createWidget< MyGUI::PopupMenu >(
+        MyGUI::WidgetStyle::Popup,
+        "PopupMenu",
+        MyGUI::IntCoord(),
+        MyGUI::Align::Default,
+        "Popup");
 
-    auto* settings_btn = menu_bar->createWidget< MyGUI::Button >(
-        "MenuBarButton", 1630, 0, 270, 60, MyGUI::Align::Left, "Main");
-    settings_btn->setCaption("Settings");
-    settings_btn->setFontHeight(20);
+    p1->setPopupAccept(true);
+    p1->addItem("Gursoy Atun", MyGUI::MenuItemType::Normal);
 
-    auto* popup_txt_bar = m_gui->createWidget< MyGUI::MenuBar >(
-        "PopupMenu", 0, 140, 390, 60, MyGUI::Align::Default, "Main");
-    auto* popup_txt = popup_txt_bar->createWidget< MyGUI::TextBox >(
-        "TextBox", 120, 0, 270, 60, MyGUI::Align::Top, "Main");
-    popup_txt->setCaption("Layout/Topology");
-    popup_txt->setTextAlign(MyGUI::Align::Center);
-    popup_txt->setFontHeight(24);
+    auto* tt = p->addItem("Topology", MyGUI::MenuItemType::Popup);
 
-    auto* popup_menu = m_gui->createWidget< MyGUI::MenuBar >(
-        "PopupMenu", 120, 200, 270, 500, MyGUI::Align::Default, "Main");
+    auto* p2 = tt->createWidget< MyGUI::PopupMenu >(
+        MyGUI::WidgetStyle::Popup,
+        "PopupMenu",
+        MyGUI::IntCoord(),
+        MyGUI::Align::Default,
+        "Popup");
 
-    auto* popup_btn1 = popup_menu->createWidget< MyGUI::Button >(
-        "MenuBarButton", 0, 0, 270, 40, MyGUI::Align::Top, "Main");
-    popup_btn1->setCaption("Layout Algorithm");
-    popup_btn1->setFontHeight(20);
+    p2->setPopupAccept(true);
+    p2->addItem("Cube", MyGUI::MenuItemType::Normal);
+    p2->addItem("Sphere", MyGUI::MenuItemType::Normal);
 
-    auto* popup_btn2 = popup_menu->createWidget< MyGUI::Button >(
-        "MenuBarButton", 0, 40, 270, 40, MyGUI::Align::Top, "Main");
-    popup_btn2->setCaption("Topology Type");
-    popup_btn2->setFontHeight(20);
+    auto* ts = p->addItem("Scale", MyGUI::MenuItemType::Popup);
 
-    auto* popup_btn3 = popup_menu->createWidget< MyGUI::Button >(
-        "MenuBarButton", 0, 80, 270, 40, MyGUI::Align::Top, "Main");
-    popup_btn3->setCaption("Topology Scale");
-    popup_btn3->setFontHeight(20);
+    auto* p3 = ts->createWidget< MyGUI::PopupMenu >(
+        MyGUI::WidgetStyle::Popup,
+        "PopupMenu",
+        MyGUI::IntCoord(),
+        MyGUI::Align::Default,
+        "Popup");
+
+    p3->setPopupAccept(true);
+    p3->addItem("100", MyGUI::MenuItemType::Normal);
+    p3->addItem("60", MyGUI::MenuItemType::Normal);
+    p3->addItem("80", MyGUI::MenuItemType::Normal);
+    p3->addItem("200", MyGUI::MenuItemType::Normal);
+
+    // Rest
+
+    auto* clustering_btn
+        = menubar->addItem("Clustering", MyGUI::MenuItemType::Popup);
+    auto* code_btn
+        = menubar->addItem("Code Inspection", MyGUI::MenuItemType::Popup);
+    auto* settings_btn
+        = menubar->addItem("Settings", MyGUI::MenuItemType::Popup);
+
+    auto* s1 = menubar->addItem("Seperator1", MyGUI::MenuItemType::Separator);
+    auto* s2 = menubar->addItem("Seperator2", MyGUI::MenuItemType::Separator);
+    auto* s3 = menubar->addItem("Seperator3", MyGUI::MenuItemType::Separator);
+    auto* s4 = menubar->addItem("Seperator4", MyGUI::MenuItemType::Separator);
+
+    // Coords
+
+    layout_btn->setCoord(0, 0, 270, 60);
+    clustering_btn->setCoord(270, 0, 270, 60);
+    code_btn->setCoord(540, 0, 270, 60);
+    settings_btn->setCoord(1630, 0, 270, 60);
+
+    s1->setCoord(270, 10, 40, 40);
+    s2->setCoord(540, 10, 40, 40);
+    s3->setCoord(810, 10, 40, 40);
+    s4->setCoord(1630, 10, 40, 40);
 }
 
 /***********************************************************
