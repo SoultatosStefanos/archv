@@ -64,9 +64,10 @@ void paused_state::setup_gui()
     auto* menu_bar = m_gui->createWidget< MyGUI::MenuBar >(
         "MenuBar", 20, 40, 1880, 60, MyGUI::Align::Default, "Main");
 
-    auto* layout_top_btn = menu_bar->createWidget< MyGUI::Button >(
+    auto* layout_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 0, 0, 270, 60, MyGUI::Align::Left, "Main");
-    layout_top_btn->setCaption("Layout / Topology");
+    layout_btn->setCaption("Layout / Topology");
+    layout_btn->setFontHeight(20);
 
     menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 270, 10, 40, 40, MyGUI::Align::Left, "Main");
@@ -74,13 +75,15 @@ void paused_state::setup_gui()
     auto* clustering_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 270, 0, 270, 60, MyGUI::Align::Left, "Main");
     clustering_btn->setCaption("Clustering");
+    clustering_btn->setFontHeight(20);
 
     menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 540, 10, 40, 40, MyGUI::Align::Left, "Main");
 
-    auto* code_inspection_btn = menu_bar->createWidget< MyGUI::Button >(
+    auto* code_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 540, 0, 270, 60, MyGUI::Align::Left, "Main");
-    code_inspection_btn->setCaption("Code Inspection");
+    code_btn->setCaption("Code Inspection");
+    code_btn->setFontHeight(20);
 
     menu_bar->createWidget< MyGUI::Widget >(
         "MenuBarSeparator", 810, 10, 40, 40, MyGUI::Align::Left, "Main");
@@ -91,6 +94,33 @@ void paused_state::setup_gui()
     auto* settings_btn = menu_bar->createWidget< MyGUI::Button >(
         "MenuBarButton", 1630, 0, 270, 60, MyGUI::Align::Left, "Main");
     settings_btn->setCaption("Settings");
+    settings_btn->setFontHeight(20);
+
+    auto* popup_txt_bar = m_gui->createWidget< MyGUI::MenuBar >(
+        "PopupMenu", 0, 140, 390, 60, MyGUI::Align::Default, "Main");
+    auto* popup_txt = popup_txt_bar->createWidget< MyGUI::TextBox >(
+        "TextBox", 120, 0, 270, 60, MyGUI::Align::Top, "Main");
+    popup_txt->setCaption("Layout/Topology");
+    popup_txt->setTextAlign(MyGUI::Align::Center);
+    popup_txt->setFontHeight(24);
+
+    auto* popup_menu = m_gui->createWidget< MyGUI::MenuBar >(
+        "PopupMenu", 120, 200, 270, 500, MyGUI::Align::Default, "Main");
+
+    auto* popup_btn1 = popup_menu->createWidget< MyGUI::Button >(
+        "MenuBarButton", 0, 0, 270, 40, MyGUI::Align::Top, "Main");
+    popup_btn1->setCaption("Layout Algorithm");
+    popup_btn1->setFontHeight(20);
+
+    auto* popup_btn2 = popup_menu->createWidget< MyGUI::Button >(
+        "MenuBarButton", 0, 40, 270, 40, MyGUI::Align::Top, "Main");
+    popup_btn2->setCaption("Topology Type");
+    popup_btn2->setFontHeight(20);
+
+    auto* popup_btn3 = popup_menu->createWidget< MyGUI::Button >(
+        "MenuBarButton", 0, 80, 270, 40, MyGUI::Align::Top, "Main");
+    popup_btn3->setCaption("Topology Scale");
+    popup_btn3->setFontHeight(20);
 }
 
 /***********************************************************
