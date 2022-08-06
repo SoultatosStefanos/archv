@@ -142,10 +142,12 @@
 
 # 06 / 08 / 2022
 
-	+ [ ] Zoom out on running state pause
+	+ [n] Zoom out on running state pause
 
 	+ [ ] Finish GUI Mockup
 
 	+ [ ] Interactive app with GUI Mockup
+
+	+ [ ] Progress bars, progress monitoring
 
 	+ [ ] Introduce configs for the views
