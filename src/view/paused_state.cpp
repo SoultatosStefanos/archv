@@ -172,6 +172,7 @@ void paused_state::shutdown_gui_platform()
 
 void paused_state::shutdown_gui()
 {
+    m_gui->destroyAllChildWidget();
     m_gui->shutdown();
     delete m_gui;
     m_gui = nullptr;
