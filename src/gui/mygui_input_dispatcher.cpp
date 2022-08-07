@@ -1,6 +1,7 @@
 #include "mygui_input_dispatcher.hpp"
 
 #include <MYGUI/MyGUI.h>
+#include <cassert>
 
 namespace gui
 {
@@ -9,6 +10,7 @@ namespace
 {
     inline auto native_manager() -> auto&
     {
+        assert(MyGUI::InputManager::getInstancePtr());
         return MyGUI::InputManager::getInstance();
     }
 
