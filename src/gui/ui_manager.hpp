@@ -36,7 +36,7 @@ public:
     {
         if constexpr (std::is_same_v< UI, menu_bar >)
         {
-            return get< menu_bar >(m_menu_bar);
+            return pool_ptr(m_menu_bar);
         }
     }
 
@@ -45,23 +45,30 @@ public:
     {
         if constexpr (std::is_same_v< UI, menu_bar >)
         {
-            m_menu_bar.reset();
+            destroy_ptr(m_menu_bar);
         }
-
-        component = nullptr;
     }
 
 private:
     ui_manager() = default;
     ~ui_manager() = default;
 
-    template < ui UI >
-    static auto get(std::unique_ptr< UI >& ptr) -> UI*
+    template < typename UniquePtr >
+    static auto pool_ptr(UniquePtr& ptr)
     {
+        using element_type = typename UniquePtr::element_type;
+
         if (!ptr)
-            ptr = std::make_unique< UI >();
+            ptr = std::make_unique< element_type >();
 
         return ptr.get();
+    }
+
+    template < typename UniquePtr >
+    static auto destroy_ptr(UniquePtr& ptr)
+    {
+        ptr.reset();
+        ptr = nullptr;
     }
 
     std::unique_ptr< menu_bar > m_menu_bar;
