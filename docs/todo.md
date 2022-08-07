@@ -144,9 +144,18 @@
 
 	+ [n] Zoom out on running state pause
 
+	+ [n] Finish GUI Mockup
+
+	+ [x] Interactive app with GUI Mockup
+
+
+# 07 / 08 / 2022
+
 	+ [ ] Finish GUI Mockup
 
-	+ [ ] Interactive app with GUI Mockup
+			+ [ ] Implement transitions or stick with vanilla popups
+
+			+ [ ] Split into gui classes
 
 	+ [ ] Progress bars, progress monitoring
 
