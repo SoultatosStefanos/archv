@@ -5,7 +5,7 @@
 #ifndef GUI_UI_MANAGER_HPP
 #define GUI_UI_MANAGER_HPP
 
-#include "menu_bar.hpp"
+#include "pause_menu.hpp"
 
 #include <concepts>
 #include <memory>
@@ -14,7 +14,7 @@ namespace gui
 {
 
 template < typename UI >
-concept ui = std::is_same_v< UI, menu_bar >;
+concept ui = std::is_same_v< UI, pause_menu >;
 
 class ui_manager final
 {
@@ -34,7 +34,7 @@ public:
     template < ui UI >
     auto create_ui() -> UI*
     {
-        if constexpr (std::is_same_v< UI, menu_bar >)
+        if constexpr (std::is_same_v< UI, pause_menu >)
         {
             return pool_ptr(m_menu_bar);
         }
@@ -43,7 +43,7 @@ public:
     template < ui UI >
     void destroy_ui(UI*& component)
     {
-        if constexpr (std::is_same_v< UI, menu_bar >)
+        if constexpr (std::is_same_v< UI, pause_menu >)
         {
             destroy_ptr(m_menu_bar);
         }
@@ -71,7 +71,7 @@ private:
         ptr = nullptr;
     }
 
-    std::unique_ptr< menu_bar > m_menu_bar;
+    std::unique_ptr< pause_menu > m_menu_bar;
 };
 
 } // namespace gui
