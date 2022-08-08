@@ -16,6 +16,7 @@ void mygui_manager::initialize(
     assert(win);
     assert(scene);
     assert(!is_initialized());
+    assert(win->hasViewportWithZOrder(0));
 
     m_platform = new MyGUI::OgrePlatform();
     m_gui = new MyGUI::Gui();

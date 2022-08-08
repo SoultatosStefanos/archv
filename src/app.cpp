@@ -18,6 +18,9 @@ void app::setup()
     setup_commands();
     setup_dependencies();
     setup_layout();
+    setup_view();
+
+    lay_graph(get_layout_core().get_layout());
 }
 
 void app::setup_architecture()
@@ -83,8 +86,6 @@ void app::setup_view()
 
     Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
 
-    gui::mygui_manager::get().initialize(getRenderWindow(), m_scene);
-
     m_sm = std::make_unique< state_machine >();
 
     m_input = std::make_unique< state_input_dispatcher >(*m_sm);
@@ -120,6 +121,7 @@ void app::setup_view()
 
 void app::shutdown()
 {
+    shutdown_view();
     shutdown_layout();
     shutdown_dependencies();
     shutdown_commands();
@@ -222,4 +224,35 @@ auto app::get_layout_core() -> layout_core&
 {
     assert(m_layout);
     return *m_layout;
+}
+
+auto app::get_running_state() const -> const running_state&
+{
+    assert(m_running_state);
+    return *m_running_state;
+}
+
+auto app::get_running_state() -> running_state&
+{
+    assert(m_running_state);
+    return *m_running_state;
+}
+
+auto app::get_paused_state() const -> const paused_state&
+{
+    assert(m_paused_state);
+    return *m_paused_state;
+}
+
+auto app::get_paused_state() -> paused_state&
+{
+    assert(m_paused_state);
+    return *m_paused_state;
+}
+
+void app::lay_graph(const layout::layout< graph >& l) const
+{
+    for (auto v : boost::make_iterator_range(boost::vertices(get_graph())))
+        get_running_state().get_renderer()->lay_vertex(
+            get_graph()[v], l.x(v), l.y(v), l.z(v));
 }

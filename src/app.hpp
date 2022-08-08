@@ -71,6 +71,14 @@ protected:
     auto get_layout_core() const -> const layout_core&;
     auto get_layout_core() -> layout_core&;
 
+    auto get_running_state() const -> const running_state&;
+    auto get_running_state() -> running_state&;
+
+    auto get_paused_state() const -> const paused_state&;
+    auto get_paused_state() -> paused_state&;
+
+    void lay_graph(const layout::layout< graph >& l) const;
+
 private:
     void setup_architecture();
     void setup_commands();
