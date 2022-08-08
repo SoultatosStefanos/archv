@@ -11,7 +11,11 @@
 namespace gui
 {
 
-pause_menu::pause_menu(state_machine& sm) : m_sm { sm } { }
+pause_menu::pause_menu(state_machine& sm)
+: m_sm { sm }
+, m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
+{
+}
 
 void pause_menu::enter()
 {
@@ -30,9 +34,12 @@ void pause_menu::pause() { }
 
 void pause_menu::resume() { }
 
-void pause_menu::frameRendered(const Ogre::FrameEvent&)
+auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 {
-    // Ogre::ImGuiOverlay::NewFrame();
+    Ogre::ImGuiOverlay::NewFrame();
+    ImGui::ShowDemoWindow();
+
+    return true;
 }
 
 auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
@@ -40,6 +47,55 @@ auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
     if (e.keysym.sym == 'p')
         m_sm.fallback();
 
+    m_imgui_input->keyPressed(e);
+    return true;
+}
+
+auto pause_menu::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
+{
+    m_imgui_input->keyReleased(e);
+    return true;
+}
+
+auto pause_menu::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
+{
+    m_imgui_input->mouseMoved(e);
+    return true;
+}
+
+auto pause_menu::mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool
+{
+    m_imgui_input->mouseWheelRolled(e);
+    return true;
+}
+
+auto pause_menu::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
+{
+    m_imgui_input->mousePressed(e);
+    return true;
+}
+
+auto pause_menu::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
+{
+    m_imgui_input->mouseReleased(e);
+    return true;
+}
+
+auto pause_menu::textInput(const OgreBites::TextInputEvent& e) -> bool
+{
+    m_imgui_input->textInput(e);
+    return true;
+}
+
+auto pause_menu::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
+{
+    m_imgui_input->buttonPressed(e);
+    return true;
+}
+
+auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
+{
+    m_imgui_input->buttonReleased(e);
     return true;
 }
 

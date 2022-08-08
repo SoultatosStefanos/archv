@@ -14,7 +14,8 @@ auto app::frameStarted(const Ogre::FrameEvent& evt) -> bool
 {
     base::frameStarted(evt);
 
-    Ogre::ImGuiOverlay::NewFrame();
+    if (get_state_machine().has_active_state())
+        get_state_machine().get_active_state()->frameStarted(evt);
 
     return true;
 }
