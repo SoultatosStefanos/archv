@@ -69,6 +69,7 @@ pause_menu::pause_menu(
         MyGUI::IntCoord(),
         MyGUI::Align::Default,
         "Popup");
+
     m_widgets.push_back(layout_popup);
 
     layout_popup->setPopupAccept(true);
@@ -78,7 +79,8 @@ pause_menu::pause_menu(
         auto* i = layout_popup->addItem(option, MyGUI::MenuItemType::Normal);
         m_widgets.push_back(i);
 
-        i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_layout);
+        i->eventMouseButtonClick
+            += MyGUI::newDelegate(this, &gui::pause_menu::emit_layout);
     }
 
     /***********************************************************
@@ -104,7 +106,8 @@ pause_menu::pause_menu(
         auto* i = topology_popup->addItem(option, MyGUI::MenuItemType::Normal);
         m_widgets.push_back(i);
 
-        i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_topology);
+        i->eventMouseButtonClick
+            += MyGUI::newDelegate(this, &gui::pause_menu::emit_topology);
     }
 
     /***********************************************************
@@ -131,7 +134,8 @@ pause_menu::pause_menu(
         auto* i = scale_popup->addItem(scale_str, MyGUI::MenuItemType::Normal);
         m_widgets.push_back(i);
 
-        i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_scale);
+        i->eventMouseButtonClick
+            += MyGUI::newDelegate(this, &gui::pause_menu::emit_scale);
     }
 
     /***********************************************************

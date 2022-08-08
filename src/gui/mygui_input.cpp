@@ -27,27 +27,27 @@ namespace
 
 } // namespace
 
-void mygui_dispatch(const OgreBites::KeyboardEvent& e)
+void mygui_dispatch_key_press(const OgreBites::KeyboardEvent& e)
 {
     native_manager().injectKeyPress(translate(e.keysym.sym), e.type);
 }
 
-void mygui_dispatch(const OgreBites::KeyboardEvent& e)
+void mygui_dispatch_key_release(const OgreBites::KeyboardEvent& e)
 {
     native_manager().injectKeyRelease(translate(e.keysym.sym));
 }
 
-void mygui_dispatch(const OgreBites::MouseMotionEvent& e)
+void mygui_dispatch_mouse_move(const OgreBites::MouseMotionEvent& e)
 {
     native_manager().injectMouseMove(e.x, e.y, 0); // 2D
 }
 
-void mygui_dispatch(const OgreBites::MouseButtonEvent& e)
+void mygui_dispatch_mouse_press(const OgreBites::MouseButtonEvent& e)
 {
     native_manager().injectMousePress(e.x, e.y, translate(e.button));
 }
 
-void mygui_dispatch(const OgreBites::MouseButtonEvent& e)
+void mygui_dispatch_mouse_release(const OgreBites::MouseButtonEvent& e)
 {
     native_manager().injectMouseRelease(e.x, e.y, translate(e.button));
 }

@@ -10,11 +10,11 @@
 namespace gui
 {
 
-void mygui_dispatch(const OgreBites::KeyboardEvent& e);
-void mygui_dispatch(const OgreBites::KeyboardEvent& e);
-void mygui_dispatch(const OgreBites::MouseMotionEvent& e);
-void mygui_dispatch(const OgreBites::MouseButtonEvent& e);
-void mygui_dispatch(const OgreBites::MouseButtonEvent& e);
+void mygui_dispatch_key_press(const OgreBites::KeyboardEvent& e);
+void mygui_dispatch_key_release(const OgreBites::KeyboardEvent& e);
+void mygui_dispatch_mouse_move(const OgreBites::MouseMotionEvent& e);
+void mygui_dispatch_mouse_press(const OgreBites::MouseButtonEvent& e);
+void mygui_dispatch_mouse_release(const OgreBites::MouseButtonEvent& e);
 
 } // namespace gui
 

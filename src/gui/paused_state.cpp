@@ -1,8 +1,7 @@
 #include "paused_state.hpp"
 
-#include "view/state_machine.hpp"
-
 #include "mygui_input.hpp"
+#include "view/state_machine.hpp"
 
 namespace gui
 {
@@ -34,32 +33,32 @@ void paused_state::resume() { }
 
 auto paused_state::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
-    mygui_dispatch(e);
+    mygui_dispatch_key_press(e);
     // TODO commit transition to main menu
     return true;
 }
 
 auto paused_state::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 {
-    mygui_dispatch(e);
+    mygui_dispatch_key_release(e);
     return true;
 }
 
 auto paused_state::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
 {
-    mygui_dispatch(e);
+    mygui_dispatch_mouse_move(e);
     return true;
 }
 
 auto paused_state::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
 {
-    mygui_dispatch(e);
+    mygui_dispatch_mouse_press(e);
     return true;
 }
 
 auto paused_state::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
 {
-    mygui_dispatch(e);
+    mygui_dispatch_mouse_release(e);
     return true;
 }
 

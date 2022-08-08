@@ -63,7 +63,7 @@ void app::setup_layout()
 {
     auto weight_map = dependencies::make_dynamic_weight_map< graph >(
         get_dependencies_core().get_repo(),
-        boost::get(boost::edge_bundle, get_graph()));
+        boost::get(boost::edge_bundle, std::as_const(get_graph())));
 
     m_layout = std::make_unique< layout_core >(
         get_cmds(),
@@ -74,6 +74,44 @@ void app::setup_layout()
         100);
 
     BOOST_LOG_TRIVIAL(info) << "setup layout";
+}
+
+void app::setup_view()
+{
+    m_scene = getRoot()->createSceneManager();
+    assert(m_scene);
+
+    Ogre::RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
+
+    gui::mygui_manager::get().initialize(getRenderWindow(), m_scene);
+
+    m_sm = std::make_unique< state_machine >();
+
+    m_input = std::make_unique< state_input_dispatcher >(*m_sm);
+    addInputListener(m_input.get());
+
+    m_paused_state = std::make_unique< paused_state >(
+        *m_sm,
+        nullptr,
+        paused_state::layout_options { "Gursoy Atun" },
+        paused_state::topology_options { "Cube", "Sphere" },
+        paused_state::scale_options { 200, 100, 80 });
+
+    running_state::vertex_ids vertices;
+    std::transform(
+        boost::vertices(get_graph()).first,
+        boost::vertices(get_graph()).second,
+        std::back_inserter(vertices),
+        [this](auto v) { return get_graph()[v]; });
+
+    m_running_state = std::make_unique< running_state >(
+        *m_sm,
+        m_paused_state.get(),
+        std::move(vertices),
+        *getRenderWindow(),
+        *m_scene);
+
+    m_sm->start(m_running_state.get());
 }
 
 /***********************************************************
@@ -87,6 +125,23 @@ void app::shutdown()
     shutdown_commands();
     shutdown_architecture();
     base::shutdown();
+}
+
+void app::shutdown_view()
+{
+    m_running_state.reset();
+    m_paused_state.reset();
+
+    removeInputListener(m_input.get());
+    m_input.reset();
+
+    m_sm.reset();
+
+    gui::mygui_manager::get().shutdown();
+
+    Ogre::RTShader::ShaderGenerator::getSingleton().removeSceneManager(m_scene);
+
+    getRoot()->destroySceneManager(m_scene);
 }
 
 void app::shutdown_layout()

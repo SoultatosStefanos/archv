@@ -51,6 +51,10 @@ protected:
     using dependencies_core = dependencies::core;
     using layout_core = layout::core< graph, weight_map >;
 
+    using state_machine = view::state_machine;
+    using state_input_dispatcher = view::state_input_dispatcher;
+    using running_state = rendering::running_state;
+    using paused_state = gui::paused_state;
 
     auto get_symbol_table() const -> const symbol_table&;
     auto get_symbol_table() -> symbol_table&;
@@ -72,7 +76,9 @@ private:
     void setup_commands();
     void setup_dependencies();
     void setup_layout();
+    void setup_view();
 
+    void shutdown_view();
     void shutdown_layout();
     void shutdown_dependencies();
     void shutdown_commands();
@@ -84,6 +90,12 @@ private:
     std::unique_ptr< command_history > m_cmds;
     std::unique_ptr< dependencies_core > m_dependencies;
     std::unique_ptr< layout_core > m_layout;
+
+    Ogre::SceneManager* m_scene { nullptr };
+    std::unique_ptr< state_machine > m_sm;
+    std::unique_ptr< state_input_dispatcher > m_input;
+    std::unique_ptr< running_state > m_running_state;
+    std::unique_ptr< paused_state > m_paused_state;
 };
 
 #endif // APP_HPP
