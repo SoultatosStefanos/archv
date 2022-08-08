@@ -166,9 +166,9 @@
 
 		+ [x] Implement paused state
 
-		+ [ ] Implement rendering package
+		+ [x] Implement rendering package
 
-		+ [ ] Implement running state
+		+ [x] Implement running state
 
 		+ [ ] Rename cores to user interactors
 
