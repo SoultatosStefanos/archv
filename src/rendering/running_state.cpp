@@ -53,6 +53,8 @@ void running_state::frameRendered(const Ogre::FrameEvent& e)
 auto running_state::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
+    assert(m_paused_state);
+
     m_cameraman->keyPressed(e);
 
     // FIXME
