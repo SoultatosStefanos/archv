@@ -1,7 +1,6 @@
 set(FILES
 	mygui_input.cpp
 	mygui_manager.cpp
-	overlay_manager.cpp
 	pause_menu.cpp
 	paused_state.cpp
 )

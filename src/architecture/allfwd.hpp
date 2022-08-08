@@ -7,7 +7,6 @@
 namespace architecture
 {
 
-class core;
 class graph;
 class symbol_table;
 struct source_location;

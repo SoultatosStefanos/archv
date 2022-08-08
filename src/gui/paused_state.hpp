@@ -6,7 +6,13 @@
 
 #include "pause_menu.hpp"
 #include "view/state.hpp"
-#include "view/state_machine.hpp"
+
+#include <memory>
+
+namespace view
+{
+class state_machine;
+} // namespace view
 
 namespace gui
 {
@@ -17,8 +23,18 @@ public:
     using state = view::state;
     using state_machine = view::state_machine;
 
-    paused_state(state_machine& machine, state* menu_state);
-    virtual ~paused_state() override;
+    using layout_options = pause_menu::layout_options;
+    using topology_options = pause_menu::topology_options;
+    using scale_options = pause_menu::scale_options;
+
+    paused_state(
+        state_machine& machine,
+        state* menu_state,
+        layout_options layouts = layout_options(),
+        topology_options topologies = topology_options(),
+        scale_options scales = scale_options());
+
+    virtual ~paused_state() override = default;
 
     paused_state(const paused_state&) = delete;
     paused_state(paused_state&&) = delete;
@@ -26,7 +42,7 @@ public:
     auto operator=(const paused_state&) -> paused_state& = delete;
     auto operator=(paused_state&&) -> paused_state& = delete;
 
-    auto get_pause_menu() const -> pause_menu* { return m_pause_menu; }
+    auto get_gui() const -> pause_menu* { return m_gui.get(); }
 
     virtual void enter() override;
     virtual void exit() override;
@@ -41,9 +57,13 @@ public:
     auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
 
 private:
-    pause_menu* m_pause_menu { nullptr };
+    std::unique_ptr< pause_menu > m_gui;
     state_machine& m_machine;
     state* m_menu_state { nullptr };
+
+    layout_options m_layouts;
+    topology_options m_topologies;
+    scale_options m_scales;
 };
 
 } // namespace gui

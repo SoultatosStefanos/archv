@@ -8,7 +8,6 @@ namespace gui
 {
 
 class mygui_manager;
-class overlay_manager;
 class pause_menu;
 class paused_state;
 

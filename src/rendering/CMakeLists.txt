@@ -1,6 +1,6 @@
 set(FILES
-	state_input_dispatcher.cpp
-	state_machine.cpp
+	graph_renderer.cpp
+	running_state.cpp
 )
 set(SUBDIRECTORIES)
 

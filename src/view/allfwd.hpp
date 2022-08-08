@@ -7,14 +7,9 @@
 namespace view
 {
 
-class core;
-
 class state;
 class state_machine;
-class state_event_dispatcher;
-
-class running_state;
-class paused_state;
+class state_input_dispatcher;
 
 } // namespace view
 

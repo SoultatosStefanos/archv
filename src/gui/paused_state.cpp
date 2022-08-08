@@ -1,31 +1,32 @@
 #include "paused_state.hpp"
 
+#include "view/state_machine.hpp"
+
 #include "mygui_input.hpp"
-#include "overlay_manager.hpp"
 
 namespace gui
 {
 
-paused_state::paused_state(state_machine& machine, state* menu_state)
-: m_machine { machine }, m_menu_state { menu_state }
+paused_state::paused_state(
+    state_machine& machine,
+    state* menu_state,
+    layout_options layouts,
+    topology_options topologies,
+    scale_options scales)
+: m_machine { machine }
+, m_menu_state { menu_state }
+, m_layouts { std::move(layouts) }
+, m_topologies { std::move(topologies) }
+, m_scales { std::move(scales) }
 {
-}
-
-paused_state::~paused_state()
-{
-    if (get_pause_menu() != nullptr)
-        exit();
 }
 
 void paused_state::enter()
 {
-    m_pause_menu = overlay_manager::get().create_overlay< pause_menu >();
+    m_gui = std::make_unique< pause_menu >(m_layouts, m_topologies, m_scales);
 }
 
-void paused_state::exit()
-{
-    overlay_manager::get().destroy_overlay(m_pause_menu);
-}
+void paused_state::exit() { m_gui.reset(); }
 
 void paused_state::pause() { }
 

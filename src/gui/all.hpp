@@ -6,7 +6,6 @@
 
 #include "mygui_input.hpp"
 #include "mygui_manager.hpp"
-#include "overlay_manager.hpp"
 #include "pause_menu.hpp"
 #include "paused_state.hpp"
 

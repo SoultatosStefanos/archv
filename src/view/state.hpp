@@ -1,4 +1,4 @@
-// Contains an interface for an application's scene.
+// Contains an interface for an application's view state.
 // Soultatos Stefanos 2022
 
 #ifndef VIEW_STATE_HPP

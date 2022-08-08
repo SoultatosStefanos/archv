@@ -12,7 +12,7 @@
 namespace gui
 {
 
-// Pause menu overlay.
+// Pause menu gui.
 class pause_menu
 {
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
@@ -30,9 +30,9 @@ public:
     using scale_options = std::vector< double >;
 
     pause_menu(
-        layout_options layout_selections = layout_options(),
-        topology_options topology_selections = topology_options(),
-        scale_options scale_selections = scale_options());
+        layout_options layouts = layout_options(),
+        topology_options topologies = topology_options(),
+        scale_options scales = scale_options());
 
     ~pause_menu();
 
