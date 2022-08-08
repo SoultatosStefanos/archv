@@ -170,7 +170,7 @@
 
 		+ [x] Implement running state
 
-		+ [ ] Rename cores to user interactors
+		+ [n] Rename cores to user interactors
 
 		+ [ ] Cleanup app
 
