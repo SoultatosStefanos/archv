@@ -155,9 +155,9 @@
 	
 		+ [x] Implement running state
 
+		+ [x] Implement app
+		
 		+ [ ] Implement paused state
-
-		+ [ ] Implement app
 
 	+ [n] Create new GUI Mockups
 

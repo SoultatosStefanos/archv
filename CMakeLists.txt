@@ -44,9 +44,9 @@ set(THIRD_PARTY_LIBRARIES
   ${BOOST_LIBRARIES}
   ${SDL2_LIBRARIES}
   ${IMGUI_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	${FREETYPE_LIBRARIES}
-	${STB_LIBRARIES}
+  ${OPENGL_LIBRARIES}
+  ${FREETYPE_LIBRARIES}
+  ${STB_LIBRARIES}
 )
 
 # link 3rd party libraries
@@ -54,7 +54,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
 # setup driver target
 set(DRIVER archv_main)
-#set(DRIVER_FILES src/main.cpp src/app.cpp)
+set(DRIVER_FILES src/main.cpp src/app.cpp)
 
 if(DRIVER_FILES)
   add_executable(${DRIVER} ${DRIVER_FILES})

@@ -53,8 +53,8 @@ protected:
 
     using state_machine = view::state_machine;
     using state_input_dispatcher = view::state_input_dispatcher;
-    using running_state = rendering::graph_visualization;
-    using paused_state = gui::paused_state;
+    using graph_visualization = rendering::graph_visualization;
+    using pause_menu = gui::pause_menu;
 
     auto get_symbol_table() const -> const symbol_table&;
     auto get_symbol_table() -> symbol_table&;
@@ -71,13 +71,16 @@ protected:
     auto get_layout_core() const -> const layout_core&;
     auto get_layout_core() -> layout_core&;
 
-    auto get_running_state() const -> const running_state&;
-    auto get_running_state() -> running_state&;
+    auto get_state_machine() const -> const state_machine&;
+    auto get_state_machine() -> state_machine&;
 
-    auto get_paused_state() const -> const paused_state&;
-    auto get_paused_state() -> paused_state&;
+    auto get_graph_visualization() const -> const graph_visualization&;
+    auto get_graph_visualization() -> graph_visualization&;
 
-    void lay_graph(const layout::layout< graph >& l) const;
+    auto get_pause_menu() const -> const pause_menu&;
+    auto get_pause_menu() -> pause_menu&;
+
+    void lay_graph(const layout::layout< graph >& l);
 
 private:
     void setup_architecture();
@@ -85,7 +88,11 @@ private:
     void setup_dependencies();
     void setup_layout();
     void setup_view();
+    void setup_gui();
+    void setup_rendering();
 
+    void shutdown_rendering();
+    void shutdown_gui();
     void shutdown_view();
     void shutdown_layout();
     void shutdown_dependencies();
@@ -99,11 +106,10 @@ private:
     std::unique_ptr< dependencies_core > m_dependencies;
     std::unique_ptr< layout_core > m_layout;
 
-    Ogre::SceneManager* m_scene { nullptr };
     std::unique_ptr< state_machine > m_sm;
     std::unique_ptr< state_input_dispatcher > m_input;
-    std::unique_ptr< running_state > m_running_state;
-    std::unique_ptr< paused_state > m_paused_state;
+    std::unique_ptr< graph_visualization > m_graph_visualization;
+    std::unique_ptr< pause_menu > m_pause_menu;
 };
 
 #endif // APP_HPP

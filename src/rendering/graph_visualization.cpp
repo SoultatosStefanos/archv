@@ -11,7 +11,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
-#include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
 
@@ -145,13 +144,9 @@ void graph_visualization::shutdown_scene()
     m_root.destroySceneManager(m_scene);
 }
 
-void graph_visualization::pause()
-{
-    SDL_ShowCursor(false);
-    m_cameraman->manualStop();
-}
+void graph_visualization::pause() { m_cameraman->manualStop(); }
 
-void graph_visualization::resume() { SDL_ShowCursor(true); }
+void graph_visualization::resume() { }
 
 void graph_visualization::lay_vertex(
     const vertex_id& id, double x, double y, double z)
