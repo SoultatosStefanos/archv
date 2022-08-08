@@ -34,6 +34,8 @@ public:
     explicit app(const std::string& name = "ARCHV");
     virtual ~app() override = default;
 
+    auto frameStarted(const Ogre::FrameEvent& evt) -> bool override;
+
     virtual void setup() override;
     virtual void shutdown() override;
 

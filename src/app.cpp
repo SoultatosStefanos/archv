@@ -1,11 +1,23 @@
 #include "app.hpp"
 
 #include <OGRE/OgreRoot.h>
+#include <OGRE/Overlay/OgreImGuiOverlay.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
+#include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
 
 // TODO Get hardcoded data from config
 
 app::app(const std::string& name) : base(name) { }
+
+auto app::frameStarted(const Ogre::FrameEvent& evt) -> bool
+{
+    base::frameStarted(evt);
+
+    Ogre::ImGuiOverlay::NewFrame();
+
+    return true;
+}
 
 /***********************************************************
  * Setup                                                   *
@@ -94,6 +106,12 @@ void app::setup_view()
 
 void app::setup_gui()
 {
+    auto imgui = new Ogre::ImGuiOverlay();
+    imgui->show();
+    assert(imgui->isInitialised());
+
+    Ogre::OverlayManager::getSingleton().addOverlay(imgui);
+
     m_pause_menu = std::make_unique< pause_menu >(get_state_machine());
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
@@ -143,6 +161,9 @@ void app::shutdown_rendering()
 void app::shutdown_gui()
 {
     m_pause_menu.reset();
+
+    // named by Ogre
+    Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
 
     BOOST_LOG_TRIVIAL(info) << "shutdown gui";
 }

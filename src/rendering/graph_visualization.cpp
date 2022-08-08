@@ -48,7 +48,8 @@ void graph_visualization::enter()
 
 void graph_visualization::setup_scene()
 {
-    m_scene = m_root.createSceneManager();
+    const auto scene_type = DefaultSceneManagerFactory::FACTORY_TYPE_NAME;
+    m_scene = m_root.createSceneManager(scene_type, "graph visualization");
     assert(m_scene);
 
     RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);

@@ -6,6 +6,9 @@
 
 #include "view/state.hpp"
 
+#include <OGRE/Bites/OgreInput.h>
+#include <OGRE/OgreSceneManager.h>
+
 namespace view
 {
 class state_machine;
@@ -20,7 +23,7 @@ class pause_menu : public view::state
 public:
     using state_machine = view::state_machine;
 
-    explicit pause_menu(state_machine& sm) : m_sm { sm } { }
+    pause_menu(state_machine& sm);
     virtual ~pause_menu() override = default;
 
     virtual void enter() override;
@@ -29,10 +32,13 @@ public:
     virtual void pause() override;
     virtual void resume() override;
 
+    void frameRendered(const Ogre::FrameEvent& e) override;
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
 
 private:
     state_machine& m_sm;
+
+    Ogre::SceneManager* m_scene; // From global context
 };
 
 } // namespace gui
