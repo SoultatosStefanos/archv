@@ -26,7 +26,16 @@ class pause_menu : public view::state
 public:
     using state_machine = view::state_machine;
 
-    explicit pause_menu(state_machine& sm);
+    using layout_options = detail::pause_menu_gui::layout_options;
+    using topology_options = detail::pause_menu_gui::topology_options;
+    using scale_options = detail::pause_menu_gui::scale_options;
+
+    explicit pause_menu(
+        state_machine& sm,
+        layout_options layouts = layout_options(),
+        topology_options topologies = topology_options(),
+        scale_options scales = scale_options());
+
     virtual ~pause_menu() override = default;
 
     virtual void enter() override;

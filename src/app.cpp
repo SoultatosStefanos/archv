@@ -113,7 +113,11 @@ void app::setup_gui()
 
     Ogre::OverlayManager::getSingleton().addOverlay(imgui);
 
-    m_pause_menu = std::make_unique< pause_menu >(get_state_machine());
+    m_pause_menu = std::make_unique< pause_menu >(
+        get_state_machine(),
+        pause_menu::layout_options { "Gursoy Atun" },
+        pause_menu::topology_options { "Cube", "Sphere" },
+        pause_menu::scale_options { 200, 100, 80 });
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }

@@ -12,6 +12,14 @@
 namespace gui::detail
 {
 
+pause_menu_gui::pause_menu_gui(
+    layout_options layouts, topology_options topologies, scale_options scales)
+: m_layouts { std::move(layouts) }
+, m_topologies { std::move(topologies) }
+, m_scales { std::move(scales) }
+{
+}
+
 void pause_menu_gui::draw() const
 {
     static bool open = true;
@@ -33,11 +41,12 @@ void pause_menu_gui::draw() const
     {
         if (ImGui::TreeNode("Layout"))
         {
-            static int selected = -1;
+            static std::size_t selected = -1;
 
-            if (ImGui::Selectable("Gursoy Atun", selected == 0))
+            for (std::size_t i = 0; i < m_layouts.size(); ++i)
             {
-                selected = 0;
+                if (ImGui::Selectable(m_layouts.at(i).c_str(), selected == i))
+                    selected = i;
             }
 
             ImGui::TreePop();
@@ -45,29 +54,29 @@ void pause_menu_gui::draw() const
 
         if (ImGui::TreeNode("Topology"))
         {
-            static int selected = -1;
+            static std::size_t selected = -1;
 
-            if (ImGui::Selectable("Cube", selected == 0))
-                selected = 0;
-
-            if (ImGui::Selectable("Sphere", selected == 1))
-                selected = 1;
+            for (std::size_t i = 0; i < m_topologies.size(); ++i)
+            {
+                if (ImGui::Selectable(
+                        m_topologies.at(i).c_str(), selected == i))
+                    selected = i;
+            }
 
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNode("Scale"))
         {
-            static int selected = -1;
+            static std::size_t selected = -1;
 
-            if (ImGui::Selectable("200", selected == 0))
-                selected = 0;
-
-            if (ImGui::Selectable("100", selected == 1))
-                selected = 1;
-
-            if (ImGui::Selectable("80", selected == 1))
-                selected = 1;
+            for (std::size_t i = 0; i < m_scales.size(); ++i)
+            {
+                const auto scale = m_scales.at(i);
+                const auto scale_str = std::to_string(scale);
+                if (ImGui::Selectable(scale_str.c_str(), selected == i))
+                    selected = i;
+            }
 
             ImGui::TreePop();
         }
@@ -86,9 +95,14 @@ void pause_menu_gui::draw() const
 namespace gui
 {
 
-pause_menu::pause_menu(state_machine& sm)
+pause_menu::pause_menu(
+    state_machine& sm,
+    layout_options layouts,
+    topology_options topologies,
+    scale_options scales)
 : m_sm { sm }
 , m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
+, m_gui { std::move(layouts), std::move(topologies), std::move(scales) }
 {
 }
 
