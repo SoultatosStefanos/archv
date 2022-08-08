@@ -1,6 +1,5 @@
 set(FILES
-	state_input_dispatcher.cpp
-	state_machine.cpp
+	pause_menu.cpp
 )
 set(SUBDIRECTORIES)
 

@@ -1,11 +1,10 @@
-// Contains a class responsible for drawing the entities and scene during the
-// visualization/running/rendering state of the application.
+// Contains the class responsible for the visualization of the arch graph.
 // Soultatos Stefanos 2022
 
-#ifndef VIEW_RUNNING_STATE_HPP
-#define VIEW_RUNNING_STATE_HPP
+#ifndef RENDERING_GRAPH_VISUALIZATION_HPP
+#define RENDERING_GRAPH_VISUALIZATION_HPP
 
-#include "state.hpp"
+#include "view/state.hpp"
 
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreInput.h>
@@ -20,22 +19,29 @@
 
 namespace view
 {
-
 class state_machine;
+class state_machine;
+} // namespace view
 
-class running_state : public state
+namespace rendering
+{
+
+class graph_visualization : public view::state
 {
 public:
+    using state = view::state;
+    using state_machine = view::state_machine;
+
     using vertex_id = std::string;
-    using vertices = std::vector< vertex_id >;
+    using vertex_ids = std::vector< vertex_id >;
 
-    running_state(
-        vertices ids,
-        Ogre::RenderWindow& window,
+    graph_visualization(
         state_machine& machine,
-        state* paused_state);
+        state* paused_state,
+        Ogre::RenderWindow& window,
+        vertex_ids ids = vertex_ids());
 
-    virtual ~running_state() override = default;
+    virtual ~graph_visualization() override = default;
 
     virtual void enter() override;
     virtual void exit() override;
@@ -43,7 +49,7 @@ public:
     virtual void pause() override;
     virtual void resume() override;
 
-    void position_vertex(const vertex_id& id, double x, double y, double z);
+    void lay_vertex(const vertex_id& id, double x, double y, double z);
 
     void frameRendered(const Ogre::FrameEvent& e) override;
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
@@ -66,12 +72,13 @@ private:
     void shutdown_lighting();
     void shutdown_scene();
 
-    vertices m_ids;
+    state_machine& m_machine;
+    state* m_paused_state { nullptr };
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;
-    state_machine& m_machine;
-    state* m_paused_state { nullptr };
+
+    vertex_ids m_ids;
 
     Ogre::SceneManager* m_scene { nullptr };
     Ogre::Light* m_light { nullptr };
@@ -82,6 +89,6 @@ private:
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
 };
 
-} // namespace view
+} // namespace rendering
 
-#endif // VIEW_RUNNING_STATE_HPP
+#endif // RENDERING_GRAPH_VISUALIZATION_HPP

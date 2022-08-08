@@ -1,6 +1,5 @@
 AlwaysBreakTemplateDeclarations: Yes
 
-
 BasedOnStyle: WebKit
 Standard: c++20
 AlignAfterOpenBracket: AlwaysBreak

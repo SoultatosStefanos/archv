@@ -142,10 +142,28 @@
 
 # 06 / 08 / 2022
 
-	+ [ ] Zoom out on running state pause
+	+ [n] Zoom out on running state pause
 
-	+ [ ] Finish GUI Mockup
+	+ [n] Finish GUI Mockup
 
-	+ [ ] Interactive app with GUI Mockup
+	+ [x] Interactive app with GUI Mockup
 
-	+ [ ] Introduce configs for the views
+
+# 08 / 08 / 2022
+
+	+ [x] Finish GUI Mockup
+	
+		+ [x] Implement running state
+
+		+ [x] Implement app
+		
+		+ [x] Implement paused state
+
+			+ [x] Integrate imgui
+
+			+ [x] Make demo with imgui demo window across states
+
+			+ [x] Make pause menu gui
+
+	+ [n] Create new GUI Mockups
+

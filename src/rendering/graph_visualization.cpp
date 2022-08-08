@@ -1,7 +1,6 @@
-#include "running_state.hpp"
+#include "graph_visualization.hpp"
 
-#include "state_machine.hpp"
-#include "viewports.hpp"
+#include "view/state_machine.hpp"
 
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/OgreCamera.h>
@@ -12,35 +11,33 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
-#include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
 
 using namespace Ogre;
 using namespace OgreBites;
 
-namespace view
+namespace rendering
 {
-
-running_state::running_state(
-    vertices ids,
-    RenderWindow& window,
-    state_machine& machine,
-    state* paused_state)
-: m_ids { std::move(ids) }
-, m_root { Root::getSingleton() }
-, m_window { window }
-, m_machine { machine }
-, m_paused_state { paused_state }
-{
-    assert(m_paused_state);
-}
 
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
 
-void running_state::enter()
+graph_visualization::graph_visualization(
+    state_machine& machine,
+    state* paused_state,
+    Ogre::RenderWindow& window,
+    vertex_ids ids)
+: m_machine { machine }
+, m_paused_state { paused_state }
+, m_root { Root::getSingleton() }
+, m_window { window }
+, m_ids { std::move(ids) }
+{
+}
+
+void graph_visualization::enter()
 {
     setup_scene();
     setup_lighting();
@@ -49,17 +46,16 @@ void running_state::enter()
     setup_input();
 }
 
-void running_state::setup_scene()
+void graph_visualization::setup_scene()
 {
-    const auto type = DefaultSceneManagerFactory::FACTORY_TYPE_NAME;
-    m_scene = m_root.createSceneManager(type, "running_state");
-
+    const auto scene_type = DefaultSceneManagerFactory::FACTORY_TYPE_NAME;
+    m_scene = m_root.createSceneManager(scene_type, "graph visualization");
     assert(m_scene);
 
     RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
 }
 
-void running_state::setup_lighting()
+void graph_visualization::setup_lighting()
 {
     m_scene->setAmbientLight(ColourValue(0.5, 0.5, 0.5)); // TODO Config
 
@@ -72,7 +68,7 @@ void running_state::setup_lighting()
     m_light_node->setPosition(20, 80, 50); // TODO Config
 }
 
-void running_state::setup_camera()
+void graph_visualization::setup_camera()
 {
     m_cam = m_scene->createCamera("camera");
     assert(m_cam);
@@ -84,10 +80,11 @@ void running_state::setup_camera()
     m_cam_node->attachObject(m_cam);
     m_cam_node->setPosition(0, 0, 140); // TODO Config
 
-    change_viewport(&m_window, m_cam);
+    m_window.removeAllViewports();
+    m_window.addViewport(m_cam);
 }
 
-void running_state::setup_entities()
+void graph_visualization::setup_entities()
 {
     for (const auto& id : m_ids)
     {
@@ -100,7 +97,7 @@ void running_state::setup_entities()
     }
 }
 
-void running_state::setup_input()
+void graph_visualization::setup_input()
 {
     m_cameraman = std::make_unique< CameraMan >(m_cam_node);
 }
@@ -109,7 +106,7 @@ void running_state::setup_input()
  * Shutdown                                                *
  ***********************************************************/
 
-void running_state::exit()
+void graph_visualization::exit()
 {
     shutdown_input();
     shutdown_entities();
@@ -118,9 +115,9 @@ void running_state::exit()
     shutdown_scene();
 }
 
-void running_state::shutdown_input() { m_cameraman.reset(); }
+void graph_visualization::shutdown_input() { m_cameraman.reset(); }
 
-void running_state::shutdown_entities()
+void graph_visualization::shutdown_entities()
 {
     for (const auto& id : m_ids)
         m_scene->getRootSceneNode()->removeAndDestroyChild(id);
@@ -128,7 +125,7 @@ void running_state::shutdown_entities()
     m_scene->destroyEntity("ogrehead.mesh"); // TODO Config
 }
 
-void running_state::shutdown_camera()
+void graph_visualization::shutdown_camera()
 {
     m_window.removeViewport(0);
 
@@ -136,32 +133,23 @@ void running_state::shutdown_camera()
     m_scene->destroyCamera(m_cam);
 }
 
-void running_state::shutdown_lighting()
+void graph_visualization::shutdown_lighting()
 {
     m_scene->getRootSceneNode()->removeAndDestroyChild(m_light_node);
     m_scene->destroyLight(m_light);
 }
 
-void running_state::shutdown_scene()
+void graph_visualization::shutdown_scene()
 {
     RTShader::ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
     m_root.destroySceneManager(m_scene);
 }
 
-void running_state::pause()
-{
-    SDL_ShowCursor(false);
-    m_cameraman->manualStop();
-    // TODO zoom out
-}
+void graph_visualization::pause() { m_cameraman->manualStop(); }
 
-void running_state::resume()
-{
-    SDL_ShowCursor(true);
-    // TODO zoom in
-}
+void graph_visualization::resume() { }
 
-void running_state::position_vertex(
+void graph_visualization::lay_vertex(
     const vertex_id& id, double x, double y, double z)
 {
     assert(m_scene->hasSceneNode(id));
@@ -175,34 +163,26 @@ void running_state::position_vertex(
  * Input                                                   *
  ***********************************************************/
 
-void running_state::frameRendered(const FrameEvent& e)
+void graph_visualization::frameRendered(const FrameEvent& e)
 {
     assert(m_cameraman);
     m_cameraman->frameRendered(e);
 }
 
-auto running_state::keyPressed(const KeyboardEvent& e) -> bool
+auto graph_visualization::keyPressed(const KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
+    assert(m_paused_state);
+
     m_cameraman->keyPressed(e);
 
-    // FIXME
-
-    assert(m_machine.get_active_state() == this);
-
-    static constexpr auto paused_key { 'p' };
-    static constexpr auto quit_key { SDLK_ESCAPE };
-
-    const auto pressed_key = e.keysym.sym;
-
-    switch (pressed_key)
+    switch (e.keysym.sym)
     {
-    case paused_key:
+    case 'p':
         m_machine.transition_to(m_paused_state);
-        assert(m_machine.get_active_state() == m_paused_state);
         break;
 
-    case quit_key:
+    case SDLK_ESCAPE:
         m_machine.fallback();
         m_root.queueEndRendering();
         break;
@@ -214,34 +194,34 @@ auto running_state::keyPressed(const KeyboardEvent& e) -> bool
     return true;
 }
 
-auto running_state::keyReleased(const KeyboardEvent& e) -> bool
+auto graph_visualization::keyReleased(const KeyboardEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->keyReleased(e);
 }
 
-auto running_state::mouseMoved(const MouseMotionEvent& e) -> bool
+auto graph_visualization::mouseMoved(const MouseMotionEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseMoved(e);
 }
 
-auto running_state::mouseWheelRolled(const MouseWheelEvent& e) -> bool
+auto graph_visualization::mouseWheelRolled(const MouseWheelEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseWheelRolled(e);
 }
 
-auto running_state::mousePressed(const MouseButtonEvent& e) -> bool
+auto graph_visualization::mousePressed(const MouseButtonEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mousePressed(e);
 }
 
-auto running_state::mouseReleased(const MouseButtonEvent& e) -> bool
+auto graph_visualization::mouseReleased(const MouseButtonEvent& e) -> bool
 {
     assert(m_cameraman);
     return m_cameraman->mouseReleased(e);
 }
 
-} // namespace view
+} // namespace rendering

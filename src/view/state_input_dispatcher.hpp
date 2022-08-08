@@ -2,22 +2,22 @@
 // current active state.
 // Soultatos Stefanos 2022
 
-#ifndef VIEW_STATE_EVENT_DISPATCHER_HPP
-#define VIEW_STATE_EVENT_DISPATCHER_HPP
+#ifndef VIEW_STATE_INPUT_DISPATCHER_HPP
+#define VIEW_STATE_INPUT_DISPATCHER_HPP
 
 #include <OGRE/Bites/OgreInput.h>
 
 namespace view
 {
 
-class state;
 class state_machine;
 
-class state_event_dispatcher : public OgreBites::InputListener
+// Dispatches input to the active state of a state machine.
+class state_input_dispatcher : public OgreBites::InputListener
 {
 public:
-    explicit state_event_dispatcher(const state_machine& sm);
-    virtual ~state_event_dispatcher() override = default;
+    explicit state_input_dispatcher(const state_machine& sm);
+    virtual ~state_input_dispatcher() override = default;
 
     void frameRendered(const Ogre::FrameEvent& e);
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
@@ -40,4 +40,4 @@ private:
 
 } // namespace view
 
-#endif // VIEW_STATE_EVENT_DISPATCHER_HPP
+#endif // VIEW_STATE_INPUT_DISPATCHER_HPP

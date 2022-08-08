@@ -26,12 +26,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC src tests)
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
-find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
+find_package(OGRE REQUIRED COMPONENTS Bites Overlay CONFIG)
+find_package(OpenGL REQUIRED)
+find_package(FreeType REQUIRED)
 
 # define 3rd party targets
 set(BOOST_LIBRARIES ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 set(JSONCPP_LIBRARIES libjsoncpp.so)
-set(MYGUI_LIBRARIES libMyGUIEngine.so libMyGUI.OgrePlatform.so)
+set(IMGUI_LIBRARIES libimgui.a)
+set(STB_LIBRARIES libstb.so)
 set(SDL2_LIBRARIES libSDL2.so)
 
 # merge 3rd party targets
@@ -39,16 +42,25 @@ set(THIRD_PARTY_LIBRARIES
   ${JSONCPP_LIBRARIES}
   ${OGRE_LIBRARIES}
   ${BOOST_LIBRARIES}
-  ${MYGUI_LIBRARIES}
   ${SDL2_LIBRARIES}
+  ${IMGUI_LIBRARIES}
+  ${OPENGL_LIBRARIES}
+  ${FREETYPE_LIBRARIES}
+  ${STB_LIBRARIES}
 )
+
+# define 3rd include directories
+set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
+
+# include 3rd party directories globally
+include_directories(${IMGUI_INCLUDE_DIR})
 
 # link 3rd party libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
 # setup driver target
 set(DRIVER archv_main)
-set(DRIVER_FILES src/app.cpp src/main.cpp)
+set(DRIVER_FILES src/main.cpp src/app.cpp)
 
 if(DRIVER_FILES)
   add_executable(${DRIVER} ${DRIVER_FILES})

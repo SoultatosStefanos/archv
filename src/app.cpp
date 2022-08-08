@@ -1,11 +1,24 @@
 #include "app.hpp"
 
 #include <OGRE/OgreRoot.h>
+#include <OGRE/Overlay/OgreImGuiOverlay.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
+#include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
 
 // TODO Get hardcoded data from config
 
 app::app(const std::string& name) : base(name) { }
+
+auto app::frameStarted(const Ogre::FrameEvent& evt) -> bool
+{
+    base::frameStarted(evt);
+
+    if (get_state_machine().has_active_state())
+        get_state_machine().get_active_state()->frameStarted(evt);
+
+    return true;
+}
 
 /***********************************************************
  * Setup                                                   *
@@ -19,24 +32,30 @@ void app::setup()
     setup_dependencies();
     setup_layout();
     setup_view();
+    setup_gui();
+    setup_rendering();
+
+    connect_gui_with_layout();
+    connect_layout_with_rendering();
+
+    get_state_machine().start(&get_graph_visualization());
+    lay_graph(get_layout_core().get_layout());
 }
 
 void app::setup_architecture()
 {
     const auto& root = config::json_archive::get().at(ARCHV_INPUT_GRAPH_PATH);
 
-    auto st = architecture::deserialize_symbols(root);
-    auto [g, _] = architecture::deserialize_dependencies(root, st);
-
-    m_arch_manager
-        = std::make_unique< arch_manager >(std::move(st), std::move(g));
+    m_st = architecture::deserialize_symbols(root);
+    auto&& [g, _] = architecture::deserialize_dependencies(root, m_st);
+    m_g = std::move(g);
 
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
 
 void app::setup_commands()
 {
-    m_cmd_manager = std::make_unique< command_manager >();
+    m_cmds = std::make_unique< command_history >();
 
     BOOST_LOG_TRIVIAL(info) << "setup commands";
 }
@@ -56,8 +75,8 @@ void app::setup_dependencies()
                                            { "MemberExpr", 1 },
                                            { "MethodTemplateArgs", 1 } };
 
-    m_deps_manager = std::make_unique< deps_manager >(
-        get_cmd_manager(), std::move(deps_table));
+    m_dependencies = std::make_unique< dependencies_core >(
+        get_cmds(), std::move(deps_table));
 
     BOOST_LOG_TRIVIAL(info) << "setup dependencies";
 }
@@ -65,12 +84,12 @@ void app::setup_dependencies()
 void app::setup_layout()
 {
     auto weight_map = dependencies::make_dynamic_weight_map< graph >(
-        get_deps_manager().get_repo(),
-        boost::get(boost::edge_bundle, get_arch_manager().get_graph()));
+        get_dependencies_core().get_repo(),
+        boost::get(boost::edge_bundle, std::as_const(get_graph())));
 
-    m_layout_manager = std::make_unique< layout_manager >(
-        get_cmd_manager(),
-        get_arch_manager().get_graph(),
+    m_layout = std::make_unique< layout_core >(
+        get_cmds(),
+        get_graph(),
         std::move(weight_map),
         "Gursoy Atun",
         "Sphere",
@@ -81,34 +100,68 @@ void app::setup_layout()
 
 void app::setup_view()
 {
-    auto view_model = view_manager::vertices();
-    std::transform(
-        boost::vertices(get_arch_manager().get_graph()).first,
-        boost::vertices(get_arch_manager().get_graph()).second,
-        std::back_inserter(view_model),
-        [this](auto v) { return get_arch_manager().get_graph()[v]; });
+    m_sm = std::make_unique< state_machine >();
 
-    m_view_manager = std::make_unique< view_manager >(
-        std::move(view_model), *getRenderWindow());
-
-    get_layout_manager().connect_to_layout([this](const auto& l)
-                                           { draw_layout(l); });
-
-    draw_layout(get_layout_manager().get_layout());
-
-    addInputListener(&get_view_manager().get_event_dispatcher());
+    m_input = std::make_unique< state_input_dispatcher >(*m_sm);
+    addInputListener(m_input.get());
 
     BOOST_LOG_TRIVIAL(info) << "setup view";
 }
 
-void app::draw_layout(const layout::layout< graph >& l)
+void app::setup_gui()
 {
-    for (auto v : boost::make_iterator_range(
-             boost::vertices(get_arch_manager().get_graph())))
-    {
-        get_view_manager().get_running_state().position_vertex(
-            get_arch_manager().get_graph()[v], l.x(v), l.y(v), l.z(v));
-    }
+    auto imgui = new Ogre::ImGuiOverlay();
+    imgui->show();
+    assert(imgui->isInitialised());
+
+    Ogre::OverlayManager::getSingleton().addOverlay(imgui);
+
+    m_pause_menu = std::make_unique< pause_menu >(
+        get_state_machine(),
+        pause_menu::layout_options { "Gursoy Atun" },
+        pause_menu::topology_options { "Cube", "Sphere" },
+        pause_menu::scale_options { 200, 100, 80 });
+
+    BOOST_LOG_TRIVIAL(info) << "setup gui";
+}
+
+void app::setup_rendering()
+{
+    graph_visualization::vertex_ids ids;
+    std::transform(
+        boost::vertices(get_graph()).first,
+        boost::vertices(get_graph()).second,
+        std::back_inserter(ids),
+        [this](auto v) { return get_graph()[v]; });
+
+    m_graph_visualization = std::make_unique< graph_visualization >(
+        get_state_machine(),
+        &get_pause_menu(),
+        *getRenderWindow(),
+        std::move(ids));
+
+    BOOST_LOG_TRIVIAL(info) << "setup rendering";
+}
+
+void app::connect_gui_with_layout()
+{
+    get_pause_menu().connect_to_layout(
+        [this](const auto& selection)
+        { get_layout_core().update_layout(selection); });
+
+    get_pause_menu().connect_to_topology(
+        [this](const auto& selection)
+        { get_layout_core().update_topology(selection); });
+
+    get_pause_menu().connect_to_scale(
+        [this](auto selection)
+        { get_layout_core().update_topology(selection); });
+}
+
+void app::connect_layout_with_rendering()
+{
+    get_layout_core().connect_to_layout([this](const auto& l)
+                                        { lay_graph(l); });
 }
 
 /***********************************************************
@@ -117,6 +170,8 @@ void app::draw_layout(const layout::layout< graph >& l)
 
 void app::shutdown()
 {
+    shutdown_rendering();
+    shutdown_gui();
     shutdown_view();
     shutdown_layout();
     shutdown_dependencies();
@@ -125,38 +180,56 @@ void app::shutdown()
     base::shutdown();
 }
 
+void app::shutdown_rendering()
+{
+    m_graph_visualization.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown rendering";
+}
+
+void app::shutdown_gui()
+{
+    m_pause_menu.reset();
+
+    // named by Ogre
+    Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown gui";
+}
+
 void app::shutdown_view()
 {
-    m_view_manager.reset();
+    removeInputListener(m_input.get());
+    m_input.reset();
+
+    m_sm.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown view";
 }
 
 void app::shutdown_layout()
 {
-    m_layout_manager.reset();
+    m_layout.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown layout";
 }
 
 void app::shutdown_dependencies()
 {
-    m_deps_manager.reset();
+    m_dependencies.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown dependencies";
 }
 
 void app::shutdown_commands()
 {
-    m_cmd_manager.reset();
+    m_cmds.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown commands";
 }
 
 void app::shutdown_architecture()
 {
-    m_arch_manager.reset();
-
     BOOST_LOG_TRIVIAL(info) << "shutdown architecture";
 }
 
@@ -170,62 +243,89 @@ void app::go() { getRoot()->startRendering(); }
  * Accessors                                               *
  ***********************************************************/
 
-auto app::get_view_manager() const -> const view_manager&
+auto app::get_symbol_table() const -> const symbol_table& { return m_st; }
+
+auto app::get_symbol_table() -> symbol_table& { return m_st; }
+
+auto app::get_graph() const -> const graph& { return m_g; }
+
+auto app::get_graph() -> graph& { return m_g; }
+
+auto app::get_cmds() const -> const command_history&
 {
-    assert(m_view_manager);
-    return *m_view_manager;
+    assert(m_cmds);
+    return *m_cmds;
 }
 
-auto app::get_view_manager() -> view_manager&
+auto app::get_cmds() -> command_history&
 {
-    assert(m_view_manager);
-    return *m_view_manager;
+    assert(m_cmds);
+    return *m_cmds;
 }
 
-auto app::get_cmd_manager() const -> const command_manager&
+auto app::get_dependencies_core() const -> const dependencies_core&
 {
-    assert(m_cmd_manager);
-    return *m_cmd_manager;
+    assert(m_dependencies);
+    return *m_dependencies;
 }
 
-auto app::get_cmd_manager() -> command_manager&
+auto app::get_dependencies_core() -> dependencies_core&
 {
-    assert(m_cmd_manager);
-    return *m_cmd_manager;
+    assert(m_dependencies);
+    return *m_dependencies;
 }
 
-auto app::get_arch_manager() const -> const arch_manager&
+auto app::get_layout_core() const -> const layout_core&
 {
-    assert(m_arch_manager);
-    return *m_arch_manager;
+    assert(m_layout);
+    return *m_layout;
 }
 
-auto app::get_arch_manager() -> arch_manager&
+auto app::get_layout_core() -> layout_core&
 {
-    assert(m_arch_manager);
-    return *m_arch_manager;
+    assert(m_layout);
+    return *m_layout;
 }
 
-auto app::get_deps_manager() const -> const deps_manager&
+auto app::get_state_machine() const -> const state_machine&
 {
-    assert(m_deps_manager);
-    return *m_deps_manager;
+    assert(m_sm);
+    return *m_sm;
 }
 
-auto app::get_deps_manager() -> deps_manager&
+auto app::get_state_machine() -> state_machine&
 {
-    assert(m_deps_manager);
-    return *m_deps_manager;
+    assert(m_sm);
+    return *m_sm;
 }
 
-auto app::get_layout_manager() const -> const layout_manager&
+auto app::get_graph_visualization() const -> const graph_visualization&
 {
-    assert(m_layout_manager);
-    return *m_layout_manager;
+    assert(m_graph_visualization);
+    return *m_graph_visualization;
 }
 
-auto app::get_layout_manager() -> layout_manager&
+auto app::get_graph_visualization() -> graph_visualization&
 {
-    assert(m_layout_manager);
-    return *m_layout_manager;
+    assert(m_graph_visualization);
+    return *m_graph_visualization;
+}
+
+auto app::get_pause_menu() const -> const pause_menu&
+{
+    assert(m_pause_menu);
+    return *m_pause_menu;
+}
+
+auto app::get_pause_menu() -> pause_menu&
+{
+    assert(m_pause_menu);
+    return *m_pause_menu;
+}
+
+void app::lay_graph(const layout::layout< graph >& l)
+{
+    for (auto v : boost::make_iterator_range(boost::vertices(get_graph())))
+        get_graph_visualization().lay_vertex(
+            get_graph()[v], l.x(v), l.y(v), l.z(v));
 }

@@ -89,6 +89,16 @@ public:
         std::invoke(m_update_topology, type, scale);
     }
 
+    void update_topology(const std::string& type)
+    {
+        update_topology(type, get_topology().scale());
+    }
+
+    void update_topology(double scale)
+    {
+        update_topology(get_topology().desc(), scale);
+    }
+
     void revert_to_defaults() { std::invoke(m_revert_to_defaults); }
 
     auto connect_to_layout(const layout_slot_type& slot) -> connection
