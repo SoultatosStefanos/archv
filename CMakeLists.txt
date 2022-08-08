@@ -49,6 +49,12 @@ set(THIRD_PARTY_LIBRARIES
   ${STB_LIBRARIES}
 )
 
+# define 3rd include directories
+set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
+
+# include 3rd party directories globally
+include_directories(${IMGUI_INCLUDE_DIR})
+
 # link 3rd party libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
