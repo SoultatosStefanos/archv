@@ -149,30 +149,15 @@
 	+ [x] Interactive app with GUI Mockup
 
 
-# 07 / 08 / 2022
-
-	+ [ ] Finish GUI Mockup
-
-			+ [ ] Implement transitions or stick with vanilla popups
-
-			+ [ ] Split into gui classes
-
-
 # 08 / 08 / 2022
 
 	+ [ ] Finish GUI Mockup
 	
-		+ [x] Implement gui package
+		+ [ ] Implement paused state
 
-		+ [x] Implement paused state
+		+ [ ] Implement running state
 
-		+ [x] Implement rendering package
+		+ [ ] Implement app
 
-		+ [x] Implement running state
-
-		+ [n] Rename cores to user interactors
-
-		+ [ ] Cleanup app
-
-	+ [ ] Create new GUI Mockups
+	+ [n] Create new GUI Mockups
 
