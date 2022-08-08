@@ -1,5 +1,6 @@
 #include "pause_menu.hpp"
 
+#include "pause_menu_private.hpp"
 #include "view/state_machine.hpp"
 
 #include <OGRE/OgreRoot.h>
@@ -7,6 +8,80 @@
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
+
+namespace gui::detail
+{
+
+void pause_menu_gui::draw() const
+{
+    static bool open = true;
+
+    if (!ImGui::Begin("ARCHV", &open))
+    {
+        ImGui::End();
+        return;
+    }
+
+    ImGui::Text("Architecture visualization in 3D!");
+    ImGui::Spacing();
+
+    if (ImGui::CollapsingHeader("Dependencies"))
+    {
+    }
+
+    if (ImGui::CollapsingHeader("Layout/Topology"))
+    {
+        if (ImGui::TreeNode("Layout"))
+        {
+            static int selected = -1;
+
+            if (ImGui::Selectable("Gursoy Atun", selected == 0))
+            {
+                selected = 0;
+            }
+
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Topology"))
+        {
+            static int selected = -1;
+
+            if (ImGui::Selectable("Cube", selected == 0))
+                selected = 0;
+
+            if (ImGui::Selectable("Sphere", selected == 1))
+                selected = 1;
+
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Scale"))
+        {
+            static int selected = -1;
+
+            if (ImGui::Selectable("200", selected == 0))
+                selected = 0;
+
+            if (ImGui::Selectable("100", selected == 1))
+                selected = 1;
+
+            if (ImGui::Selectable("80", selected == 1))
+                selected = 1;
+
+            ImGui::TreePop();
+        }
+    }
+    if (ImGui::CollapsingHeader("Clustering"))
+    {
+    }
+
+    if (ImGui::CollapsingHeader("Code Inspection"))
+    {
+    }
+}
+
+} // namespace gui::detail
 
 namespace gui
 {
@@ -37,7 +112,7 @@ void pause_menu::resume() { }
 auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 {
     Ogre::ImGuiOverlay::NewFrame();
-    ImGui::ShowDemoWindow();
+    m_gui.draw();
 
     return true;
 }

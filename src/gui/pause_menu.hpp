@@ -4,6 +4,7 @@
 #ifndef GUI_PAUSE_MENU_HPP
 #define GUI_PAUSE_MENU_HPP
 
+#include "pause_menu_private.hpp"
 #include "view/state.hpp"
 
 #include <OGRE/Bites/OgreImGuiInputListener.h>
@@ -52,6 +53,8 @@ private:
     Ogre::SceneManager* m_scene; // From global context
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
+
+    detail::pause_menu_gui m_gui;
 };
 
 } // namespace gui
