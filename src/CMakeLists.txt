@@ -3,7 +3,6 @@ set(SUBDIRECTORIES
 	architecture
 	config
 	dependencies
-	gui
 	layout
 	rendering
 	undo_redo
