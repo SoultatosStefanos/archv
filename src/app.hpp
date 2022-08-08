@@ -93,6 +93,9 @@ private:
     void setup_gui();
     void setup_rendering();
 
+    void connect_gui_with_layout();
+    void connect_layout_with_rendering();
+
     void shutdown_rendering();
     void shutdown_gui();
     void shutdown_view();

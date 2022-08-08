@@ -35,6 +35,9 @@ void app::setup()
     setup_gui();
     setup_rendering();
 
+    connect_gui_with_layout();
+    connect_layout_with_rendering();
+
     get_state_machine().start(&get_graph_visualization());
     lay_graph(get_layout_core().get_layout());
 }
@@ -138,6 +141,27 @@ void app::setup_rendering()
         std::move(ids));
 
     BOOST_LOG_TRIVIAL(info) << "setup rendering";
+}
+
+void app::connect_gui_with_layout()
+{
+    get_pause_menu().connect_to_layout(
+        [this](const auto& selection)
+        { get_layout_core().update_layout(selection); });
+
+    get_pause_menu().connect_to_topology(
+        [this](const auto& selection)
+        { get_layout_core().update_topology(selection); });
+
+    get_pause_menu().connect_to_scale(
+        [this](auto selection)
+        { get_layout_core().update_topology(selection); });
+}
+
+void app::connect_layout_with_rendering()
+{
+    get_layout_core().connect_to_layout([this](const auto& l)
+                                        { lay_graph(l); });
 }
 
 /***********************************************************

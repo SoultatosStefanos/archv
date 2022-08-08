@@ -151,19 +151,19 @@
 
 # 08 / 08 / 2022
 
-	+ [ ] Finish GUI Mockup
+	+ [x] Finish GUI Mockup
 	
 		+ [x] Implement running state
 
 		+ [x] Implement app
 		
-		+ [ ] Implement paused state
+		+ [x] Implement paused state
 
 			+ [x] Integrate imgui
 
 			+ [x] Make demo with imgui demo window across states
 
-			+ [ ] Make pause menu gui
+			+ [x] Make pause menu gui
 
 	+ [n] Create new GUI Mockups
 
