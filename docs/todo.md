@@ -144,10 +144,6 @@
 
 	+ [n] Zoom out on running state pause
 
-	+ [n] Finish GUI Mockup
-
-	+ [x] Interactive app with GUI Mockup
-
 
 # 08 / 08 / 2022
 
@@ -166,4 +162,15 @@
 			+ [x] Make pause menu gui
 
 	+ [n] Create new GUI Mockups
+
+
+# 09 / 08 / 2022
+
+	+ [ ] Clang tidy check
+
+	+ [ ] Dependencies responsive gui
+
+	+ [ ] Config files (Config data/apis ?)
+
+	+ [ ] Progress bars
 
