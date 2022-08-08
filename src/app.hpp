@@ -53,7 +53,7 @@ protected:
 
     using state_machine = view::state_machine;
     using state_input_dispatcher = view::state_input_dispatcher;
-    using running_state = rendering::running_state;
+    using running_state = rendering::graph_visualization;
     using paused_state = gui::paused_state;
 
     auto get_symbol_table() const -> const symbol_table&;

@@ -153,9 +153,9 @@
 
 	+ [ ] Finish GUI Mockup
 	
-		+ [ ] Implement paused state
+		+ [x] Implement running state
 
-		+ [ ] Implement running state
+		+ [ ] Implement paused state
 
 		+ [ ] Implement app
 

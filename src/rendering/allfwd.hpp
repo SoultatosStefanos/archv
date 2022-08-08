@@ -7,8 +7,7 @@
 namespace rendering
 {
 
-class graph_renderer;
-class running_state;
+class graph_visualization;
 
 } // namespace rendering
 

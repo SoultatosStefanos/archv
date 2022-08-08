@@ -1,6 +1,5 @@
 set(FILES
-	graph_renderer.cpp
-	running_state.cpp
+	graph_visualization.cpp
 )
 set(SUBDIRECTORIES)
 

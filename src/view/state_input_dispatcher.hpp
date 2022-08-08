@@ -12,6 +12,7 @@ namespace view
 
 class state_machine;
 
+// Dispatches input to the active state of a state machine.
 class state_input_dispatcher : public OgreBites::InputListener
 {
 public:
