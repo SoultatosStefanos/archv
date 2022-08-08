@@ -1,4 +1,4 @@
-#include "mygui_input_dispatcher.hpp"
+#include "mygui_input.hpp"
 
 #include <MYGUI/MyGUI.h>
 #include <cassert>
@@ -27,27 +27,27 @@ namespace
 
 } // namespace
 
-void mygui_input_dispatcher::handle(const OgreBites::KeyboardEvent& e) const
+void mygui_dispatch(const OgreBites::KeyboardEvent& e)
 {
     native_manager().injectKeyPress(translate(e.keysym.sym), e.type);
 }
 
-void mygui_input_dispatcher::handle(const OgreBites::KeyboardEvent& e) const
+void mygui_dispatch(const OgreBites::KeyboardEvent& e)
 {
     native_manager().injectKeyRelease(translate(e.keysym.sym));
 }
 
-void mygui_input_dispatcher::handle(const OgreBites::MouseMotionEvent& e) const
+void mygui_dispatch(const OgreBites::MouseMotionEvent& e)
 {
     native_manager().injectMouseMove(e.x, e.y, 0); // 2D
 }
 
-void mygui_input_dispatcher::handle(const OgreBites::MouseButtonEvent& e) const
+void mygui_dispatch(const OgreBites::MouseButtonEvent& e)
 {
     native_manager().injectMousePress(e.x, e.y, translate(e.button));
 }
 
-void mygui_input_dispatcher::handle(const OgreBites::MouseButtonEvent& e) const
+void mygui_dispatch(const OgreBites::MouseButtonEvent& e)
 {
     native_manager().injectMouseRelease(e.x, e.y, translate(e.button));
 }

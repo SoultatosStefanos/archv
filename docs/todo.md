@@ -157,6 +157,20 @@
 
 			+ [ ] Split into gui classes
 
-	+ [ ] Progress bars, progress monitoring
 
-	+ [ ] Introduce configs for the views
+# 08 / 08 / 2022
+
+	+ [ ] Finish GUI Mockup
+	
+		+ [x] Implement gui package
+
+		+ [x] Implement paused state
+
+		+ [ ] Implement rendering package
+
+		+ [ ] Implement running state
+
+		+ [ ] Rename cores to user interactors
+
+		+ [ ] Cleanup app
+

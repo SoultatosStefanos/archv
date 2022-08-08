@@ -1,4 +1,4 @@
-// Contains the menu bar gui of the application.
+// Contains the pause menu gui of the application.
 // Soultatos Stefanos 2022
 
 #ifndef GUI_PAUSE_MENU_HPP
@@ -12,6 +12,7 @@
 namespace gui
 {
 
+// Pause menu overlay.
 class pause_menu
 {
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
@@ -24,14 +25,14 @@ public:
     using scale_slot = scale_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    using layout_options_set = std::vector< std::string >;
-    using topology_options_set = std::vector< std::string >;
-    using scale_options_set = std::vector< double >;
+    using layout_options = std::vector< std::string >;
+    using topology_options = std::vector< std::string >;
+    using scale_options = std::vector< double >;
 
     pause_menu(
-        layout_options_set layout_options = layout_options_set(),
-        topology_options_set topology_options = topology_options_set(),
-        scale_options_set scale_options = scale_options_set());
+        layout_options layout_selections = layout_options(),
+        topology_options topology_selections = topology_options(),
+        scale_options scale_selections = scale_options());
 
     ~pause_menu();
 
@@ -40,6 +41,9 @@ public:
 
     auto operator=(const pause_menu&) -> pause_menu& = delete;
     auto operator=(pause_menu&&) -> pause_menu& = delete;
+
+    void show();
+    void hide();
 
     auto connect_to_layout(const layout_slot& slot) -> connection
     {
@@ -56,18 +60,22 @@ public:
         return m_scale_sig.connect(slot);
     }
 
-private:
+protected:
     void emit_layout(MyGUI::Widget* from) const;
     void emit_topology(MyGUI::Widget* from) const;
     void emit_scale(MyGUI::Widget* from) const;
 
+private:
     layout_signal m_layout_sig;
     topology_signal m_topology_sig;
     scale_signal m_scale_sig;
 
-    layout_options_set m_layout_options;
-    topology_options_set m_topology_options;
-    scale_options_set m_scale_options;
+    layout_options m_layouts;
+    topology_options m_topologies;
+    scale_options m_scales;
+
+    MyGUI::MenuBar* m_root { nullptr };
+    MyGUI::VectorWidgetPtr m_widgets;
 };
 
 } // namespace gui

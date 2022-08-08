@@ -16,18 +16,17 @@ namespace
 
 } // namespace
 
-// TODO Cleanup
 pause_menu::pause_menu(
-    layout_options_set layout_options,
-    topology_options_set topology_options,
-    scale_options_set scale_options)
-: m_layout_options { std::move(layout_options) }
-, m_topology_options { topology_options }
-, m_scale_options { scale_options }
+    layout_options layouts, topology_options topologies, scale_options scales)
+: m_layouts { std::move(layouts) }
+, m_topologies { topologies }
+, m_scales { scales }
 {
-    // Menubar
+    /***********************************************************
+     * Menu bar                                                *
+     ***********************************************************/
 
-    auto* menubar = native_gui().createWidget< MyGUI::MenuBar >(
+    m_root = native_gui().createWidget< MyGUI::MenuBar >(
         "MenuBar",
         20,
         40,
@@ -35,95 +34,150 @@ pause_menu::pause_menu(
         60,
         MyGUI::Align::HStretch | MyGUI::Align::Top,
         "Main");
+    m_widgets.push_back(m_root);
 
-    // Layout
+    /***********************************************************
+     * Layout/Topology                                         *
+     ***********************************************************/
+
+    auto* layout_topology_btn
+        = m_root->addItem("Layout / Topology", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(layout_topology_btn);
+
+    auto* layout_topology_popup
+        = layout_topology_btn->createWidget< MyGUI::PopupMenu >(
+            MyGUI::WidgetStyle::Popup,
+            "PopupMenu",
+            MyGUI::IntCoord(),
+            MyGUI::Align::Default,
+            "Popup");
+    m_widgets.push_back(layout_topology_popup);
+
+    layout_topology_popup->setPopupAccept(true);
+
+    /***********************************************************
+     * Layout                                                  *
+     ***********************************************************/
 
     auto* layout_btn
-        = menubar->addItem("Layout / Topology", MyGUI::MenuItemType::Popup);
+        = layout_topology_popup->addItem("Layout", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(layout_btn);
 
-    auto* p = layout_btn->createWidget< MyGUI::PopupMenu >(
+    auto* layout_popup = layout_btn->createWidget< MyGUI::PopupMenu >(
         MyGUI::WidgetStyle::Popup,
         "PopupMenu",
         MyGUI::IntCoord(),
         MyGUI::Align::Default,
         "Popup");
+    m_widgets.push_back(layout_popup);
 
-    p->setPopupAccept(true);
+    layout_popup->setPopupAccept(true);
 
-    auto* la = p->addItem("Layout", MyGUI::MenuItemType::Popup);
-
-    auto* p1 = la->createWidget< MyGUI::PopupMenu >(
-        MyGUI::WidgetStyle::Popup,
-        "PopupMenu",
-        MyGUI::IntCoord(),
-        MyGUI::Align::Default,
-        "Popup");
-
-    p1->setPopupAccept(true);
-
-    for (const auto& layout_option : m_layout_options)
+    for (const auto& option : m_layouts)
     {
-        auto* i = p1->addItem(layout_option, MyGUI::MenuItemType::Normal);
+        auto* i = layout_popup->addItem(option, MyGUI::MenuItemType::Normal);
+        m_widgets.push_back(i);
 
         i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_layout);
     }
 
-    auto* tt = p->addItem("Topology", MyGUI::MenuItemType::Popup);
+    /***********************************************************
+     * Topology                                                *
+     ***********************************************************/
 
-    auto* p2 = tt->createWidget< MyGUI::PopupMenu >(
+    auto* topology_btn = layout_topology_popup->addItem(
+        "Topology", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(topology_btn);
+
+    auto* topology_popup = topology_btn->createWidget< MyGUI::PopupMenu >(
         MyGUI::WidgetStyle::Popup,
         "PopupMenu",
         MyGUI::IntCoord(),
         MyGUI::Align::Default,
         "Popup");
+    m_widgets.push_back(topology_popup);
 
-    p2->setPopupAccept(true);
+    topology_popup->setPopupAccept(true);
 
-    for (const auto& topology_option : m_topology_options)
+    for (const auto& option : m_topologies)
     {
-        auto* i = p2->addItem(topology_option, MyGUI::MenuItemType::Normal);
+        auto* i = topology_popup->addItem(option, MyGUI::MenuItemType::Normal);
+        m_widgets.push_back(i);
 
         i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_topology);
     }
 
-    auto* ts = p->addItem("Scale", MyGUI::MenuItemType::Popup);
+    /***********************************************************
+     * Scale                                                   *
+     ***********************************************************/
 
-    auto* p3 = ts->createWidget< MyGUI::PopupMenu >(
+    auto* scale_btn
+        = layout_topology_popup->addItem("Scale", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(scale_btn);
+
+    auto* scale_popup = scale_btn->createWidget< MyGUI::PopupMenu >(
         MyGUI::WidgetStyle::Popup,
         "PopupMenu",
         MyGUI::IntCoord(),
         MyGUI::Align::Default,
         "Popup");
+    m_widgets.push_back(scale_popup);
 
-    p3->setPopupAccept(true);
+    scale_popup->setPopupAccept(true);
 
-    for (auto scale_option : m_scale_options)
+    for (auto option : m_scales)
     {
-        const auto scale_str = std::to_string(scale_option);
-        auto* i = p3->addItem(scale_str, MyGUI::MenuItemType::Normal);
+        const auto scale_str = std::to_string(option);
+        auto* i = scale_popup->addItem(scale_str, MyGUI::MenuItemType::Normal);
+        m_widgets.push_back(i);
 
         i->eventMouseButtonClick = MyGUI::newDelegate(this, &emit_scale);
     }
 
-    // Rest
+    /***********************************************************
+     * Clustering                                              *
+     ***********************************************************/
 
     auto* clustering_btn
-        = menubar->addItem("Clustering", MyGUI::MenuItemType::Popup);
-    auto* code_btn
-        = menubar->addItem("Code Inspection", MyGUI::MenuItemType::Popup);
+        = m_root->addItem("Clustering", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(clustering_btn);
+
+    /***********************************************************
+     * Code inspection                                         *
+     ***********************************************************/
+
+    auto* code_inspection_btn
+        = m_root->addItem("Code Inspection", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(code_inspection_btn);
+
+    /***********************************************************
+     * Settings                                                *
+     ***********************************************************/
+
     auto* settings_btn
-        = menubar->addItem("Settings", MyGUI::MenuItemType::Popup);
+        = m_root->addItem("Settings", MyGUI::MenuItemType::Popup);
+    m_widgets.push_back(settings_btn);
 
-    auto* s1 = menubar->addItem("Seperator1", MyGUI::MenuItemType::Separator);
-    auto* s2 = menubar->addItem("Seperator2", MyGUI::MenuItemType::Separator);
-    auto* s3 = menubar->addItem("Seperator3", MyGUI::MenuItemType::Separator);
-    auto* s4 = menubar->addItem("Seperator4", MyGUI::MenuItemType::Separator);
+    /***********************************************************
+     * Separators                                              *
+     ***********************************************************/
 
-    // Coords
+    auto* s1 = m_root->addItem("Seperator1", MyGUI::MenuItemType::Separator);
+    m_widgets.push_back(s1);
+    auto* s2 = m_root->addItem("Seperator2", MyGUI::MenuItemType::Separator);
+    m_widgets.push_back(s2);
+    auto* s3 = m_root->addItem("Seperator3", MyGUI::MenuItemType::Separator);
+    m_widgets.push_back(s3);
+    auto* s4 = m_root->addItem("Seperator4", MyGUI::MenuItemType::Separator);
+    m_widgets.push_back(s4);
 
-    layout_btn->setCoord(0, 0, 270, 60);
+    /***********************************************************
+     * Coordinates                                             *
+     ***********************************************************/
+
+    layout_topology_btn->setCoord(0, 0, 270, 60);
     clustering_btn->setCoord(270, 0, 270, 60);
-    code_btn->setCoord(540, 0, 270, 60);
+    code_inspection_btn->setCoord(540, 0, 270, 60);
     settings_btn->setCoord(1630, 0, 270, 60);
 
     s1->setCoord(270, 10, 40, 40);
@@ -132,11 +186,11 @@ pause_menu::pause_menu(
     s4->setCoord(1630, 10, 40, 40);
 }
 
-// TODO
-pause_menu::~pause_menu()
-{
-    // Cleanup with care
-}
+pause_menu::~pause_menu() { native_gui().destroyWidgets(m_widgets); }
+
+void pause_menu::show() { m_root->setVisible(true); }
+
+void pause_menu::hide() { m_root->setVisible(false); }
 
 void pause_menu::emit_layout(MyGUI::Widget* from) const
 {

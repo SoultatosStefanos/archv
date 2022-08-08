@@ -28,12 +28,13 @@ public:
         return singleton;
     }
 
+    auto get_platform() const -> MyGUI::OgrePlatform* { return m_platform; }
+    auto get_gui() const -> MyGUI::Gui* { return m_gui; }
+
     auto is_initialized() const -> bool;
 
     void initialize(Ogre::RenderWindow* win, Ogre::SceneManager* scene);
     void shutdown();
-
-    auto get_platform() const -> MyGUI::OgrePlatform* { return m_platform; }
 
 private:
     mygui_manager() = default;

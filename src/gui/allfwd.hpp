@@ -7,10 +7,10 @@
 namespace gui
 {
 
-class mygui_input_dispatcher;
 class mygui_manager;
+class overlay_manager;
 class pause_menu;
-class ui_manager;
+class paused_state;
 
 } // namespace gui
 

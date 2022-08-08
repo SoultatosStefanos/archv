@@ -48,7 +48,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
 # setup driver target
 set(DRIVER archv_main)
-set(DRIVER_FILES src/app.cpp src/main.cpp)
+set(DRIVER_FILES)
 
 if(DRIVER_FILES)
   add_executable(${DRIVER} ${DRIVER_FILES})
