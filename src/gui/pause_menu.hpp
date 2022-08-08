@@ -30,6 +30,11 @@ public:
     using topology_options = detail::pause_menu_gui::topology_options;
     using scale_options = detail::pause_menu_gui::scale_options;
 
+    using layout_slot = detail::pause_menu_gui::layout_slot;
+    using topology_slot = detail::pause_menu_gui::topology_slot;
+    using scale_slot = detail::pause_menu_gui::scale_slot;
+    using connection = detail::pause_menu_gui::connection;
+
     explicit pause_menu(
         state_machine& sm,
         layout_options layouts = layout_options(),
@@ -37,6 +42,21 @@ public:
         scale_options scales = scale_options());
 
     virtual ~pause_menu() override = default;
+
+    auto connect_to_layout(const layout_slot& slot) -> connection
+    {
+        return m_gui.connect_to_layout(slot);
+    }
+
+    auto connect_to_topology(const topology_slot& slot) -> connection
+    {
+        return m_gui.connect_to_topology(slot);
+    }
+
+    auto connect_to_scale(const scale_slot& slot) -> connection
+    {
+        return m_gui.connect_to_scale(slot);
+    }
 
     virtual void enter() override;
     virtual void exit() override;

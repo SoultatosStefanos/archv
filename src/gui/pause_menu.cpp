@@ -45,8 +45,15 @@ void pause_menu_gui::draw() const
 
             for (std::size_t i = 0; i < m_layouts.size(); ++i)
             {
-                if (ImGui::Selectable(m_layouts.at(i).c_str(), selected == i))
+                const auto& option = m_layouts.at(i);
+                const auto* buf = option.c_str();
+
+                if (ImGui::Selectable(buf, selected == i))
+                {
                     selected = i;
+
+                    m_layout_signal(option);
+                }
             }
 
             ImGui::TreePop();
@@ -58,9 +65,15 @@ void pause_menu_gui::draw() const
 
             for (std::size_t i = 0; i < m_topologies.size(); ++i)
             {
-                if (ImGui::Selectable(
-                        m_topologies.at(i).c_str(), selected == i))
+                const auto& option = m_topologies.at(i);
+                const auto* buf = option.c_str();
+
+                if (ImGui::Selectable(buf, selected == i))
+                {
                     selected = i;
+
+                    m_topology_signal(option);
+                }
             }
 
             ImGui::TreePop();
@@ -72,10 +85,15 @@ void pause_menu_gui::draw() const
 
             for (std::size_t i = 0; i < m_scales.size(); ++i)
             {
-                const auto scale = m_scales.at(i);
-                const auto scale_str = std::to_string(scale);
-                if (ImGui::Selectable(scale_str.c_str(), selected == i))
+                const auto option = m_scales.at(i);
+                const auto* buf = std::to_string(option).c_str();
+
+                if (ImGui::Selectable(buf, selected == i))
+                {
                     selected = i;
+
+                    m_scale_signal(option);
+                }
             }
 
             ImGui::TreePop();
