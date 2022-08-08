@@ -159,5 +159,11 @@
 		
 		+ [ ] Implement paused state
 
+			+ [x] Integrate imgui
+
+			+ [x] Make demo with imgui demo window across states
+
+			+ [ ] Make pause menu gui
+
 	+ [n] Create new GUI Mockups
 
