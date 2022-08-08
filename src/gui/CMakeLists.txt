@@ -1,14 +1,7 @@
-set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	gui
-	layout
-	rendering
-	undo_redo
-	view
+set(FILES
+	pause_menu.cpp
 )
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
