@@ -104,7 +104,7 @@ public:
     using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
     using descriptor = typename layout_factory< graph >::descriptor;
-    using slot_type = signal::slot_type;
+    using slot_type = typename signal::slot_type;
     using connection = boost::signals2::connection;
 
     update_layout_service(
@@ -244,7 +244,7 @@ public:
     using topology_pointer = topology_factory::pointer;
     using descriptor = topology_factory::descriptor;
     using scale_type = topology_factory::scale_type;
-    using slot_type = signal::slot_type;
+    using slot_type = typename signal::slot_type;
     using connection = boost::signals2::connection;
 
     update_topology_service(
@@ -393,7 +393,7 @@ public:
     using layout_descriptor = typename layout_factory< graph >::descriptor;
     using topology_descriptor = topology_factory::descriptor;
     using topology_scale = topology_factory::scale_type;
-    using slot_type = signal::slot_type;
+    using slot_type = typename signal::slot_type;
     using connection = boost::signals2::connection;
 
     revert_to_defaults_service(

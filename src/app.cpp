@@ -48,8 +48,8 @@ void app::setup_architecture()
     const auto& root = config::json_archive::get().at(ARCHV_INPUT_GRAPH_PATH);
 
     m_st = architecture::deserialize_symbols(root);
-    auto&& [g, _] = architecture::deserialize_dependencies(root, m_st);
-    m_g = std::move(g);
+    std::tie(m_g, std::ignore)
+        = architecture::deserialize_dependencies(root, m_st);
 
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
@@ -89,12 +89,7 @@ void app::setup_layout()
         boost::get(boost::edge_bundle, std::as_const(get_graph())));
 
     m_layout = std::make_unique< layout_core >(
-        get_cmds(),
-        get_graph(),
-        std::move(weight_map),
-        "Gursoy Atun",
-        "Sphere",
-        100);
+        get_cmds(), get_graph(), weight_map, "Gursoy Atun", "Sphere", 100);
 
     BOOST_LOG_TRIVIAL(info) << "setup layout";
 }

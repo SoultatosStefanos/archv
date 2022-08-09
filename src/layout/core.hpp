@@ -31,7 +31,7 @@ public:
     using command_history = undo_redo::command_history;
     using graph = Graph;
     using weight_map = WeightMap;
-    using layout_slot_type = layout_signal::slot_type;
+    using layout_slot_type = typename layout_signal::slot_type;
     using topology_slot_type = topology_signal::slot_type;
     using connection = boost::signals2::connection;
 

@@ -166,9 +166,12 @@
 
 # 09 / 08 / 2022
 
-	+ [ ] Clang tidy check
+	+ [+] Dependencies responsive gui
 
-	+ [ ] Dependencies responsive gui
+	+ [x] Clang tidy check
+
+	+ [ ] At Layout interactors run no checks before applying functions
+	(What if only the dependencies weights change?)
 
 	+ [ ] Config files (Config data/apis ?)
 
