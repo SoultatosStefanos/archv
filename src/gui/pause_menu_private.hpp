@@ -19,6 +19,7 @@ class pause_menu_gui
     using scale_signal = boost::signals2::signal< void(double) >;
 
 public:
+    using dependencies = std::vector< std::string >;
     using layout_options = std::vector< std::string >;
     using topology_options = std::vector< std::string >;
     using scale_options = std::vector< double >;
@@ -29,6 +30,7 @@ public:
     using connection = boost::signals2::connection;
 
     pause_menu_gui(
+        dependencies deps = dependencies(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
         scale_options scales = scale_options());
@@ -51,6 +53,7 @@ public:
     }
 
 private:
+    dependencies m_dependencies;
     layout_options m_layouts;
     topology_options m_topologies;
     scale_options m_scales;

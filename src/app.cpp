@@ -118,6 +118,17 @@ void app::setup_gui()
 
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
+        pause_menu::dependencies { "Inherit",
+                                   "Friend",
+                                   "NestedClass",
+                                   "ClassField",
+                                   "ClassTemplateParent",
+                                   "ClassTemplateArg",
+                                   "MethodReturn",
+                                   "MethodArg",
+                                   "MethodDefinition",
+                                   "MemberExpr",
+                                   "MethodTemplateArgs" },
         pause_menu::layout_options { "Gursoy Atun" },
         pause_menu::topology_options { "Cube", "Sphere" },
         pause_menu::scale_options { 200, 100, 80 });

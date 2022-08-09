@@ -26,6 +26,7 @@ class pause_menu : public view::state
 public:
     using state_machine = view::state_machine;
 
+    using dependencies = detail::pause_menu_gui::dependencies;
     using layout_options = detail::pause_menu_gui::layout_options;
     using topology_options = detail::pause_menu_gui::topology_options;
     using scale_options = detail::pause_menu_gui::scale_options;
@@ -37,6 +38,7 @@ public:
 
     explicit pause_menu(
         state_machine& sm,
+        dependencies deps = dependencies(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
         scale_options scales = scale_options());

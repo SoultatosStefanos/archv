@@ -9,12 +9,119 @@
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
 
+namespace gui
+{
+
+pause_menu::pause_menu(
+    state_machine& sm,
+    dependencies deps,
+    layout_options layouts,
+    topology_options topologies,
+    scale_options scales)
+: m_sm { sm }
+, m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
+, m_gui { std::move(deps),
+          std::move(layouts),
+          std::move(topologies),
+          std::move(scales) }
+{
+}
+
+void pause_menu::enter()
+{
+    m_scene = Ogre::Root::getSingleton().getSceneManager("graph visualization");
+    assert(m_scene);
+
+    m_scene->addRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
+}
+
+void pause_menu::exit()
+{
+    m_scene->removeRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
+}
+
+void pause_menu::pause() { }
+
+void pause_menu::resume() { }
+
+auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
+{
+    Ogre::ImGuiOverlay::NewFrame();
+    // ImGui::ShowDemoWindow();
+    m_gui.draw();
+
+    return true;
+}
+
+auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
+{
+    if (e.keysym.sym == 'p')
+        m_sm.fallback();
+
+    m_imgui_input->keyPressed(e);
+    return true;
+}
+
+auto pause_menu::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
+{
+    m_imgui_input->keyReleased(e);
+    return true;
+}
+
+auto pause_menu::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
+{
+    m_imgui_input->mouseMoved(e);
+    return true;
+}
+
+auto pause_menu::mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool
+{
+    m_imgui_input->mouseWheelRolled(e);
+    return true;
+}
+
+auto pause_menu::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
+{
+    m_imgui_input->mousePressed(e);
+    return true;
+}
+
+auto pause_menu::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
+{
+    m_imgui_input->mouseReleased(e);
+    return true;
+}
+
+auto pause_menu::textInput(const OgreBites::TextInputEvent& e) -> bool
+{
+    m_imgui_input->textInput(e);
+    return true;
+}
+
+auto pause_menu::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
+{
+    m_imgui_input->buttonPressed(e);
+    return true;
+}
+
+auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
+{
+    m_imgui_input->buttonReleased(e);
+    return true;
+}
+
+} // namespace gui
+
 namespace gui::detail
 {
 
 pause_menu_gui::pause_menu_gui(
-    layout_options layouts, topology_options topologies, scale_options scales)
-: m_layouts { std::move(layouts) }
+    dependencies deps,
+    layout_options layouts,
+    topology_options topologies,
+    scale_options scales)
+: m_dependencies { std::move(deps) }
+, m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
 {
@@ -35,6 +142,22 @@ void pause_menu_gui::draw() const
 
     if (ImGui::CollapsingHeader("Dependencies"))
     {
+        static std::vector< char[64] > buffers { m_dependencies.size() };
+
+        for (std::size_t i = 0; i < m_dependencies.size(); ++i)
+        {
+            const auto& dependency = m_dependencies.at(i);
+            auto* buf = buffers[i];
+
+            if (ImGui::InputText(
+                    dependency.c_str(),
+                    buf,
+                    64,
+                    ImGuiInputTextFlags_CharsDecimal
+                        | ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+            }
+        }
     }
 
     if (ImGui::CollapsingHeader("Layout/Topology"))
@@ -109,101 +232,3 @@ void pause_menu_gui::draw() const
 }
 
 } // namespace gui::detail
-
-namespace gui
-{
-
-pause_menu::pause_menu(
-    state_machine& sm,
-    layout_options layouts,
-    topology_options topologies,
-    scale_options scales)
-: m_sm { sm }
-, m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
-, m_gui { std::move(layouts), std::move(topologies), std::move(scales) }
-{
-}
-
-void pause_menu::enter()
-{
-    m_scene = Ogre::Root::getSingleton().getSceneManager("graph visualization");
-    assert(m_scene);
-
-    m_scene->addRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
-}
-
-void pause_menu::exit()
-{
-    m_scene->removeRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
-}
-
-void pause_menu::pause() { }
-
-void pause_menu::resume() { }
-
-auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
-{
-    Ogre::ImGuiOverlay::NewFrame();
-    m_gui.draw();
-
-    return true;
-}
-
-auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
-{
-    if (e.keysym.sym == 'p')
-        m_sm.fallback();
-
-    m_imgui_input->keyPressed(e);
-    return true;
-}
-
-auto pause_menu::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
-{
-    m_imgui_input->keyReleased(e);
-    return true;
-}
-
-auto pause_menu::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
-{
-    m_imgui_input->mouseMoved(e);
-    return true;
-}
-
-auto pause_menu::mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool
-{
-    m_imgui_input->mouseWheelRolled(e);
-    return true;
-}
-
-auto pause_menu::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    m_imgui_input->mousePressed(e);
-    return true;
-}
-
-auto pause_menu::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    m_imgui_input->mouseReleased(e);
-    return true;
-}
-
-auto pause_menu::textInput(const OgreBites::TextInputEvent& e) -> bool
-{
-    m_imgui_input->textInput(e);
-    return true;
-}
-
-auto pause_menu::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
-{
-    m_imgui_input->buttonPressed(e);
-    return true;
-}
-
-auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
-{
-    m_imgui_input->buttonReleased(e);
-    return true;
-}
-
-} // namespace gui
