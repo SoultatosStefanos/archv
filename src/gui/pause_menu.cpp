@@ -14,7 +14,7 @@ namespace gui
 
 pause_menu::pause_menu(
     state_machine& sm,
-    dependencies deps,
+    dependencies_table deps,
     layout_options layouts,
     topology_options topologies,
     scale_options scales)
@@ -116,7 +116,7 @@ namespace gui::detail
 {
 
 pause_menu_gui::pause_menu_gui(
-    dependencies deps,
+    dependencies_table deps,
     layout_options layouts,
     topology_options topologies,
     scale_options scales)
@@ -142,12 +142,21 @@ void pause_menu_gui::draw() const
 
     if (ImGui::CollapsingHeader("Dependencies"))
     {
-        static std::vector< char[64] > buffers { m_dependencies.size() };
-
-        for (std::size_t i = 0; i < m_dependencies.size(); ++i)
+        const auto prepare_buffers = [this]()
         {
-            const auto& dependency = m_dependencies.at(i);
-            auto* buf = buffers[i];
+            std::vector< char[64] > buffers { m_dependencies.size() };
+
+            for (auto i = 0; const auto& [_, weight] : m_dependencies)
+                strcpy(buffers[i++], std::to_string(weight).c_str());
+
+            return buffers;
+        };
+
+        static auto buffers = prepare_buffers();
+
+        for (auto i = 0; const auto& [dependency, _] : m_dependencies)
+        {
+            auto* buf = buffers[i++];
 
             if (ImGui::InputText(
                     dependency.c_str(),
