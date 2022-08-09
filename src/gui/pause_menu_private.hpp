@@ -14,6 +14,9 @@ namespace gui::detail
 // TODO Pass config data?
 class pause_menu_gui
 {
+    using dependency_signal
+        = boost::signals2::signal< void(const std::string&, double) >;
+
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
     using topology_signal = boost::signals2::signal< void(const std::string&) >;
     using scale_signal = boost::signals2::signal< void(double) >;
@@ -24,6 +27,7 @@ public:
     using topology_options = std::vector< std::string >;
     using scale_options = std::vector< double >;
 
+    using dependency_slot = dependency_signal::slot_type;
     using layout_slot = layout_signal::slot_type;
     using topology_slot = topology_signal::slot_type;
     using scale_slot = scale_signal::slot_type;
@@ -36,6 +40,11 @@ public:
         scale_options scales = scale_options());
 
     void draw() const;
+
+    auto connect_to_dependency(const dependency_slot& slot) -> connection
+    {
+        return m_dependency_signal.connect(slot);
+    }
 
     auto connect_to_layout(const layout_slot& slot) -> connection
     {
@@ -58,6 +67,7 @@ private:
     topology_options m_topologies;
     scale_options m_scales;
 
+    dependency_signal m_dependency_signal;
     layout_signal m_layout_signal;
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;

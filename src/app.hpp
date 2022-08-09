@@ -93,6 +93,7 @@ private:
     void setup_gui();
     void setup_rendering();
 
+    void connect_gui_with_dependencies();
     void connect_gui_with_layout();
     void connect_layout_with_rendering();
 

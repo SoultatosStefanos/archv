@@ -35,6 +35,7 @@ void app::setup()
     setup_gui();
     setup_rendering();
 
+    connect_gui_with_dependencies();
     connect_gui_with_layout();
     connect_layout_with_rendering();
 
@@ -152,6 +153,13 @@ void app::setup_rendering()
         std::move(ids));
 
     BOOST_LOG_TRIVIAL(info) << "setup rendering";
+}
+
+void app::connect_gui_with_dependencies()
+{
+    get_pause_menu().connect_to_dependency(
+        [this](const auto& dependency, auto weight)
+        { get_dependencies_core().update_weight(dependency, weight); });
 }
 
 void app::connect_gui_with_layout()
