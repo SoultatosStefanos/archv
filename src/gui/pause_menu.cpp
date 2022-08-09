@@ -155,7 +155,12 @@ void pause_menu_gui::draw() const
                     64,
                     ImGuiInputTextFlags_CharsDecimal
                         | ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                if (strcmp(buf, "") == 0) // equal
+                    sprintf(buf, "0");
+
                 m_dependency_signal(dependency, std::stod(buf));
+            }
         }
     }
 
