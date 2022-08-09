@@ -142,7 +142,7 @@ void pause_menu_gui::draw() const
 
     if (ImGui::CollapsingHeader("Dependencies"))
     {
-        const auto prepare_buffers = [this]()
+        static auto buffers = [this]()
         {
             std::vector< char[64] > buffers { m_dependencies.size() };
 
@@ -150,9 +150,7 @@ void pause_menu_gui::draw() const
                 strcpy(buffers[i++], std::to_string(weight).c_str());
 
             return buffers;
-        };
-
-        static auto buffers = prepare_buffers();
+        }();
 
         for (auto i = 0; const auto& [dependency, _] : m_dependencies)
         {
