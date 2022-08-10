@@ -20,6 +20,10 @@ static void init_logging()
         logging::keywords::rotation_size = 10 * 1024 * 1024, // 10 MiB.
         logging::keywords::format = "[%TimeStamp%] [%Severity%]   %Message%");
 
+    logging::add_console_log(
+        std::cout,
+        logging::keywords::format = "[%TimeStamp%] [%Severity%]   %Message%");
+
     logging::core::get()->set_filter(
         logging::trivial::severity >= logging::trivial::info);
 

@@ -182,3 +182,5 @@
 
 	+ [ ] At Layout interactors run no checks before applying functions
 	(What if only the dependencies weights change?)
+
+	+ [ ] Exceptions instead of assertions on invalid requests
