@@ -61,6 +61,13 @@
 
 	+ [x] Restore defaults
 
+
+## Shared
+
+	+ [ ] Progress Bars
+
+	+ [ ] Interactive Configuration
+
 	
 # 08 / 07 / 2022
 
@@ -170,10 +177,8 @@
 
 	+ [x] Clang tidy check
 
+
+# 10 / 08 / 2022
+
 	+ [ ] At Layout interactors run no checks before applying functions
 	(What if only the dependencies weights change?)
-
-	+ [ ] Config files (Config data/apis ?)
-
-	+ [ ] Progress bars
-
