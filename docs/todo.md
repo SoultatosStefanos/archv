@@ -173,14 +173,14 @@
 
 # 09 / 08 / 2022
 
-	+ [+] Dependencies responsive gui
+	+ [x] Dependencies responsive gui
 
 	+ [x] Clang tidy check
 
 
-# 10 / 08 / 2022
+# 13 / 08 / 2022
 
-	+ [?] At Layout interactors run no checks before applying functions
+	+ [x] At Layout interactors run no checks before applying functions
 	(What if only the dependencies weights change?)
 
-	+ [ ] Exceptions instead of assertions on invalid requests
+	+ [n] Exceptions instead of assertions on invalid requests

@@ -242,6 +242,8 @@ TEST_F(
     SUCCEED();
 }
 
+#ifndef NDEBUG
+
 TEST_F(a_layout_core, will_abort_when_updating_with_invalid_layout_type)
 {
     EXPECT_DEATH(sys->update_layout("aaaaaaaa"), "");
@@ -251,5 +253,7 @@ TEST_F(a_layout_core, will_abort_when_updating_with_invalid_topology_type)
 {
     EXPECT_DEATH(sys->update_topology("aaaaaaaa", 22), "");
 }
+
+#endif
 
 } // namespace

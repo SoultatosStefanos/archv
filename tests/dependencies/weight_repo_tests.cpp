@@ -18,11 +18,15 @@ protected:
     std::unique_ptr< weight_repo > repo;
 };
 
+#ifndef NDEBUG
+
 TEST_F(
     given_a_weight_repo, querying_weight_of_unset_dependency_results_to_death)
 {
     EXPECT_DEATH(repo->get_weight("any"), "");
 }
+
+#endif
 
 TEST_F(
     given_a_weight_repo,

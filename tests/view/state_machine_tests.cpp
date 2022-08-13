@@ -29,8 +29,8 @@ protected:
     void SetUp() override { sm = std::make_unique< state_machine >(); }
 
     std::unique_ptr< state_machine > sm;
-    mock_state mock;
-    mock_state mock2;
+    NiceMock< mock_state > mock;
+    NiceMock< mock_state > mock2;
 };
 
 TEST_F(given_a_state_machine, initially_is_not_started)
@@ -63,11 +63,6 @@ TEST_F(
     sm->start(&mock);
 
     ASSERT_EQ(sm->get_active_state(), &mock);
-}
-
-TEST_F(given_a_state_machine, a_transition_before_starting_results_to_death)
-{
-    EXPECT_DEATH(sm->transition_to(&mock2), "");
 }
 
 TEST_F(given_a_state_machine, after_transition_has_active_state)
@@ -110,12 +105,6 @@ TEST_F(
     sm->transition_to(&mock2);
 }
 
-TEST_F(
-    given_a_state_machine, a_commit_transition_before_starting_results_to_death)
-{
-    EXPECT_DEATH(sm->commit_transition_to(&mock2), "");
-}
-
 TEST_F(given_a_state_machine, a_commit_transition_takes_us_to_the_next_state)
 {
     sm->start(&mock);
@@ -145,11 +134,6 @@ TEST_F(
     EXPECT_CALL(mock2, enter).Times(1);
 
     sm->commit_transition_to(&mock2);
-}
-
-TEST_F(given_a_state_machine, a_fallback_before_starting_results_to_death)
-{
-    EXPECT_DEATH(sm->fallback(), "");
 }
 
 TEST_F(given_a_state_machine, a_fallback_after_starting_causes_no_active_state)
