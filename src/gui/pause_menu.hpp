@@ -26,16 +26,16 @@ class pause_menu : public view::state
 public:
     using state_machine = view::state_machine;
 
-    using dependencies_table = detail::pause_menu_gui::dependencies_table;
-    using layout_options = detail::pause_menu_gui::layout_options;
-    using topology_options = detail::pause_menu_gui::topology_options;
-    using scale_options = detail::pause_menu_gui::scale_options;
+    using dependencies_table = detail::pause_window::dependencies_table;
+    using layout_options = detail::pause_window::layout_options;
+    using topology_options = detail::pause_window::topology_options;
+    using scale_options = detail::pause_window::scale_options;
 
-    using dependency_slot = detail::pause_menu_gui::dependency_slot;
-    using layout_slot = detail::pause_menu_gui::layout_slot;
-    using topology_slot = detail::pause_menu_gui::topology_slot;
-    using scale_slot = detail::pause_menu_gui::scale_slot;
-    using connection = detail::pause_menu_gui::connection;
+    using dependency_slot = detail::pause_window::dependency_slot;
+    using layout_slot = detail::pause_window::layout_slot;
+    using topology_slot = detail::pause_window::topology_slot;
+    using scale_slot = detail::pause_window::scale_slot;
+    using connection = detail::pause_window::connection;
 
     explicit pause_menu(
         state_machine& sm,
@@ -48,22 +48,22 @@ public:
 
     auto connect_to_dependency(const dependency_slot& slot) -> connection
     {
-        return m_gui.connect_to_dependency(slot);
+        return m_win.connect_to_dependency(slot);
     }
 
     auto connect_to_layout(const layout_slot& slot) -> connection
     {
-        return m_gui.connect_to_layout(slot);
+        return m_win.connect_to_layout(slot);
     }
 
     auto connect_to_topology(const topology_slot& slot) -> connection
     {
-        return m_gui.connect_to_topology(slot);
+        return m_win.connect_to_topology(slot);
     }
 
     auto connect_to_scale(const scale_slot& slot) -> connection
     {
-        return m_gui.connect_to_scale(slot);
+        return m_win.connect_to_scale(slot);
     }
 
     virtual void enter() override;
@@ -91,7 +91,8 @@ private:
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
 
-    detail::pause_menu_gui m_gui;
+    detail::pause_window m_win;
+    detail::menu_bar m_bar;
 };
 
 } // namespace gui

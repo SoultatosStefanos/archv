@@ -9,11 +9,17 @@
 #include <unordered_map>
 #include <vector>
 
+// TODO Move these someplace else
+
 namespace gui::detail
 {
 
+/***********************************************************
+ * Pause window                                            *
+ ***********************************************************/
+
 // TODO Pass config data?
-class pause_menu_gui
+class pause_window
 {
     using dependency_signal
         = boost::signals2::signal< void(const std::string&, double) >;
@@ -34,7 +40,7 @@ public:
     using scale_slot = scale_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    pause_menu_gui(
+    pause_window(
         dependencies_table deps = dependencies_table(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
@@ -72,6 +78,16 @@ private:
     layout_signal m_layout_signal;
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;
+};
+
+/***********************************************************
+ * Menu Bar                                                *
+ ***********************************************************/
+
+class menu_bar
+{
+public:
+    void draw() const;
 };
 
 } // namespace gui::detail

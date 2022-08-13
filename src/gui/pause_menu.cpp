@@ -20,7 +20,7 @@ pause_menu::pause_menu(
     scale_options scales)
 : m_sm { sm }
 , m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
-, m_gui { std::move(deps),
+, m_win { std::move(deps),
           std::move(layouts),
           std::move(topologies),
           std::move(scales) }
@@ -48,7 +48,8 @@ auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 {
     Ogre::ImGuiOverlay::NewFrame();
     // ImGui::ShowDemoWindow();
-    m_gui.draw();
+    m_win.draw();
+    m_bar.draw();
 
     return true;
 }
@@ -115,7 +116,7 @@ auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
 namespace gui::detail
 {
 
-pause_menu_gui::pause_menu_gui(
+pause_window::pause_window(
     dependencies_table deps,
     layout_options layouts,
     topology_options topologies,
@@ -127,7 +128,7 @@ pause_menu_gui::pause_menu_gui(
 {
 }
 
-void pause_menu_gui::draw() const
+void pause_window::draw() const
 {
     static bool open = true;
 
@@ -239,6 +240,37 @@ void pause_menu_gui::draw() const
 
     if (ImGui::CollapsingHeader("Code Inspection"))
     {
+    }
+}
+
+void menu_bar::draw() const
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            // TODO
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z"))
+            {
+                // TODO
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
+            {
+                // TODO
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
     }
 }
 
