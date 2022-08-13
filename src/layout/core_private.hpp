@@ -337,7 +337,7 @@ private:
 
         BOOST_LOG_TRIVIAL(info)
             << "topology updated to: " << desc << " with scale: " << scale;
-        BOOST_LOG_TRIVIAL(info) << "layout updated";
+        BOOST_LOG_TRIVIAL(info) << "layout " << m_layout->desc() << " updated";
 
         m_signal(*m_layout, *m_space);
     }
