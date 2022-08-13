@@ -182,18 +182,8 @@ public:
 
     virtual ~update_layout_command() override = default;
 
-    virtual void execute() override
-    {
-        if (m_new_desc != m_layout->desc())
-            change_layout(m_new_desc);
-    }
-
-    virtual void undo() override
-    {
-        if (m_prev_desc != m_layout->desc())
-            change_layout(m_prev_desc);
-    }
-
+    virtual void execute() override { update_layout(m_new_desc); }
+    virtual void undo() override { update_layout(m_prev_desc); }
     virtual void redo() override { execute(); }
 
     virtual auto clone() const -> std::unique_ptr< command > override
@@ -202,12 +192,12 @@ public:
     }
 
 private:
-    void change_layout(const descriptor& desc)
+    void update_layout(const descriptor& desc)
     {
         m_layout = layout_factory< graph >::make_layout(
             desc, m_g, *m_space, m_edge_weight);
 
-        BOOST_LOG_TRIVIAL(info) << "layout changed to: " << desc;
+        BOOST_LOG_TRIVIAL(info) << "layout updated to: " << desc;
 
         m_signal(*m_layout);
     }
@@ -327,16 +317,10 @@ public:
 
     virtual void execute() override
     {
-        if (m_new_desc != m_space->desc() or m_new_scale != m_space->scale())
-            change_topology(m_new_desc, m_new_scale);
+        update_topology(m_new_desc, m_new_scale);
     }
 
-    virtual void undo() override
-    {
-        if (m_prev_desc != m_space->desc() or m_prev_scale != m_space->scale())
-            change_topology(m_prev_desc, m_prev_scale);
-    }
-
+    virtual void undo() override { update_topology(m_prev_desc, m_prev_scale); }
     virtual void redo() override { execute(); }
 
     virtual auto clone() const -> std::unique_ptr< command > override
@@ -345,15 +329,15 @@ public:
     }
 
 private:
-    void change_topology(const descriptor& desc, double scale)
+    void update_topology(const descriptor& desc, double scale)
     {
         m_space = topology_factory::make_topology(desc, scale);
         m_layout = layout_factory< graph >::make_layout(
             m_layout->desc(), m_g, *m_space, m_edge_weight);
 
         BOOST_LOG_TRIVIAL(info)
-            << "topology changed to: " << desc << " with scale: " << scale;
-        BOOST_LOG_TRIVIAL(info) << "layout updated";
+            << "topology updated to: " << desc << " with scale: " << scale;
+        BOOST_LOG_TRIVIAL(info) << "layout " << m_layout->desc() << " updated";
 
         m_signal(*m_layout, *m_space);
     }
@@ -488,24 +472,16 @@ public:
 
     virtual void execute() override
     {
-        if (m_initial_layout_desc != m_layout->desc()
-            or m_initial_topology_desc != m_topology->desc()
-            or m_initial_topology_scale != m_topology->scale())
-            change_layout(
-                m_initial_layout_desc,
-                m_initial_topology_desc,
-                m_initial_topology_scale);
+        update_layout_and_topology(
+            m_initial_layout_desc,
+            m_initial_topology_desc,
+            m_initial_topology_scale);
     }
 
     virtual void undo() override
     {
-        if (m_prev_layout_desc != m_layout->desc()
-            or m_prev_topology_desc != m_topology->desc()
-            or m_prev_topology_scale != m_topology->scale())
-            change_layout(
-                m_prev_layout_desc,
-                m_prev_topology_desc,
-                m_prev_topology_scale);
+        update_layout_and_topology(
+            m_prev_layout_desc, m_prev_topology_desc, m_prev_topology_scale);
     }
 
     virtual void redo() override { execute(); }
@@ -516,7 +492,7 @@ public:
     }
 
 private:
-    void change_layout(
+    void update_layout_and_topology(
         const layout_descriptor& layout_desc,
         const topology_descriptor& topology_desc,
         topology_scale topology_scale)
@@ -526,9 +502,9 @@ private:
         m_layout = layout_factory< graph >::make_layout(
             layout_desc, m_g, *m_topology, m_edge_weight);
 
-        BOOST_LOG_TRIVIAL(info) << "topology changed to: " << topology_desc
+        BOOST_LOG_TRIVIAL(info) << "topology updated to: " << topology_desc
                                 << " with scale: " << topology_scale;
-        BOOST_LOG_TRIVIAL(info) << "layout changed to: " << layout_desc;
+        BOOST_LOG_TRIVIAL(info) << "layout updated to: " << layout_desc;
 
         m_signal(*m_layout, *m_topology);
     }

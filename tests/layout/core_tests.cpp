@@ -61,25 +61,6 @@ protected:
     std::unique_ptr< core< graph, weight_map > > sys;
 };
 
-TEST_F(
-    a_layout_core, wont_emit_the_layout_when_updating_layout_with_the_same_type)
-{
-    mock_layout_slot mock;
-    sys->connect_to_layout(mock.AsStdFunction());
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
-
-    sys->update_layout(initial_layout_type);
-}
-
-// TODO
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_updating_layout_with_different_type)
-{
-    SUCCEED();
-}
-
 // TODO
 TEST_F(
     a_layout_core, will_revert_to_initial_layout_after_updating_layout_and_undo)
@@ -95,21 +76,7 @@ TEST_F(
     SUCCEED();
 }
 
-TEST_F(
-    a_layout_core,
-    wont_emit_the_topology_when_updating_topology_with_the_same_type_and_scale)
-{
-    mock_topology_slot mock;
-    sys->connect_to_topology(mock.AsStdFunction());
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
-
-    sys->update_topology(initial_topology_type, initial_topology_scale);
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_topology_when_updating_topology_with_different_type)
+TEST_F(a_layout_core, will_emit_the_topology_when_updating_topology)
 {
     mock_topology_slot mock;
     sys->connect_to_topology(mock.AsStdFunction());
@@ -122,9 +89,7 @@ TEST_F(
     sys->update_topology(new_topology_type, initial_topology_scale);
 }
 
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_updating_topology_with_different_type)
+TEST_F(a_layout_core, will_emit_the_layout_when_updating_topology)
 {
     mock_layout_slot mock;
     sys->connect_to_layout(mock.AsStdFunction());
@@ -135,36 +100,6 @@ TEST_F(
     EXPECT_CALL(mock, Call(testing::_)).Times(1);
 
     sys->update_topology(new_topology_type, initial_topology_scale);
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_topology_when_updating_topology_with_different_scale)
-{
-    mock_topology_slot mock;
-    sys->connect_to_topology(mock.AsStdFunction());
-    constexpr auto new_topology_scale = 80;
-
-    static_assert(new_topology_scale != initial_topology_scale);
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
-
-    sys->update_topology(initial_topology_type, new_topology_scale);
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_updating_topology_with_different_scale)
-{
-    mock_layout_slot mock;
-    sys->connect_to_layout(mock.AsStdFunction());
-    constexpr auto new_topology_scale = 80;
-
-    static_assert(new_topology_scale != initial_topology_scale);
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
-
-    sys->update_topology(initial_topology_type, new_topology_scale);
 }
 
 TEST_F(
@@ -221,48 +156,7 @@ TEST_F(
     SUCCEED();
 }
 
-TEST_F(
-    a_layout_core,
-    wont_emit_the_topology_when_reverting_from_initial_properties)
-{
-    mock_topology_slot mock;
-    sys->connect_to_topology(mock.AsStdFunction());
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
-
-    sys->revert_to_defaults();
-}
-
-TEST_F(
-    a_layout_core, wont_emit_the_layout_when_reverting_from_initial_properties)
-{
-    mock_layout_slot mock;
-    sys->connect_to_layout(mock.AsStdFunction());
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(0);
-
-    sys->revert_to_defaults();
-}
-
-// TODO
-TEST_F(
-    a_layout_core,
-    will_emit_the_topology_when_reverting_from_different_layout_type)
-{
-    SUCCEED();
-}
-
-// TODO
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_reverting_from_different_layout_type)
-{
-    SUCCEED();
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_topology_when_reverting_from_different_topology_type)
+TEST_F(a_layout_core, will_emit_the_topology_when_reverting)
 {
     mock_topology_slot mock;
     sys->connect_to_topology(mock.AsStdFunction());
@@ -277,9 +171,7 @@ TEST_F(
     sys->revert_to_defaults();
 }
 
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_reverting_from_different_topology_type)
+TEST_F(a_layout_core, will_emit_the_layout_when_reverting)
 {
     mock_layout_slot mock;
     sys->connect_to_layout(mock.AsStdFunction());
@@ -288,40 +180,6 @@ TEST_F(
     static_assert(new_topology_type != initial_topology_type);
 
     sys->update_topology(new_topology_type, initial_topology_scale);
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
-
-    sys->revert_to_defaults();
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_topology_when_reverting_from_different_topology_scale)
-{
-    mock_topology_slot mock;
-    sys->connect_to_topology(mock.AsStdFunction());
-
-    constexpr auto new_topology_scale = 2;
-    static_assert(new_topology_scale != initial_topology_scale);
-
-    sys->update_topology(initial_topology_type, new_topology_scale);
-
-    EXPECT_CALL(mock, Call(testing::_)).Times(1);
-
-    sys->revert_to_defaults();
-}
-
-TEST_F(
-    a_layout_core,
-    will_emit_the_layout_when_reverting_from_different_topology_scale)
-{
-    mock_layout_slot mock;
-    sys->connect_to_layout(mock.AsStdFunction());
-
-    constexpr auto new_topology_scale = 2;
-    static_assert(new_topology_scale != initial_topology_scale);
-
-    sys->update_topology(initial_topology_type, new_topology_scale);
 
     EXPECT_CALL(mock, Call(testing::_)).Times(1);
 

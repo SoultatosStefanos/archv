@@ -155,6 +155,8 @@ void app::connect_gui_with_dependencies()
     get_pause_menu().connect_to_dependency(
         [this](const auto& dependency, auto weight)
         { get_dependencies_core().update_weight(dependency, weight); });
+
+    BOOST_LOG_TRIVIAL(info) << "connected gui with dependencies management";
 }
 
 void app::connect_gui_with_layout()
@@ -170,12 +172,16 @@ void app::connect_gui_with_layout()
     get_pause_menu().connect_to_scale(
         [this](auto selection)
         { get_layout_core().update_topology(selection); });
+
+    BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
 }
 
 void app::connect_layout_with_rendering()
 {
     get_layout_core().connect_to_layout([this](const auto& l)
                                         { lay_graph(l); });
+
+    BOOST_LOG_TRIVIAL(info) << "connected layout management with rendering";
 }
 
 /***********************************************************
