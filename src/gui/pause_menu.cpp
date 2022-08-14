@@ -57,7 +57,6 @@ void pause_menu::resume() { }
 auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 {
     Ogre::ImGuiOverlay::NewFrame();
-    // ImGui::ShowDemoWindow();
     m_win.draw();
     m_bar.draw();
 
@@ -257,6 +256,12 @@ void pause_menu_window::draw_dependencies_header() const
                 m_dependency_signal(dependency, std::stod(weight_str));
             }
         }
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Restore Defaults..."))
+            m_dependencies_restore_sig();
     }
 }
 
@@ -317,6 +322,12 @@ void pause_menu_window::draw_layout_header() const
 
             ImGui::TreePop();
         }
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Restore Defaults..."))
+            m_layout_restore_sig();
     }
 }
 

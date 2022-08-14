@@ -25,6 +25,8 @@ class pause_menu_window
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
     using topology_signal = boost::signals2::signal< void(const std::string&) >;
     using scale_signal = boost::signals2::signal< void(double) >;
+    using dependencies_restore_signal = boost::signals2::signal< void() >;
+    using layout_restore_signal = boost::signals2::signal< void() >;
 
 public:
     using dependency_options = std::unordered_map< std::string, int >;
@@ -36,6 +38,8 @@ public:
     using layout_slot = layout_signal::slot_type;
     using topology_slot = topology_signal::slot_type;
     using scale_slot = scale_signal::slot_type;
+    using dependencies_restore_slot = dependencies_restore_signal::slot_type;
+    using layout_restore_slot = layout_restore_signal::slot_type;
     using connection = boost::signals2::connection;
 
     pause_menu_window(
@@ -66,6 +70,18 @@ public:
         return m_scale_signal.connect(slot);
     }
 
+    auto connect_to_dependencies_restore(const dependencies_restore_slot& slot)
+        -> connection
+    {
+        return m_dependencies_restore_sig.connect(slot);
+    }
+
+    auto connect_to_layout_restore(const layout_restore_slot& slot)
+        -> connection
+    {
+        return m_layout_restore_sig.connect(slot);
+    }
+
     void set_dependency(const std::string& type, int weight);
     void set_layout(const std::string& type);
     void set_topology(const std::string& type);
@@ -86,6 +102,8 @@ private:
     layout_signal m_layout_signal;
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;
+    dependencies_restore_signal m_dependencies_restore_sig;
+    layout_restore_signal m_layout_restore_sig;
 
     mutable std::vector< std::string > m_weight_strs;
 

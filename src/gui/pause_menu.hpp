@@ -38,6 +38,9 @@ public:
     using layout_slot = detail::pause_menu_window::layout_slot;
     using topology_slot = detail::pause_menu_window::topology_slot;
     using scale_slot = detail::pause_menu_window::scale_slot;
+    using dependencies_restore_slot
+        = detail::pause_menu_window::dependencies_restore_slot;
+    using layout_restore_slot = detail::pause_menu_window::layout_restore_slot;
     using undo_slot = detail::pause_menu_bar::undo_slot;
     using redo_slot = detail::pause_menu_bar::redo_slot;
     using connection = detail::pause_menu_window::connection;
@@ -89,6 +92,18 @@ public:
     auto connect_to_redo(const redo_slot& f) -> connection
     {
         return m_bar.connect_to_redo(f);
+    }
+
+    auto connect_to_dependencies_restore(const dependencies_restore_slot& slot)
+        -> connection
+    {
+        return m_win.connect_to_dependencies_restore(slot);
+    }
+
+    auto connect_to_layout_restore(const layout_restore_slot& slot)
+        -> connection
+    {
+        return m_win.connect_to_layout_restore(slot);
     }
 
     void set_dependency(const std::string& type, int weight)
