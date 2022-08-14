@@ -30,10 +30,15 @@ public:
     using topology_options = detail::pause_menu_window::topology_options;
     using scale_options = detail::pause_menu_window::scale_options;
 
+    using undo_enabled = detail::pause_menu_bar::undo_enabled;
+    using redo_enabled = detail::pause_menu_bar::redo_enabled;
+
     using dependency_slot = detail::pause_menu_window::dependency_slot;
     using layout_slot = detail::pause_menu_window::layout_slot;
     using topology_slot = detail::pause_menu_window::topology_slot;
     using scale_slot = detail::pause_menu_window::scale_slot;
+    using undo_slot = detail::pause_menu_bar::undo_slot;
+    using redo_slot = detail::pause_menu_bar::redo_slot;
     using connection = detail::pause_menu_window::connection;
 
     explicit pause_menu(
@@ -44,6 +49,16 @@ public:
         scale_options scales = scale_options());
 
     virtual ~pause_menu() override = default;
+
+    void set_undo_enabled(undo_enabled pred)
+    {
+        m_bar.set_undo_enabled(std::move(pred));
+    }
+
+    void set_redo_enabled(redo_enabled pred)
+    {
+        m_bar.set_redo_enabled(std::move(pred));
+    }
 
     auto connect_to_dependency(const dependency_slot& slot) -> connection
     {
@@ -63,6 +78,16 @@ public:
     auto connect_to_scale(const scale_slot& slot) -> connection
     {
         return m_win.connect_to_scale(slot);
+    }
+
+    auto connect_to_undo(const undo_slot& f) -> connection
+    {
+        return m_bar.connect_to_undo(f);
+    }
+
+    auto connect_to_redo(const redo_slot& f) -> connection
+    {
+        return m_bar.connect_to_redo(f);
     }
 
     virtual void enter() override;

@@ -271,6 +271,15 @@ void pause_menu_window::draw_code_inspection_header() const
  * Pause menu bar                                          *
  ***********************************************************/
 
+pause_menu_bar::pause_menu_bar(
+    undo_enabled is_undo_enabled, redo_enabled is_redo_enabled)
+: m_undo_enabled { std::move(is_undo_enabled) }
+, m_redo_enabled { std::move(is_redo_enabled) }
+{
+    assert(m_undo_enabled);
+    assert(m_redo_enabled);
+}
+
 void pause_menu_bar::draw() const
 {
     if (ImGui::BeginMainMenuBar())
@@ -296,15 +305,21 @@ void pause_menu_bar::draw_edit_submenu() const
 {
     if (ImGui::BeginMenu("Edit"))
     {
-        if (ImGui::MenuItem("Undo", "CTRL+Z"))
+        static auto selected = -1;
+
+        if (ImGui::MenuItem("Undo", "CTRL+Z", selected == 0, m_undo_enabled()))
         {
+            selected = 0;
+            m_undo_sig();
+        }
+
+        if (ImGui::MenuItem("Redo", "CTRL+Y", selected == 1, m_redo_enabled()))
+        {
+            selected = 1;
+            m_redo_sig();
         }
 
         ImGui::Separator();
-
-        if (ImGui::MenuItem("Redo", "CTRL+Y"))
-        {
-        }
 
         ImGui::EndMenu();
     }
