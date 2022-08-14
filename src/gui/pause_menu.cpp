@@ -204,7 +204,10 @@ pause_menu_window::pause_menu_window(
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
+, m_weight_buffers { m_dependencies.size() }
 {
+    for (auto i = 0; const auto& [_, weight] : m_dependencies)
+        strcpy(m_weight_buffers[i++], std::to_string(weight).c_str());
 }
 
 void pause_menu_window::draw() const
@@ -228,31 +231,21 @@ void pause_menu_window::draw_dependencies_header() const
 {
     if (ImGui::CollapsingHeader("Dependencies"))
     {
-        static auto buffers = [this]()
-        {
-            std::vector< char[64] > buffers { m_dependencies.size() };
-
-            for (auto i = 0; const auto& [_, weight] : m_dependencies)
-                strcpy(buffers[i++], std::to_string(weight).c_str());
-
-            return buffers;
-        }();
-
         for (auto i = 0; const auto& [dependency, _] : m_dependencies)
         {
-            auto* buf = buffers[i++];
+            auto* buffer = m_weight_buffers[i++];
 
             if (ImGui::InputText(
                     dependency.c_str(),
-                    buf,
+                    buffer,
                     64,
                     ImGuiInputTextFlags_CharsDecimal
                         | ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                if (strcmp(buf, "") == 0) // equal
-                    sprintf(buf, "0");
+                if (strcmp(buffer, "") == 0) // equal
+                    sprintf(buffer, "0");
 
-                m_dependency_signal(dependency, std::stod(buf));
+                m_dependency_signal(dependency, std::stod(buffer));
             }
         }
     }
@@ -343,11 +336,28 @@ namespace
         return std::distance(std::begin(data), iter);
     }
 
+    // Returns index == data.size() if the key was not found.
+    template < typename AssociativeContainer >
+    inline auto find_assoc_index(
+        const AssociativeContainer& data,
+        const typename AssociativeContainer::key_type& key)
+    {
+        const auto iter = data.find(key);
+        return std::distance(std::begin(data), iter);
+    }
+
 } // namespace
 
-// TODO
-void pause_menu_window::set_dependency(const std::string& type, double weight)
+void pause_menu_window::set_dependency(const std::string& type, int weight)
 {
+    assert(m_dependencies.size() == m_weight_buffers.size());
+
+    const auto index = find_assoc_index(m_dependencies, type);
+    assert(static_cast< std::size_t >(index) != m_dependencies.size());
+
+    auto* buffer = m_weight_buffers.at(index);
+    strcpy(buffer, std::to_string(weight).c_str());
+
     BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
 }
 

@@ -20,7 +20,7 @@ namespace gui::detail
 class pause_menu_window
 {
     using dependency_signal
-        = boost::signals2::signal< void(const std::string&, double) >;
+        = boost::signals2::signal< void(const std::string&, int) >;
 
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
     using topology_signal = boost::signals2::signal< void(const std::string&) >;
@@ -66,7 +66,7 @@ public:
         return m_scale_signal.connect(slot);
     }
 
-    void set_dependency(const std::string& type, double weight);
+    void set_dependency(const std::string& type, int weight);
     void set_layout(const std::string& type);
     void set_topology(const std::string& type);
     void set_scale(double val);
@@ -86,6 +86,8 @@ private:
     layout_signal m_layout_signal;
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;
+
+    mutable std::vector< char[64] > m_weight_buffers;
 
     mutable std::size_t m_selected_layout {
         std::numeric_limits< std::size_t >::max()

@@ -91,7 +91,7 @@ public:
         return m_bar.connect_to_redo(f);
     }
 
-    void set_dependency(const std::string& type, double weight)
+    void set_dependency(const std::string& type, int weight)
     {
         m_win.set_dependency(type, weight);
     }
