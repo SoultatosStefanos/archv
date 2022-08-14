@@ -5,6 +5,7 @@
 #define VIEW_ALL_HPP
 
 #include "state.hpp"
+#include "state_frame_dispatcher.hpp"
 #include "state_input_dispatcher.hpp"
 #include "state_machine.hpp"
 

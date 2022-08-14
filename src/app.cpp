@@ -10,14 +10,27 @@
 
 app::app(const std::string& name) : base(name) { }
 
-auto app::frameStarted(const Ogre::FrameEvent& evt) -> bool
+// NOTE Must let base handle frame first
+
+auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
-    base::frameStarted(evt);
+    assert(m_frames);
+    base::frameStarted(e);
+    return m_frames->frameStarted(e);
+}
 
-    if (get_state_machine().has_active_state())
-        get_state_machine().get_active_state()->frameStarted(evt);
+auto app::frameRenderingQueued(const Ogre::FrameEvent& e) -> bool
+{
+    assert(m_frames);
+    base::frameRenderingQueued(e);
+    return m_frames->frameRenderingQueued(e);
+}
 
-    return true;
+auto app::frameEnded(const Ogre::FrameEvent& e) -> bool
+{
+    assert(m_frames);
+    base::frameEnded(e);
+    return m_frames->frameEnded(e);
 }
 
 /***********************************************************
@@ -98,6 +111,8 @@ void app::setup_layout()
 void app::setup_view()
 {
     m_sm = std::make_unique< state_machine >();
+
+    m_frames = std::make_unique< state_frame_dispatcher >(*m_sm);
 
     m_input = std::make_unique< state_input_dispatcher >(*m_sm);
     addInputListener(m_input.get());

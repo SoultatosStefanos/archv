@@ -34,7 +34,9 @@ public:
     explicit app(const std::string& name = "ARCHV");
     virtual ~app() override = default;
 
-    auto frameStarted(const Ogre::FrameEvent& evt) -> bool override;
+    auto frameStarted(const Ogre::FrameEvent& e) -> bool override;
+    auto frameRenderingQueued(const Ogre::FrameEvent& e) -> bool override;
+    auto frameEnded(const Ogre::FrameEvent& e) -> bool override;
 
     virtual void setup() override;
     virtual void shutdown() override;
@@ -54,6 +56,7 @@ protected:
     using layout_core = layout::core< graph, weight_map >;
 
     using state_machine = view::state_machine;
+    using state_frame_dispatcher = view::state_frame_dispatcher;
     using state_input_dispatcher = view::state_input_dispatcher;
     using graph_visualization = rendering::graph_visualization;
     using pause_menu = gui::pause_menu;
@@ -114,6 +117,7 @@ private:
     std::unique_ptr< layout_core > m_layout;
 
     std::unique_ptr< state_machine > m_sm;
+    std::unique_ptr< state_frame_dispatcher > m_frames;
     std::unique_ptr< state_input_dispatcher > m_input;
     std::unique_ptr< graph_visualization > m_graph_visualization;
     std::unique_ptr< pause_menu > m_pause_menu;

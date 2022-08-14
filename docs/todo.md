@@ -195,6 +195,8 @@
 
 	+ [x] Default selected gui items
 
+	+ [x] Frame dispatching cleanup
+
 
 # 15 / 08 / 2022
 

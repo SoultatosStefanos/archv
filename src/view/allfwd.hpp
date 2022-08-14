@@ -9,6 +9,7 @@ namespace view
 
 class state;
 class state_machine;
+class state_frame_dispatcher;
 class state_input_dispatcher;
 
 } // namespace view

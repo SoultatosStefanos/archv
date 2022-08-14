@@ -20,6 +20,12 @@ using namespace OgreBites;
 namespace rendering
 {
 
+namespace
+{
+    static constexpr auto pause_key = 'p';
+    static constexpr auto quit_key = SDLK_ESCAPE;
+} // namespace
+
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
@@ -178,13 +184,12 @@ auto graph_visualization::keyPressed(const KeyboardEvent& e) -> bool
 
     switch (e.keysym.sym)
     {
-    case 'p':
+    case pause_key:
         m_machine.transition_to(m_paused_state);
         break;
 
-    case SDLK_ESCAPE:
+    case quit_key:
         m_machine.fallback();
-        m_root.queueEndRendering();
         break;
 
     default:
