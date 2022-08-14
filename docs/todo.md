@@ -189,4 +189,6 @@
 
 	+ [x] Undo/Redo frontend
 
-	+ [ ] Flow from data to gui
+	+ [x] Flow from data to gui
+
+	+ [ ] Restore defaults buttons
