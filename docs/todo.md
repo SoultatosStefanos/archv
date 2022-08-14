@@ -191,4 +191,6 @@
 
 	+ [x] Flow from data to gui
 
-	+ [ ] Restore defaults buttons
+	+ [x] Restore defaults buttons
+
+	+ [ ] Default selected gui items

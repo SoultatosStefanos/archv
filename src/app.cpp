@@ -157,6 +157,9 @@ void app::connect_gui_with_dependencies()
         [this](const auto& dependency, auto weight)
         { get_dependencies_core().update_weight(dependency, weight); });
 
+    get_pause_menu().connect_to_dependencies_restore(
+        [this]() { get_dependencies_core().revert_to_defaults(); });
+
     get_dependencies_core().connect(
         [this](const auto& dependency, auto weight)
         { get_pause_menu().set_dependency(dependency, weight); });
@@ -177,6 +180,9 @@ void app::connect_gui_with_layout()
     get_pause_menu().connect_to_scale(
         [this](auto selection)
         { get_layout_core().update_topology(selection); });
+
+    get_pause_menu().connect_to_layout_restore(
+        [this]() { get_layout_core().revert_to_defaults(); });
 
     get_layout_core().connect_to_layout(
         [this](const auto& layout)
