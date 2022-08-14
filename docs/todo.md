@@ -194,3 +194,12 @@
 	+ [x] Restore defaults buttons
 
 	+ [x] Default selected gui items
+
+
+# 15 / 08 / 2022
+
+	+ [ ] Dependencies deserialization module
+
+	+ [ ] Layout deserialization module
+	
+	+ [ ] Progress bars pre work
