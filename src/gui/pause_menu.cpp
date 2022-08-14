@@ -9,6 +9,7 @@
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <SDL2/SDL_keycode.h>
 #include <boost/log/trivial.hpp>
+#include <imgui/imgui_stdlib.h>
 
 namespace gui
 {
@@ -204,10 +205,18 @@ pause_menu_window::pause_menu_window(
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
-, m_weight_buffers { m_dependencies.size() }
 {
-    for (auto i = 0; const auto& [_, weight] : m_dependencies)
-        strcpy(m_weight_buffers[i++], std::to_string(weight).c_str());
+    std::transform(
+        std::begin(m_dependencies),
+        std::end(m_dependencies),
+        std::back_inserter(m_weight_strs),
+        [](const auto& pair)
+        {
+            const auto weight = pair.second;
+            return std::to_string(weight);
+        });
+
+    assert(m_weight_strs.size() == m_dependencies.size());
 }
 
 void pause_menu_window::draw() const
@@ -233,19 +242,19 @@ void pause_menu_window::draw_dependencies_header() const
     {
         for (auto i = 0; const auto& [dependency, _] : m_dependencies)
         {
-            auto* buffer = m_weight_buffers[i++];
+            auto& weight_str = m_weight_strs[i++];
+            const auto* buffer = dependency.c_str();
 
             if (ImGui::InputText(
-                    dependency.c_str(),
                     buffer,
-                    64,
+                    &weight_str,
                     ImGuiInputTextFlags_CharsDecimal
                         | ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                if (strcmp(buffer, "") == 0) // equal
-                    sprintf(buffer, "0");
+                if (weight_str == "")
+                    weight_str = "0";
 
-                m_dependency_signal(dependency, std::stod(buffer));
+                m_dependency_signal(dependency, std::stod(weight_str));
             }
         }
     }
@@ -260,9 +269,9 @@ void pause_menu_window::draw_layout_header() const
             for (std::size_t i = 0; i < m_layouts.size(); ++i)
             {
                 const auto& option = m_layouts.at(i);
-                const auto* buf = option.c_str();
+                const auto* buffer = option.c_str();
 
-                if (ImGui::Selectable(buf, m_selected_layout == i))
+                if (ImGui::Selectable(buffer, m_selected_layout == i))
                 {
                     m_selected_layout = i;
 
@@ -278,9 +287,9 @@ void pause_menu_window::draw_layout_header() const
             for (std::size_t i = 0; i < m_topologies.size(); ++i)
             {
                 const auto& option = m_topologies.at(i);
-                const auto* buf = option.c_str();
+                const auto* buffer = option.c_str();
 
-                if (ImGui::Selectable(buf, m_selected_topology == i))
+                if (ImGui::Selectable(buffer, m_selected_topology == i))
                 {
                     m_selected_topology = i;
 
@@ -296,9 +305,9 @@ void pause_menu_window::draw_layout_header() const
             for (std::size_t i = 0; i < m_scales.size(); ++i)
             {
                 const auto option = m_scales.at(i);
-                const auto* buf = std::to_string(option).c_str();
+                const auto* buffer = std::to_string(option).c_str();
 
-                if (ImGui::Selectable(buf, m_selected_scale == i))
+                if (ImGui::Selectable(buffer, m_selected_scale == i))
                 {
                     m_selected_scale = i;
 
@@ -350,13 +359,11 @@ namespace
 
 void pause_menu_window::set_dependency(const std::string& type, int weight)
 {
-    assert(m_dependencies.size() == m_weight_buffers.size());
-
     const auto index = find_assoc_index(m_dependencies, type);
     assert(static_cast< std::size_t >(index) != m_dependencies.size());
 
-    auto* buffer = m_weight_buffers.at(index);
-    strcpy(buffer, std::to_string(weight).c_str());
+    auto& weight_str = m_weight_strs.at(index);
+    weight_str = std::to_string(weight);
 
     BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
 }

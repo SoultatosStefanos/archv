@@ -87,7 +87,7 @@ private:
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;
 
-    mutable std::vector< char[64] > m_weight_buffers;
+    mutable std::vector< std::string > m_weight_strs;
 
     mutable std::size_t m_selected_layout {
         std::numeric_limits< std::size_t >::max()
