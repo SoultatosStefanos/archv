@@ -193,4 +193,4 @@
 
 	+ [x] Restore defaults buttons
 
-	+ [ ] Default selected gui items
+	+ [x] Default selected gui items

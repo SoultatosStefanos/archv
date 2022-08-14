@@ -7,7 +7,7 @@
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string>
-#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace gui::detail
@@ -29,10 +29,10 @@ class pause_menu_window
     using layout_restore_signal = boost::signals2::signal< void() >;
 
 public:
-    using dependency_options = std::unordered_map< std::string, int >;
-    using layout_options = std::vector< std::string >;
-    using topology_options = std::vector< std::string >;
-    using scale_options = std::vector< double >;
+    using dependency_options = std::unordered_set< std::string >;
+    using layout_options = std::unordered_set< std::string >;
+    using topology_options = std::unordered_set< std::string >;
+    using scale_options = std::unordered_set< double >;
 
     using dependency_slot = dependency_signal::slot_type;
     using layout_slot = layout_signal::slot_type;
@@ -106,18 +106,9 @@ private:
     layout_restore_signal m_layout_restore_sig;
 
     mutable std::vector< std::string > m_weight_strs;
-
-    mutable std::size_t m_selected_layout {
-        std::numeric_limits< std::size_t >::max()
-    };
-
-    mutable std::size_t m_selected_topology {
-        std::numeric_limits< std::size_t >::max()
-    };
-
-    mutable std::size_t m_selected_scale {
-        std::numeric_limits< std::size_t >::max()
-    };
+    mutable int m_selected_layout { -1 };
+    mutable int m_selected_topology { -1 };
+    mutable int m_selected_scale { -1 };
 };
 
 /***********************************************************

@@ -204,17 +204,8 @@ pause_menu_window::pause_menu_window(
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
+, m_weight_strs { m_dependencies.size() }
 {
-    std::transform(
-        std::begin(m_dependencies),
-        std::end(m_dependencies),
-        std::back_inserter(m_weight_strs),
-        [](const auto& pair)
-        {
-            const auto weight = pair.second;
-            return std::to_string(weight);
-        });
-
     assert(m_weight_strs.size() == m_dependencies.size());
 }
 
@@ -239,7 +230,7 @@ void pause_menu_window::draw_dependencies_header() const
 {
     if (ImGui::CollapsingHeader("Dependencies"))
     {
-        for (auto i = 0; const auto& [dependency, _] : m_dependencies)
+        for (auto i = 0; const auto& dependency : m_dependencies)
         {
             auto& weight_str = m_weight_strs[i++];
             const auto* buffer = dependency.c_str();
@@ -271,9 +262,8 @@ void pause_menu_window::draw_layout_header() const
     {
         if (ImGui::TreeNode("Layout"))
         {
-            for (std::size_t i = 0; i < m_layouts.size(); ++i)
+            for (auto i = 0; const auto& option : m_layouts)
             {
-                const auto& option = m_layouts.at(i);
                 const auto* buffer = option.c_str();
 
                 if (ImGui::Selectable(buffer, m_selected_layout == i))
@@ -282,6 +272,8 @@ void pause_menu_window::draw_layout_header() const
 
                     m_layout_signal(option);
                 }
+
+                ++i;
             }
 
             ImGui::TreePop();
@@ -289,9 +281,8 @@ void pause_menu_window::draw_layout_header() const
 
         if (ImGui::TreeNode("Topology"))
         {
-            for (std::size_t i = 0; i < m_topologies.size(); ++i)
+            for (auto i = 0; const auto& option : m_topologies)
             {
-                const auto& option = m_topologies.at(i);
                 const auto* buffer = option.c_str();
 
                 if (ImGui::Selectable(buffer, m_selected_topology == i))
@@ -300,6 +291,8 @@ void pause_menu_window::draw_layout_header() const
 
                     m_topology_signal(option);
                 }
+
+                ++i;
             }
 
             ImGui::TreePop();
@@ -307,9 +300,8 @@ void pause_menu_window::draw_layout_header() const
 
         if (ImGui::TreeNode("Scale"))
         {
-            for (std::size_t i = 0; i < m_scales.size(); ++i)
+            for (auto i = 0; const auto& option : m_scales)
             {
-                const auto option = m_scales.at(i);
                 const auto* buffer = std::to_string(option).c_str();
 
                 if (ImGui::Selectable(buffer, m_selected_scale == i))
@@ -318,6 +310,8 @@ void pause_menu_window::draw_layout_header() const
 
                     m_scale_signal(option);
                 }
+
+                ++i;
             }
 
             ImGui::TreePop();
@@ -347,15 +341,6 @@ void pause_menu_window::draw_code_inspection_header() const
 
 namespace
 {
-    // Returns index == data.size() if the value was not found.
-    template < typename Container >
-    inline auto
-    find_index(const Container& data, const typename Container::value_type& val)
-    {
-        const auto iter = std::find(std::begin(data), std::end(data), val);
-        return std::distance(std::begin(data), iter);
-    }
-
     // Returns index == data.size() if the key was not found.
     template < typename AssociativeContainer >
     inline auto find_assoc_index(
@@ -381,7 +366,7 @@ void pause_menu_window::set_dependency(const std::string& type, int weight)
 
 void pause_menu_window::set_layout(const std::string& type)
 {
-    const auto index = find_index(m_layouts, type);
+    const auto index = find_assoc_index(m_layouts, type);
     assert(static_cast< std::size_t >(index) != m_layouts.size());
 
     m_selected_layout = index;
@@ -391,7 +376,7 @@ void pause_menu_window::set_layout(const std::string& type)
 
 void pause_menu_window::set_topology(const std::string& type)
 {
-    const auto index = find_index(m_topologies, type);
+    const auto index = find_assoc_index(m_topologies, type);
     assert(static_cast< std::size_t >(index) != m_topologies.size());
 
     m_selected_topology = index;
@@ -401,7 +386,7 @@ void pause_menu_window::set_topology(const std::string& type)
 
 void pause_menu_window::set_scale(double val)
 {
-    const auto index = find_index(m_scales, val);
+    const auto index = find_assoc_index(m_scales, val);
     assert(static_cast< std::size_t >(index) != m_scales.size());
 
     m_selected_scale = index;

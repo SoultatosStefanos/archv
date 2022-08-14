@@ -115,20 +115,27 @@ void app::setup_gui()
 
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
-        pause_menu::dependency_options { { "Inherit", 1 },
-                                         { "Friend", 1 },
-                                         { "NestedClass", 1 },
-                                         { "ClassField", 1 },
-                                         { "ClassTemplateParent", 1 },
-                                         { "ClassTemplateArg", 1 },
-                                         { "MethodReturn", 1 },
-                                         { "MethodArg", 1 },
-                                         { "MethodDefinition", 1 },
-                                         { "MemberExpr", 1 },
-                                         { "MethodTemplateArgs", 1 } },
+        pause_menu::dependency_options { "Inherit",
+                                         "Friend",
+                                         "NestedClass",
+                                         "ClassField",
+                                         "ClassTemplateParent",
+                                         "ClassTemplateArg",
+                                         "MethodReturn",
+                                         "MethodArg",
+                                         "MethodDefinition",
+                                         "MemberExpr",
+                                         "MethodTemplateArgs" },
         pause_menu::layout_options { "Gursoy Atun" },
         pause_menu::topology_options { "Cube", "Sphere" },
         pause_menu::scale_options { 200, 100, 80 });
+
+    for (const auto& [dependency, weight] : get_dependencies_core().get_repo())
+        get_pause_menu().set_dependency(dependency, weight);
+
+    get_pause_menu().set_layout(get_layout_core().get_layout().desc());
+    get_pause_menu().set_topology(get_layout_core().get_topology().desc());
+    get_pause_menu().set_scale(get_layout_core().get_topology().scale());
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }
