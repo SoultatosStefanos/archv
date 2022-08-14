@@ -264,16 +264,14 @@ void pause_menu_window::draw_layout_header() const
     {
         if (ImGui::TreeNode("Layout"))
         {
-            static std::size_t selected = -1;
-
             for (std::size_t i = 0; i < m_layouts.size(); ++i)
             {
                 const auto& option = m_layouts.at(i);
                 const auto* buf = option.c_str();
 
-                if (ImGui::Selectable(buf, selected == i))
+                if (ImGui::Selectable(buf, m_selected_layout == i))
                 {
-                    selected = i;
+                    m_selected_layout = i;
 
                     m_layout_signal(option);
                 }
@@ -284,16 +282,14 @@ void pause_menu_window::draw_layout_header() const
 
         if (ImGui::TreeNode("Topology"))
         {
-            static std::size_t selected = -1;
-
             for (std::size_t i = 0; i < m_topologies.size(); ++i)
             {
                 const auto& option = m_topologies.at(i);
                 const auto* buf = option.c_str();
 
-                if (ImGui::Selectable(buf, selected == i))
+                if (ImGui::Selectable(buf, m_selected_topology == i))
                 {
-                    selected = i;
+                    m_selected_topology = i;
 
                     m_topology_signal(option);
                 }
@@ -304,16 +300,14 @@ void pause_menu_window::draw_layout_header() const
 
         if (ImGui::TreeNode("Scale"))
         {
-            static std::size_t selected = -1;
-
             for (std::size_t i = 0; i < m_scales.size(); ++i)
             {
                 const auto option = m_scales.at(i);
                 const auto* buf = std::to_string(option).c_str();
 
-                if (ImGui::Selectable(buf, selected == i))
+                if (ImGui::Selectable(buf, m_selected_scale == i))
                 {
-                    selected = i;
+                    m_selected_scale = i;
 
                     m_scale_signal(option);
                 }
@@ -338,27 +332,52 @@ void pause_menu_window::draw_code_inspection_header() const
     }
 }
 
+namespace
+{
+    // Returns index == data.size() if the value was not found.
+    template < typename Container >
+    inline auto
+    find_index(const Container& data, const typename Container::value_type& val)
+    {
+        const auto iter = std::find(std::begin(data), std::end(data), val);
+        return std::distance(std::begin(data), iter);
+    }
+
+} // namespace
+
 // TODO
 void pause_menu_window::set_dependency(const std::string& type, double weight)
 {
     BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
 }
 
-// TODO
 void pause_menu_window::set_layout(const std::string& type)
 {
+    const auto index = find_index(m_layouts, type);
+    assert(static_cast< std::size_t >(index) != m_layouts.size());
+
+    m_selected_layout = index;
+
     BOOST_LOG_TRIVIAL(info) << "layout set to " << type;
 }
 
-// TODO
 void pause_menu_window::set_topology(const std::string& type)
 {
+    const auto index = find_index(m_topologies, type);
+    assert(static_cast< std::size_t >(index) != m_topologies.size());
+
+    m_selected_topology = index;
+
     BOOST_LOG_TRIVIAL(info) << "topology set to " << type;
 }
 
-// TODO
 void pause_menu_window::set_scale(double val)
 {
+    const auto index = find_index(m_scales, val);
+    assert(static_cast< std::size_t >(index) != m_scales.size());
+
+    m_selected_scale = index;
+
     BOOST_LOG_TRIVIAL(info) << "scale set to " << val;
 }
 

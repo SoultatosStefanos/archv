@@ -86,6 +86,18 @@ private:
     layout_signal m_layout_signal;
     topology_signal m_topology_signal;
     scale_signal m_scale_signal;
+
+    mutable std::size_t m_selected_layout {
+        std::numeric_limits< std::size_t >::max()
+    };
+
+    mutable std::size_t m_selected_topology {
+        std::numeric_limits< std::size_t >::max()
+    };
+
+    mutable std::size_t m_selected_scale {
+        std::numeric_limits< std::size_t >::max()
+    };
 };
 
 /***********************************************************
