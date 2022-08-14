@@ -96,6 +96,7 @@ private:
     void connect_gui_with_dependencies();
     void connect_gui_with_layout();
     void connect_layout_with_rendering();
+    void connect_gui_with_command_history();
 
     void shutdown_rendering();
     void shutdown_gui();

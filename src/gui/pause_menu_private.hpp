@@ -101,8 +101,8 @@ public:
     using connection = boost::signals2::connection;
 
     explicit pause_menu_bar(
-        undo_enabled is_undo_enabled = [] { return false; },
-        redo_enabled is_redo_enabled = [] { return false; });
+        undo_enabled is_undo_enabled = []() { return false; },
+        redo_enabled is_redo_enabled = []() { return false; });
 
     void draw() const;
 

@@ -38,6 +38,7 @@ void app::setup()
     connect_gui_with_dependencies();
     connect_gui_with_layout();
     connect_layout_with_rendering();
+    connect_gui_with_command_history();
 
     get_state_machine().start(&get_graph_visualization());
     lay_graph(get_layout_core().get_layout());
@@ -182,6 +183,20 @@ void app::connect_layout_with_rendering()
                                         { lay_graph(l); });
 
     BOOST_LOG_TRIVIAL(info) << "connected layout management with rendering";
+}
+
+void app::connect_gui_with_command_history()
+{
+    get_pause_menu().set_undo_enabled([this]()
+                                      { return get_cmds().can_undo(); });
+
+    get_pause_menu().set_redo_enabled([this]()
+                                      { return get_cmds().can_redo(); });
+
+    get_pause_menu().connect_to_undo([this]() { get_cmds().undo(); });
+    get_pause_menu().connect_to_redo([this]() { get_cmds().redo(); });
+
+    BOOST_LOG_TRIVIAL(info) << "connected gui with command history";
 }
 
 /***********************************************************
