@@ -41,6 +41,16 @@ protected:
     std::unique_ptr< command_history > cmd_history;
 };
 
+TEST_F(undo_redo, initially_cant_undo)
+{
+    ASSERT_FALSE(cmd_history->can_undo());
+}
+
+TEST_F(undo_redo, initially_cant_redo)
+{
+    ASSERT_FALSE(cmd_history->can_redo());
+}
+
 TEST_F(undo_redo, undoing_initially_does_nothing)
 {
     ASSERT_NO_FATAL_FAILURE(cmd_history->undo());
@@ -60,6 +70,20 @@ TEST_F(undo_redo, executing_a_cmd_through_it_executes_cmd)
     cmd_history->execute(std::move(cmd));
 }
 
+TEST_F(undo_redo, after_executing_cmd_can_undo)
+{
+    cmd_history->execute(std::make_unique< nice_mock_command >());
+
+    ASSERT_TRUE(cmd_history->can_undo());
+}
+
+TEST_F(undo_redo, after_executing_cmd_cant_redo)
+{
+    cmd_history->execute(std::make_unique< nice_mock_command >());
+
+    ASSERT_FALSE(cmd_history->can_redo());
+}
+
 TEST_F(undo_redo, undoing_cmd_after_executing_it_undoes_it)
 {
     auto cmd = std::make_unique< nice_mock_command >();
@@ -69,6 +93,22 @@ TEST_F(undo_redo, undoing_cmd_after_executing_it_undoes_it)
 
     cmd_history->execute(std::move(cmd));
     cmd_history->undo();
+}
+
+TEST_F(undo_redo, can_redo_after_undoing)
+{
+    cmd_history->execute(std::make_unique< nice_mock_command >());
+    cmd_history->undo();
+
+    ASSERT_TRUE(cmd_history->can_redo());
+}
+
+TEST_F(undo_redo, cant_undo_after_undoing)
+{
+    cmd_history->execute(std::make_unique< nice_mock_command >());
+    cmd_history->undo();
+
+    ASSERT_FALSE(cmd_history->can_undo());
 }
 
 TEST_F(undo_redo, redoing_cmd_after_executing_it_does_nothing)

@@ -7,6 +7,16 @@
 namespace undo_redo
 {
 
+auto command_history::can_undo() const -> bool
+{
+    return !m_history.empty() and m_i != std::begin(m_history);
+}
+
+auto command_history::can_redo() const -> bool
+{
+    return !m_history.empty() and m_i != std::end(m_history);
+}
+
 void command_history::execute(std::unique_ptr< command > cmd)
 {
     assert(cmd);
@@ -23,7 +33,7 @@ void command_history::execute(std::unique_ptr< command > cmd)
 
 void command_history::undo()
 {
-    if (m_history.empty() or m_i == std::begin(m_history))
+    if (!can_undo())
         return;
     else
         (*--m_i)->undo();
@@ -31,7 +41,7 @@ void command_history::undo()
 
 void command_history::redo()
 {
-    if (m_history.empty() or m_i == std::end(m_history))
+    if (!can_redo())
         return;
     else
         (*m_i++)->redo();

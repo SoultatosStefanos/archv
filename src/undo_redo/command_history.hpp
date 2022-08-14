@@ -15,6 +15,9 @@ class command;
 class command_history
 {
 public:
+    auto can_undo() const -> bool;
+    auto can_redo() const -> bool;
+
     void execute(std::unique_ptr< command > cmd);
 
     void undo();
