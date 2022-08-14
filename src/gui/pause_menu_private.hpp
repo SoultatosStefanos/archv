@@ -9,17 +9,14 @@
 #include <unordered_map>
 #include <vector>
 
-// TODO Move these someplace else
-
 namespace gui::detail
 {
 
 /***********************************************************
- * Pause window                                            *
+ * Pause menu window                                       *
  ***********************************************************/
 
-// TODO Pass config data?
-class pause_window
+class pause_menu_window
 {
     using dependency_signal
         = boost::signals2::signal< void(const std::string&, double) >;
@@ -29,7 +26,7 @@ class pause_window
     using scale_signal = boost::signals2::signal< void(double) >;
 
 public:
-    using dependencies_table = std::unordered_map< std::string, int >;
+    using dependency_options = std::unordered_map< std::string, int >;
     using layout_options = std::vector< std::string >;
     using topology_options = std::vector< std::string >;
     using scale_options = std::vector< double >;
@@ -40,8 +37,8 @@ public:
     using scale_slot = scale_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    pause_window(
-        dependencies_table deps = dependencies_table(),
+    pause_menu_window(
+        dependency_options deps = dependency_options(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
         scale_options scales = scale_options());
@@ -69,7 +66,12 @@ public:
     }
 
 private:
-    dependencies_table m_dependencies;
+    void draw_dependencies_header() const;
+    void draw_layout_header() const;
+    void draw_clustering_header() const;
+    void draw_code_inspection_header() const;
+
+    dependency_options m_dependencies;
     layout_options m_layouts;
     topology_options m_topologies;
     scale_options m_scales;
@@ -81,13 +83,17 @@ private:
 };
 
 /***********************************************************
- * Menu Bar                                                *
+ * Pause menu bar                                          *
  ***********************************************************/
 
-class menu_bar
+class pause_menu_bar
 {
 public:
     void draw() const;
+
+private:
+    void draw_file_submenu() const;
+    void draw_edit_submenu() const;
 };
 
 } // namespace gui::detail

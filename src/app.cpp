@@ -114,7 +114,7 @@ void app::setup_gui()
 
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
-        pause_menu::dependencies_table { { "Inherit", 1 },
+        pause_menu::dependency_options { { "Inherit", 1 },
                                          { "Friend", 1 },
                                          { "NestedClass", 1 },
                                          { "ClassField", 1 },

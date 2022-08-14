@@ -14,13 +14,13 @@ namespace gui
 
 pause_menu::pause_menu(
     state_machine& sm,
-    dependencies_table deps,
+    dependency_options dependencies,
     layout_options layouts,
     topology_options topologies,
     scale_options scales)
 : m_sm { sm }
 , m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
-, m_win { std::move(deps),
+, m_win { std::move(dependencies),
           std::move(layouts),
           std::move(topologies),
           std::move(scales) }
@@ -29,15 +29,12 @@ pause_menu::pause_menu(
 
 void pause_menu::enter()
 {
-    m_scene = Ogre::Root::getSingleton().getSceneManager("graph visualization");
-    assert(m_scene);
-
-    m_scene->addRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
+    scene()->addRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
 }
 
 void pause_menu::exit()
 {
-    m_scene->removeRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
+    scene()->removeRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
 }
 
 void pause_menu::pause() { }
@@ -111,13 +108,24 @@ auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
     return true;
 }
 
+auto pause_menu::scene() const -> Ogre::SceneManager*
+{
+    auto* s = Ogre::Root::getSingleton().getSceneManager("graph visualization");
+    assert(s);
+    return s;
+}
+
 } // namespace gui
 
 namespace gui::detail
 {
 
-pause_window::pause_window(
-    dependencies_table deps,
+/***********************************************************
+ * Pause menu window                                       *
+ ***********************************************************/
+
+pause_menu_window::pause_menu_window(
+    dependency_options deps,
     layout_options layouts,
     topology_options topologies,
     scale_options scales)
@@ -128,11 +136,9 @@ pause_window::pause_window(
 {
 }
 
-void pause_window::draw() const
+void pause_menu_window::draw() const
 {
-    static bool open = true;
-
-    if (!ImGui::Begin("ARCHV", &open))
+    if (!ImGui::Begin("ARCHV"))
     {
         ImGui::End();
         return;
@@ -141,6 +147,14 @@ void pause_window::draw() const
     ImGui::Text("Architecture visualization in 3D!");
     ImGui::Spacing();
 
+    draw_dependencies_header();
+    draw_layout_header();
+    draw_clustering_header();
+    draw_code_inspection_header();
+}
+
+void pause_menu_window::draw_dependencies_header() const
+{
     if (ImGui::CollapsingHeader("Dependencies"))
     {
         static auto buffers = [this]()
@@ -171,7 +185,10 @@ void pause_window::draw() const
             }
         }
     }
+}
 
+void pause_menu_window::draw_layout_header() const
+{
     if (ImGui::CollapsingHeader("Layout/Topology"))
     {
         if (ImGui::TreeNode("Layout"))
@@ -234,43 +251,62 @@ void pause_window::draw() const
             ImGui::TreePop();
         }
     }
+}
+
+void pause_menu_window::draw_clustering_header() const
+{
     if (ImGui::CollapsingHeader("Clustering"))
     {
     }
+}
 
+void pause_menu_window::draw_code_inspection_header() const
+{
     if (ImGui::CollapsingHeader("Code Inspection"))
     {
     }
 }
 
-void menu_bar::draw() const
+/***********************************************************
+ * Pause menu bar                                          *
+ ***********************************************************/
+
+void pause_menu_bar::draw() const
 {
     if (ImGui::BeginMainMenuBar())
     {
-        if (ImGui::BeginMenu("File"))
-        {
-            // TODO
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Edit"))
-        {
-            if (ImGui::MenuItem("Undo", "CTRL+Z"))
-            {
-                // TODO
-            }
-
-            ImGui::Separator();
-
-            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
-            {
-                // TODO
-            }
-
-            ImGui::EndMenu();
-        }
+        draw_file_submenu();
+        draw_edit_submenu();
 
         ImGui::EndMainMenuBar();
+    }
+}
+
+// TODO
+void pause_menu_bar::draw_file_submenu() const
+{
+    if (ImGui::BeginMenu("File"))
+    {
+        ImGui::EndMenu();
+    }
+}
+
+// TODO
+void pause_menu_bar::draw_edit_submenu() const
+{
+    if (ImGui::BeginMenu("Edit"))
+    {
+        if (ImGui::MenuItem("Undo", "CTRL+Z"))
+        {
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("Redo", "CTRL+Y"))
+        {
+        }
+
+        ImGui::EndMenu();
     }
 }
 

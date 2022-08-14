@@ -20,26 +20,25 @@ class state_machine;
 namespace gui
 {
 
-// TODO
 class pause_menu : public view::state
 {
 public:
     using state_machine = view::state_machine;
 
-    using dependencies_table = detail::pause_window::dependencies_table;
-    using layout_options = detail::pause_window::layout_options;
-    using topology_options = detail::pause_window::topology_options;
-    using scale_options = detail::pause_window::scale_options;
+    using dependency_options = detail::pause_menu_window::dependency_options;
+    using layout_options = detail::pause_menu_window::layout_options;
+    using topology_options = detail::pause_menu_window::topology_options;
+    using scale_options = detail::pause_menu_window::scale_options;
 
-    using dependency_slot = detail::pause_window::dependency_slot;
-    using layout_slot = detail::pause_window::layout_slot;
-    using topology_slot = detail::pause_window::topology_slot;
-    using scale_slot = detail::pause_window::scale_slot;
-    using connection = detail::pause_window::connection;
+    using dependency_slot = detail::pause_menu_window::dependency_slot;
+    using layout_slot = detail::pause_menu_window::layout_slot;
+    using topology_slot = detail::pause_menu_window::topology_slot;
+    using scale_slot = detail::pause_menu_window::scale_slot;
+    using connection = detail::pause_menu_window::connection;
 
     explicit pause_menu(
         state_machine& sm,
-        dependencies_table deps = dependencies_table(),
+        dependency_options dependencies = dependency_options(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
         scale_options scales = scale_options());
@@ -85,14 +84,14 @@ public:
     auto buttonReleased(const OgreBites::ButtonEvent& e) -> bool override;
 
 private:
-    state_machine& m_sm;
+    auto scene() const -> Ogre::SceneManager*;
 
-    Ogre::SceneManager* m_scene; // From global context
+    state_machine& m_sm;
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
 
-    detail::pause_window m_win;
-    detail::menu_bar m_bar;
+    detail::pause_menu_window m_win;
+    detail::pause_menu_bar m_bar;
 };
 
 } // namespace gui
