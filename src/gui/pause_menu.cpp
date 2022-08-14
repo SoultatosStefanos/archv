@@ -338,6 +338,30 @@ void pause_menu_window::draw_code_inspection_header() const
     }
 }
 
+// TODO
+void pause_menu_window::set_dependency(const std::string& type, double weight)
+{
+    BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
+}
+
+// TODO
+void pause_menu_window::set_layout(const std::string& type)
+{
+    BOOST_LOG_TRIVIAL(info) << "layout set to " << type;
+}
+
+// TODO
+void pause_menu_window::set_topology(const std::string& type)
+{
+    BOOST_LOG_TRIVIAL(info) << "topology set to " << type;
+}
+
+// TODO
+void pause_menu_window::set_scale(double val)
+{
+    BOOST_LOG_TRIVIAL(info) << "scale set to " << val;
+}
+
 /***********************************************************
  * Pause menu bar                                          *
  ***********************************************************/

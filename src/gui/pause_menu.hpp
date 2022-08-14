@@ -20,6 +20,7 @@ class state_machine;
 namespace gui
 {
 
+// Facade class for the pause menu front end.
 class pause_menu : public view::state
 {
 public:
@@ -89,6 +90,15 @@ public:
     {
         return m_bar.connect_to_redo(f);
     }
+
+    void set_dependency(const std::string& type, double weight)
+    {
+        m_win.set_dependency(type, weight);
+    }
+
+    void set_layout(const std::string& type) { m_win.set_layout(type); }
+    void set_topology(const std::string& type) { m_win.set_topology(type); }
+    void set_scale(double val) { m_win.set_scale(val); }
 
     virtual void enter() override;
     virtual void exit() override;

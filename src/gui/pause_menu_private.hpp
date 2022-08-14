@@ -66,6 +66,11 @@ public:
         return m_scale_signal.connect(slot);
     }
 
+    void set_dependency(const std::string& type, double weight);
+    void set_layout(const std::string& type);
+    void set_topology(const std::string& type);
+    void set_scale(double val);
+
 private:
     void draw_dependencies_header() const;
     void draw_layout_header() const;
