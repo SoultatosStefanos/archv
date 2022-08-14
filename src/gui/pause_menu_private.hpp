@@ -128,6 +128,9 @@ public:
         return m_redo_sig.connect(f);
     }
 
+    void undo_shortcut();
+    void redo_shortcut();
+
 private:
     void draw_file_submenu() const;
     void draw_edit_submenu() const;

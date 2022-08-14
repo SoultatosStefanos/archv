@@ -184,3 +184,9 @@
 	(What if only the dependencies weights change?)
 
 	+ [n] Exceptions instead of assertions on invalid requests
+
+# 14 / 08 / 2022
+
+	+ [x] Undo/Redo frontend
+
+	+ [ ] Flow from data to gui

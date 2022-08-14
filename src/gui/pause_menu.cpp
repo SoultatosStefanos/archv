@@ -7,10 +7,22 @@
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
+#include <SDL2/SDL_keycode.h>
 #include <boost/log/trivial.hpp>
 
 namespace gui
 {
+
+namespace
+{
+    static constexpr auto prev_scene_name = "graph visualization";
+
+    static constexpr auto resume_key = 'p';
+    static constexpr auto ctrl_key = SDLK_LCTRL;
+    static constexpr auto undo_key = 'z';
+    static constexpr auto redo_key = 'y';
+
+} // namespace
 
 pause_menu::pause_menu(
     state_machine& sm,
@@ -53,8 +65,34 @@ auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 
 auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 {
-    if (e.keysym.sym == 'p')
+    switch (e.keysym.sym)
+    {
+    case resume_key:
         m_sm.fallback();
+        break;
+
+    case ctrl_key:
+        ctrl_pressed = true;
+        BOOST_LOG_TRIVIAL(debug) << "ctrl key pressed";
+
+        break;
+
+    case undo_key:
+        undo_pressed = true;
+        BOOST_LOG_TRIVIAL(debug) << "undo key pressed";
+        handle_undo_combination();
+
+        break;
+
+    case redo_key:
+        redo_pressed = true;
+        BOOST_LOG_TRIVIAL(debug) << "redo key pressed";
+        handle_redo_combination();
+        break;
+
+    default:
+        break;
+    }
 
     m_imgui_input->keyPressed(e);
     return true;
@@ -62,6 +100,27 @@ auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
 
 auto pause_menu::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 {
+    switch (e.keysym.sym)
+    {
+    case ctrl_key:
+        ctrl_pressed = false;
+        BOOST_LOG_TRIVIAL(debug) << "ctrl key released";
+        break;
+
+    case undo_key:
+        undo_pressed = false;
+        BOOST_LOG_TRIVIAL(debug) << "undo key released";
+        break;
+
+    case redo_key:
+        redo_pressed = false;
+        BOOST_LOG_TRIVIAL(debug) << "redo key released";
+        break;
+
+    default:
+        break;
+    }
+
     m_imgui_input->keyReleased(e);
     return true;
 }
@@ -110,9 +169,21 @@ auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
 
 auto pause_menu::scene() const -> Ogre::SceneManager*
 {
-    auto* s = Ogre::Root::getSingleton().getSceneManager("graph visualization");
+    auto* s = Ogre::Root::getSingleton().getSceneManager(prev_scene_name);
     assert(s);
     return s;
+}
+
+void pause_menu::handle_undo_combination()
+{
+    if (ctrl_pressed and undo_pressed)
+        m_bar.undo_shortcut();
+}
+
+void pause_menu::handle_redo_combination()
+{
+    if (ctrl_pressed and redo_pressed)
+        m_bar.redo_shortcut();
 }
 
 } // namespace gui
@@ -300,29 +371,32 @@ void pause_menu_bar::draw_file_submenu() const
     }
 }
 
-// TODO
 void pause_menu_bar::draw_edit_submenu() const
 {
     if (ImGui::BeginMenu("Edit"))
     {
-        static auto selected = -1;
-
-        if (ImGui::MenuItem("Undo", "CTRL+Z", selected == 0, m_undo_enabled()))
-        {
-            selected = 0;
+        if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
             m_undo_sig();
-        }
 
-        if (ImGui::MenuItem("Redo", "CTRL+Y", selected == 1, m_redo_enabled()))
-        {
-            selected = 1;
+        if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
             m_redo_sig();
-        }
 
         ImGui::Separator();
 
         ImGui::EndMenu();
     }
+}
+
+void pause_menu_bar::undo_shortcut()
+{
+    if (m_undo_enabled())
+        m_undo_sig();
+}
+
+void pause_menu_bar::redo_shortcut()
+{
+    if (m_redo_enabled())
+        m_redo_sig();
 }
 
 } // namespace gui::detail

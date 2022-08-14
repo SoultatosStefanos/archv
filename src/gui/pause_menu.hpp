@@ -111,12 +111,17 @@ public:
 private:
     auto scene() const -> Ogre::SceneManager*;
 
+    void handle_undo_combination();
+    void handle_redo_combination();
+
     state_machine& m_sm;
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
 
     detail::pause_menu_window m_win;
     detail::pause_menu_bar m_bar;
+
+    bool ctrl_pressed { false }, undo_pressed { false }, redo_pressed { false };
 };
 
 } // namespace gui
