@@ -1,6 +1,7 @@
 #include "architecture/deserialization.hpp"
 #include "utility/all.hpp"
 
+#include "json/deserialization.hpp"
 #include <boost/graph/isomorphism.hpp>
 #include <fstream>
 #include <gmock/gmock.h>
@@ -37,7 +38,7 @@ TEST(arch_deserialization, symbols_sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
-    ASSERT_THROW(deserialize_symbols(root), deserialization_error);
+    ASSERT_THROW(deserialize_symbols(root), json::deserialization_error);
 }
 
 // See data/tests/sample_graph_0.json

@@ -57,9 +57,12 @@ void app::setup()
     lay_graph(get_layout_core().get_layout());
 }
 
+#define ARCHV_INPUT_GRAPH_PATH                                                 \
+    "/home/stef/Documents/Projects/archv/build/graph.json"
+
 void app::setup_architecture()
 {
-    const auto& root = config::json_archive::get().at(ARCHV_INPUT_GRAPH_PATH);
+    const auto& root = json::archive::get().at(ARCHV_INPUT_GRAPH_PATH);
 
     m_st = architecture::deserialize_symbols(root);
     std::tie(m_g, std::ignore)

@@ -1,61 +1,15 @@
 #include "deserialization.hpp"
 
+#include "json/deserialization.hpp"
 #include <boost/log/trivial.hpp>
 
 namespace architecture
 {
 
+using namespace json;
+
 namespace
 {
-    inline auto get(const Json::Value& val, const char* at) -> Json::Value
-    {
-        assert(at);
-
-        BOOST_LOG_TRIVIAL(debug) << "reading json value member: " << at;
-
-        if (!val.isMember(at))
-            BOOST_THROW_EXCEPTION(
-                json_member_not_found()
-                << json_member_info(at) << json_value_info(val));
-
-        return val[at];
-    }
-
-    // Safe json value type conversion
-    template < typename T >
-    inline auto as(const Json::Value& val, bool required = true) -> T
-    {
-        if (!required and val.isNull())
-            return T {};
-
-        if (!val.is< T >())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
-        return val.as< T >();
-    }
-
-    // Traverse json objects with ids.
-    template < typename BinaryOperation >
-    requires std::invocable<
-        BinaryOperation,
-        std::decay_t< Json::String >,
-        std::decay_t< Json::Value > >
-    void for_each_object(const Json::Value& val, BinaryOperation func)
-    {
-        if (val.isNull())
-            return;
-
-        if (val.isArray())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
-        for (auto iter = std::begin(val); iter != std::end(val); ++iter)
-            func(iter.name(), *iter);
-    }
-
     inline void
     deserialize_source_location(const Json::Value& val, source_location& loc)
     {

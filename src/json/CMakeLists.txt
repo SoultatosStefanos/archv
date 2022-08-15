@@ -1,5 +1,5 @@
 set(FILES
-	json_archive.cpp
+	archive.cpp
 )
 set(SUBDIRECTORIES)
 

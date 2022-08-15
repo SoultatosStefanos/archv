@@ -1,9 +1,9 @@
 set(FILES)
 set(SUBDIRECTORIES
 	architecture
-	config
 	dependencies
 	gui
+	json
 	layout
 	rendering
 	undo_redo

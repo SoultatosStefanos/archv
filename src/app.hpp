@@ -12,13 +12,14 @@
  ***********************************************************/
 
 #include "architecture/all.hpp"
-#include "config/all.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
 #include "rendering/all.hpp"
 #include "undo_redo/all.hpp"
 #include "view/all.hpp"
+
+#include "json/all.hpp"
 
 /***********************************************************
  * Application                                             *
