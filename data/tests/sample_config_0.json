@@ -1,5 +1,5 @@
 {
-	"config-path" : "/home/stef/Documents/Projects/archv/data/config/",
+	"config-path" : "foo/bar/",
 	"dependencies" : "dependencies.json",
 	"graph" : "graph.json",
 	"layout" : "layout.json"

@@ -200,7 +200,7 @@
 
 # 15 / 08 / 2022
 
-	+ [ ] Central deserialization module
+	+ [x] Central deserialization module
 
 	+ [ ] Dependencies deserialization module
 
