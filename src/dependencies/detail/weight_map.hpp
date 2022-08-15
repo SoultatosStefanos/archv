@@ -1,10 +1,10 @@
 // Contains a private subcomponent of the weight_map.hpp module.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_WEIGHT_MAP_PRIVATE_HPP
-#define DEPENDENCIES_WEIGHT_MAP_PRIVATE_HPP
+#ifndef DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
+#define DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
 
-#include "weight_repo.hpp"
+#include "dependencies/weight_repo.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 
@@ -38,4 +38,4 @@ private:
 
 } // namespace dependencies::detail
 
-#endif // DEPENDENCIES_WEIGHT_MAP_PRIVATE_HPP
+#endif // DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP

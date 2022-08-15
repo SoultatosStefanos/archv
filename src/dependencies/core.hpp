@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_CORE_HPP
 #define DEPENDENCIES_CORE_HPP
 
-#include "core_private.hpp"
+#include "detail/core.hpp"
 #include "undo_redo/all.hpp"
 #include "weight_repo.hpp"
 

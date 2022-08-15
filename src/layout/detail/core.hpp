@@ -1,12 +1,12 @@
 // Contains a private core submodule.
 // Soultatos Stefanos 2022
 
-#ifndef LAYOUT_CORE_PRIVATE_HPP
-#define LAYOUT_CORE_PRIVATE_HPP
+#ifndef LAYOUT_DETAIL_CORE_HPP
+#define LAYOUT_DETAIL_CORE_HPP
 
-#include "gursoy_atun_layout.hpp"
-#include "layout.hpp"
-#include "topology.hpp"
+#include "layout/gursoy_atun_layout.hpp"
+#include "layout/layout.hpp"
+#include "layout/topology.hpp"
 #include "undo_redo/all.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -524,4 +524,4 @@ private:
 
 } // namespace layout::detail
 
-#endif // LAYOUT_CORE_PRIVATE_HPP
+#endif // LAYOUT_DETAIL_CORE_HPP
