@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_WEIGHT_MAP_HPP
 #define DEPENDENCIES_WEIGHT_MAP_HPP
 
-#include "weight_map_private.hpp"
+#include "detail/weight_map.hpp"
 #include "weight_repo.hpp"
 
 #include <boost/graph/graph_concepts.hpp>

@@ -20,7 +20,6 @@
 namespace view
 {
 class state_machine;
-class state_machine;
 } // namespace view
 
 namespace rendering

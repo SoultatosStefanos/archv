@@ -4,7 +4,7 @@
 #ifndef GUI_PAUSE_MENU_HPP
 #define GUI_PAUSE_MENU_HPP
 
-#include "pause_menu_private.hpp"
+#include "detail/pause_menu.hpp"
 #include "view/state.hpp"
 
 #include <OGRE/Bites/OgreImGuiInputListener.h>

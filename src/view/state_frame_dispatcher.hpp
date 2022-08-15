@@ -12,10 +12,11 @@ namespace view
 
 class state_machine;
 
+// Dispatches frames to the active state of a state machine.
 class state_frame_dispatcher : public Ogre::FrameListener
 {
 public:
-    state_frame_dispatcher(const state_machine& sm);
+    explicit state_frame_dispatcher(const state_machine& sm);
     virtual ~state_frame_dispatcher() = default;
 
     auto frameStarted(const Ogre::FrameEvent& e) -> bool override;

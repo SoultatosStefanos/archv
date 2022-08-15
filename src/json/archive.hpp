@@ -1,8 +1,8 @@
-// Contains a configuration json archive manager class.
+// Contains a module for pooling json roots.
 // Soultatos Stefanos 2022
 
-#ifndef CONFIG_JSON_ARCHIVE_HPP
-#define CONFIG_JSON_ARCHIVE_HPP
+#ifndef JSON_ARCHIVE_HPP
+#define JSON_ARCHIVE_HPP
 
 #include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
@@ -10,18 +10,18 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace config
+namespace json
 {
 
 /***********************************************************
  * Errors                                                  *
  ***********************************************************/
 
-struct json_archive_error : virtual std::exception, virtual boost::exception
+struct archive_error : virtual std::exception, virtual boost::exception
 {
 };
 
-struct invalid_json_file : virtual json_archive_error
+struct invalid_json_file : virtual archive_error
 {
 };
 
@@ -32,21 +32,21 @@ struct invalid_json_file : virtual json_archive_error
 using json_file_info = boost::error_info< struct tag_file, std::string_view >;
 
 /***********************************************************
- * Json Archive                                            *
+ * Archive                                                 *
  ***********************************************************/
 
-class json_archive final
+class archive final
 {
 public:
-    json_archive(const json_archive&) = delete;
-    json_archive(json_archive&&) = delete;
+    archive(const archive&) = delete;
+    archive(archive&&) = delete;
 
-    auto operator=(const json_archive&) -> json_archive& = delete;
-    auto operator=(json_archive&&) -> json_archive& = delete;
+    auto operator=(const archive&) -> archive& = delete;
+    auto operator=(archive&&) -> archive& = delete;
 
-    static auto get() -> json_archive&
+    static auto get() -> archive&
     {
-        static json_archive singleton;
+        static archive singleton;
         return singleton;
     }
 
@@ -55,12 +55,12 @@ public:
 private:
     using pool = std::unordered_map< std::string_view, Json::Value >;
 
-    json_archive() = default;
-    ~json_archive() = default;
+    archive() = default;
+    ~archive() = default;
 
     mutable pool m_roots;
 };
 
-} // namespace config
+} // namespace json
 
-#endif // CONFIG_JSON_ARCHIVE_HPP
+#endif // JSON_ARCHIVE_HPP

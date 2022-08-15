@@ -1,10 +1,12 @@
 // Contains a manager class of the layout subsystem.
 // Soultatos Stefanos 2022
 
-#ifndef LAYOUT_CORE_HPP
-#define LAYOUT_CORE_HPP
+#ifndef ARCHV_SRC_LAYOUT_CORE_HPP
+#define ARCHV_SRC_LAYOUT_CORE_HPP
 
-#include "core_private.hpp"
+#include "detail/core.hpp"
+#include "layout.hpp"
+#include "topology.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <cassert>
@@ -129,4 +131,4 @@ private:
 
 } // namespace layout
 
-#endif // LAYOUT_CORE_HPP
+#endif // ARCHV_SRC_LAYOUT_CORE_HPP
