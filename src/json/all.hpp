@@ -5,5 +5,6 @@
 #define JSON_ALL_HPP
 
 #include "archive.hpp"
+#include "deserialization.hpp"
 
 #endif // JSON_ALL_HPP
