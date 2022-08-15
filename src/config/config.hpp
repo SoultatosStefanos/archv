@@ -5,6 +5,6 @@
 #define CONFIG_CONFIG_HPP
 
 #define ARCHV_INPUT_GRAPH_PATH                                                 \
-    "/home/stef/Documents/Projects/archv/build/graph.json"
+    "/home/stef/Documents/Projects/archv/data/config/graph.json"
 
 #endif // CONFIG_CONFIG_HPP
