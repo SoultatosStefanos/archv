@@ -1,9 +1,9 @@
-#include "json_archive.hpp"
+#include "archive.hpp"
 
 #include <filesystem>
 #include <fstream>
 
-namespace config
+namespace json
 {
 
 namespace
@@ -20,10 +20,10 @@ namespace
 
 } // namespace
 
-auto json_archive::at(std::string_view fname) const -> const Json::Value&
+auto archive::at(std::string_view fname) const -> const Json::Value&
 {
     return m_roots.contains(fname) ? m_roots.at(fname)
                                    : m_roots[fname] = read_root(fname);
 }
 
-} // namespace config
+} // namespace json
