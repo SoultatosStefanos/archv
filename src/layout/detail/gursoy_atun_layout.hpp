@@ -1,14 +1,14 @@
 // Contains a private component of the gursoy_atun_layout.hpp module.
 // Soultatos Stefanos 2022
 
-#ifndef LAYOUT_GURSOY_ATUN_LAYOUT_PRIVATE_HPP
-#define LAYOUT_GURSOY_ATUN_LAYOUT_PRIVATE_HPP
+#ifndef LAYOUT_DETAIL_GURSOY_ATUN_LAYOUT_HPP
+#define LAYOUT_DETAIL_GURSOY_ATUN_LAYOUT_HPP
 
-#include "cube.hpp"
-#include "gursoy_atun_layout.hpp"
-#include "layout_visitor.hpp"
-#include "sphere.hpp"
-#include "topology_visitor.hpp"
+#include "layout/cube.hpp"
+#include "layout/gursoy_atun_layout.hpp"
+#include "layout/layout_visitor.hpp"
+#include "layout/sphere.hpp"
+#include "layout/topology_visitor.hpp"
 
 #include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
@@ -55,4 +55,4 @@ private:
 
 } // namespace layout::detail
 
-#endif // LAYOUT_GURSOY_ATUN_LAYOUT_PRIVATE_HPP
+#endif // LAYOUT_DETAIL_GURSOY_ATUN_LAYOUT_HPP

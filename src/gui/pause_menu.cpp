@@ -1,6 +1,5 @@
 #include "pause_menu.hpp"
 
-#include "pause_menu_private.hpp"
 #include "view/state_machine.hpp"
 
 #include <OGRE/OgreRoot.h>

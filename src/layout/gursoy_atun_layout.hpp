@@ -4,7 +4,7 @@
 #ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 #define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 
-#include "gursoy_atun_layout_private.hpp"
+#include "detail/gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "topology.hpp"
 

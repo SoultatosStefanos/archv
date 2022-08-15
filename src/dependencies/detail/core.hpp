@@ -1,11 +1,11 @@
 // Contains a private core submodule.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_CORE_PRIVATE_HPP
-#define DEPENDENCIES_CORE_PRIVATE_HPP
+#ifndef DEPENDENCIES_DETAIL_CORE_HPP
+#define DEPENDENCIES_DETAIL_CORE_HPP
 
+#include "dependencies/weight_repo.hpp"
 #include "undo_redo/all.hpp"
-#include "weight_repo.hpp"
 
 #include <boost/signals2/signal.hpp>
 
@@ -87,4 +87,4 @@ private:
 
 } // namespace dependencies::detail
 
-#endif // DEPENDENCIES_CORE_PRIVATE_HPP
+#endif // DEPENDENCIES_DETAIL_CORE_HPP

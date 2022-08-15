@@ -1,8 +1,8 @@
 // Contains a private module which provides the gui for the pause menu.
 // Soultatos Stefanos 2022
 
-#ifndef GUI_PAUSE_MENU_PRIVATE_HPP
-#define GUI_PAUSE_MENU_PRIVATE_HPP
+#ifndef GUI_DETAIL_PAUSE_MENU_HPP
+#define GUI_DETAIL_PAUSE_MENU_HPP
 
 #include <boost/signals2/signal.hpp>
 #include <functional>
@@ -172,4 +172,4 @@ private:
 
 } // namespace gui::detail
 
-#endif // GUI_PAUSE_MENU_PRIVATE_HPP
+#endif // GUI_DETAIL_PAUSE_MENU_HPP
