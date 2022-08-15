@@ -3,7 +3,6 @@
 
 #include "json/deserialization.hpp"
 #include <boost/graph/isomorphism.hpp>
-#include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -14,27 +13,8 @@ using namespace architecture;
 namespace
 {
 
-auto read_json_root(std::string_view to)
-{
-    const auto path = resolve_path(to);
-    assert(std::filesystem::exists(path));
-
-    std::ifstream archive { path };
-    assert(archive.good());
-
-    Json::Value root;
-    archive >> root;
-
-    return root;
-}
-
-} // namespace
-
-namespace
-{
-
 // See data/tests/sample_graph_-1.json
-TEST(arch_deserialization, symbols_sample_graph_invalid)
+TEST(arch_deserialization, sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
@@ -42,7 +22,7 @@ TEST(arch_deserialization, symbols_sample_graph_invalid)
 }
 
 // See data/tests/sample_graph_0.json
-TEST(arch_deserialization, symbols_sample_graph_0)
+TEST(arch_deserialization, sample_graph_0)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_0.json");
 
@@ -118,7 +98,7 @@ auto build_sample_st_1() -> symbol_table
 }
 
 // See data/tests/sample_graph_1.json
-TEST(arch_deserialization, symbols_sample_graph_1)
+TEST(arch_deserialization, sample_graph_1)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_1.json");
     const auto expected = build_sample_st_1();
@@ -185,7 +165,7 @@ auto build_sample_st_2() -> symbol_table
 }
 
 // See data/tests/sample_graph_2.json
-TEST(arch_deserialization, symbols_sample_graph_2)
+TEST(arch_deserialization, sample_graph_2)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_2.json");
     const auto expected = build_sample_st_2();

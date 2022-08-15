@@ -1,4 +1,6 @@
-set(FILES json.cpp)
+set(FILES
+	deserialization_tests.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
