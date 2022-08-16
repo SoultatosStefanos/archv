@@ -200,8 +200,21 @@
 
 # 15 / 08 / 2022
 
-	+ [ ] Dependencies deserialization module
+	+ [x] Central deserialization module
 
-	+ [ ] Layout deserialization module
+
+# 16 / 08 / 2022
+
+	+ [x] Dependencies deserialization module
+
+	+ [x] Layout deserialization module
+
+	+ [x] Integrate configs
+
+	+ [x] Death tests cleanup
+
+	+ [n] Add hardcoded default config values
+
+	+ [ ] Fix layout restore use case
 	
 	+ [ ] Progress bars pre work

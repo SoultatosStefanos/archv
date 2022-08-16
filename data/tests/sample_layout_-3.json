@@ -1,0 +1,20 @@
+{
+	"layouts" : 
+	[
+		"Gursoy Atun"
+	],
+	"topologies" : 
+	[
+		"Trippy One"
+	],
+	"scales" :
+	[
+		100
+	],
+	"defaults" :
+	{
+		"layout" : "Gursoy Atun",
+		"topology" : "Cube",
+		"scale" : 100 
+	}
+}

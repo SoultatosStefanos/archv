@@ -2,6 +2,7 @@ set(FILES
 	core.cpp
 	cube.cpp
 	sphere.cpp
+	deserialization.cpp
 )
 set(SUBDIRECTORIES)
 

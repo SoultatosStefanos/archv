@@ -1,0 +1,6 @@
+{
+	"config-path" : "/home/stef/Documents/Projects/archv/config/",
+	"dependencies" : "dependencies.json",
+	"graph" : "graph.json",
+	"layout" : "layout.json"
+}

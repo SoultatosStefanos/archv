@@ -1,5 +1,4 @@
 set(FILES
-	core_tests.cpp
 	deserialization_tests.cpp
 )
 set(SUBDIRECTORIES)

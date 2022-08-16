@@ -4,6 +4,7 @@
 #ifndef UTILITY_ALL_HPP
 #define UTILITY_ALL_HPP
 
+#include "json.hpp"
 #include "path.hpp"
 #include "random.hpp"
 

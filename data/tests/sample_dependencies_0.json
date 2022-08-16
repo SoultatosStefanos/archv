@@ -1,0 +1,11 @@
+{
+	"dependencies" : 
+	[
+		{
+			"strong" : 10
+		},
+		{ 
+			"weak" : 2
+		}
+	]
+}

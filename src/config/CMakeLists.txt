@@ -1,6 +1,5 @@
 set(FILES
-	core_tests.cpp
-	deserialization_tests.cpp
+	deserialization.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -9,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${TESTS} PRIVATE ${FILES})
+	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
 endif()

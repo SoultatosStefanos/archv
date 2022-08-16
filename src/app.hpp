@@ -12,6 +12,7 @@
  ***********************************************************/
 
 #include "architecture/all.hpp"
+#include "config/all.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
@@ -32,7 +33,7 @@ class app : public OgreBites::ApplicationContext
     using base = OgreBites::ApplicationContext;
 
 public:
-    explicit app(const std::string& name = "ARCHV");
+    app(int argc, const char* argv[]);
     virtual ~app() override = default;
 
     auto frameStarted(const Ogre::FrameEvent& e) -> bool override;
@@ -45,6 +46,10 @@ public:
     void go();
 
 protected:
+    using main_config = config::config_data;
+    using dependencies_config = dependencies::config_data;
+    using layout_config = layout::config_data;
+
     using symbol_table = architecture::symbol_table;
 
     using graph = architecture::graph;
@@ -61,6 +66,15 @@ protected:
     using state_input_dispatcher = view::state_input_dispatcher;
     using graph_visualization = rendering::graph_visualization;
     using pause_menu = gui::pause_menu;
+
+    auto get_main_config() const -> const main_config&;
+    auto get_main_config() -> main_config&;
+
+    auto get_dependencies_config() const -> const dependencies_config&;
+    auto get_dependencies_config() -> dependencies_config&;
+
+    auto get_layout_config() const -> const layout_config&;
+    auto get_layout_config() -> layout_config&;
 
     auto get_symbol_table() const -> const symbol_table&;
     auto get_symbol_table() -> symbol_table&;
@@ -109,6 +123,10 @@ private:
     void shutdown_dependencies();
     void shutdown_commands();
     void shutdown_architecture();
+
+    main_config m_main_config;
+    dependencies_config m_dependencies_config;
+    layout_config m_layout_config;
 
     symbol_table m_st;
     graph m_g;

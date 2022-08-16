@@ -1,5 +1,6 @@
 set(FILES
 	core.cpp
+	deserialization.cpp
 	weight_repo.cpp
 )
 set(SUBDIRECTORIES)

@@ -7,6 +7,7 @@
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -29,7 +30,7 @@ class pause_menu_window
     using layout_restore_signal = boost::signals2::signal< void() >;
 
 public:
-    using dependency_options = std::unordered_set< std::string >;
+    using dependency_options = std::unordered_map< std::string, int >;
     using layout_options = std::unordered_set< std::string >;
     using topology_options = std::unordered_set< std::string >;
     using scale_options = std::unordered_set< double >;
