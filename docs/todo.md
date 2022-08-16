@@ -215,6 +215,10 @@
 
 	+ [n] Add hardcoded default config values
 
-	+ [ ] Fix layout restore use case
+
+
+# 17 / 08 / 2022
+
+	+ [?] Fix layout restore use case
 	
 	+ [ ] Progress bars pre work
