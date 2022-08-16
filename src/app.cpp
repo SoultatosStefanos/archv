@@ -135,6 +135,22 @@ void app::setup_gui()
 
     Ogre::OverlayManager::getSingleton().addOverlay(imgui);
 
+    static_assert(std::is_convertible_v<
+                  dependencies_config,
+                  pause_menu::dependency_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout_config::layout_options,
+                  pause_menu::layout_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout_config::topology_options,
+                  pause_menu::topology_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout_config::scale_options,
+                  pause_menu::scale_options >);
+
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
         get_dependencies_config(),
