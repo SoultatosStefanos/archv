@@ -9,6 +9,7 @@
 #include <SDL2/SDL_keycode.h>
 #include <boost/log/trivial.hpp>
 #include <imgui/imgui_stdlib.h>
+#include <ranges>
 
 namespace gui
 {
@@ -203,8 +204,16 @@ pause_menu_window::pause_menu_window(
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
-, m_weight_strs { m_dependencies.size() }
 {
+    namespace views = std::ranges::views;
+
+    const auto weights = views::values(m_dependencies);
+    std::transform(
+        std::begin(weights),
+        std::end(weights),
+        std::back_inserter(m_weight_strs),
+        [](auto w) { return std::to_string(w); });
+
     assert(m_weight_strs.size() == m_dependencies.size());
 }
 
@@ -227,9 +236,11 @@ void pause_menu_window::draw() const
 
 void pause_menu_window::draw_dependencies_header() const
 {
+    namespace views = std::ranges::views;
+
     if (ImGui::CollapsingHeader("Dependencies"))
     {
-        for (auto i = 0; const auto& dependency : m_dependencies)
+        for (auto i = 0; const auto& dependency : views::keys(m_dependencies))
         {
             auto& weight_str = m_weight_strs[i++];
             const auto* buffer = dependency.c_str();
