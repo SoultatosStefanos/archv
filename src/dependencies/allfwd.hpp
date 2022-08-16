@@ -13,6 +13,8 @@ class weight_repo;
 template < typename Graph, typename DependencyMap >
 class dynamic_weight_map;
 
+struct config_data;
+
 } // namespace dependencies
 
 #endif // DEPENDENCIES_ALLFWD_HPP

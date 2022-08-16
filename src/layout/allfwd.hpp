@@ -25,6 +25,8 @@ class layout;
 template < typename Graph >
 class gursoy_atun_layout;
 
+struct config_data;
+
 } // namespace layout
 
 #endif // LAYOUT_ALLFWD_HPP

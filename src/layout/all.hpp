@@ -6,6 +6,7 @@
 
 #include "core.hpp"
 #include "cube.hpp"
+#include "deserialization.hpp"
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "layout_visitor.hpp"
