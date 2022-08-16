@@ -211,9 +211,9 @@
 
 	+ [x] Integrate configs
 
-	+ [ ] Death tests cleanup
+	+ [x] Death tests cleanup
 
-	+ [ ] Add hardcoded default config values
+	+ [n] Add hardcoded default config values
 
 	+ [ ] Fix layout restore use case
 	
