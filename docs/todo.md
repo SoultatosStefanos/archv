@@ -209,6 +209,8 @@
 
 	+ [x] Layout deserialization module
 
-	+ [ ] Integrate configs
+	+ [x] Integrate configs
+
+	+ [ ] Death tests cleanup
 	
 	+ [ ] Progress bars pre work

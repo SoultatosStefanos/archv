@@ -6,9 +6,24 @@
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
 
-// TODO Get hardcoded data from config
+app::app(int argc, const char* argv[]) : base("ARCHV")
+{
+    using namespace config;
+    using namespace dependencies;
+    using namespace layout;
+    using json::archive;
 
-app::app(const std::string& name) : base(name) { }
+    if (argc != 2)
+        throw std::runtime_error("usage: ./<exec> <path/to/main/config.json>");
+
+    m_main_config = deserialize_config(archive::get().at(argv[1]));
+
+    m_dependencies_config = deserialize_dependencies(
+        archive::get().at(m_main_config.dependencies_path));
+
+    m_layout_config
+        = deserialize_layout(archive::get().at(m_main_config.layout_path));
+}
 
 // NOTE Must let base handle frame first
 
@@ -57,12 +72,9 @@ void app::setup()
     lay_graph(get_layout_core().get_layout());
 }
 
-#define ARCHV_INPUT_GRAPH_PATH                                                 \
-    "/home/stef/Documents/Projects/archv/build/graph.json"
-
 void app::setup_architecture()
 {
-    const auto& root = json::archive::get().at(ARCHV_INPUT_GRAPH_PATH);
+    const auto& root = json::archive::get().at(get_main_config().graph_path);
 
     m_st = architecture::deserialize_symbols(root);
     std::tie(m_g, std::ignore)
@@ -80,21 +92,8 @@ void app::setup_commands()
 
 void app::setup_dependencies()
 {
-    auto deps_table
-        = dependencies::core::hash_table { { "Inherit", 1 },
-                                           { "Friend", 1 },
-                                           { "NestedClass", 1 },
-                                           { "ClassField", 1 },
-                                           { "ClassTemplateParent", 1 },
-                                           { "ClassTemplateArg", 1 },
-                                           { "MethodReturn", 1 },
-                                           { "MethodArg", 1 },
-                                           { "MethodDefinition", 1 },
-                                           { "MemberExpr", 1 },
-                                           { "MethodTemplateArgs", 1 } };
-
     m_dependencies = std::make_unique< dependencies_core >(
-        get_cmds(), std::move(deps_table));
+        get_cmds(), get_dependencies_config());
 
     BOOST_LOG_TRIVIAL(info) << "setup dependencies";
 }
@@ -106,7 +105,12 @@ void app::setup_layout()
         boost::get(boost::edge_bundle, std::as_const(get_graph())));
 
     m_layout = std::make_unique< layout_core >(
-        get_cmds(), get_graph(), weight_map, "Gursoy Atun", "Sphere", 100);
+        get_cmds(),
+        get_graph(),
+        weight_map,
+        get_layout_config().default_layout,
+        get_layout_config().default_topology,
+        get_layout_config().default_scale);
 
     BOOST_LOG_TRIVIAL(info) << "setup layout";
 }
@@ -133,26 +137,16 @@ void app::setup_gui()
 
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
-        pause_menu::dependency_options { { "Inherit", 1 },
-                                         { "Friend", 1 },
-                                         { "NestedClass", 1 },
-                                         { "ClassField", 1 },
-                                         { "ClassTemplateParent", 1 },
-                                         { "ClassTemplateArg", 1 },
-                                         { "MethodReturn", 1 },
-                                         { "MethodArg", 1 },
-                                         { "MethodDefinition", 1 },
-                                         { "MemberExpr", 1 },
-                                         { "MethodTemplateArgs", 1 } },
-        pause_menu::layout_options { "Gursoy Atun" },
-        pause_menu::topology_options { "Cube", "Sphere" },
-        pause_menu::scale_options { 200, 100, 80 });
+        get_dependencies_config(),
+        get_layout_config().layouts,
+        get_layout_config().topologies,
+        get_layout_config().scales);
 
     // Default selections
 
-    get_pause_menu().set_layout(get_layout_core().get_layout().desc());
-    get_pause_menu().set_topology(get_layout_core().get_topology().desc());
-    get_pause_menu().set_scale(get_layout_core().get_topology().scale());
+    get_pause_menu().set_layout(get_layout_config().default_layout);
+    get_pause_menu().set_topology(get_layout_config().default_topology);
+    get_pause_menu().set_scale(get_layout_config().default_scale);
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }
@@ -322,6 +316,30 @@ void app::go() { getRoot()->startRendering(); }
 /***********************************************************
  * Accessors                                               *
  ***********************************************************/
+
+auto app::get_main_config() const -> const main_config&
+{
+    return m_main_config;
+}
+
+auto app::get_main_config() -> main_config& { return m_main_config; }
+
+auto app::get_dependencies_config() const -> const dependencies_config&
+{
+    return m_dependencies_config;
+}
+
+auto app::get_dependencies_config() -> dependencies_config&
+{
+    return m_dependencies_config;
+}
+
+auto app::get_layout_config() const -> const layout_config&
+{
+    return m_layout_config;
+}
+
+auto app::get_layout_config() -> layout_config& { return m_layout_config; }
 
 auto app::get_symbol_table() const -> const symbol_table& { return m_st; }
 

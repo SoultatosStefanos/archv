@@ -34,13 +34,13 @@ static void init_logging()
 #endif
 }
 
-auto main() -> int
+auto main(int argc, const char* argv[]) -> int
 {
     try
     {
         init_logging();
 
-        app archv;
+        app archv { argc, argv };
         archv.initApp();
         archv.go();
         archv.closeApp();

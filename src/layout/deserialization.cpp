@@ -11,8 +11,8 @@ namespace layout
 
 namespace
 {
-    using layout_options = std::unordered_set< std::string >;
-    using topology_options = std::unordered_set< std::string >;
+    using layout_options = config_data::layout_options;
+    using topology_options = config_data::topology_options;
 
     static const layout_options valid_layouts { "Gursoy Atun" };
     static const topology_options valid_topologies { "Cube", "Sphere" };
@@ -39,25 +39,17 @@ namespace
                     invalid_negative_scale() << scale_info(scale));
     }
 
-    template < typename Container >
-    auto
-    contains(const Container& data, const typename Container::value_type& val)
-    {
-        return std::find(std::begin(data), std::end(data), val)
-            != std::end(data);
-    }
-
     void verify_defaults(const config_data& data)
     {
-        if (!contains(data.layouts, data.default_layout))
+        if (!data.layouts.contains(data.default_layout))
             BOOST_THROW_EXCEPTION(
                 unknown_default() << layout_info(data.default_layout));
 
-        if (!contains(data.topologies, data.default_topology))
+        if (!data.topologies.contains(data.default_topology))
             BOOST_THROW_EXCEPTION(
                 unknown_default() << topology_info(data.default_topology));
 
-        if (!contains(data.scales, data.default_scale))
+        if (!data.scales.contains(data.default_scale))
             BOOST_THROW_EXCEPTION(
                 unknown_default() << scale_info(data.default_scale));
     }
@@ -91,7 +83,7 @@ namespace
         std::transform(
             std::begin(val),
             std::end(val),
-            std::back_inserter(res),
+            std::inserter(res, std::begin(res)),
             [](const auto& val) { return as< value_type >(val); });
 
         return res;
@@ -99,23 +91,21 @@ namespace
 
     inline auto deserialize_layouts(const Json::Value& root)
     {
-        using json_layouts = std::vector< std::string >;
         BOOST_LOG_TRIVIAL(debug) << "reading layouts";
-        return read_json_array< json_layouts >(get(root, "layouts"));
+        return read_json_array< layout_options >(get(root, "layouts"));
     }
 
     inline auto deserialize_topologies(const Json::Value& root)
     {
-        using json_topologies = std::vector< std::string >;
         BOOST_LOG_TRIVIAL(debug) << "reading topologies";
-        return read_json_array< json_topologies >(get(root, "topologies"));
+        return read_json_array< topology_options >(get(root, "topologies"));
     }
 
     inline auto deserialize_scales(const Json::Value& root)
     {
-        using json_scales = std::vector< double >;
+        using scale_options = config_data::scale_options;
         BOOST_LOG_TRIVIAL(debug) << "reading scales";
-        return read_json_array< json_scales >(get(root, "scales"));
+        return read_json_array< scale_options >(get(root, "scales"));
     }
 
     auto deserialize_defaults(const Json::Value& root)

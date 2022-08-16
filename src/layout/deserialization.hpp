@@ -7,7 +7,7 @@
 #include "json/deserialization.hpp"
 #include <jsoncpp/json/json.h>
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace layout
 {
@@ -46,9 +46,13 @@ using scale_info = boost::error_info< struct tag_topology, double >;
 
 struct config_data
 {
-    std::vector< std::string > layouts;
-    std::vector< std::string > topologies;
-    std::vector< double > scales;
+    using layout_options = std::unordered_set< std::string >;
+    using topology_options = std::unordered_set< std::string >;
+    using scale_options = std::unordered_set< double >;
+
+    layout_options layouts;
+    topology_options topologies;
+    scale_options scales;
 
     std::string default_layout;
     std::string default_topology;
