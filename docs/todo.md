@@ -207,7 +207,7 @@
 
 	+ [x] Dependencies deserialization module
 
-	+ [ ] Layout deserialization module
+	+ [x] Layout deserialization module
 
 	+ [ ] Integrate configs
 	

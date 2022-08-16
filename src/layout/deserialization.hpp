@@ -38,7 +38,7 @@ struct unknown_default : virtual json::deserialization_error
 
 using layout_info = boost::error_info< struct tag_layout, std::string >;
 using topology_info = boost::error_info< struct tag_topology, std::string >;
-using scale_info = boost::error_info< struct tag_topology, std::string >;
+using scale_info = boost::error_info< struct tag_topology, double >;
 
 /***********************************************************
  * Config Data                                             *
