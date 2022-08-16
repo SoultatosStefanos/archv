@@ -202,8 +202,13 @@
 
 	+ [x] Central deserialization module
 
-	+ [ ] Dependencies deserialization module
+
+# 16 / 08 / 2022
+
+	+ [x] Dependencies deserialization module
 
 	+ [ ] Layout deserialization module
+
+	+ [ ] Integrate configs
 	
 	+ [ ] Progress bars pre work

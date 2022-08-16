@@ -1,5 +1,6 @@
 set(FILES
 	core_tests.cpp
+	deserialization_tests.cpp
 	weight_map_tests.cpp
 	weight_repo_tests.cpp
 )
