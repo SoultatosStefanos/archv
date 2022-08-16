@@ -212,5 +212,9 @@
 	+ [x] Integrate configs
 
 	+ [ ] Death tests cleanup
+
+	+ [ ] Add hardcoded default config values
+
+	+ [ ] Fix layout restore use case
 	
 	+ [ ] Progress bars pre work
