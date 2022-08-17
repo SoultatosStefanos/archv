@@ -39,23 +39,21 @@ public:
     auto connect(const monitor& f) -> connection { return m_signal.connect(f); }
 
 protected:
-    void emit_status() const { m_signal(*this); }
+    auto emit_status() const -> void { m_signal(*this); }
 
 private:
     signal m_signal;
 };
 
-template < typename T >
-concept arithmetic = std::integral< T > || std::floating_point< T >;
+inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
 
-template < arithmetic T = task::units >
+template < typename T = task::units >
+requires std::integral< T > || std::floating_point< T >
 inline auto percentage_done(const task& t) -> T
 {
     return static_cast< T >(t.units_done() * 100)
         / static_cast< T >(t.total_units());
 }
-
-inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
 
 } // namespace progress
 

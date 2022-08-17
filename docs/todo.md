@@ -221,4 +221,4 @@
 
 	+ [n] Fix layout restore use case
 	
-	+ [ ] Progress bars pre work
+	+ [x] Progress bars pre work
