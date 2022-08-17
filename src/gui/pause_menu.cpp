@@ -219,9 +219,18 @@ void pause_menu_window::draw() const
     draw_code_inspection_header();
 }
 
-void pause_menu_window::draw_dependencies_header() const
+auto pause_menu_window::draw_dependencies_header() const -> void
 {
     namespace views = std::ranges::views;
+
+#if (0) // FIXME
+    static float progress { 0.0f };
+    progress += 0.01f;
+    ImGui::ProgressBar(progress);
+
+    ImGui::Text("Loading %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+
+#endif
 
     if (ImGui::CollapsingHeader("Dependencies"))
     {
