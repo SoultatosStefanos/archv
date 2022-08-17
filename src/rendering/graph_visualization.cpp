@@ -10,6 +10,8 @@
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
+#include <OGRE/Overlay/OgreImGuiOverlay.h>
+#include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
@@ -57,6 +59,9 @@ void graph_visualization::setup_scene()
     const auto scene_type = DefaultSceneManagerFactory::FACTORY_TYPE_NAME;
     m_scene = m_root.createSceneManager(scene_type, "graph visualization");
     assert(m_scene);
+
+    // Add support for overlays in this scene, (maybe at a later state).
+    m_scene->addRenderQueueListener(OverlaySystem::getSingletonPtr());
 
     RTShader::ShaderGenerator::getSingleton().addSceneManager(m_scene);
 }
@@ -147,6 +152,8 @@ void graph_visualization::shutdown_lighting()
 
 void graph_visualization::shutdown_scene()
 {
+    m_scene->removeRenderQueueListener(OverlaySystem::getSingletonPtr());
+
     RTShader::ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
     m_root.destroySceneManager(m_scene);
 }
@@ -168,6 +175,12 @@ void graph_visualization::lay_vertex(
 /***********************************************************
  * Input                                                   *
  ***********************************************************/
+
+auto graph_visualization::frameStarted(const Ogre::FrameEvent&) -> bool
+{
+    ImGuiOverlay::NewFrame(); // Add support for gui overlays
+    return true;
+}
 
 void graph_visualization::frameRendered(const FrameEvent& e)
 {

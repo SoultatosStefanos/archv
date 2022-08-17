@@ -134,8 +134,6 @@ public:
     auto buttonReleased(const OgreBites::ButtonEvent& e) -> bool override;
 
 private:
-    auto scene() const -> Ogre::SceneManager*;
-
     void handle_undo_combination();
     void handle_redo_combination();
 

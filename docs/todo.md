@@ -219,6 +219,6 @@
 
 # 17 / 08 / 2022
 
-	+ [?] Fix layout restore use case
+	+ [n] Fix layout restore use case
 	
 	+ [ ] Progress bars pre work

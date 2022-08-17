@@ -16,8 +16,6 @@ namespace gui
 
 namespace
 {
-    static constexpr auto prev_scene_name = "graph visualization";
-
     static constexpr auto resume_key = 'p';
     static constexpr auto ctrl_key = SDLK_LCTRL;
     static constexpr auto undo_key = 'z';
@@ -40,15 +38,9 @@ pause_menu::pause_menu(
 {
 }
 
-void pause_menu::enter()
-{
-    scene()->addRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
-}
+void pause_menu::enter() { }
 
-void pause_menu::exit()
-{
-    scene()->removeRenderQueueListener(Ogre::OverlaySystem::getSingletonPtr());
-}
+void pause_menu::exit() { }
 
 void pause_menu::pause() { }
 
@@ -165,13 +157,6 @@ auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
 {
     m_imgui_input->buttonReleased(e);
     return true;
-}
-
-auto pause_menu::scene() const -> Ogre::SceneManager*
-{
-    auto* s = Ogre::Root::getSingleton().getSceneManager(prev_scene_name);
-    assert(s);
-    return s;
 }
 
 void pause_menu::handle_undo_combination()

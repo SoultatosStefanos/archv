@@ -50,6 +50,7 @@ public:
 
     void lay_vertex(const vertex_id& id, double x, double y, double z);
 
+    auto frameStarted(const Ogre::FrameEvent&) -> bool override;
     void frameRendered(const Ogre::FrameEvent& e) override;
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
