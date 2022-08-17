@@ -222,3 +222,12 @@
 	+ [n] Fix layout restore use case
 	
 	+ [x] Progress bars pre work
+
+
+# 18 / 08 / 2022
+
+	+ [?] Rendering package wth states and app -> Gui package, remove view
+
+	+ [ ] Multithreaded task test
+
+	+ [ ] Arch generator task
