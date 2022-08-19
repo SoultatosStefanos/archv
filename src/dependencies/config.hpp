@@ -1,8 +1,8 @@
-// Contains a module for deserializing the architecture dependencies.
+// Contains a configuration module for the architecture dependencies.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_DESERIALIZATION_HPP
-#define DEPENDENCIES_DESERIALIZATION_HPP
+#ifndef DEPENDENCIES_CONFIG_HPP
+#define DEPENDENCIES_CONFIG_HPP
 
 #include "weight_repo.hpp"
 
@@ -17,6 +17,8 @@ using config_data = weight_repo::hash_table;
 
 auto deserialize_dependencies(const Json::Value& root) -> config_data;
 
+// TODO: serialize, defaults
+
 } // namespace dependencies
 
-#endif // DEPENDENCIES_DESERIALIZATION_HPP
+#endif // DEPENDENCIES_CONFIG_HPP

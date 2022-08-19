@@ -1,8 +1,8 @@
-// Contains a deserialization module for the layout package.
+// Contains a configuration module for the layout package.
 // Soultatos Stefanos 2022
 
-#ifndef LAYOUT_DESERIALIZATION_HPP
-#define LAYOUT_DESERIALIZATION_HPP
+#ifndef LAYOUT_CONFIG_HPP
+#define LAYOUT_CONFIG_HPP
 
 #include "json/deserialization.hpp"
 #include <jsoncpp/json/json.h>
@@ -68,6 +68,8 @@ struct config_data
 
 auto deserialize_layout(const Json::Value& root) -> config_data;
 
+// TODO: serialize, defaults
+
 } // namespace layout
 
-#endif // LAYOUT_DESERIALIZATION_HPP
+#endif // LAYOUT_CONFIG_HPP

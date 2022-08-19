@@ -1,5 +1,5 @@
 set(FILES
-	deserialization_tests.cpp
+	config_tests.cpp
 )
 set(SUBDIRECTORIES)
 

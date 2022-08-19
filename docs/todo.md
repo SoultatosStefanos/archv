@@ -238,3 +238,13 @@
 	+ [x] Gui overlay system
 
 	+ [ ] Application package
+
+		+ [x] Rename deserialization modules to config
+
+		+ [ ] Remove config package
+
+		+ [ ] Copy modules to application package
+
+		+ [ ] Remove view dispatchers
+
+		+ [ ] Remove view

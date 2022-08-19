@@ -4,6 +4,6 @@
 #ifndef CONFIG_ALL_HPP
 #define CONFIG_ALL_HPP
 
-#include "deserialization.hpp"
+#include "config.hpp"
 
 #endif // CONFIG_ALL_HPP

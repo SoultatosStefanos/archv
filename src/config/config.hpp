@@ -1,8 +1,8 @@
-// Contains a module for deserializing the main config of the application.
+// Contains a configuration module for the application.
 // Soultatos Stefanos 2022
 
-#ifndef CONFIG_DESERIALIZATION_HPP
-#define CONFIG_DESERIALIZATION_HPP
+#ifndef CONFIG_CONFIG_HPP
+#define CONFIG_CONFIG_HPP
 
 #include <jsoncpp/json/json.h>
 #include <string>
@@ -32,4 +32,4 @@ auto deserialize_config(const Json::Value& root) -> config_data;
 
 } // namespace config
 
-#endif // CONFIG_DESERIALIZATION_HPP
+#endif // CONFIG_CONFIG_HPP
