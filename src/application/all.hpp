@@ -8,5 +8,6 @@
 #include "paused_state.hpp"
 #include "state.hpp"
 #include "state_machine.hpp"
+#include "visualization_state.hpp"
 
 #endif // APPLICATION_ALL_HPP

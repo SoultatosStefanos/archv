@@ -2,6 +2,7 @@
 
 #include "gui/overlay.hpp"
 #include "gui/overlay_manager.hpp"
+#include "gui/pause_menu.hpp"
 #include "state_machine.hpp"
 
 #include <OGRE/OgreRoot.h>

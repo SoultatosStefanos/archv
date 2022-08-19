@@ -2,6 +2,7 @@ set(FILES
 	config.cpp
 	paused_state.cpp
 	state_machine.cpp
+	visualization_state.cpp
 )
 set(SUBDIRECTORIES)
 

@@ -7,8 +7,7 @@ set(SUBDIRECTORIES
 	json
 	layout
 	progress
-
-	# rendering
+	rendering
 	undo_redo
 )
 

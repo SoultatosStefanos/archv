@@ -4,16 +4,11 @@
 #ifndef APPLICATION_PAUSED_STATE_HPP
 #define APPLICATION_PAUSED_STATE_HPP
 
-#include "gui/pause_menu.hpp"
+#include "gui/allfwd.hpp"
 #include "state.hpp"
 
 #include <OGRE/Bites/OgreImGuiInputListener.h>
 #include <memory>
-
-namespace gui
-{
-class overlay_manager;
-}
 
 namespace application
 {
