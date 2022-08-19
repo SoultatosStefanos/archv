@@ -182,9 +182,12 @@ void app::setup()
     addInputListener(this);
 }
 
+// FIXME
+#define ARCHV_GRAPH_PATH "/home/stef/Documents/Projects/archv/build/graph.json"
+
 void app::setup_architecture()
 {
-    const auto& root = json::archive::get().at(get_main_config().graph_path);
+    const auto& root = json::archive::get().at(ARCHV_GRAPH_PATH);
 
     std::tie(m_st, m_g, std::ignore) = architecture::generate_arch(root);
 

@@ -22,7 +22,6 @@ TEST(app_deserialization, sample_config_invalid)
 auto make_sample_config_0()
 {
     return config_data { .dependencies_path = "foo/bar/dependencies.json",
-                         .graph_path = "foo/bar/graph.json",
                          .layout_path = "foo/bar/layout.json" };
 }
 

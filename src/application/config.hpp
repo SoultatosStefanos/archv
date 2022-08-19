@@ -17,7 +17,6 @@ namespace application
 struct config_data
 {
     std::string dependencies_path;
-    std::string graph_path;
     std::string layout_path;
 
     inline auto operator==(const config_data&) const -> bool = default;
