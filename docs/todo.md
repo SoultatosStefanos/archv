@@ -66,7 +66,7 @@
 
 	+ [ ] Progress Bars
 
-	+ [ ] Interactive Configuration
+	+ [ ] Interactive Configuration (deserialization/serialization/defaults)
 
 	
 # 08 / 07 / 2022
@@ -248,3 +248,8 @@
 		+ [x] Remove view dispatchers
 
 		+ [x] Remove view
+
+
+# 20 / 08 / 2022
+
+	+ [ ] Architecture generation task with progress bar
