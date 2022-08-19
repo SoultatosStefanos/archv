@@ -228,6 +228,11 @@
 
 	+ [?] Rendering package wth states and app -> Gui package, remove view
 
+
+# 19 / 08 / 2022
+
 	+ [ ] Multithreaded task test
+
+	+ [ ] Gui overlay system
 
 	+ [ ] Arch generator task

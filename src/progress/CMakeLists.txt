@@ -1,16 +1,7 @@
-set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	gui
-	json
-	layout
-	progress
-	rendering
-	undo_redo
-	view
+set(FILES
+	task.cpp
 )
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

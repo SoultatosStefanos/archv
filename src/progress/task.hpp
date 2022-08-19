@@ -45,8 +45,6 @@ private:
     signal m_signal;
 };
 
-inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
-
 template < typename T = task::units >
 requires std::integral< T > || std::floating_point< T >
 inline auto percentage_done(const task& t) -> T
@@ -54,6 +52,12 @@ inline auto percentage_done(const task& t) -> T
     return static_cast< T >(t.units_done() * 100)
         / static_cast< T >(t.total_units());
 }
+
+inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
+
+// On a new worker thread.
+auto launch_task(task& t, task::units todo) -> void;
+auto launch_task(task& t) -> void;
 
 } // namespace progress
 
