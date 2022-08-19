@@ -18,11 +18,10 @@ app::app(int argc, const char* argv[]) : base("ARCHV")
 
     m_main_config = deserialize_config(archive::get().at(argv[1]));
 
-    m_dependencies_config = deserialize_dependencies(
-        archive::get().at(m_main_config.dependencies_path));
+    m_dependencies_config
+        = deserialize(archive::get().at(m_main_config.dependencies_path));
 
-    m_layout_config
-        = deserialize_layout(archive::get().at(m_main_config.layout_path));
+    m_layout_config = deserialize(archive::get().at(m_main_config.layout_path));
 }
 
 // NOTE Must let base handle frame first

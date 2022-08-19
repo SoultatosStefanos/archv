@@ -8,7 +8,7 @@ using namespace json;
 namespace dependencies
 {
 
-auto deserialize_dependencies(const Json::Value& root) -> config_data
+auto deserialize(const Json::Value& root) -> config_data
 {
     using dependency_type = weight_repo::dependency_type;
     using weight_type = weight_repo::weight;

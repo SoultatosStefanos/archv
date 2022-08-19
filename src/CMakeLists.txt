@@ -1,7 +1,7 @@
 set(FILES)
 set(SUBDIRECTORIES
+	application
 	architecture
-	config
 	dependencies
 	gui
 	json

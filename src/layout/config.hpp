@@ -66,7 +66,7 @@ struct config_data
  * Deserialize                                             *
  ***********************************************************/
 
-auto deserialize_layout(const Json::Value& root) -> config_data;
+auto deserialize(const Json::Value& root) -> config_data;
 
 // TODO: serialize, defaults
 

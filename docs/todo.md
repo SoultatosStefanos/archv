@@ -241,7 +241,7 @@
 
 		+ [x] Rename deserialization modules to config
 
-		+ [ ] Remove config package
+		+ [x] Remove config package
 
 		+ [ ] Copy modules to application package
 

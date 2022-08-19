@@ -18,7 +18,7 @@ TEST(dependencies_deserialization, sample_dependencies_invalid)
     const auto root
         = read_json_root("../../data/tests/sample_dependencies_-1.json");
 
-    EXPECT_THROW(deserialize_dependencies(root), deserialization_error);
+    EXPECT_THROW(deserialize(root), deserialization_error);
 }
 
 auto make_sample_dependencies_0()
@@ -32,7 +32,7 @@ TEST(dependencies_deserialization, sample_dependencies_0)
         = read_json_root("../../data/tests/sample_dependencies_0.json");
     const auto expected = make_sample_dependencies_0();
 
-    const auto actual = deserialize_dependencies(root);
+    const auto actual = deserialize(root);
 
     ASSERT_EQ(actual, expected);
 }

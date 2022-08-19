@@ -4,10 +4,10 @@
 
 using namespace json;
 
-namespace config
+namespace application
 {
 
-auto deserialize_config(const Json::Value& root) -> config_data
+auto deserialize(const Json::Value& root) -> config_data
 {
     const auto config_path = as< std::string >(get(root, "config-path"));
     const auto dependencies = as< std::string >(get(root, "dependencies"));
@@ -19,4 +19,4 @@ auto deserialize_config(const Json::Value& root) -> config_data
              .layout_path = config_path + layout };
 }
 
-} // namespace config
+} // namespace application

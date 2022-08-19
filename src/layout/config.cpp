@@ -156,7 +156,7 @@ namespace
 
 } // namespace
 
-auto deserialize_layout(const Json::Value& root) -> config_data
+auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& layouts = deserialize_layouts(root);
     auto&& topologies = deserialize_topologies(root);

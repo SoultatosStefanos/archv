@@ -1,13 +1,13 @@
 // Contains a configuration module for the application.
 // Soultatos Stefanos 2022
 
-#ifndef CONFIG_CONFIG_HPP
-#define CONFIG_CONFIG_HPP
+#ifndef APPLICATION_CONFIG_HPP
+#define APPLICATION_CONFIG_HPP
 
 #include <jsoncpp/json/json.h>
 #include <string>
 
-namespace config
+namespace application
 {
 
 /***********************************************************
@@ -28,8 +28,8 @@ struct config_data
  * Deserialize                                             *
  ***********************************************************/
 
-auto deserialize_config(const Json::Value& root) -> config_data;
+auto deserialize(const Json::Value& root) -> config_data;
 
-} // namespace config
+} // namespace application
 
-#endif // CONFIG_CONFIG_HPP
+#endif // APPLICATION_CONFIG_HPP
