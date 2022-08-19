@@ -236,3 +236,5 @@
 	+ [x] Arch generator task
 	
 	+ [x] Gui overlay system
+
+	+ [ ] Application package
