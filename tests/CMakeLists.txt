@@ -16,6 +16,7 @@ set(SUBDIRECTORIES
   config
   dependencies
   layout
+  progress
   undo_redo
   utility
   view

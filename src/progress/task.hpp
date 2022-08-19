@@ -45,12 +45,9 @@ private:
     signal m_signal;
 };
 
-template < typename T = task::units >
-requires std::integral< T > || std::floating_point< T >
-inline auto percentage_done(const task& t) -> T
+inline auto percentage_done(const task& t) -> task::units
 {
-    return static_cast< T >(t.units_done() * 100)
-        / static_cast< T >(t.total_units());
+    return (t.units_done() * 100) / t.total_units();
 }
 
 inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
