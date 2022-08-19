@@ -11,6 +11,8 @@ struct config_data;
 class state;
 class state_machine;
 
+class paused_state;
+
 } // namespace application
 
 #endif // APPLICATION_ALLFWD_HPP

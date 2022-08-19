@@ -1,204 +1,26 @@
 #include "pause_menu.hpp"
 
-#include "overlay_manager.hpp"
-#include "view/state_machine.hpp"
-
-#include <OGRE/OgreRoot.h>
-#include <OGRE/Overlay/OgreImGuiOverlay.h>
-#include <OGRE/Overlay/OgreOverlayManager.h>
-#include <OGRE/Overlay/OgreOverlaySystem.h>
-#include <SDL2/SDL_keycode.h>
 #include <boost/log/trivial.hpp>
+#include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
 #include <ranges>
 
 namespace gui
 {
 
-namespace
-{
-    static constexpr auto resume_key = 'p';
-    static constexpr auto ctrl_key = SDLK_LCTRL;
-    static constexpr auto undo_key = 'z';
-    static constexpr auto redo_key = 'y';
-
-} // namespace
-
 pause_menu::pause_menu(
-    state_machine& sm,
-    overlay_manager& overlays,
-    dependency_options dependencies,
-    layout_options layouts,
-    topology_options topologies,
-    scale_options scales)
-: m_sm { sm }
-, m_overlays { overlays }
-, m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
-, m_win { std::move(dependencies),
-          std::move(layouts),
-          std::move(topologies),
-          std::move(scales) }
-{
-}
-
-void pause_menu::enter()
-{
-    m_overlays.push(&m_win);
-    m_overlays.push(&m_bar);
-}
-
-void pause_menu::exit()
-{
-    m_overlays.pop(&m_win);
-    m_overlays.pop(&m_bar);
-}
-
-void pause_menu::pause() { }
-
-void pause_menu::resume() { }
-
-auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
-{
-    Ogre::ImGuiOverlay::NewFrame();
-    m_overlays.draw_all();
-
-    return true;
-}
-
-auto pause_menu::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
-{
-    switch (e.keysym.sym)
-    {
-    case resume_key:
-        m_sm.fallback();
-        break;
-
-    case ctrl_key:
-        ctrl_pressed = true;
-        BOOST_LOG_TRIVIAL(debug) << "ctrl key pressed";
-
-        break;
-
-    case undo_key:
-        undo_pressed = true;
-        BOOST_LOG_TRIVIAL(debug) << "undo key pressed";
-        handle_undo_combination();
-
-        break;
-
-    case redo_key:
-        redo_pressed = true;
-        BOOST_LOG_TRIVIAL(debug) << "redo key pressed";
-        handle_redo_combination();
-        break;
-
-    default:
-        break;
-    }
-
-    m_imgui_input->keyPressed(e);
-    return true;
-}
-
-auto pause_menu::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
-{
-    switch (e.keysym.sym)
-    {
-    case ctrl_key:
-        ctrl_pressed = false;
-        BOOST_LOG_TRIVIAL(debug) << "ctrl key released";
-        break;
-
-    case undo_key:
-        undo_pressed = false;
-        BOOST_LOG_TRIVIAL(debug) << "undo key released";
-        break;
-
-    case redo_key:
-        redo_pressed = false;
-        BOOST_LOG_TRIVIAL(debug) << "redo key released";
-        break;
-
-    default:
-        break;
-    }
-
-    m_imgui_input->keyReleased(e);
-    return true;
-}
-
-auto pause_menu::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
-{
-    m_imgui_input->mouseMoved(e);
-    return true;
-}
-
-auto pause_menu::mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool
-{
-    m_imgui_input->mouseWheelRolled(e);
-    return true;
-}
-
-auto pause_menu::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    m_imgui_input->mousePressed(e);
-    return true;
-}
-
-auto pause_menu::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    m_imgui_input->mouseReleased(e);
-    return true;
-}
-
-auto pause_menu::textInput(const OgreBites::TextInputEvent& e) -> bool
-{
-    m_imgui_input->textInput(e);
-    return true;
-}
-
-auto pause_menu::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
-{
-    m_imgui_input->buttonPressed(e);
-    return true;
-}
-
-auto pause_menu::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
-{
-    m_imgui_input->buttonReleased(e);
-    return true;
-}
-
-void pause_menu::handle_undo_combination()
-{
-    if (ctrl_pressed and undo_pressed)
-        m_bar.undo_shortcut();
-}
-
-void pause_menu::handle_redo_combination()
-{
-    if (ctrl_pressed and redo_pressed)
-        m_bar.redo_shortcut();
-}
-
-} // namespace gui
-
-namespace gui::detail
-{
-
-/***********************************************************
- * Pause menu window                                       *
- ***********************************************************/
-
-pause_menu_window::pause_menu_window(
     dependency_options deps,
     layout_options layouts,
     topology_options topologies,
-    scale_options scales)
+    scale_options scales,
+    undo_enabled is_undo_enabled,
+    redo_enabled is_redo_enabled)
 : m_dependencies { std::move(deps) }
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
+, m_undo_enabled { std::move(is_undo_enabled) }
+, m_redo_enabled { std::move(is_redo_enabled) }
 {
     namespace views = std::ranges::views;
 
@@ -210,9 +32,11 @@ pause_menu_window::pause_menu_window(
         [](auto w) { return std::to_string(w); });
 
     assert(m_weight_strs.size() == m_dependencies.size());
+    assert(m_undo_enabled);
+    assert(m_redo_enabled);
 }
 
-auto pause_menu_window::draw() const -> void
+auto pause_menu::draw() const -> void
 {
     if (!ImGui::Begin("ARCHV"))
     {
@@ -227,20 +51,19 @@ auto pause_menu_window::draw() const -> void
     draw_layout_header();
     draw_clustering_header();
     draw_code_inspection_header();
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        draw_file_submenu();
+        draw_edit_submenu();
+
+        ImGui::EndMainMenuBar();
+    }
 }
 
-auto pause_menu_window::draw_dependencies_header() const -> void
+auto pause_menu::draw_dependencies_header() const -> void
 {
     namespace views = std::ranges::views;
-
-#if (0) // FIXME
-    static float progress { 0.0f };
-    progress += 0.01f;
-    ImGui::ProgressBar(progress);
-
-    ImGui::Text("Loading %c", "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
-
-#endif
 
     if (ImGui::CollapsingHeader("Dependencies"))
     {
@@ -270,7 +93,7 @@ auto pause_menu_window::draw_dependencies_header() const -> void
     }
 }
 
-void pause_menu_window::draw_layout_header() const
+void pause_menu::draw_layout_header() const
 {
     if (ImGui::CollapsingHeader("Layout/Topology"))
     {
@@ -339,17 +162,41 @@ void pause_menu_window::draw_layout_header() const
     }
 }
 
-void pause_menu_window::draw_clustering_header() const
+void pause_menu::draw_clustering_header() const
 {
     if (ImGui::CollapsingHeader("Clustering"))
     {
     }
 }
 
-void pause_menu_window::draw_code_inspection_header() const
+void pause_menu::draw_code_inspection_header() const
 {
     if (ImGui::CollapsingHeader("Code Inspection"))
     {
+    }
+}
+
+void pause_menu::draw_file_submenu() const
+{
+    if (ImGui::BeginMenu("File"))
+    {
+        ImGui::EndMenu();
+    }
+}
+
+void pause_menu::draw_edit_submenu() const
+{
+    if (ImGui::BeginMenu("Edit"))
+    {
+        if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
+            m_undo_sig();
+
+        if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
+            m_redo_sig();
+
+        ImGui::Separator();
+
+        ImGui::EndMenu();
     }
 }
 
@@ -367,7 +214,7 @@ namespace
 
 } // namespace
 
-void pause_menu_window::set_dependency(const std::string& type, int weight)
+void pause_menu::set_dependency(const std::string& type, int weight)
 {
     const auto index = find_assoc_index(m_dependencies, type);
     assert(static_cast< std::size_t >(index) != m_dependencies.size());
@@ -378,7 +225,7 @@ void pause_menu_window::set_dependency(const std::string& type, int weight)
     BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
 }
 
-void pause_menu_window::set_layout(const std::string& type)
+void pause_menu::set_layout(const std::string& type)
 {
     const auto index = find_assoc_index(m_layouts, type);
     assert(static_cast< std::size_t >(index) != m_layouts.size());
@@ -388,7 +235,7 @@ void pause_menu_window::set_layout(const std::string& type)
     BOOST_LOG_TRIVIAL(info) << "layout set to " << type;
 }
 
-void pause_menu_window::set_topology(const std::string& type)
+void pause_menu::set_topology(const std::string& type)
 {
     const auto index = find_assoc_index(m_topologies, type);
     assert(static_cast< std::size_t >(index) != m_topologies.size());
@@ -398,7 +245,7 @@ void pause_menu_window::set_topology(const std::string& type)
     BOOST_LOG_TRIVIAL(info) << "topology set to " << type;
 }
 
-void pause_menu_window::set_scale(double val)
+void pause_menu::set_scale(double val)
 {
     const auto index = find_assoc_index(m_scales, val);
     assert(static_cast< std::size_t >(index) != m_scales.size());
@@ -408,65 +255,16 @@ void pause_menu_window::set_scale(double val)
     BOOST_LOG_TRIVIAL(info) << "scale set to " << val;
 }
 
-/***********************************************************
- * Pause menu bar                                          *
- ***********************************************************/
-
-pause_menu_bar::pause_menu_bar(
-    undo_enabled is_undo_enabled, redo_enabled is_redo_enabled)
-: m_undo_enabled { std::move(is_undo_enabled) }
-, m_redo_enabled { std::move(is_redo_enabled) }
-{
-    assert(m_undo_enabled);
-    assert(m_redo_enabled);
-}
-
-auto pause_menu_bar::draw() const -> void
-{
-    if (ImGui::BeginMainMenuBar())
-    {
-        draw_file_submenu();
-        draw_edit_submenu();
-
-        ImGui::EndMainMenuBar();
-    }
-}
-
-// TODO
-void pause_menu_bar::draw_file_submenu() const
-{
-    if (ImGui::BeginMenu("File"))
-    {
-        ImGui::EndMenu();
-    }
-}
-
-void pause_menu_bar::draw_edit_submenu() const
-{
-    if (ImGui::BeginMenu("Edit"))
-    {
-        if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
-            m_undo_sig();
-
-        if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
-            m_redo_sig();
-
-        ImGui::Separator();
-
-        ImGui::EndMenu();
-    }
-}
-
-void pause_menu_bar::undo_shortcut()
+void pause_menu::undo_shortcut()
 {
     if (m_undo_enabled())
         m_undo_sig();
 }
 
-void pause_menu_bar::redo_shortcut()
+void pause_menu::redo_shortcut()
 {
     if (m_redo_enabled())
         m_redo_sig();
 }
 
-} // namespace gui::detail
+} // namespace gui

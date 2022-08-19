@@ -1,6 +1,7 @@
 set(FILES
 	overlay_manager.cpp
 	pause_menu.cpp
+	progress_bar.cpp
 )
 set(SUBDIRECTORIES)
 

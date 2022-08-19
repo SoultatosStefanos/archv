@@ -19,7 +19,7 @@ auto progress_bar::draw() const -> void
         return;
     }
 
-    ImGui::Text(caption().c_str());
+    ImGui::TextUnformatted(caption().c_str());
     ImGui::Spacing();
 
     ImGui::ProgressBar(progress());

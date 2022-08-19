@@ -1,5 +1,6 @@
 set(FILES
 	config.cpp
+	paused_state.cpp
 	state_machine.cpp
 )
 set(SUBDIRECTORIES)

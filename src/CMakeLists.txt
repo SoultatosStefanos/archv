@@ -3,8 +3,7 @@ set(SUBDIRECTORIES
 	application
 	architecture
 	dependencies
-
-	# gui
+	gui
 	json
 	layout
 	progress

@@ -5,6 +5,7 @@
 #define APPLICATION_ALL_HPP
 
 #include "config.hpp"
+#include "paused_state.hpp"
 #include "state.hpp"
 #include "state_machine.hpp"
 
