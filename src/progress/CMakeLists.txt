@@ -1,5 +1,5 @@
 set(FILES
-	task.cpp
+	async.cpp
 )
 set(SUBDIRECTORIES)
 

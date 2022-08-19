@@ -5,7 +5,6 @@
 #define PROGRESS_TASK_HPP
 
 #include <boost/signals2/signal.hpp>
-#include <concepts>
 
 namespace progress
 {
@@ -51,10 +50,6 @@ inline auto percentage_done(const task& t) -> task::units
 }
 
 inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
-
-// On a new worker thread.
-auto launch_task(task& t, task::units todo) -> void;
-auto launch_task(task& t) -> void;
 
 } // namespace progress
 
