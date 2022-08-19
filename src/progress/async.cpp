@@ -1,14 +1,16 @@
 #include "async.hpp"
 
+#include <cassert>
 #include <thread>
 
 namespace progress
 {
 
 // TODO: thread pool?
-auto launch_async_task(task& t, task::units todo) -> void
+auto launch_async_task(std::unique_ptr< task > t, task::units todo) -> void
 {
-    auto worker = std::thread([&t, todo]() { t.work(todo); });
+    assert(t);
+    auto worker = std::thread([j = std::move(t), todo]() { j->work(todo); });
     worker.detach();
 }
 

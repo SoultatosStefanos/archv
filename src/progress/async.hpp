@@ -6,14 +6,16 @@
 
 #include "task.hpp"
 
+#include <memory>
+
 namespace progress
 {
 
-auto launch_async_task(task& t, task::units todo) -> void;
+auto launch_async_task(std::unique_ptr< task > t, task::units todo) -> void;
 
-inline auto launch_async_task(task& t) -> void
+inline auto launch_async_task(std::unique_ptr< task > t) -> void
 {
-    launch_async_task(t, t.total_units());
+    launch_async_task(std::move(t), t->total_units());
 }
 
 } // namespace progress
