@@ -1,4 +1,4 @@
-#include "architecture/deserialization.hpp"
+#include "architecture/generation.hpp"
 #include "utility/all.hpp"
 
 #include "json/deserialization.hpp"
@@ -14,19 +14,21 @@ namespace
 {
 
 // See data/tests/sample_graph_-1.json
-TEST(arch_deserialization, sample_graph_invalid)
+TEST(arch_generation, sample_graph_invalid)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
 
-    ASSERT_THROW(deserialize_symbols(root), json::deserialization_error);
+    ASSERT_THROW(generate_arch(root), json::deserialization_error);
 }
 
 // See data/tests/sample_graph_0.json
-TEST(arch_deserialization, sample_graph_0)
+TEST(arch_generation, sample_graph_0)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_0.json");
 
-    ASSERT_EQ(deserialize_symbols(root), symbol_table());
+    const auto [st, g, props] = generate_arch(root);
+
+    ASSERT_EQ(st, symbol_table());
 }
 
 // See data/tests/sample_graph_1.json
@@ -98,35 +100,13 @@ auto build_sample_st_1() -> symbol_table
 }
 
 // See data/tests/sample_graph_1.json
-TEST(arch_deserialization, sample_graph_1)
+TEST(arch_generation, sample_graph_1)
 {
     const auto root = read_json_root("../../data/tests/sample_graph_1.json");
     const auto expected = build_sample_st_1();
-    const auto actual = deserialize_symbols(root);
+    const auto [actual, g, props] = generate_arch(root);
 
     ASSERT_EQ(actual, expected);
-}
-
-// See data/tests/sample_graph_1.json
-auto build_sample_graph_1(const symbol_table& st) -> graph
-{
-    graph g;
-
-    for (const auto& [id, _] : st)
-        boost::add_vertex(id, g);
-
-    return g;
-}
-
-// See data/tests/sample_graph_1.json
-TEST(arch_deserialization, dependencies_sample_graph_1)
-{
-    const auto root = read_json_root("../../data/tests/sample_graph_1.json");
-    const auto sample_st = build_sample_st_1();
-    const auto expected = build_sample_graph_1(sample_st);
-    const auto [actual, _] = deserialize_dependencies(root, sample_st);
-
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
 }
 
 // See data/tests/sample_graph_2.json
@@ -165,20 +145,10 @@ auto build_sample_st_2() -> symbol_table
 }
 
 // See data/tests/sample_graph_2.json
-TEST(arch_deserialization, sample_graph_2)
-{
-    const auto root = read_json_root("../../data/tests/sample_graph_2.json");
-    const auto expected = build_sample_st_2();
-    const auto actual = deserialize_symbols(root);
-
-    ASSERT_EQ(actual, expected);
-}
-
-// See data/tests/sample_graph_2.json
-auto build_sample_graph_2(const symbol_table& st) -> graph
+auto build_sample_graph_2(const symbol_table& st)
 {
     graph g;
-    vertex_id_cache cache;
+    generation::vertex_properties cache;
 
     for (const auto& [id, _] : st)
         cache[id] = boost::add_vertex(id, g);
@@ -205,25 +175,16 @@ auto build_sample_graph_2(const symbol_table& st) -> graph
 }
 
 // See data/tests/sample_graph_2.json
-TEST(arch_deserialization, dependencies_sample_graph_2)
+TEST(arch_generation, sample_graph_2)
 {
-
     const auto root = read_json_root("../../data/tests/sample_graph_2.json");
-    const auto sample_st = build_sample_st_2();
-    const auto expected = build_sample_graph_2(sample_st);
-    const auto [actual, _] = deserialize_dependencies(root, sample_st);
+    const auto expected_st = build_sample_st_2();
+    const auto expected_g = build_sample_graph_2(expected_st);
 
-    ASSERT_TRUE(boost::isomorphism(actual, expected));
-    ASSERT_TRUE(std::equal(
-        boost::edges(actual).first,
-        boost::edges(actual).second,
-        boost::edges(expected).first,
-        boost::edges(expected).second,
-        [&](auto e1, auto e2)
-        {
-            return boost::get(boost::get(boost::edge_bundle, actual), e1)
-                == boost::get(boost::get(boost::edge_bundle, actual), e2);
-        }));
+    const auto [actual_st, actual_g, _] = generate_arch(root);
+
+    ASSERT_EQ(actual_st, expected_st);
+    ASSERT_TRUE(boost::isomorphism(actual_g, expected_g));
 }
 
 } // namespace

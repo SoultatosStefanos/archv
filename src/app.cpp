@@ -76,9 +76,7 @@ void app::setup_architecture()
 {
     const auto& root = json::archive::get().at(get_main_config().graph_path);
 
-    m_st = architecture::deserialize_symbols(root);
-    std::tie(m_g, std::ignore)
-        = architecture::deserialize_dependencies(root, m_st);
+    std::tie(m_st, m_g, std::ignore) = architecture::generate_arch(root);
 
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
