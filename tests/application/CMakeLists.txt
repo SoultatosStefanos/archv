@@ -1,5 +1,6 @@
 set(FILES
 	config_tests.cpp
+	state_machine_tests.cpp
 )
 set(SUBDIRECTORIES)
 

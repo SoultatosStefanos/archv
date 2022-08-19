@@ -5,5 +5,7 @@
 #define APPLICATION_ALL_HPP
 
 #include "config.hpp"
+#include "state.hpp"
+#include "state_machine.hpp"
 
 #endif // APPLICATION_ALL_HPP

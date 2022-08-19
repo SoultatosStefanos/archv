@@ -7,6 +7,10 @@
 namespace application
 {
 struct config_data;
-}
+
+class state;
+class state_machine;
+
+} // namespace application
 
 #endif // APPLICATION_ALLFWD_HPP

@@ -3,13 +3,14 @@ set(SUBDIRECTORIES
 	application
 	architecture
 	dependencies
-	gui
+
+	# gui
 	json
 	layout
 	progress
-	rendering
+
+	# rendering
 	undo_redo
-	view
 )
 
 foreach(VAR ${SUBDIRECTORIES})

@@ -1,13 +1,13 @@
-// Contains an interface for an application's view state.
+// Contains an interface for an application's state.
 // Soultatos Stefanos 2022
 
-#ifndef VIEW_STATE_HPP
-#define VIEW_STATE_HPP
+#ifndef APPLICATION_STATE_HPP
+#define APPLICATION_STATE_HPP
 
 #include <OGRE/Bites/OgreInput.h>
 #include <OGRE/OgreFrameListener.h>
 
-namespace view
+namespace application
 {
 
 class state : public OgreBites::InputListener, public Ogre::FrameListener
@@ -28,6 +28,6 @@ public:
     virtual void resume() = 0;
 };
 
-} // namespace view
+} // namespace application
 
-#endif // VIEW_STATE_HPP
+#endif // APPLICATION_STATE_HPP

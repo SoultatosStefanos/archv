@@ -19,7 +19,6 @@ set(SUBDIRECTORIES
   progress
   undo_redo
   utility
-  view
 )
 
 foreach(VAR ${SUBDIRECTORIES})

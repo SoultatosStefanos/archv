@@ -1,12 +1,12 @@
 // Contains a class that is responsible for the inter-state transitions.
 // Soultatos Stefanos 2022
 
-#ifndef VIEW_STATE_MACHINE_HPP
-#define VIEW_STATE_MACHINE_HPP
+#ifndef APPLICATION_STATE_MACHINE_HPP
+#define APPLICATION_STATE_MACHINE_HPP
 
 #include <stack>
 
-namespace view
+namespace application
 {
 
 class state;
@@ -35,6 +35,6 @@ private:
     bool m_started { false };
 };
 
-} // namespace view
+} // namespace application
 
-#endif // VIEW_STATE_MACHINE_HPP
+#endif // APPLICATION_STATE_MACHINE_HPP
