@@ -237,7 +237,7 @@
 	
 	+ [x] Gui overlay system
 
-	+ [ ] Application package
+	+ [x] Application package
 
 		+ [x] Rename deserialization modules to config
 

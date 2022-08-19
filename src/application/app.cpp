@@ -178,6 +178,8 @@ void app::setup()
 
     get_state_machine().start(&get_visualization_state());
     lay_graph(get_layout_core().get_layout());
+
+    addInputListener(this);
 }
 
 void app::setup_architecture()
