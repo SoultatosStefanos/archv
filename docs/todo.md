@@ -231,8 +231,8 @@
 
 # 19 / 08 / 2022
 
-	+ [ ] Multithreaded task test
+	+ [x] Multithreaded task test
 
+	+ [x] Arch generator task
+	
 	+ [ ] Gui overlay system
-
-	+ [ ] Arch generator task
