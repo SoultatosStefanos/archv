@@ -20,6 +20,8 @@ class state_machine;
 namespace gui
 {
 
+class overlay_manager;
+
 // Facade class for the pause menu front end.
 class pause_menu : public view::state
 {
@@ -47,6 +49,7 @@ public:
 
     explicit pause_menu(
         state_machine& sm,
+        overlay_manager& overlays,
         dependency_options dependencies = dependency_options(),
         layout_options layouts = layout_options(),
         topology_options topologies = topology_options(),
@@ -138,6 +141,7 @@ private:
     void handle_redo_combination();
 
     state_machine& m_sm;
+    overlay_manager& m_overlays;
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
 

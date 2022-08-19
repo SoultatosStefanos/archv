@@ -235,4 +235,4 @@
 
 	+ [x] Arch generator task
 	
-	+ [ ] Gui overlay system
+	+ [x] Gui overlay system

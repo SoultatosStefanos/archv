@@ -1,5 +1,6 @@
 #include "pause_menu.hpp"
 
+#include "overlay_manager.hpp"
 #include "view/state_machine.hpp"
 
 #include <OGRE/OgreRoot.h>
@@ -25,11 +26,13 @@ namespace
 
 pause_menu::pause_menu(
     state_machine& sm,
+    overlay_manager& overlays,
     dependency_options dependencies,
     layout_options layouts,
     topology_options topologies,
     scale_options scales)
 : m_sm { sm }
+, m_overlays { overlays }
 , m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
 , m_win { std::move(dependencies),
           std::move(layouts),
@@ -38,9 +41,17 @@ pause_menu::pause_menu(
 {
 }
 
-void pause_menu::enter() { }
+void pause_menu::enter()
+{
+    m_overlays.push(&m_win);
+    m_overlays.push(&m_bar);
+}
 
-void pause_menu::exit() { }
+void pause_menu::exit()
+{
+    m_overlays.pop(&m_win);
+    m_overlays.pop(&m_bar);
+}
 
 void pause_menu::pause() { }
 
@@ -49,8 +60,7 @@ void pause_menu::resume() { }
 auto pause_menu::frameStarted(const Ogre::FrameEvent&) -> bool
 {
     Ogre::ImGuiOverlay::NewFrame();
-    m_win.draw();
-    m_bar.draw();
+    m_overlays.draw_all();
 
     return true;
 }
@@ -202,7 +212,7 @@ pause_menu_window::pause_menu_window(
     assert(m_weight_strs.size() == m_dependencies.size());
 }
 
-void pause_menu_window::draw() const
+auto pause_menu_window::draw() const -> void
 {
     if (!ImGui::Begin("ARCHV"))
     {
@@ -411,7 +421,7 @@ pause_menu_bar::pause_menu_bar(
     assert(m_redo_enabled);
 }
 
-void pause_menu_bar::draw() const
+auto pause_menu_bar::draw() const -> void
 {
     if (ImGui::BeginMainMenuBar())
     {

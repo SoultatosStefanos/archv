@@ -62,6 +62,7 @@ protected:
     using layout_core = layout::core< graph, weight_map >;
 
     using state_machine = view::state_machine;
+    using overlay_manager = gui::overlay_manager;
     using state_frame_dispatcher = view::state_frame_dispatcher;
     using state_input_dispatcher = view::state_input_dispatcher;
     using graph_visualization = rendering::graph_visualization;
@@ -93,6 +94,9 @@ protected:
 
     auto get_state_machine() const -> const state_machine&;
     auto get_state_machine() -> state_machine&;
+
+    auto get_overlay_manager() const -> const overlay_manager&;
+    auto get_overlay_manager() -> overlay_manager&;
 
     auto get_graph_visualization() const -> const graph_visualization&;
     auto get_graph_visualization() -> graph_visualization&;
@@ -136,6 +140,7 @@ private:
     std::unique_ptr< layout_core > m_layout;
 
     std::unique_ptr< state_machine > m_sm;
+    std::unique_ptr< overlay_manager > m_overlays;
     std::unique_ptr< state_frame_dispatcher > m_frames;
     std::unique_ptr< state_input_dispatcher > m_input;
     std::unique_ptr< graph_visualization > m_graph_visualization;

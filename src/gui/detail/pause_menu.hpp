@@ -4,6 +4,8 @@
 #ifndef GUI_DETAIL_PAUSE_MENU_HPP
 #define GUI_DETAIL_PAUSE_MENU_HPP
 
+#include "gui/overlay.hpp"
+
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string>
@@ -18,7 +20,7 @@ namespace gui::detail
  * Pause menu window                                       *
  ***********************************************************/
 
-class pause_menu_window
+class pause_menu_window : public overlay
 {
     using dependency_signal
         = boost::signals2::signal< void(const std::string&, int) >;
@@ -49,7 +51,9 @@ public:
         topology_options topologies = topology_options(),
         scale_options scales = scale_options());
 
-    void draw() const;
+    virtual ~pause_menu_window() = default;
+
+    virtual auto draw() const -> void override;
 
     auto connect_to_dependency(const dependency_slot& slot) -> connection
     {
@@ -116,7 +120,7 @@ private:
  * Pause menu bar                                          *
  ***********************************************************/
 
-class pause_menu_bar
+class pause_menu_bar : public overlay
 {
     using undo_signal = boost::signals2::signal< void() >;
     using redo_signal = boost::signals2::signal< void() >;
@@ -133,7 +137,9 @@ public:
         undo_enabled is_undo_enabled = []() { return false; },
         redo_enabled is_redo_enabled = []() { return false; });
 
-    void draw() const;
+    virtual ~pause_menu_bar() override = default;
+
+    virtual auto draw() const -> void override;
 
     void set_undo_enabled(undo_enabled pred)
     {

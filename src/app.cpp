@@ -149,8 +149,11 @@ void app::setup_gui()
                   layout_config::scale_options,
                   pause_menu::scale_options >);
 
+    m_overlays = std::make_unique< overlay_manager >();
+
     m_pause_menu = std::make_unique< pause_menu >(
         get_state_machine(),
+        get_overlay_manager(),
         get_dependencies_config(),
         get_layout_config().layouts,
         get_layout_config().topologies,
@@ -278,6 +281,7 @@ void app::shutdown_rendering()
 void app::shutdown_gui()
 {
     m_pause_menu.reset();
+    m_overlays.reset();
 
     // named by Ogre
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
@@ -409,6 +413,18 @@ auto app::get_state_machine() -> state_machine&
 {
     assert(m_sm);
     return *m_sm;
+}
+
+auto app::get_overlay_manager() const -> const overlay_manager&
+{
+    assert(m_overlays);
+    return *m_overlays;
+}
+
+auto app::get_overlay_manager() -> overlay_manager&
+{
+    assert(m_overlays);
+    return *m_overlays;
 }
 
 auto app::get_graph_visualization() const -> const graph_visualization&

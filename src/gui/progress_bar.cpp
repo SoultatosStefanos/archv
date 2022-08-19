@@ -11,7 +11,7 @@ progress_bar::progress_bar(caption_type caption)
 {
 }
 
-void progress_bar::draw() const
+auto progress_bar::draw() const -> void
 {
     if (!ImGui::Begin(""))
     {
