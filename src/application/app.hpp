@@ -1,10 +1,11 @@
 // Contains the application driver class.
 // Soultatos Stefanos 2022
 
-#ifndef APP_HPP
-#define APP_HPP
+#ifndef APPLICATION_APP_HPP
+#define APPLICATION_APP_HPP
 
 #include <OGRE/Bites/OgreApplicationContext.h>
+#include <OGRE/Bites/OgreInput.h>
 #include <memory>
 
 /***********************************************************
@@ -12,13 +13,15 @@
  ***********************************************************/
 
 #include "architecture/all.hpp"
-#include "config/all.hpp"
+#include "config.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
+#include "paused_state.hpp"
 #include "rendering/all.hpp"
+#include "state_machine.hpp"
 #include "undo_redo/all.hpp"
-#include "view/all.hpp"
+#include "visualization_state.hpp"
 
 #include "json/all.hpp"
 
@@ -26,9 +29,13 @@
  * Application                                             *
  ***********************************************************/
 
+namespace application
+{
+
 // Initializes and hooks all of the subsystems.
 // Kick starts the application.
-class app : public OgreBites::ApplicationContext
+class app : public OgreBites::ApplicationContext,
+            public OgreBites::InputListener
 {
     using base = OgreBites::ApplicationContext;
 
@@ -40,13 +47,28 @@ public:
     auto frameRenderingQueued(const Ogre::FrameEvent& e) -> bool override;
     auto frameEnded(const Ogre::FrameEvent& e) -> bool override;
 
-    virtual void setup() override;
-    virtual void shutdown() override;
+    auto frameRendered(const Ogre::FrameEvent& e) -> void override;
+    auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
+    auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
+    auto touchMoved(const OgreBites::TouchFingerEvent& e) -> bool override;
+    auto touchPressed(const OgreBites::TouchFingerEvent& e) -> bool override;
+    auto touchReleased(const OgreBites::TouchFingerEvent& e) -> bool override;
+    auto mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool override;
+    auto mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool override;
+    auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool override;
+    auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
+    auto textInput(const OgreBites::TextInputEvent& e) -> bool override;
+    auto axisMoved(const OgreBites::AxisEvent& e) -> bool override;
+    auto buttonPressed(const OgreBites::ButtonEvent& e) -> bool override;
+    auto buttonReleased(const OgreBites::ButtonEvent& e) -> bool override;
+
+    void setup() override;
+    void shutdown() override;
 
     void go();
 
 protected:
-    using main_config = config::config_data;
+    using main_config = config_data;
     using dependencies_config = dependencies::config_data;
     using layout_config = layout::config_data;
 
@@ -61,12 +83,7 @@ protected:
     using dependencies_core = dependencies::core;
     using layout_core = layout::core< graph, weight_map >;
 
-    using state_machine = view::state_machine;
     using overlay_manager = gui::overlay_manager;
-    using state_frame_dispatcher = view::state_frame_dispatcher;
-    using state_input_dispatcher = view::state_input_dispatcher;
-    using graph_visualization = rendering::graph_visualization;
-    using pause_menu = gui::pause_menu;
 
     auto get_main_config() const -> const main_config&;
     auto get_main_config() -> main_config&;
@@ -98,11 +115,11 @@ protected:
     auto get_overlay_manager() const -> const overlay_manager&;
     auto get_overlay_manager() -> overlay_manager&;
 
-    auto get_graph_visualization() const -> const graph_visualization&;
-    auto get_graph_visualization() -> graph_visualization&;
+    auto get_visualization_state() const -> const visualization_state&;
+    auto get_visualization_state() -> visualization_state&;
 
-    auto get_pause_menu() const -> const pause_menu&;
-    auto get_pause_menu() -> pause_menu&;
+    auto get_paused_state() const -> const paused_state&;
+    auto get_paused_state() -> paused_state&;
 
     void lay_graph(const layout::layout< graph >& l);
 
@@ -111,7 +128,7 @@ private:
     void setup_commands();
     void setup_dependencies();
     void setup_layout();
-    void setup_view();
+    void setup_fsm();
     void setup_gui();
     void setup_rendering();
 
@@ -122,7 +139,7 @@ private:
 
     void shutdown_rendering();
     void shutdown_gui();
-    void shutdown_view();
+    void shutdown_fsm();
     void shutdown_layout();
     void shutdown_dependencies();
     void shutdown_commands();
@@ -141,10 +158,10 @@ private:
 
     std::unique_ptr< state_machine > m_sm;
     std::unique_ptr< overlay_manager > m_overlays;
-    std::unique_ptr< state_frame_dispatcher > m_frames;
-    std::unique_ptr< state_input_dispatcher > m_input;
-    std::unique_ptr< graph_visualization > m_graph_visualization;
-    std::unique_ptr< pause_menu > m_pause_menu;
+    std::unique_ptr< visualization_state > m_visualization;
+    std::unique_ptr< paused_state > m_paused;
 };
 
-#endif // APP_HPP
+} // namespace application
+
+#endif // APPLICATION_APP_HPP

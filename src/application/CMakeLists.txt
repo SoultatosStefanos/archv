@@ -1,4 +1,5 @@
 set(FILES
+	app.cpp
 	config.cpp
 	paused_state.cpp
 	state_machine.cpp

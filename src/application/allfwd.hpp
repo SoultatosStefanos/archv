@@ -13,6 +13,8 @@ class state_machine;
 
 class paused_state;
 
+class app;
+
 } // namespace application
 
 #endif // APPLICATION_ALLFWD_HPP

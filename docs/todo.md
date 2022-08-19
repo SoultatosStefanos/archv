@@ -243,8 +243,8 @@
 
 		+ [x] Remove config package
 
-		+ [ ] Copy modules to application package
+		+ [x] Copy modules to application package
 
-		+ [ ] Remove view dispatchers
+		+ [x] Remove view dispatchers
 
-		+ [ ] Remove view
+		+ [x] Remove view

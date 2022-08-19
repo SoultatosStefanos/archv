@@ -4,6 +4,7 @@
 #ifndef APPLICATION_ALL_HPP
 #define APPLICATION_ALL_HPP
 
+#include "app.hpp"
 #include "config.hpp"
 #include "paused_state.hpp"
 #include "state.hpp"
