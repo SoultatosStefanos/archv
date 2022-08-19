@@ -5,6 +5,7 @@
 namespace progress
 {
 
+// TODO: thread pool?
 auto launch_task(task& t, task::units todo) -> void
 {
     auto worker = std::thread([&t, todo]() { t.work(todo); });

@@ -200,16 +200,60 @@ namespace
 
 } // namespace
 
-auto deserialize_symbols(const Json::Value& root) -> symbol_table
+symbols_deserialization::symbols_deserialization(
+    const Json::Value& root, symbol_table& st)
+: m_root { get(root, "structures") }, m_st { st }
 {
-    symbol_table st;
+    if (!m_root.isObject())
+        BOOST_THROW_EXCEPTION(
+            invalid_json_value_type()
+            << json_type_info(m_root.type()) << json_value_info(m_root));
 
-    for_each_object(
-        get(root, "structures"),
-        [&st](const auto& id, const auto& val)
-        { st.insert(read_structure(id, val)); });
+    if (m_root.isNull())
+        BOOST_THROW_EXCEPTION(
+            invalid_json_value_type() << json_value_info(m_root));
 
-    return st;
+    m_curr = std::cbegin(m_root);
+}
+
+auto symbols_deserialization::total_units() const -> units
+{
+    return m_root.size();
+}
+
+auto symbols_deserialization::units_done() const -> units
+{
+    return std::distance(std::cbegin(m_root), m_curr);
+}
+
+auto symbols_deserialization::stop() -> void
+{
+    m_greenlit = false;
+    m_curr = std::cbegin(m_root);
+    m_st.clear();
+}
+
+auto symbols_deserialization::suspend() -> void { m_greenlit = false; }
+
+auto symbols_deserialization::resume() -> void { m_greenlit = true; }
+
+auto symbols_deserialization::work(units todo) -> void
+{
+    assert(todo <= total_units());
+
+    for (units i = 0; i < todo; ++i)
+        if (m_greenlit)
+        {
+            deserialize_one();
+            std::advance(m_curr, 1);
+            emit_status();
+        }
+}
+
+auto symbols_deserialization::deserialize_one() -> void
+{
+    auto&& s = read_structure(m_curr.name(), *m_curr);
+    m_st.insert(std::move(s));
 }
 
 auto deserialize_dependencies(const Json::Value& root, const symbol_table& st)
