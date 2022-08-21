@@ -16,8 +16,8 @@ class overlay_manager
 public:
     using pointer = overlay*;
 
-    auto push(pointer ptr) -> void;
-    auto pop(pointer ptr) -> void;
+    auto submit(pointer ptr) -> void;
+    auto withdraw(pointer ptr) -> void;
 
     auto draw_all() const -> void;
 

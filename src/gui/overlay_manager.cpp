@@ -8,13 +8,13 @@
 namespace gui
 {
 
-auto overlay_manager::push(pointer ptr) -> void
+auto overlay_manager::submit(pointer ptr) -> void
 {
     assert(ptr);
     m_overlays.push_back(ptr);
 }
 
-auto overlay_manager::pop(pointer ptr) -> void
+auto overlay_manager::withdraw(pointer ptr) -> void
 {
     assert(ptr);
     assert(

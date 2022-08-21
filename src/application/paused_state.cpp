@@ -42,14 +42,14 @@ paused_state::paused_state(
 
 auto paused_state::enter() -> void
 {
-    m_overlays.push(m_win.get());
-    m_overlays.push(m_bar.get());
+    m_overlays.submit(m_win.get());
+    m_overlays.submit(m_bar.get());
 }
 
 auto paused_state::exit() -> void
 {
-    m_overlays.pop(m_win.get());
-    m_overlays.pop(m_bar.get());
+    m_overlays.withdraw(m_win.get());
+    m_overlays.withdraw(m_bar.get());
 }
 
 auto paused_state::pause() -> void { }
