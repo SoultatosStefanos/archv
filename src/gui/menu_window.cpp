@@ -1,6 +1,4 @@
-#include "pause_menu.hpp"
-
-#include "detail/imfilebrowser.h"
+#include "menu_window.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <imgui/imgui.h>
@@ -10,19 +8,15 @@
 namespace gui
 {
 
-pause_menu::pause_menu(
+menu_window::menu_window(
     dependency_options deps,
     layout_options layouts,
     topology_options topologies,
-    scale_options scales,
-    undo_enabled is_undo_enabled,
-    redo_enabled is_redo_enabled)
+    scale_options scales)
 : m_dependencies { std::move(deps) }
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
 , m_scales { std::move(scales) }
-, m_undo_enabled { std::move(is_undo_enabled) }
-, m_redo_enabled { std::move(is_redo_enabled) }
 {
     namespace views = std::ranges::views;
 
@@ -34,17 +28,9 @@ pause_menu::pause_menu(
         [](auto w) { return std::to_string(w); });
 
     assert(m_weight_strs.size() == m_dependencies.size());
-    assert(m_undo_enabled);
-    assert(m_redo_enabled);
 }
 
-auto pause_menu::draw() const -> void
-{
-    draw_menu_window();
-    draw_menu_bar();
-}
-
-auto pause_menu::draw_menu_window() const -> void
+auto menu_window::draw() const -> void
 {
     if (!ImGui::Begin("ARCHV"))
     {
@@ -61,19 +47,7 @@ auto pause_menu::draw_menu_window() const -> void
     draw_code_inspection_header();
 }
 
-auto pause_menu::draw_menu_bar() const -> void
-{
-
-    if (ImGui::BeginMainMenuBar())
-    {
-        draw_file_submenu();
-        draw_edit_submenu();
-
-        ImGui::EndMainMenuBar();
-    }
-}
-
-auto pause_menu::draw_dependencies_header() const -> void
+auto menu_window::draw_dependencies_header() const -> void
 {
     namespace views = std::ranges::views;
 
@@ -105,7 +79,7 @@ auto pause_menu::draw_dependencies_header() const -> void
     }
 }
 
-void pause_menu::draw_layout_header() const
+void menu_window::draw_layout_header() const
 {
     if (ImGui::CollapsingHeader("Layout/Topology"))
     {
@@ -174,77 +148,17 @@ void pause_menu::draw_layout_header() const
     }
 }
 
-void pause_menu::draw_clustering_header() const
+void menu_window::draw_clustering_header() const
 {
     if (ImGui::CollapsingHeader("Clustering"))
     {
     }
 }
 
-void pause_menu::draw_code_inspection_header() const
+void menu_window::draw_code_inspection_header() const
 {
     if (ImGui::CollapsingHeader("Code Inspection"))
     {
-    }
-}
-
-void pause_menu::draw_file_submenu() const
-{
-    static auto make_file_dialog = []()
-    {
-        ImGui::FileBrowser dialog { ImGuiFileBrowserFlags_NoModal };
-        dialog.SetTypeFilters({ ".json" });
-
-        return dialog;
-    };
-
-    static auto dialog = make_file_dialog();
-    dialog.Display();
-
-    if (dialog.HasSelected())
-    {
-        BOOST_LOG_TRIVIAL(info) << dialog.GetSelected();
-        dialog.ClearSelected();
-    }
-
-    if (ImGui::BeginMenu("File"))
-    {
-        if (ImGui::MenuItem("Open", "Ctrl+O"))
-        {
-            dialog.Open();
-        }
-
-        if (ImGui::MenuItem("Open Recent"))
-        {
-        }
-
-        if (ImGui::MenuItem("Save", "Ctrl+S"))
-        {
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Quit", "Esc"))
-        {
-        }
-
-        ImGui::EndMenu();
-    }
-}
-
-void pause_menu::draw_edit_submenu() const
-{
-    if (ImGui::BeginMenu("Edit"))
-    {
-        if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
-            m_undo_sig();
-
-        if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
-            m_redo_sig();
-
-        ImGui::Separator();
-
-        ImGui::EndMenu();
     }
 }
 
@@ -262,7 +176,7 @@ namespace
 
 } // namespace
 
-void pause_menu::set_dependency(const std::string& type, int weight)
+void menu_window::set_dependency(const std::string& type, int weight)
 {
     const auto index = find_assoc_index(m_dependencies, type);
     assert(static_cast< std::size_t >(index) != m_dependencies.size());
@@ -273,7 +187,7 @@ void pause_menu::set_dependency(const std::string& type, int weight)
     BOOST_LOG_TRIVIAL(info) << "dependency " << type << " set to " << weight;
 }
 
-void pause_menu::set_layout(const std::string& type)
+void menu_window::set_layout(const std::string& type)
 {
     const auto index = find_assoc_index(m_layouts, type);
     assert(static_cast< std::size_t >(index) != m_layouts.size());
@@ -283,7 +197,7 @@ void pause_menu::set_layout(const std::string& type)
     BOOST_LOG_TRIVIAL(info) << "layout set to " << type;
 }
 
-void pause_menu::set_topology(const std::string& type)
+void menu_window::set_topology(const std::string& type)
 {
     const auto index = find_assoc_index(m_topologies, type);
     assert(static_cast< std::size_t >(index) != m_topologies.size());
@@ -293,7 +207,7 @@ void pause_menu::set_topology(const std::string& type)
     BOOST_LOG_TRIVIAL(info) << "topology set to " << type;
 }
 
-void pause_menu::set_scale(double val)
+void menu_window::set_scale(double val)
 {
     const auto index = find_assoc_index(m_scales, val);
     assert(static_cast< std::size_t >(index) != m_scales.size());
@@ -301,18 +215,6 @@ void pause_menu::set_scale(double val)
     m_selected_scale = index;
 
     BOOST_LOG_TRIVIAL(info) << "scale set to " << val;
-}
-
-void pause_menu::undo_shortcut()
-{
-    if (m_undo_enabled())
-        m_undo_sig();
-}
-
-void pause_menu::redo_shortcut()
-{
-    if (m_redo_enabled())
-        m_redo_sig();
 }
 
 } // namespace gui

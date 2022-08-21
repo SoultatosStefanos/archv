@@ -243,39 +243,48 @@ void app::setup_gui()
 
     static_assert(std::is_convertible_v<
                   dependencies_config,
-                  gui::pause_menu::dependency_options >);
+                  gui::menu_window::dependency_options >);
 
     static_assert(std::is_convertible_v<
                   layout_config::layout_options,
-                  gui::pause_menu::layout_options >);
+                  gui::menu_window::layout_options >);
 
     static_assert(std::is_convertible_v<
                   layout_config::topology_options,
-                  gui::pause_menu::topology_options >);
+                  gui::menu_window::topology_options >);
 
     static_assert(std::is_convertible_v<
                   layout_config::scale_options,
-                  gui::pause_menu::scale_options >);
+                  gui::menu_window::scale_options >);
 
     m_overlays = std::make_unique< overlay_manager >();
 
-    auto paused_menu = std::make_unique< gui::pause_menu >(
+    auto menu_window = std::make_unique< gui::menu_window >(
         get_dependencies_config(),
         get_layout_config().layouts,
         get_layout_config().topologies,
         get_layout_config().scales);
 
+    auto menu_bar = std::make_unique< gui::menu_bar >(
+        [this]() { return get_cmds().can_undo(); },
+        [this]() { return get_cmds().can_redo(); });
+
     m_paused = std::make_unique< paused_state >(
-        get_state_machine(), get_overlay_manager(), std::move(paused_menu));
+        get_state_machine(),
+        get_overlay_manager(),
+        std::move(menu_window),
+        std::move(menu_bar));
 
     // Default selections
 
-    get_paused_state().get_gui().set_layout(get_layout_config().default_layout);
+    get_paused_state().get_menu_window().set_layout(
+        get_layout_config().default_layout);
 
-    get_paused_state().get_gui().set_topology(
+    get_paused_state().get_menu_window().set_topology(
         get_layout_config().default_topology);
 
-    get_paused_state().get_gui().set_scale(get_layout_config().default_scale);
+    get_paused_state().get_menu_window().set_scale(
+        get_layout_config().default_scale);
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }
@@ -303,46 +312,48 @@ void app::setup_rendering()
 
 void app::connect_gui_with_dependencies()
 {
-    get_paused_state().get_gui().connect_to_dependency(
+    get_paused_state().get_menu_window().connect_to_dependency(
         [this](const auto& dependency, auto weight)
         { get_dependencies_core().update_weight(dependency, weight); });
 
-    get_paused_state().get_gui().connect_to_dependencies_restore(
+    get_paused_state().get_menu_window().connect_to_dependencies_restore(
         [this]() { get_dependencies_core().revert_to_defaults(); });
 
     get_dependencies_core().connect(
-        [this](const auto& dependency, auto weight)
-        { get_paused_state().get_gui().set_dependency(dependency, weight); });
+        [this](const auto& dependency, auto weight) {
+            get_paused_state().get_menu_window().set_dependency(
+                dependency, weight);
+        });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with dependencies management";
 }
 
 void app::connect_gui_with_layout()
 {
-    get_paused_state().get_gui().connect_to_layout(
+    get_paused_state().get_menu_window().connect_to_layout(
         [this](const auto& selection)
         { get_layout_core().update_layout(selection); });
 
-    get_paused_state().get_gui().connect_to_topology(
+    get_paused_state().get_menu_window().connect_to_topology(
         [this](const auto& selection)
         { get_layout_core().update_topology(selection); });
 
-    get_paused_state().get_gui().connect_to_scale(
+    get_paused_state().get_menu_window().connect_to_scale(
         [this](auto selection)
         { get_layout_core().update_topology(selection); });
 
-    get_paused_state().get_gui().connect_to_layout_restore(
+    get_paused_state().get_menu_window().connect_to_layout_restore(
         [this]() { get_layout_core().revert_to_defaults(); });
 
     get_layout_core().connect_to_layout(
         [this](const auto& layout)
-        { get_paused_state().get_gui().set_layout(layout.desc()); });
+        { get_paused_state().get_menu_window().set_layout(layout.desc()); });
 
     get_layout_core().connect_to_topology(
         [this](const auto& topology)
         {
-            get_paused_state().get_gui().set_topology(topology.desc());
-            get_paused_state().get_gui().set_scale(topology.scale());
+            get_paused_state().get_menu_window().set_topology(topology.desc());
+            get_paused_state().get_menu_window().set_scale(topology.scale());
         });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
@@ -358,16 +369,10 @@ void app::connect_layout_with_rendering()
 
 void app::connect_gui_with_command_history()
 {
-    get_paused_state().get_gui().set_undo_enabled(
-        [this]() { return get_cmds().can_undo(); });
-
-    get_paused_state().get_gui().set_redo_enabled(
-        [this]() { return get_cmds().can_redo(); });
-
-    get_paused_state().get_gui().connect_to_undo([this]()
-                                                 { get_cmds().undo(); });
-    get_paused_state().get_gui().connect_to_redo([this]()
-                                                 { get_cmds().redo(); });
+    get_paused_state().get_menu_bar().connect_to_undo([this]()
+                                                      { get_cmds().undo(); });
+    get_paused_state().get_menu_bar().connect_to_redo([this]()
+                                                      { get_cmds().redo(); });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with command history";
 }

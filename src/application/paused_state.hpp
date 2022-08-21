@@ -19,17 +19,22 @@ class paused_state : public state
 {
 public:
     using overlay_manager = gui::overlay_manager;
-    using pause_menu = gui::pause_menu;
+    using menu_window = gui::menu_window;
+    using menu_bar = gui::menu_bar;
 
     explicit paused_state(
         state_machine& sm,
         overlay_manager& overlays,
-        std::unique_ptr< pause_menu > menu);
+        std::unique_ptr< menu_window > win,
+        std::unique_ptr< menu_bar > bar);
 
     virtual ~paused_state() override = default;
 
-    auto get_gui() const -> const pause_menu& { return *m_gui; }
-    auto get_gui() -> pause_menu& { return *m_gui; }
+    auto get_menu_window() const -> const menu_window& { return *m_win; }
+    auto get_menu_window() -> menu_window& { return *m_win; }
+
+    auto get_menu_bar() const -> const menu_bar& { return *m_bar; }
+    auto get_menu_bar() -> menu_bar& { return *m_bar; }
 
     virtual void enter() override;
     virtual void exit() override;
@@ -58,7 +63,8 @@ private:
 
     std::unique_ptr< OgreBites::ImGuiInputListener > m_imgui_input;
 
-    std::unique_ptr< pause_menu > m_gui;
+    std::unique_ptr< menu_window > m_win;
+    std::unique_ptr< menu_bar > m_bar;
 
     bool ctrl_pressed { false }, undo_pressed { false }, redo_pressed { false };
 };

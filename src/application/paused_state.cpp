@@ -1,8 +1,9 @@
 #include "paused_state.hpp"
 
+#include "gui/menu_bar.hpp"
+#include "gui/menu_window.hpp"
 #include "gui/overlay.hpp"
 #include "gui/overlay_manager.hpp"
-#include "gui/pause_menu.hpp"
 #include "state_machine.hpp"
 
 #include <OGRE/OgreRoot.h>
@@ -27,18 +28,29 @@ namespace
 paused_state::paused_state(
     state_machine& sm,
     overlay_manager& overlays,
-    std::unique_ptr< pause_menu > menu)
+    std::unique_ptr< menu_window > win,
+    std::unique_ptr< menu_bar > bar)
 : m_sm { sm }
 , m_overlays { overlays }
 , m_imgui_input { std::make_unique< OgreBites::ImGuiInputListener >() }
-, m_gui { std::move(menu) }
+, m_win { std::move(win) }
+, m_bar { std::move(bar) }
 {
-    assert(m_gui);
+    assert(m_win);
+    assert(m_bar);
 }
 
-auto paused_state::enter() -> void { m_overlays.push(m_gui.get()); }
+auto paused_state::enter() -> void
+{
+    m_overlays.push(m_win.get());
+    m_overlays.push(m_bar.get());
+}
 
-auto paused_state::exit() -> void { m_overlays.pop(m_gui.get()); }
+auto paused_state::exit() -> void
+{
+    m_overlays.pop(m_win.get());
+    m_overlays.pop(m_bar.get());
+}
 
 auto paused_state::pause() -> void { }
 
@@ -159,13 +171,13 @@ auto paused_state::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
 void paused_state::handle_undo_combination()
 {
     if (ctrl_pressed and undo_pressed)
-        get_gui().undo_shortcut();
+        get_menu_bar().undo_shortcut();
 }
 
 void paused_state::handle_redo_combination()
 {
     if (ctrl_pressed and redo_pressed)
-        get_gui().redo_shortcut();
+        get_menu_bar().redo_shortcut();
 }
 
 } // namespace application

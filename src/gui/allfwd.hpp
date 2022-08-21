@@ -9,7 +9,8 @@ namespace gui
 class overlay;
 class overlay_manager;
 
-class pause_menu;
+class menu_bar;
+class menu_window;
 class progress_bar;
 } // namespace gui
 
