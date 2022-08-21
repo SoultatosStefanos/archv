@@ -23,6 +23,9 @@ auto progress_bar::draw() const -> void
     ImGui::Spacing();
 
     ImGui::ProgressBar(progress());
+
+    if (ImGui::Button("Cancel"))
+        m_cancel();
 }
 
 } // namespace gui

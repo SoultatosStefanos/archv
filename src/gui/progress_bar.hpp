@@ -6,17 +6,22 @@
 
 #include "overlay.hpp"
 
+#include <boost/signals2/signal.hpp>
 #include <string>
 
 namespace gui
 {
 
-// Draws at a new window.
 class progress_bar : public overlay
 {
+    using cancel_signal = boost::signals2::signal< void() >;
+
 public:
     using fraction_type = float;
     using caption_type = std::string;
+
+    using cancel_slot = cancel_signal::slot_type;
+    using connection = boost::signals2::connection;
 
     explicit progress_bar(caption_type caption = "Please wait...");
     virtual ~progress_bar() = default;
@@ -29,9 +34,16 @@ public:
 
     virtual auto draw() const -> void override;
 
+    auto connect_to_cancel(const cancel_slot& f) -> connection
+    {
+        return m_cancel.connect(f);
+    }
+
 private:
     fraction_type m_progress;
     caption_type m_caption;
+
+    cancel_signal m_cancel;
 };
 
 } // namespace gui

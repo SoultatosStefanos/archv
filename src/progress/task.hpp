@@ -51,6 +51,11 @@ inline auto percentage_done(const task& t) -> task::units
 
 inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
 
+inline auto finished(const task& t) -> bool
+{
+    return t.total_units() == t.units_done();
+}
+
 } // namespace progress
 
 #endif // PROGRESS_TASK_HPP

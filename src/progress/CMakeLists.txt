@@ -1,5 +1,4 @@
 set(FILES
-	async.cpp
 )
 set(SUBDIRECTORIES)
 
