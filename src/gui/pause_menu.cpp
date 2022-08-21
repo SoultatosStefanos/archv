@@ -1,5 +1,7 @@
 #include "pause_menu.hpp"
 
+#include "detail/imfilebrowser.h"
+
 #include <boost/log/trivial.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
@@ -38,6 +40,12 @@ pause_menu::pause_menu(
 
 auto pause_menu::draw() const -> void
 {
+    draw_menu_window();
+    draw_menu_bar();
+}
+
+auto pause_menu::draw_menu_window() const -> void
+{
     if (!ImGui::Begin("ARCHV"))
     {
         ImGui::End();
@@ -51,6 +59,10 @@ auto pause_menu::draw() const -> void
     draw_layout_header();
     draw_clustering_header();
     draw_code_inspection_header();
+}
+
+auto pause_menu::draw_menu_bar() const -> void
+{
 
     if (ImGui::BeginMainMenuBar())
     {
@@ -178,8 +190,44 @@ void pause_menu::draw_code_inspection_header() const
 
 void pause_menu::draw_file_submenu() const
 {
+    static auto make_file_dialog = []()
+    {
+        ImGui::FileBrowser dialog { ImGuiFileBrowserFlags_NoModal };
+        dialog.SetTypeFilters({ ".json" });
+
+        return dialog;
+    };
+
+    static auto dialog = make_file_dialog();
+    dialog.Display();
+
+    if (dialog.HasSelected())
+    {
+        BOOST_LOG_TRIVIAL(info) << dialog.GetSelected();
+        dialog.ClearSelected();
+    }
+
     if (ImGui::BeginMenu("File"))
     {
+        if (ImGui::MenuItem("Open", "Ctrl+O"))
+        {
+            dialog.Open();
+        }
+
+        if (ImGui::MenuItem("Open Recent"))
+        {
+        }
+
+        if (ImGui::MenuItem("Save", "Ctrl+S"))
+        {
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("Quit", "Esc"))
+        {
+        }
+
         ImGui::EndMenu();
     }
 }

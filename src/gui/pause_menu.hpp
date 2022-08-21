@@ -126,10 +126,13 @@ public:
     auto redo_shortcut() -> void;
 
 private:
+    auto draw_menu_window() const -> void;
     auto draw_dependencies_header() const -> void;
     auto draw_layout_header() const -> void;
     auto draw_clustering_header() const -> void;
     auto draw_code_inspection_header() const -> void;
+
+    auto draw_menu_bar() const -> void;
     auto draw_file_submenu() const -> void;
     auto draw_edit_submenu() const -> void;
 
