@@ -1,3 +1,7 @@
+// Contains a class responsibe for launching progess monitored tasks on worker
+// threads.
+// Soultatos Stefanos 2022
+
 #ifndef APPLICATION_TASK_MANAGER_HPP
 #define APPLICATION_TASK_MANAGER_HPP
 
@@ -12,6 +16,7 @@
 namespace application
 {
 
+// Async.
 class task_manager
 {
 public:

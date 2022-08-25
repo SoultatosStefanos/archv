@@ -1,11 +1,13 @@
 #include "task_manager.hpp"
 
 #include "gui/all.hpp"
-#include "multithreading/all.hpp"
 #include "progress/all.hpp"
 
+#include <boost/asio/post.hpp>
+#include <boost/asio/thread_pool.hpp>
 #include <boost/log/trivial.hpp>
 #include <cassert>
+#include <thread>
 
 namespace application
 {
@@ -28,6 +30,13 @@ task_manager::task_manager(
 
 namespace
 {
+    auto thread_pool() -> auto&
+    {
+        static const auto nthreads = std::thread::hardware_concurrency();
+        static auto pool = boost::asio::thread_pool(nthreads);
+        return pool;
+    }
+
     inline auto
     monitor(const progress::task& task, gui::progress_bar& progress_bar)
     {
@@ -49,19 +58,19 @@ auto task_manager::launch_arch_generation(const Json::Value& root) -> void
 
     m_overlays.submit(m_arch_bar.get());
 
-    multithreading::spawn_worker(
-        [task = std::move(task), this]()
+    boost::asio::post(
+        thread_pool(),
+        [task = std::move(task), this]() mutable
         {
             progress::work_all_units_at_once(*task);
-
             assert(progress::finished(*task));
 
             boost::asio::post(
                 m_io,
-                [res = task->result(), this]()
+                [task = std::move(task), this]()
                 {
                     m_overlays.withdraw(m_arch_bar.get());
-                    std::tie(m_st, m_g, m_vertex_props) = std::move(res);
+                    std::tie(m_st, m_g, m_vertex_props) = task->result();
                 });
         });
 }
