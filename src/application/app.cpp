@@ -5,16 +5,17 @@
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
+#include <thread>
 
 namespace application
 {
 
-app::app(int argc, const char* argv[]) : base("ARCHV")
+app::app(int argc, const char* argv[])
+: base("ARCHV"), m_work { boost::asio::make_work_guard(m_io) }
 {
     if (argc != 2)
         throw std::runtime_error("usage: ./<exec> <path/to/main/config.json>");
 
-    // TODO read only from ui
     m_main_config = deserialize(json::archive::get().at(argv[1]));
 
     m_dependencies_config = dependencies::deserialize(
@@ -33,6 +34,8 @@ app::app(int argc, const char* argv[]) : base("ARCHV")
 auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
+
+    get_io().poll_one();
 
     return get_state_machine().has_active_state()
         ? get_state_machine().get_active_state()->frameStarted(e)

@@ -6,6 +6,7 @@ set(SUBDIRECTORIES
 	gui
 	json
 	layout
+	multithreading
 	progress
 	rendering
 	undo_redo

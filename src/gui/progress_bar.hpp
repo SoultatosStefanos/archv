@@ -6,6 +6,7 @@
 
 #include "overlay.hpp"
 
+#include <atomic>
 #include <boost/signals2/signal.hpp>
 #include <string>
 
@@ -23,12 +24,12 @@ public:
     using cancel_slot = cancel_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    explicit progress_bar(caption_type caption = "Please wait...");
     virtual ~progress_bar() = default;
 
-    auto progress() const -> const fraction_type& { return m_progress; }
-    auto progress() -> fraction_type& { return m_progress; }
+    auto progress() const -> const auto& { return m_progress; }
+    auto progress() -> auto& { return m_progress; }
 
+    // NOTE:: Not thread safe.
     auto caption() const -> const caption_type& { return m_caption; }
     auto caption() -> caption_type& { return m_caption; }
 
@@ -40,7 +41,7 @@ public:
     }
 
 private:
-    fraction_type m_progress;
+    std::atomic< fraction_type > m_progress;
     caption_type m_caption;
 
     cancel_signal m_cancel;

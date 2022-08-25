@@ -4,19 +4,13 @@
 #ifndef PROGRESS_TASK_HPP
 #define PROGRESS_TASK_HPP
 
-#include <boost/signals2/signal.hpp>
-
 namespace progress
 {
 
 class task
 {
-    using signal = boost::signals2::signal< void(const task&) >;
-
 public:
     using units = unsigned;
-    using monitor = signal::slot_type;
-    using connection = boost::signals2::connection;
 
     task() = default;
     task(const task&) = default;
@@ -34,22 +28,14 @@ public:
     virtual auto resume() -> void = 0;
 
     virtual auto work(units todo) -> void = 0;
-
-    auto connect(const monitor& f) -> connection { return m_signal.connect(f); }
-
-protected:
-    auto emit_status() const -> void { m_signal(*this); }
-
-private:
-    signal m_signal;
 };
+
+inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
 
 inline auto percentage_done(const task& t) -> task::units
 {
     return (t.units_done() * 100) / t.total_units();
 }
-
-inline auto work_all_units_at_once(task& t) -> void { t.work(t.total_units()); }
 
 inline auto finished(const task& t) -> bool
 {

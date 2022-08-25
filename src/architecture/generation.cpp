@@ -9,16 +9,9 @@ using namespace json;
 namespace architecture
 {
 
-generation::generation(
-    const Json::Value& root,
-    symbol_table& st,
-    graph& g,
-    vertex_properties& properties)
+generation::generation(const Json::Value& root)
 : m_structs_root { get(root, "structures") }
 , m_deps_root { get(root, "dependencies") }
-, m_st { st }
-, m_g { g }
-, m_properties { properties }
 {
     m_structs_curr = std::cbegin(m_structs_root);
     m_deps_curr = std::cbegin(m_deps_root);
@@ -37,6 +30,8 @@ auto generation::units_done() const -> units
 
 auto generation::stop() -> void
 {
+    assert(!m_done);
+
     m_greenlit = false;
 
     m_structs_curr = std::cbegin(m_structs_root);
@@ -53,6 +48,7 @@ auto generation::resume() -> void { m_greenlit = true; }
 
 auto generation::work(units todo) -> void
 {
+    assert(!m_done);
     assert(todo <= total_units());
 
     for (units i = 0; i < todo; ++i)

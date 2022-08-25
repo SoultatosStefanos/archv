@@ -15,6 +15,10 @@ class paused_state;
 
 class app;
 
+class task_manager;
+
+class visualization_state;
+
 } // namespace application
 
 #endif // APPLICATION_ALLFWD_HPP

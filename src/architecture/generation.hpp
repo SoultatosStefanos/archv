@@ -10,6 +10,7 @@
 #include "symbol_table.hpp"
 
 #include <atomic>
+#include <boost/signals2/signal.hpp>
 #include <jsoncpp/json/json.h>
 #include <unordered_map>
 
@@ -22,17 +23,18 @@ class symbol_table;
 // query vertices by their properties.
 class generation : public progress::task
 {
+    using signal = boost::signals2::signal< void(const generation&) >;
+
 public:
     using vertex_property = graph::vertex_bundled;
     using vertex = graph::vertex_descriptor;
     using vertex_properties = std::unordered_map< vertex_property, vertex >;
+    using result_type = std::tuple< symbol_table, graph, vertex_properties >;
 
-    generation(
-        const Json::Value& root,
-        symbol_table& st,
-        graph& g,
-        vertex_properties& properties);
+    using slot = signal::slot_type;
+    using connection = boost::signals2::connection;
 
+    explicit generation(const Json::Value& root);
     virtual ~generation() override = default;
 
     virtual auto total_units() const -> units override;
@@ -44,35 +46,50 @@ public:
 
     virtual auto work(units todo) -> void override;
 
+    auto connect(const slot& monitor) -> connection
+    {
+        return m_signal.connect(monitor);
+    }
+
+    // Invalidates this object's state.
+    auto result() const -> result_type
+    {
+#ifndef NDEBUG
+        m_done = true;
+#endif
+        return { std::move(m_st), boost::move(m_g), std::move(m_properties) };
+    }
+
 protected:
+    auto emit_status() const -> void { m_signal(*this); }
+
     auto dispatch_progress() -> void;
     auto deserialize_structure() -> void;
     auto deserialize_dependency() -> void;
 
 private:
+    signal m_signal;
+
     const Json::Value& m_structs_root;
     const Json::Value& m_deps_root;
 
-    symbol_table& m_st;
-    graph& m_g;
-    vertex_properties& m_properties;
+    symbol_table m_st;
+    graph m_g;
+    vertex_properties m_properties;
 
     Json::Value::const_iterator m_structs_curr;
     Json::Value::const_iterator m_deps_curr;
     std::atomic_bool m_greenlit { true };
+
+    mutable bool m_done { false };
 };
 
 // Convenience function for unmonitored architecture generation.
-inline auto generate_arch(const Json::Value& root)
+inline auto generate_arch(const Json::Value& root) -> generation::result_type
 {
-    auto st = symbol_table();
-    auto g = graph();
-    auto props = generation::vertex_properties();
-
-    auto task = generation(root, st, g, props);
+    auto task = generation(root);
     progress::work_all_units_at_once(task);
-
-    return std::make_tuple(std::move(st), std::move(g), std::move(props));
+    return task.result();
 }
 
 } // namespace architecture
