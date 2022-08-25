@@ -29,6 +29,7 @@ public:
         vertex_properties& props,
         overlay_manager& mngr);
 
+    // Monitored via progress bars tasks.
     auto launch_arch_generation(const Json::Value& root) -> void;
 
 private:
