@@ -45,6 +45,7 @@ auto task_manager::launch_arch_generation(const Json::Value& root) -> void
     auto task = std::make_unique< arch_generation >(root);
 
     task->connect([this](const auto& task) { monitor(task, *m_arch_bar); });
+    m_arch_bar->connect_to_cancel([task = task.get()]() { task->stop(); });
 
     m_overlays.submit(m_arch_bar.get());
 
