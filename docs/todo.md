@@ -68,6 +68,17 @@
 
 	+ [ ] Interactive Configuration
 
+# Rendering
+
+## Features
+
+	+ [ ] Boxes
+
+	+ [ ] Illumintation
+
+	+ [ ] Texts
+
+
 	
 # 08 / 07 / 2022
 
@@ -221,4 +232,12 @@
 
 	+ [n] Fix layout restore use case
 	
-	+ [ ] Progress bars pre work
+	+ [n] Progress bars pre work
+
+# 26 / 08 / 2022
+
+	+ [ ] Make Graph Renderer dependent on the graph
+
+	+ [ ] Arrow edges
+
+	+ [ ] Boxes meshes
