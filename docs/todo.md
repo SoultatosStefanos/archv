@@ -252,4 +252,13 @@
 
 # 20 / 08 / 2022
 
-	+ [ ] Architecture generation task with progress bar
+	+ [n] Architecture generation task with progress bar
+
+
+# 26 / 08 / 2022
+
+	+ [x] Refactor arch generation - no monotoring
+
+	+ [ ] Remove progress bar gui
+
+	+ [ ] Buffer

@@ -15,8 +15,6 @@ class paused_state;
 
 class app;
 
-class task_manager;
-
 class visualization_state;
 
 } // namespace application

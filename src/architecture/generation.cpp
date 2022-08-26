@@ -1,5 +1,7 @@
 #include "generation.hpp"
 
+#include "symbol_table.hpp"
+
 #include "json/deserialization.hpp"
 #include <boost/log/trivial.hpp>
 #include <cassert>
@@ -8,70 +10,6 @@ using namespace json;
 
 namespace architecture
 {
-
-generation::generation(const Json::Value& root)
-: m_structs_root { get(root, "structures") }
-, m_deps_root { get(root, "dependencies") }
-{
-    m_structs_curr = std::cbegin(m_structs_root);
-    m_deps_curr = std::cbegin(m_deps_root);
-}
-
-auto generation::total_units() const -> units
-{
-    return m_structs_root.size() + m_deps_root.size();
-}
-
-auto generation::units_done() const -> units
-{
-    return std::distance(std::cbegin(m_structs_root), m_structs_curr)
-        + std::distance(std::cbegin(m_deps_root), m_deps_curr);
-}
-
-auto generation::stop() -> void
-{
-    assert(!m_done);
-
-    m_greenlit = false;
-
-    m_structs_curr = std::cbegin(m_structs_root);
-    m_deps_curr = std::cbegin(m_deps_root);
-
-    m_st.clear();
-    m_g.clear();
-    m_properties.clear();
-}
-
-auto generation::suspend() -> void { m_greenlit = false; }
-
-auto generation::resume() -> void { m_greenlit = true; }
-
-auto generation::work(units todo) -> void
-{
-    assert(!m_done);
-    assert(todo <= total_units());
-
-    for (units i = 0; i < todo; ++i)
-        if (m_greenlit)
-        {
-            dispatch_progress();
-            emit_status();
-        }
-}
-
-auto generation::dispatch_progress() -> void
-{
-    if (m_structs_curr != std::cend(m_structs_root))
-    {
-        deserialize_structure();
-        std::advance(m_structs_curr, 1);
-    }
-    else
-    {
-        deserialize_dependency();
-        std::advance(m_deps_curr, 1);
-    }
-}
 
 namespace
 {
@@ -263,35 +201,55 @@ namespace
         return s;
     }
 
+    auto read_vertices(
+        const Json::Value& val,
+        symbol_table& st,
+        graph& g,
+        vertex_properties& props) -> void
+    {
+        for_each_object(
+            val,
+            [&st, &g, &props](const auto& id, const auto& val)
+            {
+                st.insert(read_structure(id, val));
+                props.insert(std::make_pair(id, boost::add_vertex(id, g)));
+            });
+    }
+
+    auto read_edges(const Json::Value& val, graph& g, vertex_properties& props)
+        -> void
+    {
+        using vertex_property = graph::vertex_bundled;
+
+        for (const auto& v : val)
+        {
+            const auto& from = as< vertex_property >(get(v, "from"));
+            const auto& to = as< vertex_property >(get(v, "to"));
+
+            const auto& types_val = get(v, "types");
+            const auto& type = std::cbegin(types_val).name();
+
+            BOOST_LOG_TRIVIAL(info) << "read dependency from: " << from
+                                    << " to: " << to << " with type: " << type;
+
+            assert(props.contains(from));
+            assert(props.contains(to));
+            boost::add_edge(props[from], props[to], type, g);
+        }
+    }
+
 } // namespace
 
-auto generation::deserialize_structure() -> void
+auto generate_arch(const Json::Value& root) -> arch_tuple
 {
-    assert(m_structs_curr != std::cend(m_structs_root));
+    auto st = symbol_table();
+    auto g = graph();
+    auto props = vertex_properties();
 
-    auto&& s = read_structure(m_structs_curr.name(), *m_structs_curr);
-    auto&& id = s.sym.id;
+    read_vertices(get(root, "structures"), st, g, props);
+    read_edges(get(root, "dependencies"), g, props);
 
-    m_properties.insert(std::make_pair(id, boost::add_vertex(id, m_g)));
-    m_st.insert(std::move(s));
-}
-
-auto generation::deserialize_dependency() -> void
-{
-    assert(m_deps_curr != std::cend(m_deps_root));
-
-    const auto& from = as< vertex_property >(get(*m_deps_curr, "from"));
-    const auto& to = as< vertex_property >(get(*m_deps_curr, "to"));
-
-    const auto& val = get(*m_deps_curr, "types");
-    const auto& type = std::cbegin(val).name();
-
-    BOOST_LOG_TRIVIAL(info) << "read dependency from: " << from << " to: " << to
-                            << " with type: " << type;
-
-    assert(m_properties.contains(from));
-    assert(m_properties.contains(to));
-    boost::add_edge(m_properties[from], m_properties[to], type, m_g);
+    return { std::move(st), std::move(g), std::move(props) };
 }
 
 } // namespace architecture

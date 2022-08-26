@@ -1,4 +1,5 @@
 #include "architecture/generation.hpp"
+#include "architecture/symbol_table.hpp"
 #include "utility/all.hpp"
 
 #include "json/deserialization.hpp"
@@ -148,7 +149,7 @@ auto build_sample_st_2() -> symbol_table
 auto build_sample_graph_2(const symbol_table& st)
 {
     graph g;
-    generation::vertex_properties cache;
+    vertex_properties cache;
 
     for (const auto& [id, _] : st)
         cache[id] = boost::add_vertex(id, g);
