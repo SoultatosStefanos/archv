@@ -34,6 +34,9 @@ public:
 
     virtual ~menu_bar() override = default;
 
+    auto file_browser() const -> const file_dialog& { return m_file_browser; }
+    auto file_browser() -> file_dialog& { return m_file_browser; }
+
     virtual auto draw() const -> void override;
 
     auto connect_to_undo(const undo_slot& f) -> connection
