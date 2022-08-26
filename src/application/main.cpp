@@ -1,4 +1,4 @@
-#include "application/app.hpp"
+#include "app.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>

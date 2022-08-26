@@ -5,7 +5,6 @@
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
-#include <thread>
 
 namespace application
 {
@@ -15,145 +14,71 @@ app::app(int argc, const char* argv[]) : base("ARCHV")
     if (argc != 2)
         throw std::runtime_error("usage: ./<exec> <path/to/main/config.json>");
 
-    m_main_config = deserialize(json::archive::get().at(argv[1]));
+    m_config = deserialize(json::archive::get().at(argv[1]));
 
-    m_dependencies_config = dependencies::deserialize(
-        json::archive::get().at(m_main_config.dependencies_path));
+    m_deps_config = dependencies::deserialize(
+        json::archive::get().at(config().dependencies_path));
 
-    m_layout_config = layout::deserialize(
-        json::archive::get().at(m_main_config.layout_path));
+    m_layout_config
+        = layout::deserialize(json::archive::get().at(config().layout_path));
 }
 
 /***********************************************************
  * Events                                                  *
  ***********************************************************/
 
-// NOTE Must let base handle frame first
-
 auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
-
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->frameStarted(e)
-        : false;
-}
-
-auto app::frameRenderingQueued(const Ogre::FrameEvent& e) -> bool
-{
-    base::frameRenderingQueued(e);
-
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->frameRenderingQueued(e)
-        : false;
-}
-
-auto app::frameEnded(const Ogre::FrameEvent& e) -> bool
-{
-    base::frameEnded(e);
-
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->frameEnded(e)
-        : false;
-}
-
-auto app::frameRendered(const Ogre::FrameEvent& e) -> void
-{
-    if (get_state_machine().has_active_state())
-        get_state_machine().get_active_state()->frameRendered(e);
-}
-
-auto app::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->keyPressed(e)
-        : false;
+    multithreading::poll_message();
+    Ogre::ImGuiOverlay::NewFrame();
+    gui::overlay_manager::get().draw_all();
+    return true;
 }
 
 auto app::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 {
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->keyReleased(e)
-        : false;
+    switch (e.keysym.sym)
+    {
+    case OgreBites::SDLK_ESCAPE:
+        getRoot()->queueEndRendering();
+
+    case 'p':
+        toggle_pause_resume();
+
+    default:
+    }
+
+    return true;
 }
 
-auto app::touchMoved(const OgreBites::TouchFingerEvent& e) -> bool
+auto app::pause() -> void
 {
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->touchMoved(e)
-        : false;
+    assert(!paused());
+
+    cameraman()->manualStop();
+    removeInputListener(cameraman());
+
+    gui::overlay_manager::get().submit(menu_bar());
+    gui::overlay_manager::get().submit(menu_window());
+
+    m_paused = true;
+
+    assert(paused());
 }
 
-auto app::touchPressed(const OgreBites::TouchFingerEvent& e) -> bool
+auto app::resume() -> void
 {
+    assert(paused());
 
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->touchPressed(e)
-        : false;
-}
+    addInputListener(cameraman());
 
-auto app::touchReleased(const OgreBites::TouchFingerEvent& e) -> bool
-{
+    gui::overlay_manager::get().withdraw(menu_bar());
+    gui::overlay_manager::get().withdraw(menu_window());
 
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->touchReleased(e)
-        : false;
-}
+    m_paused = false;
 
-auto app::mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->mouseMoved(e)
-        : false;
-}
-
-auto app::mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->mouseWheelRolled(e)
-        : false;
-}
-
-auto app::mousePressed(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->mousePressed(e)
-        : false;
-}
-
-auto app::mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->mouseReleased(e)
-        : false;
-}
-
-auto app::textInput(const OgreBites::TextInputEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->textInput(e)
-        : false;
-}
-
-auto app::buttonPressed(const OgreBites::ButtonEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->buttonPressed(e)
-        : false;
-}
-
-auto app::buttonReleased(const OgreBites::ButtonEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->buttonReleased(e)
-        : false;
-}
-
-auto app::axisMoved(const OgreBites::AxisEvent& e) -> bool
-{
-    return get_state_machine().has_active_state()
-        ? get_state_machine().get_active_state()->axisMoved(e)
-        : false;
+    assert(!paused());
 }
 
 /***********************************************************
@@ -167,25 +92,40 @@ void app::setup()
     setup_commands();
     setup_dependencies();
     setup_layout();
-    setup_fsm();
-    setup_gui();
     setup_rendering();
+    setup_gui();
+    setup_input();
 
     connect_gui_with_dependencies();
     connect_gui_with_layout();
-    connect_layout_with_rendering();
     connect_gui_with_command_history();
+}
 
-    get_state_machine().start(&get_visualization_state());
-    lay_graph(get_layout_core().get_layout());
+auto app::id_map() const -> architecture::id_map
+{
+    return boost::get(boost::vertex_bundle, std::as_const(graph()));
+}
 
-    addInputListener(this);
+auto app::dependency_map() const -> architecture::dependency_map
+{
+    return boost::get(boost::edge_bundle, std::as_const(graph()));
+}
+
+auto app::dynamic_weight_map() const -> weight_map
+{
+    return dependencies::make_dynamic_weight_map< architecture::graph >(
+        dependencies_core()->get_repo(), dependency_map());
+}
+
+auto app::dynamic_position_map() const -> position_map
+{
+    return layout::make_dynamic_position_map(*layout_core());
 }
 
 // FIXME
 #define ARCHV_GRAPH_PATH "/home/stef/Documents/Projects/archv/build/graph.json"
 
-void app::setup_architecture()
+auto app::setup_architecture() -> void
 {
     const auto& root = json::archive::get().at(ARCHV_GRAPH_PATH);
 
@@ -194,185 +134,180 @@ void app::setup_architecture()
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
 
-void app::setup_commands()
+auto app::setup_commands() -> void
 {
-    m_cmds = std::make_unique< command_history >();
+    m_cmds = std::make_unique< undo_redo::command_history >();
 
     BOOST_LOG_TRIVIAL(info) << "setup commands";
 }
 
-void app::setup_dependencies()
+auto app::setup_dependencies() -> void
 {
-    m_dependencies = std::make_unique< dependencies_core >(
-        get_cmds(), get_dependencies_config());
+    assert(cmd_history());
+
+    m_deps = std::make_unique< dependencies::core >(
+        *cmd_history(), dependencies_config());
 
     BOOST_LOG_TRIVIAL(info) << "setup dependencies";
 }
 
-void app::setup_layout()
+auto app::setup_layout() -> void
 {
-    auto weight_map = dependencies::make_dynamic_weight_map< graph >(
-        get_dependencies_core().get_repo(),
-        boost::get(boost::edge_bundle, std::as_const(get_graph())));
+    assert(cmd_history());
+    assert(dependencies_core());
 
-    m_layout = std::make_unique< layout_core >(
-        get_cmds(),
-        get_graph(),
-        weight_map,
-        get_layout_config().default_layout,
-        get_layout_config().default_topology,
-        get_layout_config().default_scale);
+    m_layout
+        = std::make_unique< layout::core< architecture::graph, weight_map > >(
+            *cmd_history(),
+            graph(),
+            dynamic_weight_map(),
+            layout_config().default_layout,
+            layout_config().default_topology,
+            layout_config().default_scale);
 
     BOOST_LOG_TRIVIAL(info) << "setup layout";
 }
 
-void app::setup_fsm()
+auto app::setup_rendering() -> void
 {
-    m_sm = std::make_unique< state_machine >();
+    using graph_renderer_type = rendering::graph_renderer<
+        architecture::graph,
+        architecture::id_map,
+        weight_map,
+        position_map >;
 
-    BOOST_LOG_TRIVIAL(info) << "setup fsm";
-}
+    m_bkgrd_renderer = std::make_unique< rendering::background_renderer >(
+        *getRenderWindow());
 
-void app::setup_gui()
-{
-    auto imgui = new Ogre::ImGuiOverlay();
-    imgui->show();
-    assert(imgui->isInitialised());
-
-    Ogre::OverlayManager::getSingleton().addOverlay(imgui);
-
-    static_assert(std::is_convertible_v<
-                  dependencies_config,
-                  gui::menu_window::dependency_options >);
-
-    static_assert(std::is_convertible_v<
-                  layout_config::layout_options,
-                  gui::menu_window::layout_options >);
-
-    static_assert(std::is_convertible_v<
-                  layout_config::topology_options,
-                  gui::menu_window::topology_options >);
-
-    static_assert(std::is_convertible_v<
-                  layout_config::scale_options,
-                  gui::menu_window::scale_options >);
-
-    m_overlays = std::make_unique< overlay_manager >();
-
-    auto menu_window = std::make_unique< gui::menu_window >(
-        get_dependencies_config(),
-        get_layout_config().layouts,
-        get_layout_config().topologies,
-        get_layout_config().scales);
-
-    auto menu_bar = std::make_unique< gui::menu_bar >(
-        [this]() { return get_cmds().can_undo(); },
-        [this]() { return get_cmds().can_redo(); });
-
-    m_paused = std::make_unique< paused_state >(
-        get_state_machine(),
-        get_overlay_manager(),
-        std::move(menu_window),
-        std::move(menu_bar));
-
-    // Default selections
-
-    get_paused_state().get_menu_window().set_layout(
-        get_layout_config().default_layout);
-
-    get_paused_state().get_menu_window().set_topology(
-        get_layout_config().default_topology);
-
-    get_paused_state().get_menu_window().set_scale(
-        get_layout_config().default_scale);
-
-    BOOST_LOG_TRIVIAL(info) << "setup gui";
-}
-
-void app::setup_rendering()
-{
-    rendering::graph_renderer::vertices ids;
-    std::transform(
-        boost::vertices(get_graph()).first,
-        boost::vertices(get_graph()).second,
-        std::back_inserter(ids),
-        [this](auto v) { return get_graph()[v]; });
-
-    auto renderer
-        = rendering::graph_renderer(*getRenderWindow(), std::move(ids));
-
-    m_visualization = std::make_unique< visualization_state >(
-        get_state_machine(),
-        get_overlay_manager(),
-        &get_paused_state(),
-        std::move(renderer));
+    m_g_renderer = std::make_unique< graph_renderer_type >(
+        graph(),
+        id_map(),
+        dynamic_weight_map(),
+        dynamic_position_map(),
+        background_renderer()->scene(),
+        *getRenderWindow());
 
     BOOST_LOG_TRIVIAL(info) << "setup rendering";
 }
 
-void app::connect_gui_with_dependencies()
+auto app::setup_gui() -> void
 {
-    get_paused_state().get_menu_window().connect_to_dependency(
+    assert(cmd_history());
+
+    auto* imgui = new Ogre::ImGuiOverlay();
+    imgui->show();
+    assert(imgui->isInitialised());
+
+    Ogre::OverlayManager::getSingleton().addOverlay(imgui); // takes ownership
+
+    static_assert(std::is_convertible_v<
+                  dependencies::config_data,
+                  gui::menu_window::dependency_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout::config_data::layout_options,
+                  gui::menu_window::layout_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout::config_data::topology_options,
+                  gui::menu_window::topology_options >);
+
+    static_assert(std::is_convertible_v<
+                  layout::config_data::scale_options,
+                  gui::menu_window::scale_options >);
+
+    m_menu_win = std::make_unique< gui::menu_window >(
+        dependencies_config(),
+        layout_config().layouts,
+        layout_config().topologies,
+        layout_config().scales);
+
+    m_menu_bar = std::make_unique< gui::menu_bar >(
+        [this]() { return cmd_history()->can_undo(); },
+        [this]() { return cmd_history()->can_redo(); });
+
+    // Default selections
+    menu_window()->set_layout(layout_config().default_layout);
+    menu_window()->set_topology(layout_config().default_topology);
+    menu_window()->set_scale(layout_config().default_scale);
+
+    BOOST_LOG_TRIVIAL(info) << "setup gui";
+}
+
+auto app::setup_input() -> void
+{
+    assert(background_renderer());
+
+    m_cameraman = std::make_unique< OgreBites::CameraMan >(
+        background_renderer()->cam_node());
+
+    m_gui_input = std::make_unique< OgreBites::ImGuiInputListener >();
+
+    addInputListener(cameraman());
+    addInputListener(gui_input_handler());
+
+    BOOST_LOG_TRIVIAL(info) << "setup input";
+}
+
+auto app::connect_gui_with_dependencies() -> void
+{
+    assert(menu_window());
+    assert(dependencies_core());
+
+    menu_window()->connect_to_dependency(
         [this](const auto& dependency, auto weight)
-        { get_dependencies_core().update_weight(dependency, weight); });
+        { dependencies_core()->update_weight(dependency, weight); });
 
-    get_paused_state().get_menu_window().connect_to_dependencies_restore(
-        [this]() { get_dependencies_core().revert_to_defaults(); });
+    menu_window()->connect_to_dependencies_restore(
+        [this]() { dependencies_core()->revert_to_defaults(); });
 
-    get_dependencies_core().connect(
-        [this](const auto& dependency, auto weight) {
-            get_paused_state().get_menu_window().set_dependency(
-                dependency, weight);
-        });
+    dependencies_core()->connect(
+        [this](const auto& dependency, auto weight)
+        { menu_window()->set_dependency(dependency, weight); });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with dependencies management";
 }
 
-void app::connect_gui_with_layout()
+auto app::connect_gui_with_layout() -> void
 {
-    get_paused_state().get_menu_window().connect_to_layout(
+    assert(menu_window());
+    assert(layout_core());
+
+    menu_window()->connect_to_layout(
         [this](const auto& selection)
-        { get_layout_core().update_layout(selection); });
+        { layout_core()->update_layout(selection); });
 
-    get_paused_state().get_menu_window().connect_to_topology(
+    menu_window()->connect_to_topology(
         [this](const auto& selection)
-        { get_layout_core().update_topology(selection); });
+        { layout_core()->update_topology(selection); });
 
-    get_paused_state().get_menu_window().connect_to_scale(
-        [this](auto selection)
-        { get_layout_core().update_topology(selection); });
+    menu_window()->connect_to_scale(
+        [this](auto selection) { layout_core()->update_topology(selection); });
 
-    get_paused_state().get_menu_window().connect_to_layout_restore(
-        [this]() { get_layout_core().revert_to_defaults(); });
+    menu_window()->connect_to_layout_restore(
+        [this]() { layout_core()->revert_to_defaults(); });
 
-    get_layout_core().connect_to_layout(
+    layout_core()->connect_to_layout(
         [this](const auto& layout)
-        { get_paused_state().get_menu_window().set_layout(layout.desc()); });
+        { menu_window()->set_layout(layout.desc()); });
 
-    get_layout_core().connect_to_topology(
+    layout_core()->connect_to_topology(
         [this](const auto& topology)
         {
-            get_paused_state().get_menu_window().set_topology(topology.desc());
-            get_paused_state().get_menu_window().set_scale(topology.scale());
+            menu_window()->set_topology(topology.desc());
+            menu_window()->> set_scale(topology.scale());
         });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
 }
 
-void app::connect_layout_with_rendering()
+auto app::connect_gui_with_command_history() -> void
 {
-    get_layout_core().connect_to_layout([this](const auto& l)
-                                        { lay_graph(l); });
+    assert(menu_bar());
+    assert(cmd_history());
 
-    BOOST_LOG_TRIVIAL(info) << "connected layout management with rendering";
-}
-
-void app::connect_gui_with_command_history()
-{
-    get_paused_state().get_menu_bar().connect_to_undo([this]()
-                                                      { get_cmds().undo(); });
-    get_paused_state().get_menu_bar().connect_to_redo([this]()
-                                                      { get_cmds().redo(); });
+    menu_bar()->connect_to_undo([this]() { cmd_history()->undo(); });
+    menu_bar()->connect_to_redo([this]() { cmd_history()->redo(); });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with command history";
 }
@@ -381,11 +316,11 @@ void app::connect_gui_with_command_history()
  * Shutdown                                                *
  ***********************************************************/
 
-void app::shutdown()
+auto app::shutdown() -> void
 {
-    shutdown_rendering();
+    shutdown_input();
     shutdown_gui();
-    shutdown_fsm();
+    shutdown_rendering();
     shutdown_layout();
     shutdown_dependencies();
     shutdown_commands();
@@ -393,17 +328,24 @@ void app::shutdown()
     base::shutdown();
 }
 
-void app::shutdown_rendering()
+auto app::shutdown_input() -> void
 {
-    m_visualization.reset();
+    removeInputListener(gui_input_handler());
+    removeInputListener(cameraman());
 
-    BOOST_LOG_TRIVIAL(info) << "shutdown rendering";
+    m_gui_input.reset();
+    m_cameraman.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown input";
 }
 
-void app::shutdown_gui()
+auto app::shutdown_gui() -> void
 {
-    m_paused.reset();
-    m_overlays.reset();
+    gui::overlay_manager::get().withdraw(menu_bar());
+    gui::overlay_manager::get().withdraw(menu_window());
+
+    m_menu_bar.reset();
+    m_menu_win.reset();
 
     // named by Ogre
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
@@ -411,35 +353,36 @@ void app::shutdown_gui()
     BOOST_LOG_TRIVIAL(info) << "shutdown gui";
 }
 
-void app::shutdown_fsm()
+auto app::shutdown_rendering() -> void
 {
-    m_sm.reset();
+    m_bkgrd_renderer.reset();
+    m_g_renderer.reset();
 
-    BOOST_LOG_TRIVIAL(info) << "shutdown fsm";
+    BOOST_LOG_TRIVIAL(info) << "shutdown rendering";
 }
 
-void app::shutdown_layout()
+auto app::shutdown_layout() -> void
 {
     m_layout.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown layout";
 }
 
-void app::shutdown_dependencies()
+auto app::shutdown_dependencies() -> void
 {
-    m_dependencies.reset();
+    m_deps.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown dependencies";
 }
 
-void app::shutdown_commands()
+auto app::shutdown_commands() -> void
 {
     m_cmds.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown commands";
 }
 
-void app::shutdown_architecture()
+auto app::shutdown_architecture() -> void
 {
     BOOST_LOG_TRIVIAL(info) << "shutdown architecture";
 }
@@ -449,132 +392,5 @@ void app::shutdown_architecture()
  ***********************************************************/
 
 void app::go() { getRoot()->startRendering(); }
-
-/***********************************************************
- * Accessors                                               *
- ***********************************************************/
-
-auto app::get_main_config() const -> const main_config&
-{
-    return m_main_config;
-}
-
-auto app::get_main_config() -> main_config& { return m_main_config; }
-
-auto app::get_dependencies_config() const -> const dependencies_config&
-{
-    return m_dependencies_config;
-}
-
-auto app::get_dependencies_config() -> dependencies_config&
-{
-    return m_dependencies_config;
-}
-
-auto app::get_layout_config() const -> const layout_config&
-{
-    return m_layout_config;
-}
-
-auto app::get_layout_config() -> layout_config& { return m_layout_config; }
-
-auto app::get_symbol_table() const -> const symbol_table& { return m_st; }
-
-auto app::get_symbol_table() -> symbol_table& { return m_st; }
-
-auto app::get_graph() const -> const graph& { return m_g; }
-
-auto app::get_graph() -> graph& { return m_g; }
-
-auto app::get_cmds() const -> const command_history&
-{
-    assert(m_cmds);
-    return *m_cmds;
-}
-
-auto app::get_cmds() -> command_history&
-{
-    assert(m_cmds);
-    return *m_cmds;
-}
-
-auto app::get_dependencies_core() const -> const dependencies_core&
-{
-    assert(m_dependencies);
-    return *m_dependencies;
-}
-
-auto app::get_dependencies_core() -> dependencies_core&
-{
-    assert(m_dependencies);
-    return *m_dependencies;
-}
-
-auto app::get_layout_core() const -> const layout_core&
-{
-    assert(m_layout);
-    return *m_layout;
-}
-
-auto app::get_layout_core() -> layout_core&
-{
-    assert(m_layout);
-    return *m_layout;
-}
-
-auto app::get_state_machine() const -> const state_machine&
-{
-    assert(m_sm);
-    return *m_sm;
-}
-
-auto app::get_state_machine() -> state_machine&
-{
-    assert(m_sm);
-    return *m_sm;
-}
-
-auto app::get_overlay_manager() const -> const overlay_manager&
-{
-    assert(m_overlays);
-    return *m_overlays;
-}
-
-auto app::get_overlay_manager() -> overlay_manager&
-{
-    assert(m_overlays);
-    return *m_overlays;
-}
-
-auto app::get_visualization_state() const -> const visualization_state&
-{
-    assert(m_visualization);
-    return *m_visualization;
-}
-
-auto app::get_visualization_state() -> visualization_state&
-{
-    assert(m_visualization);
-    return *m_visualization;
-}
-
-auto app::get_paused_state() const -> const paused_state&
-{
-    assert(m_paused);
-    return *m_paused;
-}
-
-auto app::get_paused_state() -> paused_state&
-{
-    assert(m_paused);
-    return *m_paused;
-}
-
-void app::lay_graph(const layout::layout< graph >& l)
-{
-    for (auto v : boost::make_iterator_range(boost::vertices(get_graph())))
-        get_visualization_state().get_renderer().lay_vertex(
-            get_graph()[v], l.x(v), l.y(v), l.z(v));
-}
 
 } // namespace application
