@@ -1,6 +1,4 @@
-set(FILES
-	graph_renderer.cpp
-)
+set(FILES)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
