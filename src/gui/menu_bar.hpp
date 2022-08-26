@@ -4,6 +4,7 @@
 #ifndef GUI_MENU_BAR_HPP
 #define GUI_MENU_BAR_HPP
 
+#include "file_dialog.hpp"
 #include "overlay.hpp"
 
 #include <boost/signals2/signal.hpp>
@@ -31,7 +32,7 @@ public:
         undo_enabled is_undo_enabled = []() { return false; },
         redo_enabled is_redo_enabled = []() { return false; });
 
-    virtual ~menu_bar() = default;
+    virtual ~menu_bar() override = default;
 
     virtual auto draw() const -> void override;
 
@@ -69,6 +70,8 @@ private:
 
     undo_signal m_undo_sig;
     redo_signal m_redo_sig;
+
+    mutable file_dialog m_file_browser;
 };
 
 } // namespace gui

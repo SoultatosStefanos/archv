@@ -1,4 +1,5 @@
 set(FILES
+	file_dialog.cpp
 	menu_bar.cpp
 	menu_window.cpp
 	overlay_manager.cpp

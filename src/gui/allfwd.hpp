@@ -11,6 +11,8 @@ class overlay_manager;
 
 class menu_bar;
 class menu_window;
+
+class file_dialog;
 } // namespace gui
 
 #endif // GUI_ALLFWD_HPP
