@@ -7,7 +7,7 @@
 namespace rendering
 {
 
-class graph_visualization;
+class graph_renderer;
 
 } // namespace rendering
 

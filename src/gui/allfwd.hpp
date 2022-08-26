@@ -6,7 +6,11 @@
 
 namespace gui
 {
-class pause_menu;
+class overlay;
+class overlay_manager;
+
+class menu_bar;
+class menu_window;
 } // namespace gui
 
 #endif // GUI_ALLFWD_HPP

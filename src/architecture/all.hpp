@@ -4,7 +4,7 @@
 #ifndef ARCHITECTURE_ALL_HPP
 #define ARCHITECTURE_ALL_HPP
 
-#include "deserialization.hpp"
+#include "generation.hpp"
 #include "graph.hpp"
 #include "symbol_table.hpp"
 #include "symbols.hpp"

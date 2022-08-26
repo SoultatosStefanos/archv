@@ -1,6 +1,6 @@
 set(FILES
+	config.cpp
 	core.cpp
-	deserialization.cpp
 	weight_repo.cpp
 )
 set(SUBDIRECTORIES)

@@ -1,5 +1,5 @@
 set(FILES
-	deserialization.cpp
+	generation.cpp
 	symbol_table.cpp
 )
 set(SUBDIRECTORIES)

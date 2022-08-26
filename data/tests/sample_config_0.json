@@ -1,6 +1,5 @@
 {
 	"config-path" : "foo/bar/",
 	"dependencies" : "dependencies.json",
-	"graph" : "graph.json",
 	"layout" : "layout.json"
 }

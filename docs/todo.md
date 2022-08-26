@@ -66,7 +66,7 @@
 
 	+ [ ] Progress Bars
 
-	+ [ ] Interactive Configuration
+	+ [ ] Interactive Configuration (deserialization/serialization/defaults)
 
 # Rendering
 
@@ -234,7 +234,47 @@
 	
 	+ [n] Progress bars pre work
 
+
+# 18 / 08 / 2022
+
+	+ [?] Rendering package wth states and app -> Gui package, remove view
+
+
+# 19 / 08 / 2022
+
+	+ [x] Multithreaded task test
+
+	+ [x] Arch generator task
+	
+	+ [x] Gui overlay system
+
+	+ [x] Application package
+
+		+ [x] Rename deserialization modules to config
+
+		+ [x] Remove config package
+
+		+ [x] Copy modules to application package
+
+		+ [x] Remove view dispatchers
+
+		+ [x] Remove view
+
+
+# 20 / 08 / 2022
+
+	+ [n] Architecture generation task with progress bar
+
+
 # 26 / 08 / 2022
+
+	+ [x] Refactor arch generation - no monotoring
+
+	+ [x] Remove progress bar gui
+
+	+ [x] Cleanup app from asio
+
+	+ [n] Make a separate file dialog
 
 	+ [ ] Make Graph Renderer dependent on the graph
 

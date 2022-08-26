@@ -4,6 +4,9 @@
 #ifndef GUI_ALL_HPP
 #define GUI_ALL_HPP
 
-#include "pause_menu.hpp"
+#include "menu_bar.hpp"
+#include "menu_window.hpp"
+#include "overlay.hpp"
+#include "overlay_manager.hpp"
 
 #endif // GUI_ALL_HPP
