@@ -1,4 +1,6 @@
-set(FILES)
+set(FILES
+	background_renderer.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})

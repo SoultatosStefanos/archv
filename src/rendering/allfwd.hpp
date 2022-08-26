@@ -7,6 +7,8 @@
 namespace rendering
 {
 
+class background_renderer;
+
 template <
     typename Graph,
     typename VertexID,

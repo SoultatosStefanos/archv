@@ -276,7 +276,7 @@
 
 	+ [n] Make a separate file dialog
 
-	+ [ ] Make Graph Renderer dependent on the graph
+	+ [x] Make Graph Renderer dependent on the graph
 
 	+ [ ] Arrow edges
 
