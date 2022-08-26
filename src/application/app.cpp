@@ -10,8 +10,7 @@
 namespace application
 {
 
-app::app(int argc, const char* argv[])
-: base("ARCHV"), m_work { boost::asio::make_work_guard(m_io) }
+app::app(int argc, const char* argv[]) : base("ARCHV")
 {
     if (argc != 2)
         throw std::runtime_error("usage: ./<exec> <path/to/main/config.json>");
@@ -34,8 +33,6 @@ app::app(int argc, const char* argv[])
 auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
-
-    get_io().poll_one();
 
     return get_state_machine().has_active_state()
         ? get_state_machine().get_active_state()->frameStarted(e)

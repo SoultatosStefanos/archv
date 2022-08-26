@@ -6,8 +6,6 @@
 
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreInput.h>
-#include <boost/asio/executor_work_guard.hpp>
-#include <boost/asio/io_service.hpp>
 #include <memory>
 
 /***********************************************************
@@ -123,9 +121,6 @@ protected:
     auto get_paused_state() const -> const paused_state&;
     auto get_paused_state() -> paused_state&;
 
-    auto get_io() const -> const auto& { return m_io; }
-    auto get_io() -> auto& { return m_io; }
-
     void lay_graph(const layout::layout< graph >& l);
 
 private:
@@ -165,12 +160,6 @@ private:
     std::unique_ptr< overlay_manager > m_overlays;
     std::unique_ptr< visualization_state > m_visualization;
     std::unique_ptr< paused_state > m_paused;
-
-    boost::asio::io_service m_io;
-
-    // avoid immediate exit
-    using executor_type = boost::asio::io_context::executor_type;
-    boost::asio::executor_work_guard< executor_type > m_work;
 };
 
 } // namespace application

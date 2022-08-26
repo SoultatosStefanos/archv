@@ -261,4 +261,6 @@
 
 	+ [x] Remove progress bar gui
 
-	+ [ ] Buffer
+	+ [x] Cleanup app from asio
+
+	+ [ ] Make a separate file dialog
