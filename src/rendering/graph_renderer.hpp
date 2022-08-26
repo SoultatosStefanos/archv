@@ -24,6 +24,7 @@ namespace rendering
 {
 
 // Will prepare a scene at a render window upon initialization.
+// TODO Split to graph renderer and background renderer
 template <
     typename Graph,
     typename VertexID,
@@ -168,8 +169,8 @@ private:
             node->attachObject(entity);
             node->setScale(0.15, 0.15, 0.15);
 
-            const auto& vec = boost::get(edge_weight(), v);
-            node->setPosition(vec.x, vec.y, vec.z);
+            const auto& pos = boost::get(edge_weight(), v);
+            node->setPosition(pos.x, pos.y, pos.z);
         }
     }
 
@@ -177,8 +178,8 @@ private:
     {
         for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
         {
-            const auto& vec = boost::get(edge_weight(), v);
-            node->setPosition(vec.x, vec.y, vec.z);
+            const auto& pos = boost::get(edge_weight(), v);
+            node->setPosition(pos.x, pos.y, pos.z);
         }
     }
 

@@ -4,7 +4,6 @@
 #ifndef RENDERING_DETAIL_GRAPH_RENDERER_HPP
 #define RENDERING_DETAIL_GRAPH_RENDERER_HPP
 
-#include <OGRE/OgreVector3.h>
 #include <boost/graph/graph_concepts.hpp>
 #include <type_traits>
 
@@ -42,11 +41,6 @@ struct GraphRendererConcept
     static_assert(std::is_convertible_v<
                   typename boost::property_traits< WeightMap >::value_type,
                   double >);
-
-    static_assert(
-        std::is_same_v <
-            typename boost::property_traits< PositionMap >::value_type,
-        Ogre::Vector3);
 };
 
 } // namespace rendering::detail

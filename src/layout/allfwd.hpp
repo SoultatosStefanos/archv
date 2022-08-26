@@ -27,6 +27,9 @@ class gursoy_atun_layout;
 
 struct config_data;
 
+template < typename Graph >
+struct dynamic_position_map;
+
 } // namespace layout
 
 #endif // LAYOUT_ALLFWD_HPP
