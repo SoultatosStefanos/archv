@@ -8,6 +8,5 @@
 #include "menu_window.hpp"
 #include "overlay.hpp"
 #include "overlay_manager.hpp"
-#include "progress_bar.hpp"
 
 #endif // GUI_ALL_HPP

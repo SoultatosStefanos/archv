@@ -30,6 +30,7 @@ auto menu_bar::draw() const -> void
 
 void menu_bar::draw_file_submenu() const
 {
+    // TODO refactor into a reusable class
     static auto make_file_dialog = []()
     {
         ImGui::FileBrowser dialog { ImGuiFileBrowserFlags_NoModal };

@@ -259,6 +259,6 @@
 
 	+ [x] Refactor arch generation - no monotoring
 
-	+ [ ] Remove progress bar gui
+	+ [x] Remove progress bar gui
 
 	+ [ ] Buffer
