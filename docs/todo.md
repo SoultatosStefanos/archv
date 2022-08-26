@@ -263,4 +263,4 @@
 
 	+ [x] Cleanup app from asio
 
-	+ [ ] Make a separate file dialog
+	+ [n] Make a separate file dialog
