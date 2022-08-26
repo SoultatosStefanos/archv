@@ -15,6 +15,8 @@ struct definition;
 struct method;
 struct structure;
 
+class generation;
+
 } // namespace architecture
 
 #endif // ARCHITECTURE_ALLFWD_HPP

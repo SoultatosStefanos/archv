@@ -1,5 +1,7 @@
 set(FILES
-	pause_menu.cpp
+	menu_bar.cpp
+	menu_window.cpp
+	overlay_manager.cpp
 )
 set(SUBDIRECTORIES)
 

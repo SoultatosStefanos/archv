@@ -18,7 +18,9 @@ public:
     using value_type = structure;
 
     auto lookup(const key_type& id) const -> const value_type*;
-    void insert(value_type s);
+    auto insert(value_type s) -> void;
+
+    auto clear() -> void;
 
     auto begin() -> auto { return std::begin(m_table); }
     auto begin() const -> auto { return std::begin(m_table); }

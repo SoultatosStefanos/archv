@@ -1,8 +1,8 @@
 set(FILES
+	config.cpp
 	core.cpp
 	cube.cpp
 	sphere.cpp
-	deserialization.cpp
 )
 set(SUBDIRECTORIES)
 

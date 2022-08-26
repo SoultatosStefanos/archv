@@ -47,7 +47,7 @@ using json_value_info
  ***********************************************************/
 
 // Safe json member access.
-inline auto get(const Json::Value& val, const char* at) -> Json::Value
+inline auto get(const Json::Value& val, const char* at) -> const Json::Value&
 {
     assert(at);
 

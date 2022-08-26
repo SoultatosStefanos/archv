@@ -4,6 +4,6 @@
 #ifndef RENDERING_ALL_HPP
 #define RENDERING_ALL_HPP
 
-#include "graph_visualization.hpp"
+#include "graph_renderer.hpp"
 
 #endif // RENDERING_ALL_HPP
