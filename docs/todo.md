@@ -278,6 +278,29 @@
 
 	+ [x] Make Graph Renderer dependent on the graph
 
-	+ [ ] Arrow edges
 
-	+ [ ] Boxes meshes
+# 27 / 08 / 2022
+
+	+ [ ] (Clang) Tidy
+
+		+ [ ] Remove unneeded input listeners on visualization state
+
+	+ [?] Check for Ogre leaks?
+
+	+ [ ] Arch generation via ui (no progress bar)
+
+		+ [ ] layout::core::set_graph()
+
+	+ [ ] Background Renderer
+		
+		+ [ ] Live wallpaper? 
+
+		+ [?] ?
+
+	+ [ ] Graph Renderer
+
+		+ [ ] Arrow Edges
+
+		+ [ ] Box meshes
+
+		+ [?] ?
