@@ -106,25 +106,25 @@ void app::setup()
     connect_rendering_with_layout();
 }
 
-auto app::id_map() const -> architecture::id_map
+auto app::make_id_map() const -> architecture::id_map
 {
     return boost::get(boost::vertex_bundle, std::as_const(graph()));
 }
 
-auto app::dependency_map() const -> architecture::dependency_map
+auto app::make_dependency_map() const -> architecture::dependency_map
 {
     return boost::get(boost::edge_bundle, std::as_const(graph()));
 }
 
-auto app::dynamic_weight_map() const -> weight_map
+auto app::make_dynamic_weight_map() const -> weight_map
 {
     return dependencies::make_dynamic_weight_map< architecture::graph >(
-        dependencies_core()->get_repo(), dependency_map());
+        dependencies_core()->get_repo(), make_dependency_map());
 }
 
-auto app::dynamic_position_map() const -> position_map
+auto app::make_position_map() const -> position_map
 {
-    return layout::make_dynamic_position_map(*layout_core());
+    return layout::make_position_map(layout_core()->get_layout());
 }
 
 // FIXME
@@ -165,7 +165,7 @@ auto app::setup_layout() -> void
         = std::make_unique< layout::core< architecture::graph, weight_map > >(
             *cmd_history(),
             graph(),
-            dynamic_weight_map(),
+            make_dynamic_weight_map(),
             layout_config().default_layout,
             layout_config().default_topology,
             layout_config().default_scale);
@@ -186,9 +186,9 @@ auto app::setup_rendering() -> void
 
     m_g_renderer = std::make_unique< graph_renderer_type >(
         &graph(),
-        id_map(),
-        dynamic_weight_map(),
-        dynamic_position_map(),
+        make_id_map(),
+        make_dynamic_weight_map(),
+        make_position_map(),
         background_renderer()->scene(),
         *getRenderWindow());
 
@@ -327,8 +327,8 @@ auto app::connect_rendering_with_layout() -> void
     assert(layout_core());
 
     layout_core()->connect_to_layout(
-        [this](const auto&)
-        { graph_renderer()->set_vertex_pos(dynamic_position_map()); });
+        [this](const auto& l)
+        { graph_renderer()->set_vertex_pos(layout::make_position_map(l)); });
 }
 
 /***********************************************************

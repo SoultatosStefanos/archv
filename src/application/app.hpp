@@ -56,8 +56,7 @@ protected:
     using weight_map = dependencies::
         dynamic_weight_map< architecture::graph, architecture::dependency_map >;
 
-    using position_map
-        = layout::dynamic_position_map< architecture::graph, weight_map >;
+    using position_map = layout::position_map< architecture::graph >;
 
     auto config() const -> const auto& { return m_config; }
     auto config() -> auto& { return m_config; }
@@ -97,10 +96,10 @@ protected:
             resume();
     }
 
-    auto id_map() const -> architecture::id_map;
-    auto dependency_map() const -> architecture::dependency_map;
-    auto dynamic_weight_map() const -> weight_map;
-    auto dynamic_position_map() const -> position_map;
+    auto make_id_map() const -> architecture::id_map;
+    auto make_dependency_map() const -> architecture::dependency_map;
+    auto make_dynamic_weight_map() const -> weight_map;
+    auto make_position_map() const -> position_map;
 
 private:
     auto setup_architecture() -> void;
