@@ -11,7 +11,7 @@ namespace multithreading::detail
 {
 
 // NOTE: The gui and any workers can share the same service.
-auto io() -> auto&
+inline auto io() -> auto&
 {
     static auto service = boost::asio::io_service();
     static auto worker = boost::asio::make_work_guard(service);

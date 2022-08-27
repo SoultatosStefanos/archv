@@ -10,7 +10,7 @@
 namespace multithreading::detail
 {
 
-auto thread_pool() -> auto&
+inline auto thread_pool() -> auto&
 {
     static const auto nthreads = std::thread::hardware_concurrency();
     static auto pool = boost::asio::thread_pool(nthreads);

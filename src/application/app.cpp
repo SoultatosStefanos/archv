@@ -42,11 +42,14 @@ auto app::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
     {
     case OgreBites::SDLK_ESCAPE:
         getRoot()->queueEndRendering();
+        break;
 
     case 'p':
         toggle_pause_resume();
+        break;
 
     default:
+        break;
     }
 
     return true;
@@ -99,6 +102,8 @@ void app::setup()
     connect_gui_with_dependencies();
     connect_gui_with_layout();
     connect_gui_with_command_history();
+
+    connect_rendering_with_layout();
 }
 
 auto app::id_map() const -> architecture::id_map
@@ -180,7 +185,7 @@ auto app::setup_rendering() -> void
         *getRenderWindow());
 
     m_g_renderer = std::make_unique< graph_renderer_type >(
-        graph(),
+        &graph(),
         id_map(),
         dynamic_weight_map(),
         dynamic_position_map(),
@@ -199,6 +204,9 @@ auto app::setup_gui() -> void
     assert(imgui->isInitialised());
 
     Ogre::OverlayManager::getSingleton().addOverlay(imgui); // takes ownership
+
+    auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
+    background_renderer()->scene()->addRenderQueueListener(ogre_overlay);
 
     static_assert(std::is_convertible_v<
                   dependencies::config_data,
@@ -245,6 +253,7 @@ auto app::setup_input() -> void
 
     addInputListener(cameraman());
     addInputListener(gui_input_handler());
+    addInputListener(this);
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
 }
@@ -295,7 +304,7 @@ auto app::connect_gui_with_layout() -> void
         [this](const auto& topology)
         {
             menu_window()->set_topology(topology.desc());
-            menu_window()->> set_scale(topology.scale());
+            menu_window()->set_scale(topology.scale());
         });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
@@ -310,6 +319,16 @@ auto app::connect_gui_with_command_history() -> void
     menu_bar()->connect_to_redo([this]() { cmd_history()->redo(); });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with command history";
+}
+
+auto app::connect_rendering_with_layout() -> void
+{
+    assert(graph_renderer());
+    assert(layout_core());
+
+    layout_core()->connect_to_layout(
+        [this](const auto&)
+        { graph_renderer()->set_vertex_pos(dynamic_position_map()); });
 }
 
 /***********************************************************
@@ -341,11 +360,11 @@ auto app::shutdown_input() -> void
 
 auto app::shutdown_gui() -> void
 {
-    gui::overlay_manager::get().withdraw(menu_bar());
-    gui::overlay_manager::get().withdraw(menu_window());
-
     m_menu_bar.reset();
     m_menu_win.reset();
+
+    auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
+    background_renderer()->scene()->removeRenderQueueListener(ogre_overlay);
 
     // named by Ogre
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
@@ -355,8 +374,8 @@ auto app::shutdown_gui() -> void
 
 auto app::shutdown_rendering() -> void
 {
-    m_bkgrd_renderer.reset();
     m_g_renderer.reset();
+    m_bkgrd_renderer.reset();
 
     BOOST_LOG_TRIVIAL(info) << "shutdown rendering";
 }

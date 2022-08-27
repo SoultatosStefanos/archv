@@ -71,8 +71,8 @@ public:
     , m_root { Ogre::Root::getSingleton() }
     , m_window { window }
     {
-        assert(graph());
-        assert(scene());
+        assert(m_g);
+        assert(m_scene);
         setup_entities();
     }
 
@@ -88,7 +88,7 @@ public:
     auto vertex_id() const -> auto { return m_vertex_id; }
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto vertex_pos() const -> auto { return m_vertex_pos; }
-    auto scene() const -> const auto* { return m_scene; }
+    auto scene() const -> auto* { return m_scene; }
 
     auto set_graph(const graph_type* g) -> void
     {
@@ -137,7 +137,7 @@ private:
             node->attachObject(entity);
             node->setScale(0.15, 0.15, 0.15);
 
-            const auto& pos = boost::get(edge_weight(), v);
+            const auto& pos = boost::get(vertex_pos(), v);
             node->setPosition(pos.x, pos.y, pos.z);
         }
     }
@@ -146,7 +146,10 @@ private:
     {
         for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
         {
-            const auto& pos = boost::get(edge_weight(), v);
+            const auto& id = boost::get(vertex_id(), v);
+            auto* node = scene()->getRootSceneNode()->getChild(id);
+
+            const auto& pos = boost::get(vertex_pos(), v);
             node->setPosition(pos.x, pos.y, pos.z);
         }
     }
@@ -154,7 +157,10 @@ private:
     auto shutdown_entities() -> void
     {
         for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
+        {
+            const auto& id = boost::get(vertex_id(), v);
             scene()->getRootSceneNode()->removeAndDestroyChild(id);
+        }
 
         scene()->destroyEntity("ogrehead.mesh");
     }

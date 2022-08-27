@@ -24,18 +24,19 @@ public:
     using weight_map = WeightMap;
     using vertex = typename boost::graph_traits< graph >::vertex_descriptor;
 
-    explicit position_dispatcher(const core< graph, weight_map >& c) : m_c { c }
+    explicit position_dispatcher(const core< graph, weight_map >& c)
+    : m_c { &c }
     {
     }
 
     auto operator()(vertex v) const -> position
     {
-        const auto& l = m_c.get_layout();
+        const auto& l = m_c->get_layout();
         return { .x = l.x(v), .y = l.y(v), .z = l.z(v) };
     }
 
 private:
-    const core< graph, weight_map >& m_c;
+    const core< graph, weight_map >* m_c { nullptr };
 };
 
 } // namespace layout::detail

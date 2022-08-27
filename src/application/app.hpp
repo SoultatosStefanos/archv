@@ -115,6 +115,8 @@ private:
     auto connect_gui_with_layout() -> void;
     auto connect_gui_with_command_history() -> void;
 
+    auto connect_rendering_with_layout() -> void;
+
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;
     auto shutdown_rendering() -> void;

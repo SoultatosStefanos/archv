@@ -4,11 +4,16 @@
 #ifndef GUI_FILE_DIALOG_HPP
 #define GUI_FILE_DIALOG_HPP
 
-#include "detail/imfilebrowser.h"
 #include "overlay.hpp"
 
 #include <boost/signals2/signal.hpp>
+#include <memory>
 #include <string>
+
+namespace ImGui
+{
+class FileBrowser;
+}
 
 namespace gui
 {
@@ -22,7 +27,13 @@ public:
     using connection = boost::signals2::connection;
 
     file_dialog();
-    virtual ~file_dialog() = default;
+    ~file_dialog();
+
+    file_dialog(const file_dialog&) = delete;
+    file_dialog(file_dialog&&) = delete;
+
+    auto operator=(const file_dialog&) -> file_dialog& = delete;
+    auto operator=(file_dialog&&) -> file_dialog& = delete;
 
     // NOTE:: MUST be called at each frame.
     virtual auto draw() const -> void override;
@@ -32,7 +43,8 @@ public:
     auto connect(const slot& f) -> connection { return m_signal.connect(f); }
 
 private:
-    mutable ImGui::FileBrowser m_impl;
+    // use of pimpl cause redefinition errors
+    std::unique_ptr< ImGui::FileBrowser > m_pimpl;
     signal m_signal;
 };
 
