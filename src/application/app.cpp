@@ -251,8 +251,12 @@ auto app::setup_input() -> void
 
     m_gui_input = std::make_unique< OgreBites::ImGuiInputListener >();
 
+    m_shortcut_handler
+        = std::make_unique< shortcut_input_listener >(*menu_bar());
+
     addInputListener(cameraman());
     addInputListener(gui_input_handler());
+    addInputListener(shortcut_handler());
     addInputListener(this);
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
@@ -349,9 +353,11 @@ auto app::shutdown() -> void
 
 auto app::shutdown_input() -> void
 {
+    removeInputListener(shortcut_handler());
     removeInputListener(gui_input_handler());
     removeInputListener(cameraman());
 
+    m_shortcut_handler.reset();
     m_gui_input.reset();
     m_cameraman.reset();
 

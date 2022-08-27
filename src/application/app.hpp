@@ -5,6 +5,7 @@
 #define APPLICATION_APP_HPP
 
 #include "config.hpp"
+#include "shortcut_input_listener.hpp"
 
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
@@ -82,6 +83,7 @@ protected:
     auto graph_renderer() const -> auto* { return m_g_renderer.get(); }
     auto cameraman() const -> auto* { return m_cameraman.get(); }
     auto gui_input_handler() const -> auto* { return m_gui_input.get(); }
+    auto shortcut_handler() const -> auto* { return m_shortcut_handler.get(); }
 
     auto menu_window() const -> auto* { return m_menu_win.get(); }
     auto menu_bar() const -> auto* { return m_menu_bar.get(); }
@@ -154,6 +156,7 @@ private:
 
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
     std::unique_ptr< OgreBites::ImGuiInputListener > m_gui_input;
+    std::unique_ptr< shortcut_input_listener > m_shortcut_handler;
 };
 
 } // namespace application
