@@ -281,15 +281,17 @@
 
 # 27 / 08 / 2022
 
-	+ [ ] (Clang) Tidy
+	+ [x] (Clang) Tidy
 
-		+ [ ] Remove unneeded input listeners on visualization state
+		+ [x] Remove unneeded input listeners on visualization state
 
 	+ [?] Check for Ogre leaks?
 
 	+ [ ] Arch generation via ui (no progress bar)
 
 		+ [ ] layout::core::set_graph()
+
+	+ [ ] Config from project root
 
 	+ [ ] Background Renderer
 		

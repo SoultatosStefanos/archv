@@ -21,6 +21,8 @@ app::app(int argc, const char* argv[]) : base("ARCHV")
 
     m_layout_config
         = layout::deserialize(json::archive::get().at(config().layout_path));
+
+    assert(!paused());
 }
 
 /***********************************************************
@@ -62,6 +64,9 @@ auto app::pause() -> void
     cameraman()->manualStop();
     removeInputListener(cameraman());
 
+    addInputListener(gui_input_handler());
+    addInputListener(shortcut_handler());
+
     gui::overlay_manager::get().submit(menu_bar());
     gui::overlay_manager::get().submit(menu_window());
 
@@ -73,6 +78,9 @@ auto app::pause() -> void
 auto app::resume() -> void
 {
     assert(paused());
+
+    removeInputListener(gui_input_handler());
+    removeInputListener(shortcut_handler());
 
     addInputListener(cameraman());
 
@@ -254,10 +262,8 @@ auto app::setup_input() -> void
     m_shortcut_handler
         = std::make_unique< shortcut_input_listener >(*menu_bar());
 
-    addInputListener(cameraman());
-    addInputListener(gui_input_handler());
-    addInputListener(shortcut_handler());
     addInputListener(this);
+    addInputListener(cameraman());
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
 }
