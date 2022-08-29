@@ -290,7 +290,7 @@
 
 # 29 / 08 / 2022
 
-	+ [ ] Arch generation via ui (no progress bar)
+	+ [x] Arch generation via ui (no progress bar)
 
 		+ [n] layout::core::set_graph()
 
@@ -298,9 +298,9 @@
 
 		+ [x] Remove graph renderer setter
 
-		+ [ ] Shutdown on app if not null
+		+ [n] Shutdown on app if not null
 
-		+ [ ] Avoid unnecessary subsystem setups 
+		+ [n] Avoid unnecessary subsystem setups 
  
 	+ [ ] Config from project root
 
