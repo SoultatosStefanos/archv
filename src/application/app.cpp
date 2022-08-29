@@ -72,6 +72,8 @@ auto app::pause() -> void
 
     m_paused = true;
 
+    BOOST_LOG_TRIVIAL(info) << "paused";
+
     assert(paused());
 }
 
@@ -89,6 +91,8 @@ auto app::resume() -> void
 
     m_paused = false;
 
+    BOOST_LOG_TRIVIAL(info) << "resumed";
+
     assert(!paused());
 }
 
@@ -99,14 +103,15 @@ auto app::resume() -> void
 void app::setup()
 {
     base::setup();
-    setup_architecture();
     setup_commands();
     setup_dependencies();
     setup_layout();
-    setup_rendering();
+    setup_background_rendering();
+    setup_graph_rendering();
     setup_gui();
     setup_input();
 
+    connect_gui_with_architecture();
     connect_gui_with_dependencies();
     connect_gui_with_layout();
     connect_gui_with_command_history();
@@ -135,14 +140,9 @@ auto app::make_position_map() const -> position_map
     return layout::make_position_map(layout_core()->get_layout());
 }
 
-// FIXME
-#define ARCHV_GRAPH_PATH "/home/stef/Documents/Projects/archv/build/graph.json"
-
-auto app::setup_architecture() -> void
+auto app::setup_architecture(architecture::arch_tuple res) -> void
 {
-    const auto& root = json::archive::get().at(ARCHV_GRAPH_PATH);
-
-    std::tie(m_st, m_g, std::ignore) = architecture::generate_arch(root);
+    std::tie(m_st, m_g, std::ignore) = std::move(res);
 
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
@@ -181,7 +181,15 @@ auto app::setup_layout() -> void
     BOOST_LOG_TRIVIAL(info) << "setup layout";
 }
 
-auto app::setup_rendering() -> void
+auto app::setup_background_rendering() -> void
+{
+    m_bkgrd_renderer = std::make_unique< rendering::background_renderer >(
+        *getRenderWindow());
+
+    BOOST_LOG_TRIVIAL(info) << "setup background rendering";
+}
+
+auto app::setup_graph_rendering() -> void
 {
     using graph_renderer_type = rendering::graph_renderer<
         architecture::graph,
@@ -189,8 +197,7 @@ auto app::setup_rendering() -> void
         weight_map,
         position_map >;
 
-    m_bkgrd_renderer = std::make_unique< rendering::background_renderer >(
-        *getRenderWindow());
+    assert(background_renderer());
 
     m_g_renderer = std::make_unique< graph_renderer_type >(
         &graph(),
@@ -200,7 +207,7 @@ auto app::setup_rendering() -> void
         background_renderer()->scene(),
         *getRenderWindow());
 
-    BOOST_LOG_TRIVIAL(info) << "setup rendering";
+    BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
 
 auto app::setup_gui() -> void
@@ -266,6 +273,38 @@ auto app::setup_input() -> void
     addInputListener(cameraman());
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
+}
+
+auto app::connect_gui_with_architecture() -> void
+{
+    assert(menu_bar());
+
+    menu_bar()->file_browser().connect(
+        [this](const auto& path)
+        {
+            BOOST_LOG_TRIVIAL(info) << path << " selected";
+
+            multithreading::launch_worker(
+                [this, path]()
+                {
+                    const auto& root = json::archive::get().at(path);
+                    auto&& res = architecture::generate_arch(root);
+
+                    multithreading::post_message(
+                        [this, res = std::move(res)]()
+                        {
+                            shutdown_graph_rendering();
+                            shutdown_layout();
+
+                            setup_architecture(std::move(res));
+                            setup_layout();
+                            setup_graph_rendering();
+                            connect_rendering_with_layout();
+                        });
+                });
+        });
+
+    BOOST_LOG_TRIVIAL(info) << "connected gui with architecture";
 }
 
 auto app::connect_gui_with_dependencies() -> void
@@ -349,7 +388,8 @@ auto app::shutdown() -> void
 {
     shutdown_input();
     shutdown_gui();
-    shutdown_rendering();
+    shutdown_graph_rendering();
+    shutdown_background_rendering();
     shutdown_layout();
     shutdown_dependencies();
     shutdown_commands();
@@ -384,12 +424,18 @@ auto app::shutdown_gui() -> void
     BOOST_LOG_TRIVIAL(info) << "shutdown gui";
 }
 
-auto app::shutdown_rendering() -> void
+auto app::shutdown_graph_rendering() -> void
 {
     m_g_renderer.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown graph rendering";
+}
+
+auto app::shutdown_background_rendering() -> void
+{
     m_bkgrd_renderer.reset();
 
-    BOOST_LOG_TRIVIAL(info) << "shutdown rendering";
+    BOOST_LOG_TRIVIAL(info) << "shutdown background rendering";
 }
 
 auto app::shutdown_layout() -> void

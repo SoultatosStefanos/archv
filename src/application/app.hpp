@@ -104,14 +104,16 @@ protected:
     auto make_position_map() const -> position_map;
 
 private:
-    auto setup_architecture() -> void;
+    auto setup_architecture(architecture::arch_tuple res) -> void;
     auto setup_commands() -> void;
     auto setup_dependencies() -> void;
     auto setup_layout() -> void;
-    auto setup_rendering() -> void;
+    auto setup_background_rendering() -> void;
+    auto setup_graph_rendering() -> void;
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
+    auto connect_gui_with_architecture() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
     auto connect_gui_with_command_history() -> void;
@@ -120,7 +122,8 @@ private:
 
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;
-    auto shutdown_rendering() -> void;
+    auto shutdown_graph_rendering() -> void;
+    auto shutdown_background_rendering() -> void;
     auto shutdown_layout() -> void;
     auto shutdown_dependencies() -> void;
     auto shutdown_commands() -> void;

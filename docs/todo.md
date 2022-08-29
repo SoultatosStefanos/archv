@@ -289,8 +289,16 @@
 
 	+ [ ] Arch generation via ui (no progress bar)
 
-		+ [ ] layout::core::set_graph()
+		+ [n] layout::core::set_graph()
 
+		+ [x] Dynamic graph setup via ui
+
+		+ [ ] Remove graph renderer setter
+
+		+ [ ] Shutdown on app if not null
+
+		+ [ ] Avoid unnecessary subsystem setups 
+ 
 	+ [ ] Config from project root
 
 	+ [ ] Background Renderer
