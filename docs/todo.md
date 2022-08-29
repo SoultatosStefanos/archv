@@ -68,6 +68,17 @@
 
 	+ [ ] Interactive Configuration (deserialization/serialization/defaults)
 
+# Rendering
+
+## Features
+
+	+ [ ] Boxes
+
+	+ [ ] Illumintation
+
+	+ [ ] Texts
+
+
 	
 # 08 / 07 / 2022
 
@@ -221,7 +232,7 @@
 
 	+ [n] Fix layout restore use case
 	
-	+ [x] Progress bars pre work
+	+ [n] Progress bars pre work
 
 
 # 18 / 08 / 2022
@@ -264,3 +275,45 @@
 	+ [x] Cleanup app from asio
 
 	+ [n] Make a separate file dialog
+
+	+ [x] Make Graph Renderer dependent on the graph
+
+
+# 27 / 08 / 2022
+
+	+ [x] (Clang) Tidy
+
+		+ [x] Remove unneeded input listeners on visualization state
+
+	+ [?] Check for Ogre leaks?
+
+
+# 29 / 08 / 2022
+
+	+ [x] Arch generation via ui (no progress bar)
+
+		+ [n] layout::core::set_graph()
+
+		+ [x] Dynamic graph setup via ui
+
+		+ [x] Remove graph renderer setter
+
+		+ [n] Shutdown on app if not null
+
+		+ [n] Avoid unnecessary subsystem setups 
+ 
+	+ [ ] Config from project root
+
+	+ [ ] Background Renderer
+		
+		+ [ ] Live wallpaper? 
+
+		+ [?] ?
+
+	+ [ ] Graph Renderer
+
+		+ [ ] Arrow Edges
+
+		+ [ ] Box meshes
+
+		+ [?] ?

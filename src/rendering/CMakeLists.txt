@@ -1,5 +1,5 @@
 set(FILES
-	graph_renderer.cpp
+	background_renderer.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -8,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${PROJECT_LIB} PUBLIC ${FILES})
 endif()

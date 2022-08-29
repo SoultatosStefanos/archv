@@ -11,18 +11,31 @@ namespace gui
 
 class overlay;
 
-class overlay_manager
+class overlay_manager final
 {
 public:
-    using pointer = overlay*;
+    overlay_manager(const overlay_manager&) = delete;
+    overlay_manager(overlay_manager&&) = delete;
 
-    auto submit(pointer ptr) -> void;
-    auto withdraw(pointer ptr) -> void;
+    auto operator=(const overlay_manager&) -> overlay_manager& = delete;
+    auto operator=(overlay_manager&&) -> overlay_manager& = delete;
+
+    static auto get() -> overlay_manager&
+    {
+        static overlay_manager singleton;
+        return singleton;
+    }
+
+    auto submit(overlay* ptr) -> void;
+    auto withdraw(overlay* ptr) -> void;
 
     auto draw_all() const -> void;
 
 private:
-    using holder = std::list< pointer >;
+    using holder = std::list< overlay* >;
+
+    overlay_manager() = default;
+    ~overlay_manager() = default;
 
     holder m_overlays;
 };

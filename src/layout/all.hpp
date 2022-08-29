@@ -10,6 +10,7 @@
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "layout_visitor.hpp"
+#include "position_map.hpp"
 #include "sphere.hpp"
 #include "topology.hpp"
 #include "topology_visitor.hpp"

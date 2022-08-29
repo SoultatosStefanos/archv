@@ -1,4 +1,5 @@
 set(FILES
+	file_dialog.cpp
 	menu_bar.cpp
 	menu_window.cpp
 	overlay_manager.cpp
@@ -10,5 +11,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${PROJECT_LIB} PUBLIC ${FILES})
 endif()

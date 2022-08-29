@@ -1,6 +1,7 @@
 set(FILES
 	config_tests.cpp
 	core_tests.cpp
+	position_map_tests.cpp
 )
 set(SUBDIRECTORIES)
 

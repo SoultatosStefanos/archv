@@ -6,6 +6,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(archv CXX)
 
+set(PROJECT ${PROJECT_NAME})
+set(PROJECT_LIB ${PROJECT}_lib)
+set(PROJECT_APP ${PROJECT}_app)
+
 # compiler flags
 if(MSVC)
   add_compile_options(/W4 /WX)
@@ -13,7 +17,7 @@ else()
   add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-add_library(${PROJECT_NAME})
+add_library(${PROJECT_LIB})
 
 set(SUBDIRECTORIES src tests)
 
@@ -22,7 +26,7 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 # make the src/ directory visible for include directives, as well as the tests/ (for testing utilites)
-target_include_directories(${PROJECT_NAME} PUBLIC src tests)
+target_include_directories(${PROJECT_LIB} PUBLIC src tests)
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
@@ -56,15 +60,14 @@ set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
 include_directories(${IMGUI_INCLUDE_DIR})
 
 # link 3rd party libraries
-target_link_libraries(${PROJECT_NAME} PUBLIC ${THIRD_PARTY_LIBRARIES})
+target_link_libraries(${PROJECT_LIB} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
 # setup driver target
-set(DRIVER archv_main)
-set(DRIVER_FILES src/main.cpp)
+set(APP_FILES src/application/main.cpp)
 
-if(DRIVER_FILES)
-  add_executable(${DRIVER} ${DRIVER_FILES})
+if(APP_FILES)
+  add_executable(${PROJECT_APP} ${APP_FILES})
 
   # link driver with public library
-  target_link_libraries(${DRIVER} PUBLIC ${PROJECT_NAME})
+  target_link_libraries(${PROJECT_APP} PUBLIC ${PROJECT_LIB})
 endif()

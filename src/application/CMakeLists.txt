@@ -1,9 +1,7 @@
 set(FILES
 	app.cpp
 	config.cpp
-	paused_state.cpp
-	state_machine.cpp
-	visualization_state.cpp
+	shortcut_input_listener.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -12,5 +10,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${PROJECT_LIB} PUBLIC ${FILES})
 endif()

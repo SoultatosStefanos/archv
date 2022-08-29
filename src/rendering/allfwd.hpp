@@ -7,6 +7,13 @@
 namespace rendering
 {
 
+class background_renderer;
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename WeightMap,
+    typename PositionMap >
 class graph_renderer;
 
 } // namespace rendering

@@ -4,7 +4,12 @@
 #ifndef APPLICATION_APP_HPP
 #define APPLICATION_APP_HPP
 
+#include "config.hpp"
+#include "shortcut_input_listener.hpp"
+
 #include <OGRE/Bites/OgreApplicationContext.h>
+#include <OGRE/Bites/OgreCameraMan.h>
+#include <OGRE/Bites/OgreImGuiInputListener.h>
 #include <OGRE/Bites/OgreInput.h>
 #include <memory>
 
@@ -13,15 +18,12 @@
  ***********************************************************/
 
 #include "architecture/all.hpp"
-#include "config.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
-#include "paused_state.hpp"
+#include "multithreading/all.hpp"
 #include "rendering/all.hpp"
-#include "state_machine.hpp"
 #include "undo_redo/all.hpp"
-#include "visualization_state.hpp"
 
 #include "json/all.hpp"
 
@@ -44,122 +46,120 @@ public:
     virtual ~app() override = default;
 
     auto frameStarted(const Ogre::FrameEvent& e) -> bool override;
-    auto frameRenderingQueued(const Ogre::FrameEvent& e) -> bool override;
-    auto frameEnded(const Ogre::FrameEvent& e) -> bool override;
-
-    auto frameRendered(const Ogre::FrameEvent& e) -> void override;
-    auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
-    auto touchMoved(const OgreBites::TouchFingerEvent& e) -> bool override;
-    auto touchPressed(const OgreBites::TouchFingerEvent& e) -> bool override;
-    auto touchReleased(const OgreBites::TouchFingerEvent& e) -> bool override;
-    auto mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool override;
-    auto mouseWheelRolled(const OgreBites::MouseWheelEvent& e) -> bool override;
-    auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool override;
-    auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
-    auto textInput(const OgreBites::TextInputEvent& e) -> bool override;
-    auto axisMoved(const OgreBites::AxisEvent& e) -> bool override;
-    auto buttonPressed(const OgreBites::ButtonEvent& e) -> bool override;
-    auto buttonReleased(const OgreBites::ButtonEvent& e) -> bool override;
 
-    void setup() override;
-    void shutdown() override;
+    auto setup() -> void override;
+    auto shutdown() -> void override;
 
-    void go();
+    auto go() -> void;
 
 protected:
-    using main_config = config_data;
-    using dependencies_config = dependencies::config_data;
-    using layout_config = layout::config_data;
+    using weight_map = dependencies::
+        dynamic_weight_map< architecture::graph, architecture::dependency_map >;
 
-    using symbol_table = architecture::symbol_table;
+    using position_map = layout::position_map< architecture::graph >;
 
-    using graph = architecture::graph;
-    using dependency_map = architecture::dependency_map;
-    using weight_map
-        = dependencies::dynamic_weight_map< graph, dependency_map >;
+    auto config() const -> const auto& { return m_config; }
+    auto config() -> auto& { return m_config; }
 
-    using command_history = undo_redo::command_history;
-    using dependencies_core = dependencies::core;
-    using layout_core = layout::core< graph, weight_map >;
+    auto dependencies_config() const -> const auto& { return m_deps_config; }
+    auto dependencies_config() -> auto& { return m_deps_config; }
 
-    using overlay_manager = gui::overlay_manager;
+    auto layout_config() const -> const auto& { return m_layout_config; }
+    auto layout_config() -> auto& { return m_layout_config; }
 
-    auto get_main_config() const -> const main_config&;
-    auto get_main_config() -> main_config&;
+    auto symbol_table() const -> const auto& { return m_st; }
+    auto symbol_table() -> auto& { return m_st; }
 
-    auto get_dependencies_config() const -> const dependencies_config&;
-    auto get_dependencies_config() -> dependencies_config&;
+    auto graph() const -> const auto& { return m_g; }
+    auto graph() -> auto& { return m_g; }
 
-    auto get_layout_config() const -> const layout_config&;
-    auto get_layout_config() -> layout_config&;
+    auto cmd_history() const -> auto* { return m_cmds.get(); }
 
-    auto get_symbol_table() const -> const symbol_table&;
-    auto get_symbol_table() -> symbol_table&;
+    auto dependencies_core() const -> auto* { return m_deps.get(); }
+    auto layout_core() const -> auto* { return m_layout.get(); }
 
-    auto get_graph() const -> const graph&;
-    auto get_graph() -> graph&;
+    auto background_renderer() const -> auto* { return m_bkgrd_renderer.get(); }
+    auto graph_renderer() const -> auto* { return m_g_renderer.get(); }
+    auto cameraman() const -> auto* { return m_cameraman.get(); }
+    auto gui_input_handler() const -> auto* { return m_gui_input.get(); }
+    auto shortcut_handler() const -> auto* { return m_shortcut_handler.get(); }
 
-    auto get_cmds() const -> const command_history&;
-    auto get_cmds() -> command_history&;
+    auto menu_window() const -> auto* { return m_menu_win.get(); }
+    auto menu_bar() const -> auto* { return m_menu_bar.get(); }
 
-    auto get_dependencies_core() const -> const dependencies_core&;
-    auto get_dependencies_core() -> dependencies_core&;
+    auto paused() const -> bool { return m_paused; }
 
-    auto get_layout_core() const -> const layout_core&;
-    auto get_layout_core() -> layout_core&;
+    auto toggle_pause_resume() -> void
+    {
+        if (!paused())
+            pause();
+        else
+            resume();
+    }
 
-    auto get_state_machine() const -> const state_machine&;
-    auto get_state_machine() -> state_machine&;
-
-    auto get_overlay_manager() const -> const overlay_manager&;
-    auto get_overlay_manager() -> overlay_manager&;
-
-    auto get_visualization_state() const -> const visualization_state&;
-    auto get_visualization_state() -> visualization_state&;
-
-    auto get_paused_state() const -> const paused_state&;
-    auto get_paused_state() -> paused_state&;
-
-    void lay_graph(const layout::layout< graph >& l);
+    auto make_id_map() const -> architecture::id_map;
+    auto make_dependency_map() const -> architecture::dependency_map;
+    auto make_dynamic_weight_map() const -> weight_map;
+    auto make_position_map() const -> position_map;
 
 private:
-    void setup_architecture();
-    void setup_commands();
-    void setup_dependencies();
-    void setup_layout();
-    void setup_fsm();
-    void setup_gui();
-    void setup_rendering();
+    auto setup_architecture(architecture::arch_tuple res) -> void;
+    auto setup_commands() -> void;
+    auto setup_dependencies() -> void;
+    auto setup_layout() -> void;
+    auto setup_background_rendering() -> void;
+    auto setup_graph_rendering() -> void;
+    auto setup_gui() -> void;
+    auto setup_input() -> void;
 
-    void connect_gui_with_dependencies();
-    void connect_gui_with_layout();
-    void connect_layout_with_rendering();
-    void connect_gui_with_command_history();
+    auto connect_gui_with_architecture() -> void;
+    auto connect_gui_with_dependencies() -> void;
+    auto connect_gui_with_layout() -> void;
+    auto connect_gui_with_command_history() -> void;
 
-    void shutdown_rendering();
-    void shutdown_gui();
-    void shutdown_fsm();
-    void shutdown_layout();
-    void shutdown_dependencies();
-    void shutdown_commands();
-    void shutdown_architecture();
+    auto connect_rendering_with_layout() -> void;
 
-    main_config m_main_config;
-    dependencies_config m_dependencies_config;
-    layout_config m_layout_config;
+    auto shutdown_input() -> void;
+    auto shutdown_gui() -> void;
+    auto shutdown_graph_rendering() -> void;
+    auto shutdown_background_rendering() -> void;
+    auto shutdown_layout() -> void;
+    auto shutdown_dependencies() -> void;
+    auto shutdown_commands() -> void;
+    auto shutdown_architecture() -> void;
 
-    symbol_table m_st;
-    graph m_g;
+    auto pause() -> void;
+    auto resume() -> void;
 
-    std::unique_ptr< command_history > m_cmds;
-    std::unique_ptr< dependencies_core > m_dependencies;
-    std::unique_ptr< layout_core > m_layout;
+    bool m_paused { false };
 
-    std::unique_ptr< state_machine > m_sm;
-    std::unique_ptr< overlay_manager > m_overlays;
-    std::unique_ptr< visualization_state > m_visualization;
-    std::unique_ptr< paused_state > m_paused;
+    config_data m_config;
+    dependencies::config_data m_deps_config;
+    layout::config_data m_layout_config;
+
+    architecture::symbol_table m_st;
+    architecture::graph m_g;
+
+    std::unique_ptr< undo_redo::command_history > m_cmds;
+    std::unique_ptr< dependencies::core > m_deps;
+    std::unique_ptr< layout::core< architecture::graph, weight_map > > m_layout;
+
+    std::unique_ptr< rendering::background_renderer > m_bkgrd_renderer;
+
+    std::unique_ptr< rendering::graph_renderer<
+        architecture::graph,
+        architecture::id_map,
+        weight_map,
+        position_map > >
+        m_g_renderer;
+
+    std::unique_ptr< gui::menu_window > m_menu_win;
+    std::unique_ptr< gui::menu_bar > m_menu_bar;
+
+    std::unique_ptr< OgreBites::CameraMan > m_cameraman;
+    std::unique_ptr< OgreBites::ImGuiInputListener > m_gui_input;
+    std::unique_ptr< shortcut_input_listener > m_shortcut_handler;
 };
 
 } // namespace application
