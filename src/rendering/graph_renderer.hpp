@@ -58,7 +58,7 @@ public:
     using position_map = PositionMap;
 
     graph_renderer(
-        const graph_type* g,
+        const graph_type& g,
         vertex_id_map vertex_id,
         weight_map edge_weight,
         position_map vertex_pos,
@@ -72,7 +72,6 @@ public:
     , m_root { Ogre::Root::getSingleton() }
     , m_window { window }
     {
-        assert(m_g);
         assert(m_scene);
         setup_entities();
     }
@@ -85,20 +84,11 @@ public:
     auto operator=(const graph_renderer&) -> graph_renderer& = delete;
     auto operator=(graph_renderer&&) -> graph_renderer& = delete;
 
-    auto graph() const -> const auto* { return m_g; }
+    auto graph() const -> const auto& { return m_g; }
     auto vertex_id() const -> auto { return m_vertex_id; }
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto vertex_pos() const -> auto { return m_vertex_pos; }
     auto scene() const -> auto* { return m_scene; }
-
-    auto set_graph(const graph_type* g) -> void
-    {
-        assert(g);
-        shutdown_entities();
-        m_g = g;
-        setup_entities();
-        assert(graph());
-    }
 
     auto set_vertex_id(vertex_id_map vertex_id) -> void
     {
@@ -129,7 +119,7 @@ public:
 private:
     auto setup_entities() -> void
     {
-        for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
+        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
             auto* entity = scene()->createEntity("ogrehead.mesh");
 
@@ -147,7 +137,7 @@ private:
 
     auto layout_entities() -> void
     {
-        for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
+        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
             const auto& id = boost::get(vertex_id(), v);
             auto* node = scene()->getRootSceneNode()->getChild(id);
@@ -159,7 +149,7 @@ private:
 
     auto shutdown_entities() -> void
     {
-        for (auto v : boost::make_iterator_range(boost::vertices(*graph())))
+        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
             const auto& id = boost::get(vertex_id(), v);
 
@@ -172,7 +162,7 @@ private:
         BOOST_LOG_TRIVIAL(debug) << "shutdown entities";
     }
 
-    const graph_type* m_g { nullptr };
+    const graph_type& m_g;
     vertex_id_map m_vertex_id;
     weight_map m_edge_weight;
     position_map m_vertex_pos;

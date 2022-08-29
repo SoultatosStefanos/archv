@@ -200,7 +200,7 @@ auto app::setup_graph_rendering() -> void
     assert(background_renderer());
 
     m_g_renderer = std::make_unique< graph_renderer_type >(
-        &graph(),
+        graph(),
         make_id_map(),
         make_dynamic_weight_map(),
         make_position_map(),

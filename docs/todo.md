@@ -287,13 +287,16 @@
 
 	+ [?] Check for Ogre leaks?
 
+
+# 29 / 08 / 2022
+
 	+ [ ] Arch generation via ui (no progress bar)
 
 		+ [n] layout::core::set_graph()
 
 		+ [x] Dynamic graph setup via ui
 
-		+ [ ] Remove graph renderer setter
+		+ [x] Remove graph renderer setter
 
 		+ [ ] Shutdown on app if not null
 
