@@ -302,7 +302,7 @@
 
 		+ [n] Avoid unnecessary subsystem setups 
  
-	+ [ ] Config from project root
+	+ [n] Config from project root
 
 	+ [ ] Background Renderer
 		

@@ -1,5 +1,6 @@
 #include "background_renderer.hpp"
 
+#include <OGRE/OgreViewport.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
 
 namespace rendering
@@ -34,14 +35,20 @@ auto background_renderer::setup_lighting() -> void
     using namespace Ogre;
 
     scene()->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
 
     m_light = scene()->createLight();
     assert(light());
 
+    light()->setType(Ogre::Light::LT_DIRECTIONAL);
+    light()->setDiffuseColour(ColourValue(0.5, 0.5, 0.5));
+    light()->setSpecularColour(ColourValue(0.5, 0.5, 0.5));
+
     m_light_node = scene()->getRootSceneNode()->createChildSceneNode();
     assert(light_node());
     light_node()->attachObject(light());
-    light_node()->setPosition(20, 80, 50);
+    light_node()->setPosition(0, 0, 0);
+    light_node()->setDirection(Vector3(0, 0, 0));
 }
 
 auto background_renderer::setup_camera() -> void
@@ -60,6 +67,9 @@ auto background_renderer::setup_camera() -> void
 
     m_window.removeAllViewports();
     m_window.addViewport(cam());
+
+    m_window.getViewport(0)->setBackgroundColour(
+        Ogre::ColourValue(223, 243, 245));
 }
 
 auto background_renderer::shutdown_camera() -> void
