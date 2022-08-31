@@ -11,6 +11,7 @@
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreImGuiInputListener.h>
 #include <OGRE/Bites/OgreInput.h>
+#include <OGRE/Bites/OgreTrays.h>
 #include <memory>
 
 /***********************************************************
@@ -88,15 +89,12 @@ protected:
     auto menu_window() const -> auto* { return m_menu_win.get(); }
     auto menu_bar() const -> auto* { return m_menu_bar.get(); }
 
+    auto tray_manager() const -> auto* {return m_tray_mnger.get();}
+
     auto paused() const -> bool { return m_paused; }
 
-    auto toggle_pause_resume() -> void
-    {
-        if (!paused())
-            pause();
-        else
-            resume();
-    }
+    auto toggle_pause_resume() -> void;
+    auto toggle_frame_stats() -> void;
 
     auto make_id_map() const -> architecture::id_map;
     auto make_dependency_map() const -> architecture::dependency_map;
@@ -156,6 +154,7 @@ private:
 
     std::unique_ptr< gui::menu_window > m_menu_win;
     std::unique_ptr< gui::menu_bar > m_menu_bar;
+    std::unique_ptr< OgreBites::TrayManager > m_tray_mnger;
 
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
     std::unique_ptr< OgreBites::ImGuiInputListener > m_gui_input;

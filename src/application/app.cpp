@@ -50,11 +50,33 @@ auto app::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
         toggle_pause_resume();
         break;
 
+    case 'f':
+        toggle_frame_stats();
+        break;
+
     default:
         break;
     }
 
     return true;
+}
+
+auto app::toggle_pause_resume() -> void
+{
+    if (!paused())
+        pause();
+    else
+        resume();
+}
+
+auto app::toggle_frame_stats() -> void
+{
+    assert(tray_manager());
+
+    if (tray_manager()->areFrameStatsVisible())
+        tray_manager()->hideFrameStats();
+    else
+        tray_manager()->showFrameStats(OgreBites::TrayLocation::TL_BOTTOMLEFT);
 }
 
 auto app::pause() -> void
@@ -254,6 +276,12 @@ auto app::setup_gui() -> void
     menu_window()->set_topology(layout_config().default_topology);
     menu_window()->set_scale(layout_config().default_scale);
 
+    m_tray_mnger = std::make_unique< OgreBites::TrayManager >(
+        "TrayManager", getRenderWindow());
+
+    tray_manager()->hideCursor();
+    addInputListener(tray_manager());
+
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }
 
@@ -412,6 +440,9 @@ auto app::shutdown_input() -> void
 
 auto app::shutdown_gui() -> void
 {
+    removeInputListener(tray_manager());
+    m_tray_mnger.reset();
+
     m_menu_bar.reset();
     m_menu_win.reset();
 
