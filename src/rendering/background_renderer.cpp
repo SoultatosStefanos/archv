@@ -1,8 +1,10 @@
 #include "background_renderer.hpp"
 
 #include <OGRE/OgreMeshManager.h>
+#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
+#include <boost/log/trivial.hpp>
 
 namespace rendering
 {
@@ -63,13 +65,14 @@ auto background_renderer::setup_camera() -> void
 
     m_cam = scene()->createCamera("camera");
     assert(cam());
-    cam()->setNearClipDistance(5);
+    cam()->setNearClipDistance(0.1);
+    cam()->setFarClipDistance(10000);
     cam()->setAutoAspectRatio(true);
 
     m_cam_node = scene()->getRootSceneNode()->createChildSceneNode();
     assert(cam_node());
     cam_node()->attachObject(cam());
-    cam_node()->setPosition(0, 0, 140);
+    cam_node()->setPosition(0, 0, 240);
 
     m_window.removeAllViewports();
     m_window.addViewport(cam());

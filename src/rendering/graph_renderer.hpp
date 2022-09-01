@@ -10,7 +10,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_concepts.hpp>
-#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <string>
 #include <type_traits>
@@ -131,8 +130,6 @@ private:
             const auto& pos = boost::get(vertex_pos(), v);
             node->setPosition(pos.x, pos.y, pos.z);
         }
-
-        BOOST_LOG_TRIVIAL(debug) << "setup entities";
     }
 
     auto layout_entities() -> void
@@ -158,8 +155,6 @@ private:
         }
 
         scene()->destroyEntity("ogrehead.mesh");
-
-        BOOST_LOG_TRIVIAL(debug) << "shutdown entities";
     }
 
     const graph_type& m_g;
