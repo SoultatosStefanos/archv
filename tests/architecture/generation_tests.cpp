@@ -14,25 +14,27 @@ using namespace architecture;
 namespace
 {
 
-// See data/tests/sample_graph_-1.json
+// See sample_graph_-1.json
 TEST(arch_generation, sample_graph_invalid)
 {
-    const auto root = read_json_root("../../data/tests/sample_graph_-1.json");
+    const auto root
+        = read_json_root("../../data/testfiles/sample_graph_-1.json");
 
     ASSERT_THROW(generate_arch(root), json::deserialization_error);
 }
 
-// See data/tests/sample_graph_0.json
+// See sample_graph_0.json
 TEST(arch_generation, sample_graph_0)
 {
-    const auto root = read_json_root("../../data/tests/sample_graph_0.json");
+    const auto root
+        = read_json_root("../../data/testfiles/sample_graph_0.json");
 
     const auto [st, g, props] = generate_arch(root);
 
     ASSERT_EQ(st, symbol_table());
 }
 
-// See data/tests/sample_graph_1.json
+// See sample_graph_1.json
 auto build_sample_st_1() -> symbol_table
 {
     symbol_table st;
@@ -100,17 +102,18 @@ auto build_sample_st_1() -> symbol_table
     return st;
 }
 
-// See data/tests/sample_graph_1.json
+// See sample_graph_1.json
 TEST(arch_generation, sample_graph_1)
 {
-    const auto root = read_json_root("../../data/tests/sample_graph_1.json");
+    const auto root
+        = read_json_root("../../data/testfiles/sample_graph_1.json");
     const auto expected = build_sample_st_1();
     const auto [actual, g, props] = generate_arch(root);
 
     ASSERT_EQ(actual, expected);
 }
 
-// See data/tests/sample_graph_2.json
+// See sample_graph_2.json
 auto build_sample_st_2() -> symbol_table
 {
     symbol_table st;
@@ -145,7 +148,7 @@ auto build_sample_st_2() -> symbol_table
     return st;
 }
 
-// See data/tests/sample_graph_2.json
+// See sample_graph_2.json
 auto build_sample_graph_2(const symbol_table& st)
 {
     graph g;
@@ -175,10 +178,11 @@ auto build_sample_graph_2(const symbol_table& st)
     return g;
 }
 
-// See data/tests/sample_graph_2.json
+// See sample_graph_2.json
 TEST(arch_generation, sample_graph_2)
 {
-    const auto root = read_json_root("../../data/tests/sample_graph_2.json");
+    const auto root
+        = read_json_root("../../data/testfiles/sample_graph_2.json");
     const auto expected_st = build_sample_st_2();
     const auto expected_g = build_sample_graph_2(expected_st);
 

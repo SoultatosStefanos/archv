@@ -16,7 +16,7 @@ namespace
 TEST(dependencies_deserialization, sample_dependencies_invalid)
 {
     const auto root
-        = read_json_root("../../data/tests/sample_dependencies_-1.json");
+        = read_json_root("../../data/testfiles/sample_dependencies_-1.json");
 
     EXPECT_THROW(deserialize(root), deserialization_error);
 }
@@ -29,7 +29,7 @@ auto make_sample_dependencies_0()
 TEST(dependencies_deserialization, sample_dependencies_0)
 {
     const auto root
-        = read_json_root("../../data/tests/sample_dependencies_0.json");
+        = read_json_root("../../data/testfiles/sample_dependencies_0.json");
     const auto expected = make_sample_dependencies_0();
 
     const auto actual = deserialize(root);
