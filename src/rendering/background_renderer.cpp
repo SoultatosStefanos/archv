@@ -42,15 +42,15 @@ auto background_renderer::setup_lighting() -> void
 {
     using namespace Ogre;
 
-    scene()->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+    scene()->setAmbientLight(ColourValue(0.3, 0.3, 0.3));
     scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
 
     m_light = scene()->createLight();
     assert(light());
 
     light()->setType(Ogre::Light::LT_DIRECTIONAL);
-    light()->setDiffuseColour(ColourValue(0.5, 0.5, 0.5));
-    light()->setSpecularColour(ColourValue(0.5, 0.5, 0.5));
+    light()->setDiffuseColour(ColourValue(1, 1, 1));
+    light()->setSpecularColour(ColourValue(0.7, 0.7, 0.7));
 
     m_light_node = scene()->getRootSceneNode()->createChildSceneNode();
     assert(light_node());
