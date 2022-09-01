@@ -10,7 +10,7 @@ material materials/skybox
 
                         texture_unit
                         {
-                                texture background.jpg cubic
+                                texture studio.png cubic
                                 tex_address_mode clamp
                         }
                 }
