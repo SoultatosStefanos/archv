@@ -1,5 +1,7 @@
 #include "app.hpp"
 
+#include "config.hpp"
+
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -9,18 +11,12 @@
 namespace application
 {
 
-app::app(int argc, const char* argv[]) : base("ARCHV")
+app::app(int, const char**) : base("ARCHV")
 {
-    if (argc != 2)
-        throw std::runtime_error("usage: ./<exec> <path/to/main/config.json>");
+    const auto& jsons = json::archive::get();
 
-    m_config = deserialize(json::archive::get().at(argv[1]));
-
-    m_deps_config = dependencies::deserialize(
-        json::archive::get().at(config().dependencies_path));
-
-    m_layout_config
-        = layout::deserialize(json::archive::get().at(config().layout_path));
+    m_deps_config = dependencies::deserialize(jsons.at(ARCHV_DEPS_CONFIG_PATH));
+    m_layout_config = layout::deserialize(jsons.at(ARCHV_LAYOUT_CONFIG_PATH));
 
     assert(!paused());
 }

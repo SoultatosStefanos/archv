@@ -4,7 +4,6 @@
 #ifndef APPLICATION_APP_HPP
 #define APPLICATION_APP_HPP
 
-#include "config.hpp"
 #include "shortcut_input_listener.hpp"
 
 #include <OGRE/Bites/OgreApplicationContext.h>
@@ -60,9 +59,6 @@ protected:
 
     using position_map = layout::position_map< architecture::graph >;
 
-    auto config() const -> const auto& { return m_config; }
-    auto config() -> auto& { return m_config; }
-
     auto dependencies_config() const -> const auto& { return m_deps_config; }
     auto dependencies_config() -> auto& { return m_deps_config; }
 
@@ -89,7 +85,7 @@ protected:
     auto menu_window() const -> auto* { return m_menu_win.get(); }
     auto menu_bar() const -> auto* { return m_menu_bar.get(); }
 
-    auto tray_manager() const -> auto* {return m_tray_mnger.get();}
+    auto tray_manager() const -> auto* { return m_tray_mnger.get(); }
 
     auto paused() const -> bool { return m_paused; }
 
@@ -132,7 +128,6 @@ private:
 
     bool m_paused { false };
 
-    config_data m_config;
     dependencies::config_data m_deps_config;
     layout::config_data m_layout_config;
 

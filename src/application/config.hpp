@@ -7,28 +7,15 @@
 #include <jsoncpp/json/json.h>
 #include <string>
 
-namespace application
-{
+// Supress warnings, intellisense errors.
+#ifndef ARCHV_CONFIG_DIR
+#define ARCHV_CONFIG_DIR
+#endif
 
-/***********************************************************
- * Config Data                                             *
- ***********************************************************/
+// The path of the dependencies.json config file.
+#define ARCHV_DEPS_CONFIG_PATH ARCHV_CONFIG_DIR "/dependencies.json"
 
-struct config_data
-{
-    std::string dependencies_path;
-    std::string layout_path;
-
-    inline auto operator==(const config_data&) const -> bool = default;
-    inline auto operator!=(const config_data&) const -> bool = default;
-};
-
-/***********************************************************
- * Deserialize                                             *
- ***********************************************************/
-
-auto deserialize(const Json::Value& root) -> config_data;
-
-} // namespace application
+// The path of the layout.json config file.
+#define ARCHV_LAYOUT_CONFIG_PATH ARCHV_CONFIG_DIR "/layout.json"
 
 #endif // APPLICATION_CONFIG_HPP

@@ -1,6 +1,5 @@
 set(FILES
 	app.cpp
-	config.cpp
 	shortcut_input_listener.cpp
 )
 set(SUBDIRECTORIES)
