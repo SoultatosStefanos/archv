@@ -1,5 +1,6 @@
 #include "background_renderer.hpp"
 
+#include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>
 
@@ -24,10 +25,15 @@ background_renderer::~background_renderer()
 auto background_renderer::setup_scene() -> void
 {
     using namespace Ogre::RTShader;
+    using namespace Ogre;
 
     m_scene = m_root.createSceneManager();
     assert(scene());
     ShaderGenerator::getSingleton().addSceneManager(scene());
+
+    scene()->setSkyBox(true, "materials/skybox"); // FIXME
+
+    assert(scene()->isSkyBoxEnabled());
 }
 
 auto background_renderer::setup_lighting() -> void
@@ -67,9 +73,6 @@ auto background_renderer::setup_camera() -> void
 
     m_window.removeAllViewports();
     m_window.addViewport(cam());
-
-    m_window.getViewport(0)->setBackgroundColour(
-        Ogre::ColourValue(223, 243, 245));
 }
 
 auto background_renderer::shutdown_camera() -> void
@@ -77,6 +80,8 @@ auto background_renderer::shutdown_camera() -> void
     m_window.removeViewport(0);
     scene()->getRootSceneNode()->removeAndDestroyChild(cam_node());
     scene()->destroyCamera(cam());
+
+    assert(scene()->getCameras().empty());
 }
 
 auto background_renderer::shutdown_lighting() -> void

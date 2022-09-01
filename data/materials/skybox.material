@@ -1,0 +1,18 @@
+material materials/skybox
+{
+        technique
+        {
+                pass
+                {
+                        lighting off
+                        depth_write off
+                        fog_override true none 
+
+                        texture_unit
+                        {
+                                texture nightskybox.jpg cubic
+                                tex_address_mode clamp
+                        }
+                }
+        }
+}

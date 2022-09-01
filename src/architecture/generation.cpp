@@ -85,8 +85,8 @@ namespace
     requires std::invocable<
         BinaryOperation,
         std::decay_t< symbol::id_type >,
-        std::decay_t< Json::Value > >
-    inline void get_composites(
+        std::decay_t< Json::Value > > inline void
+    get_composites(
         const Json::Value& val, Container& data, BinaryOperation binary_op)
     {
         for_each_object(
@@ -229,8 +229,8 @@ namespace
             const auto& types_val = get(v, "types");
             const auto& type = std::cbegin(types_val).name();
 
-            BOOST_LOG_TRIVIAL(info) << "read dependency from: " << from
-                                    << " to: " << to << " with type: " << type;
+            BOOST_LOG_TRIVIAL(debug) << "read dependency from: " << from
+                                     << " to: " << to << " with type: " << type;
 
             assert(props.contains(from));
             assert(props.contains(to));
