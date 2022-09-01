@@ -304,16 +304,17 @@
  
 	+ [n] Config from project root
 
-	+ [ ] Background Renderer
-		
-		+ [ ] Live wallpaper? 
 
-		+ [?] ?
+# 02 / 09 / 2022
+
+	+ [] Background Renderer
+
+		+ [x] Studio Skybox
+
+		+ [ ] Configs
 
 	+ [ ] Graph Renderer
 
 		+ [ ] Arrow Edges
 
 		+ [ ] Box meshes
-
-		+ [?] ?
