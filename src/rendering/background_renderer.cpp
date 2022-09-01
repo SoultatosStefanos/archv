@@ -66,6 +66,7 @@ auto background_renderer::setup_camera() -> void
     m_cam = scene()->createCamera("camera");
     assert(cam());
     cam()->setAutoAspectRatio(true);
+    cam()->setNearClipDistance(5);
 
     m_cam_node = scene()->getRootSceneNode()->createChildSceneNode();
     assert(cam_node());

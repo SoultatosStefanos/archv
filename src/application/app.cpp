@@ -6,6 +6,8 @@
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
 
 namespace application
@@ -275,7 +277,7 @@ auto app::setup_gui() -> void
     m_tray_mnger = std::make_unique< OgreBites::TrayManager >(
         "TrayManager", getRenderWindow());
 
-    tray_manager()->hideCursor();
+    tray_manager()->showCursor(); // TODO Add fancy cursor img
     addInputListener(tray_manager());
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
@@ -295,6 +297,12 @@ auto app::setup_input() -> void
 
     addInputListener(this);
     addInputListener(cameraman());
+
+#ifdef NDEBUG
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+#else
+    SDL_ShowCursor(SDL_FALSE);
+#endif
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
 }
