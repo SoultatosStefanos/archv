@@ -33,7 +33,7 @@ auto background_renderer::setup_scene() -> void
     assert(scene());
     ShaderGenerator::getSingleton().addSceneManager(scene());
 
-    scene()->setSkyBox(true, "materials/skybox"); // FIXME
+    scene()->setSkyBox(true, "materials/skybox");
 
     assert(scene()->isSkyBoxEnabled());
 }
@@ -65,14 +65,11 @@ auto background_renderer::setup_camera() -> void
 
     m_cam = scene()->createCamera("camera");
     assert(cam());
-    cam()->setNearClipDistance(0.1);
-    cam()->setFarClipDistance(10000);
     cam()->setAutoAspectRatio(true);
 
     m_cam_node = scene()->getRootSceneNode()->createChildSceneNode();
     assert(cam_node());
     cam_node()->attachObject(cam());
-    cam_node()->setPosition(0, 0, 240);
 
     m_window.removeAllViewports();
     m_window.addViewport(cam());
