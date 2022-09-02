@@ -15,7 +15,7 @@ namespace rendering
 
 background_renderer::background_renderer(
     Ogre::RenderWindow& window, config_data_type config)
-: base(std::move(config))
+: m_config { std::move(config) }
 , m_root { Ogre::Root::getSingleton() }
 , m_window { window }
 {

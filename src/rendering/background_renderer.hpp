@@ -4,8 +4,6 @@
 #ifndef RENDERING_BACKGROUND_RENDERER_HPP
 #define RENDERING_BACKGROUND_RENDERER_HPP
 
-#include "config/interactive.hpp"
-
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreRenderWindow.h>
@@ -42,17 +40,16 @@ struct background_config
  ***********************************************************/
 
 // Will prepare a scene at a render window upon initialization.
-class background_renderer : public config::interactive< background_config >
+class background_renderer
 {
 public:
-    using base = config::interactive< background_config >;
-    using config_data_type = base::config_data_type;
+    using config_data_type = background_config;
 
     explicit background_renderer(
         Ogre::RenderWindow& window,
         config_data_type config = config_data_type());
 
-    ~background_renderer() override;
+    ~background_renderer();
 
     background_renderer(const background_renderer&) = default;
     background_renderer(background_renderer&&) = default;
@@ -66,6 +63,10 @@ public:
     auto light_node() const -> auto* { return m_light_node; }
     auto cam_node() const -> auto* { return m_cam_node; }
 
+protected:
+    auto config_data() const -> const auto& { return m_config; }
+    auto config_data() -> auto& { return m_config; }
+
 private:
     auto setup_scene() -> void;
     auto setup_lighting() -> void;
@@ -75,10 +76,12 @@ private:
     auto shutdown_lighting() -> void;
     auto shutdown_scene() -> void;
 
-    auto setup_configs(const config_data_type& config) -> void override;
+    auto setup_configs(const config_data_type& config) -> void;
     auto setup_scene_configs(const config_data_type& config) -> void;
     auto setup_lighting_configs(const config_data_type& config) -> void;
     auto setup_camera_configs(const config_data_type& config) -> void;
+
+    config_data_type m_config;
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;
