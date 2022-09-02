@@ -1,5 +1,0 @@
-{
-	"config-path" : "foo/bar/",
-	"dependencies" : "dependencies.json",
-	"layout" : "layout.json"
-}
