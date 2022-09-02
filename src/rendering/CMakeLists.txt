@@ -1,5 +1,6 @@
 set(FILES
 	background_renderer.cpp
+	config.cpp
 )
 set(SUBDIRECTORIES)
 

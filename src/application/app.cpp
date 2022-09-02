@@ -204,7 +204,7 @@ auto app::setup_layout() -> void
 auto app::setup_background_rendering() -> void
 {
     m_bkgrd_renderer = std::make_unique< rendering::background_renderer >(
-        *getRenderWindow());
+        *getRenderWindow(), rendering::default_config().background);
 
     BOOST_LOG_TRIVIAL(info) << "setup background rendering";
 }
