@@ -65,6 +65,9 @@ protected:
     auto layout_config() const -> const auto& { return m_layout_config; }
     auto layout_config() -> auto& { return m_layout_config; }
 
+    auto rendering_config() const -> const auto& { return m_rendering_config; }
+    auto rendering_config() -> auto& { return m_rendering_config; }
+
     auto symbol_table() const -> const auto& { return m_st; }
     auto symbol_table() -> auto& { return m_st; }
 
@@ -130,6 +133,7 @@ private:
 
     dependencies::config_data m_deps_config;
     layout::config_data m_layout_config;
+    rendering::config_data m_rendering_config;
 
     architecture::symbol_table m_st;
     architecture::graph m_g;

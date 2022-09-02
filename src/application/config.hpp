@@ -18,4 +18,7 @@
 // The path of the layout.json config file.
 #define ARCHV_LAYOUT_CONFIG_PATH ARCHV_CONFIG_DIR "/layout.json"
 
+// The path of the rendering.json config file.
+#define ARCHV_RENDERING_CONFIG_PATH ARCHV_CONFIG_DIR "/rendering.json"
+
 #endif // APPLICATION_CONFIG_HPP

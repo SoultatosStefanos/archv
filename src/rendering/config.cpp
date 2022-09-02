@@ -64,6 +64,9 @@ namespace
         const auto g = extract_color_val();
         const auto b = extract_color_val();
 
+        BOOST_LOG_TRIVIAL(debug)
+            << "extracted color value: (" << r << ", " << g << ", " << b << ')';
+
         return Ogre::ColourValue(r, g, b);
     }
 
@@ -83,6 +86,8 @@ namespace
         auto near_clip_dist = as< real >(get(val, "near-clip-distance"));
         auto far_clip_dist = as< real >(get(val, "far-clip-distance"));
 
+        BOOST_LOG_TRIVIAL(debug) << "deserialized rendering background";
+
         return { std::move(skybox_material),
                  static_cast< Ogre::Real >(skybox_dist),
                  std::move(ambient_light),
@@ -97,6 +102,7 @@ namespace
 auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& bkg = deserialize_background(get(root, "background"));
+
     return config_data { .background = std::move(bkg) };
 }
 

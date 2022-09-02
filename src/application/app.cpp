@@ -17,11 +17,14 @@ app::app(int, const char**) : base("ARCHV")
 {
     json::read_archive(ARCHV_DEPS_CONFIG_PATH);
     json::read_archive(ARCHV_LAYOUT_CONFIG_PATH);
+    json::read_archive(ARCHV_RENDERING_CONFIG_PATH);
 
     const auto& jsons = json::archive::get();
 
     m_deps_config = dependencies::deserialize(jsons.at(ARCHV_DEPS_CONFIG_PATH));
     m_layout_config = layout::deserialize(jsons.at(ARCHV_LAYOUT_CONFIG_PATH));
+    m_rendering_config
+        = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
 
     assert(!paused());
 }
@@ -207,7 +210,7 @@ auto app::setup_layout() -> void
 auto app::setup_background_rendering() -> void
 {
     m_bkgrd_renderer = std::make_unique< rendering::background_renderer >(
-        *getRenderWindow(), rendering::default_config().background);
+        *getRenderWindow(), rendering_config().background);
 
     BOOST_LOG_TRIVIAL(info) << "setup background rendering";
 }
