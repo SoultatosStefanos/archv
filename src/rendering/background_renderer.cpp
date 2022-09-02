@@ -15,8 +15,7 @@ namespace rendering
 
 background_renderer::background_renderer(
     Ogre::RenderWindow& window, config_data_type config)
-: m_config { config }
-, m_config_api { std::move(config) }
+: base(std::move(config))
 , m_root { Ogre::Root::getSingleton() }
 , m_window { window }
 {
@@ -121,21 +120,6 @@ auto background_renderer::shutdown_scene() -> void
 /***********************************************************
  * Configs                                                 *
  ***********************************************************/
-
-auto background_renderer::apply_configs() -> void
-{
-    setup_configs(config_data() = config_api().config_data());
-}
-
-auto background_renderer::begin_preview() -> void
-{
-    setup_configs(config_api().config_data());
-}
-
-auto background_renderer::end_preview() -> void
-{
-    setup_configs(config_data());
-}
 
 auto background_renderer::setup_configs(const config_data_type& config) -> void
 {
