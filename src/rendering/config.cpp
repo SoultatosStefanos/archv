@@ -1,6 +1,7 @@
 #include "config.hpp"
 
 #include <OGRE/Ogre.h>
+#include <boost/log/trivial.hpp>
 
 namespace rendering
 {

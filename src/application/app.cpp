@@ -15,6 +15,9 @@ namespace application
 
 app::app(int, const char**) : base("ARCHV")
 {
+    json::read_archive(ARCHV_DEPS_CONFIG_PATH);
+    json::read_archive(ARCHV_LAYOUT_CONFIG_PATH);
+
     const auto& jsons = json::archive::get();
 
     m_deps_config = dependencies::deserialize(jsons.at(ARCHV_DEPS_CONFIG_PATH));
@@ -319,6 +322,7 @@ auto app::connect_gui_with_architecture() -> void
             multithreading::launch_worker(
                 [this, path]()
                 {
+                    json::read_archive_once(path);
                     const auto& root = json::archive::get().at(path);
                     auto&& res = architecture::generate_arch(root);
 
