@@ -48,13 +48,13 @@ auto background_renderer::setup_scene() -> void
     assert(scene());
 
     ShaderGenerator::getSingleton().addSceneManager(scene());
+
+    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
 }
 
 auto background_renderer::setup_lighting() -> void
 {
     using namespace Ogre;
-
-    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
 
     m_light = scene()->createLight();
 
