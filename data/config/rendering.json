@@ -1,0 +1,12 @@
+{
+	"background" : 
+	{
+		"skybox-material" : "materials/skybox",
+		"skybox-distance" : 5000,
+		"ambient-light" : [ 0.3, 0.3, 0.3 ],
+		"diffuse-light" : [ 1, 1, 1 ],
+		"specular-light" : [ 0.7, 0.7, 0.7 ],
+		"near-clip-distance" : 5,
+		"far-clip-distance" : 0
+	}
+}
