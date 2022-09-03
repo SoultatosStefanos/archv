@@ -318,8 +318,9 @@
 
 	+ [ ] Graph Renderer
 
-		+ [ ] Configs
+		+ [x] Configs
+		
+		+ [ ] Box meshes
 
 		+ [ ] Arrow Edges
 
-		+ [ ] Box meshes

@@ -8,5 +8,10 @@
 		"specular-light" : [ 0.7, 0.7, 0.7 ],
 		"near-clip-distance" : 5,
 		"far-clip-distance" : 0
+	},
+	"graph" :
+	{
+		"vertex-mesh" : "ogrehead.mesh",
+		"vertex-scale" : [ 0.1, 0.2, 0.3 ]
 	}
 }

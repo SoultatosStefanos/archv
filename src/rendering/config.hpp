@@ -5,6 +5,7 @@
 #define RENDERING_CONFIG_HPP
 
 #include "background_renderer.hpp"
+#include "graph_renderer.hpp"
 
 #include <jsoncpp/json/json.h>
 
@@ -18,6 +19,8 @@ namespace rendering
 struct config_data
 {
     background_config background;
+    graph_config graph;
+
     // ...
 
     auto operator==(const config_data&) const -> bool = default;

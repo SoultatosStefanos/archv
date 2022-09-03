@@ -25,7 +25,7 @@ auto make_sample_rendering_0()
 {
     using namespace Ogre;
 
-    auto background
+    auto&& background
         = background_config { .skybox_material = "foo",
                               .skybox_distance = 10,
                               .ambient_light = ColourValue(0, 0, 0),
@@ -34,7 +34,11 @@ auto make_sample_rendering_0()
                               .near_clip_distance = 3,
                               .far_clip_distance = 3 };
 
-    return config_data { .background = std::move(background) };
+    auto&& graph = graph_config { .vertex_mesh = "mesh.mesh",
+                                  .vertex_scale = Vector3(0.1, 0.2, 0.3) };
+
+    return config_data { .background = std::move(background),
+                         .graph = std::move(graph) };
 }
 
 TEST(rendering_deserialization, sample_rendering_0)

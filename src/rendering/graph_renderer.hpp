@@ -17,6 +17,23 @@
 namespace rendering
 {
 
+/***********************************************************
+ * Graph config data                                       *
+ ***********************************************************/
+
+struct graph_config
+{
+    Ogre::String vertex_mesh;
+    Ogre::Vector3 vertex_scale;
+
+    auto operator==(const graph_config&) const -> bool = default;
+    auto operator!=(const graph_config&) const -> bool = default;
+};
+
+/***********************************************************
+ * Graph renderer                                          *
+ ***********************************************************/
+
 // Will prepare a scene at a render window upon initialization.
 template <
     typename Graph,
@@ -55,6 +72,7 @@ public:
     using vertex_id_map = VertexID;
     using weight_map = WeightMap;
     using position_map = PositionMap;
+    using config_data_type = graph_config;
 
     graph_renderer(
         const graph_type& g,
@@ -62,7 +80,8 @@ public:
         weight_map edge_weight,
         position_map vertex_pos,
         Ogre::SceneManager* scene,
-        Ogre::RenderWindow& window)
+        Ogre::RenderWindow& window,
+        config_data_type config)
     : m_g { g }
     , m_vertex_id { vertex_id }
     , m_edge_weight { edge_weight }
@@ -70,6 +89,7 @@ public:
     , m_scene { scene }
     , m_root { Ogre::Root::getSingleton() }
     , m_window { window }
+    , m_config { std::move(config) }
     {
         assert(m_scene);
         setup_entities();
@@ -115,17 +135,21 @@ public:
         setup_entities();
     }
 
+protected:
+    auto config_data() const -> const config_data_type& { return m_config; }
+    auto config_data() -> config_data_type& { return m_config; }
+
 private:
     auto setup_entities() -> void
     {
         for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
-            auto* entity = scene()->createEntity("ogrehead.mesh");
+            auto* entity = scene()->createEntity(config_data().vertex_mesh);
 
             const auto& id = boost::get(vertex_id(), v);
             auto* node = scene()->getRootSceneNode()->createChildSceneNode(id);
             node->attachObject(entity);
-            node->setScale(0.15, 0.15, 0.15);
+            node->setScale(config_data().vertex_scale);
 
             const auto& pos = boost::get(vertex_pos(), v);
             node->setPosition(pos.x, pos.y, pos.z);
@@ -154,7 +178,7 @@ private:
             scene()->getRootSceneNode()->removeAndDestroyChild(id);
         }
 
-        scene()->destroyEntity("ogrehead.mesh");
+        scene()->destroyEntity(config_data().vertex_mesh);
     }
 
     const graph_type& m_g;
@@ -165,6 +189,8 @@ private:
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;
+
+    config_data_type m_config;
 };
 
 } // namespace rendering

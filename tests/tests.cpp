@@ -8,7 +8,7 @@ static void init_logging()
 {
     namespace logging = boost::log;
 
-    logging::core::get()->set_logging_enabled(false);
+    // logging::core::get()->set_logging_enabled(false);
 }
 
 auto main(int argc, char* argv[]) -> int

@@ -23,6 +23,14 @@ namespace
                                    .far_clip_distance = 0 }; // 0 means infinite
     }
 
+    auto default_graph_config()
+    {
+        using namespace Ogre;
+
+        return graph_config { .vertex_mesh = "ogrehead.mesh",
+                              .vertex_scale = Vector3(0.1, 0.2, 0.3) };
+    }
+
 } // namespace
 
 auto default_config() -> config_data
@@ -30,15 +38,39 @@ auto default_config() -> config_data
     using namespace Ogre;
 
     auto&& background = default_background_config();
+    auto&& g = default_graph_config();
 
-    return config_data { .background = std::move(background) };
+    return config_data { .background = std::move(background),
+                         .graph = std::move(g) };
 }
 
 namespace
 {
     using namespace json;
 
-    auto deserialize_rgb(const Json::Value& val) -> Ogre::ColourValue
+    template < typename T >
+    auto deserialize_triad(const Json::Value& val)
+    {
+        if (!val.isArray())
+            BOOST_THROW_EXCEPTION(
+                invalid_json_value_type()
+                << json_type_info(val.type()) << json_value_info(val));
+
+        auto extract_val = [iter = std::begin(val)]() mutable -> T
+        {
+            auto val = as< T >(*iter);
+            std::advance(iter, 1);
+            return val;
+        };
+
+        auto&& f = extract_val();
+        auto&& s = extract_val();
+        auto&& t = extract_val();
+
+        return std::make_tuple(std::move(f), std::move(s), std::move(t));
+    }
+
+    inline auto deserialize_rgb(const Json::Value& val) -> Ogre::ColourValue
     {
         using color_value = double;
 
@@ -48,21 +80,7 @@ namespace
                       color_value,
                       color_value >);
 
-        if (!val.isArray())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
-        auto extract_color_val = [iter = std::begin(val)]() mutable
-        {
-            auto val = as< color_value >(*iter);
-            std::advance(iter, 1);
-            return val;
-        };
-
-        const auto r = extract_color_val();
-        const auto g = extract_color_val();
-        const auto b = extract_color_val();
+        const auto [r, g, b] = deserialize_triad< color_value >(val);
 
         BOOST_LOG_TRIVIAL(debug)
             << "extracted color value: (" << r << ", " << g << ", " << b << ')';
@@ -97,13 +115,40 @@ namespace
                  static_cast< Ogre::Real >(far_clip_dist) };
     }
 
+    inline auto deserialize_vector3(const Json::Value& val) -> Ogre::Vector3
+    {
+        using real = double;
+
+        const auto [xs, ys, zs] = deserialize_triad< real >(val);
+
+        BOOST_LOG_TRIVIAL(debug) << "deserialized vector3: (" << xs << ", "
+                                 << ys << ", " << zs << ')';
+
+        return Ogre::Vector3(xs, ys, zs);
+    }
+
+    auto deserialize_graph(const Json::Value& val) -> graph_config
+    {
+        using string = std::string;
+
+        static_assert(std::is_convertible_v< string, Ogre::String >);
+
+        auto&& vertex_mesh = as< string >(get(val, "vertex-mesh"));
+        auto&& vertex_scale = deserialize_vector3(get(val, "vertex-scale"));
+
+        BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
+
+        return { std::move(vertex_mesh), std::move(vertex_scale) };
+    }
+
 } // namespace
 
 auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& bkg = deserialize_background(get(root, "background"));
+    auto&& g = deserialize_graph(get(root, "graph"));
 
-    return config_data { .background = std::move(bkg) };
+    return config_data { .background = std::move(bkg), .graph = std::move(g) };
 }
 
 // TODO
