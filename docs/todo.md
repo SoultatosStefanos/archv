@@ -320,7 +320,7 @@
 
 		+ [x] Configs
 		
-		+ [ ] Box meshes
+		+ [x] Box meshes
 
 		+ [ ] Arrow Edges
 
