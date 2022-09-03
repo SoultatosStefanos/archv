@@ -101,7 +101,7 @@ protected:
     auto make_position_map() const -> position_map;
 
 private:
-    auto setup_architecture(architecture::arch_tuple res) -> void;
+    auto setup_architecture(const Json::Value& root) -> void;
     auto setup_commands() -> void;
     auto setup_dependencies() -> void;
     auto setup_layout() -> void;
@@ -110,7 +110,6 @@ private:
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
-    auto connect_gui_with_architecture() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
     auto connect_gui_with_command_history() -> void;

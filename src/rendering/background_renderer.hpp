@@ -76,10 +76,10 @@ private:
     auto shutdown_lighting() -> void;
     auto shutdown_scene() -> void;
 
-    auto setup_configs(const config_data_type& config) -> void;
-    auto setup_scene_configs(const config_data_type& config) -> void;
-    auto setup_lighting_configs(const config_data_type& config) -> void;
-    auto setup_camera_configs(const config_data_type& config) -> void;
+    auto setup_configs() -> void;
+    auto setup_scene_configs() -> void;
+    auto setup_lighting_configs() -> void;
+    auto setup_camera_configs() -> void;
 
     config_data_type m_config;
 

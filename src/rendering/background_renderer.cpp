@@ -23,7 +23,7 @@ background_renderer::background_renderer(
     setup_lighting();
     setup_camera();
 
-    setup_configs(config_data());
+    setup_configs();
 }
 
 background_renderer::~background_renderer()
@@ -121,47 +121,45 @@ auto background_renderer::shutdown_scene() -> void
  * Configs                                                 *
  ***********************************************************/
 
-auto background_renderer::setup_configs(const config_data_type& config) -> void
+auto background_renderer::setup_configs() -> void
 {
-    setup_scene_configs(config);
-    setup_lighting_configs(config);
-    setup_camera_configs(config);
+    setup_scene_configs();
+    setup_lighting_configs();
+    setup_camera_configs();
 }
 
-auto background_renderer::setup_scene_configs(const config_data_type& config)
-    -> void
+auto background_renderer::setup_scene_configs() -> void
 {
     assert(scene());
 
-    scene()->setSkyBox(true, config.skybox_material, config.skybox_distance);
-    scene()->setAmbientLight(config.ambient_light);
+    scene()->setSkyBox(
+        true, config_data().skybox_material, config_data().skybox_distance);
+    scene()->setAmbientLight(config_data().ambient_light);
 
     assert(scene()->isSkyBoxEnabled());
-    assert(scene()->getAmbientLight() == config.ambient_light);
+    assert(scene()->getAmbientLight() == config_data().ambient_light);
 }
 
-auto background_renderer::setup_lighting_configs(const config_data_type& config)
-    -> void
+auto background_renderer::setup_lighting_configs() -> void
 {
     assert(light());
 
-    light()->setDiffuseColour(config.diffuse_light);
-    light()->setSpecularColour(config.specular_light);
+    light()->setDiffuseColour(config_data().diffuse_light);
+    light()->setSpecularColour(config_data().specular_light);
 
-    assert(light()->getDiffuseColour() == config.diffuse_light);
-    assert(light()->getSpecularColour() == config.specular_light);
+    assert(light()->getDiffuseColour() == config_data().diffuse_light);
+    assert(light()->getSpecularColour() == config_data().specular_light);
 }
 
-auto background_renderer::setup_camera_configs(const config_data_type& config)
-    -> void
+auto background_renderer::setup_camera_configs() -> void
 {
     assert(cam());
 
-    cam()->setNearClipDistance(config.near_clip_distance);
-    cam()->setFarClipDistance(config.far_clip_distance);
+    cam()->setNearClipDistance(config_data().near_clip_distance);
+    cam()->setFarClipDistance(config_data().far_clip_distance);
 
-    assert(cam()->getNearClipDistance() == config.near_clip_distance);
-    assert(cam()->getFarClipDistance() == config.far_clip_distance);
+    assert(cam()->getNearClipDistance() == config_data().near_clip_distance);
+    assert(cam()->getFarClipDistance() == config_data().far_clip_distance);
 }
 
 } // namespace rendering

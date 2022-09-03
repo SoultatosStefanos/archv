@@ -13,13 +13,22 @@
 namespace application
 {
 
-app::app(int, const char**) : base("ARCHV")
+app::app(int argc, const char** argv) : base("ARCHV")
 {
+    if (argc != 2)
+    {
+        std::cout << "usage: `./<exec> <path/to/graph.json>`\n";
+        std::exit(EXIT_FAILURE);
+    }
+
+    json::read_archive(argv[1]);
     json::read_archive(ARCHV_DEPS_CONFIG_PATH);
     json::read_archive(ARCHV_LAYOUT_CONFIG_PATH);
     json::read_archive(ARCHV_RENDERING_CONFIG_PATH);
 
     const auto& jsons = json::archive::get();
+
+    setup_architecture(jsons.at(argv[1]));
 
     m_deps_config = dependencies::deserialize(jsons.at(ARCHV_DEPS_CONFIG_PATH));
     m_layout_config = layout::deserialize(jsons.at(ARCHV_LAYOUT_CONFIG_PATH));
@@ -137,7 +146,6 @@ void app::setup()
     setup_gui();
     setup_input();
 
-    connect_gui_with_architecture();
     connect_gui_with_dependencies();
     connect_gui_with_layout();
     connect_gui_with_command_history();
@@ -166,9 +174,9 @@ auto app::make_position_map() const -> position_map
     return layout::make_position_map(layout_core()->get_layout());
 }
 
-auto app::setup_architecture(architecture::arch_tuple res) -> void
+auto app::setup_architecture(const Json::Value& root) -> void
 {
-    std::tie(m_st, m_g, std::ignore) = std::move(res);
+    std::tie(m_st, m_g, std::ignore) = architecture::generate_arch(root);
 
     BOOST_LOG_TRIVIAL(info) << "setup architecture";
 }
@@ -312,39 +320,6 @@ auto app::setup_input() -> void
 #endif
 
     BOOST_LOG_TRIVIAL(info) << "setup input";
-}
-
-auto app::connect_gui_with_architecture() -> void
-{
-    assert(menu_bar());
-
-    menu_bar()->file_browser().connect(
-        [this](const auto& path)
-        {
-            BOOST_LOG_TRIVIAL(info) << path << " selected";
-
-            multithreading::launch_worker(
-                [this, path]()
-                {
-                    json::read_archive_once(path);
-                    const auto& root = json::archive::get().at(path);
-                    auto&& res = architecture::generate_arch(root);
-
-                    multithreading::post_message(
-                        [this, res = std::move(res)]()
-                        {
-                            shutdown_graph_rendering();
-                            shutdown_layout();
-
-                            setup_architecture(std::move(res));
-                            setup_layout();
-                            setup_graph_rendering();
-                            connect_rendering_with_layout();
-                        });
-                });
-        });
-
-    BOOST_LOG_TRIVIAL(info) << "connected gui with architecture";
 }
 
 auto app::connect_gui_with_dependencies() -> void
