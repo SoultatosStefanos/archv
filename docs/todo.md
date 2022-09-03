@@ -339,3 +339,4 @@
 
 		+ [ ] Arrow Edges
 
+	+ [ ] Slider layout scale
