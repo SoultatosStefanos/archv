@@ -72,11 +72,26 @@
 
 ## Features
 
-	+ [ ] Boxes
+	+ [x] Boxes
 
-	+ [ ] Illumintation
+	+ [x] Illumintation
 
 	+ [ ] Texts
+
+	+ [ ] Controlls Hud
+
+
+# Controls
+
+	+ [x] Free Camera 
+
+	+ [ ] Control Hud on/off
+
+	+ [ ] Frame Hud on/off
+
+	+ [x] Pause/Resume
+
+	+ [x] Quit
 
 
 	
