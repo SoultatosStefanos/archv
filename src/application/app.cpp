@@ -45,8 +45,8 @@ app::app(int argc, const char** argv) : base("ARCHV")
 auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
-    multithreading::poll_message();
     Ogre::ImGuiOverlay::NewFrame();
+    multithreading::poll_message();
     gui::overlay_manager::get().draw_all();
     return true;
 }
