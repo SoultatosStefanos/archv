@@ -100,7 +100,6 @@ auto app::pause() -> void
     removeInputListener(cameraman());
 
     addInputListener(gui_input_handler());
-    addInputListener(shortcut_handler());
 
     gui::overlay_manager::get().submit(menu_bar());
     gui::overlay_manager::get().submit(menu_window());
@@ -117,7 +116,6 @@ auto app::resume() -> void
     assert(paused());
 
     removeInputListener(gui_input_handler());
-    removeInputListener(shortcut_handler());
 
     addInputListener(cameraman());
 
@@ -312,6 +310,7 @@ auto app::setup_input() -> void
 
     addInputListener(this);
     addInputListener(cameraman());
+    addInputListener(shortcut_handler());
 
 #ifdef NDEBUG
     SDL_SetRelativeMouseMode(SDL_TRUE);
