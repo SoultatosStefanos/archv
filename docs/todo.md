@@ -307,13 +307,18 @@
 
 # 02 / 09 / 2022
 
-	+ [] Background Renderer
+	+ [x] Background Renderer
 
 		+ [x] Studio Skybox
 
-		+ [ ] Configs
+		+ [x] Configs
+
+	
+# 03 / 09 / 2022
 
 	+ [ ] Graph Renderer
+
+		+ [ ] Configs
 
 		+ [ ] Arrow Edges
 
