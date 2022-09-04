@@ -2,6 +2,8 @@
 
 #include "graph_renderer.hpp"
 
+#include <OGRE/OgreEntity.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <cassert>
 
 namespace rendering::detail

@@ -4,8 +4,6 @@
 #ifndef RENDERING_DETAIL_GRAPH_RENDERER_HPP
 #define RENDERING_DETAIL_GRAPH_RENDERER_HPP
 
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <vector>
 
