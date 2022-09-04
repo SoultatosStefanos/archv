@@ -339,4 +339,19 @@
 
 		+ [ ] Arrow Edges
 
-	+ [ ] Slider layout scale
+	+ [n] Slider layout scale
+
+
+# 04 / 09 / 2022
+
+	+ [ ] Any configurable layout
+	
+	+ [ ] Graph Renderer
+
+		+ [x] Configs
+		
+		+ [x] Box meshes
+
+		+ [ ] Arrow Edges
+
+	

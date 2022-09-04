@@ -5,6 +5,7 @@
 #define RENDERING_GRAPH_RENDERER_HPP
 
 #include <OGRE/OgreEntity.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSceneManager.h>
@@ -92,10 +93,10 @@ public:
     , m_config { std::move(config) }
     {
         assert(m_scene);
-        setup_entities();
+        setup();
     }
 
-    ~graph_renderer() { shutdown_entities(); }
+    ~graph_renderer() { shutdown(); }
 
     graph_renderer(const graph_renderer&) = default;
     graph_renderer(graph_renderer&&) = default;
@@ -111,9 +112,9 @@ public:
 
     auto set_vertex_id(vertex_id_map vertex_id) -> void
     {
-        shutdown_entities();
+        shutdown();
         m_vertex_id = vertex_id;
-        setup_entities();
+        setup();
     }
 
     auto set_edge_weight(weight_map edge_weight) -> void
@@ -130,9 +131,9 @@ public:
     auto set_scene(Ogre::SceneManager* scene) -> void
     {
         assert(scene);
-        shutdown_entities();
+        shutdown();
         m_scene = scene;
-        setup_entities();
+        setup();
     }
 
 protected:
@@ -140,7 +141,19 @@ protected:
     auto config_data() -> config_data_type& { return m_config; }
 
 private:
-    auto setup_entities() -> void
+    using vertex_type =
+        typename boost::graph_traits< graph_type >::vertex_descriptor;
+
+    using edge_type =
+        typename boost::graph_traits< graph_type >::edge_descriptor;
+
+    auto setup() -> void
+    {
+        setup_vertices();
+        setup_edges();
+    }
+
+    auto setup_vertices() -> void
     {
         for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
@@ -156,7 +169,67 @@ private:
         }
     }
 
+    auto setup_edges() -> void
+    {
+        for (auto e : boost::make_iterator_range(boost::edges(graph())))
+        {
+            const auto& id = make_edge_id(e);
+
+            auto* line = scene()->createManualObject(id);
+            auto* node = scene()->getRootSceneNode()->createChildSceneNode(id);
+
+            line->estimateVertexCount(2); // From src to trgt node.
+
+            line->begin("mat", Ogre::RenderOperation::OT_LINE_LIST);
+
+            const auto& [src_pos, trgt_pos] = edge_pos(e);
+            line->position(src_pos);
+            line->position(trgt_pos);
+
+            line->end();
+
+            node->attachObject(line);
+        }
+    }
+
+    auto make_edge_id(edge_type e) const -> std::string
+    {
+        const auto src = boost::source(e, graph());
+        const auto trgt = boost::target(e, graph());
+
+        const auto& src_id = boost::get(vertex_id(), src);
+        const auto& trgt_id = boost::get(vertex_id(), trgt);
+
+        return src_id + " -> " + trgt_id;
+    }
+
+    auto edge_pos(edge_type e) const
+    {
+        const auto src = boost::source(e, graph());
+        const auto trgt = boost::target(e, graph());
+
+        const auto& src_id = boost::get(vertex_id(), src);
+        const auto& trgt_id = boost::get(vertex_id(), trgt);
+
+        assert(scene()->hasSceneNode(src_id));
+        assert(scene()->hasSceneNode(trgt_id));
+
+        auto* src_node = scene()->getRootSceneNode()->getChild(src_id);
+        auto* trgt_node = scene()->getRootSceneNode()->getChild(trgt_id);
+
+        const auto& src_pos = src_node->getPosition();
+        const auto& trgt_pos = trgt_node->getPosition();
+
+        return std::make_pair(std::cref(src_pos), std::cref(trgt_pos));
+    }
+
     auto layout_entities() -> void
+    {
+        layout_vertices();
+        layout_edges();
+    }
+
+    auto layout_vertices() -> void
     {
         for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
@@ -168,7 +241,19 @@ private:
         }
     }
 
-    auto shutdown_entities() -> void
+    auto layout_edges() -> void
+    {
+        shutdown_edges();
+        setup_edges();
+    }
+
+    auto shutdown() -> void
+    {
+        shutdown_vertices();
+        shutdown_edges();
+    }
+
+    auto shutdown_vertices() -> void
     {
         for (auto v : boost::make_iterator_range(boost::vertices(graph())))
         {
@@ -179,6 +264,19 @@ private:
         }
 
         scene()->destroyEntity(config_data().vertex_mesh);
+    }
+
+    auto shutdown_edges() -> void
+    {
+        for (auto e : boost::make_iterator_range(boost::edges(graph())))
+        {
+            const auto& id = make_edge_id(e);
+
+            assert(scene()->hasSceneNode(id));
+
+            scene()->destroyManualObject(id);
+            scene()->getRootSceneNode()->removeAndDestroyChild(id);
+        }
     }
 
     const graph_type& m_g;

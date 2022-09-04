@@ -10,6 +10,7 @@
 		],
 		"scales" :
 		[
+			1000,
 			400,
 			300,
 			200,
@@ -20,6 +21,6 @@
 		{
 			"layout" : "Gursoy Atun",
 			"topology" : "Sphere",
-			"scale" : 100 
+			"scale" : 1000
 		}
 }
