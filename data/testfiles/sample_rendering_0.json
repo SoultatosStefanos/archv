@@ -11,8 +11,9 @@
 	},
 	"graph" :
 	{
-		"vertex-mesh" : "ogrehead.mesh",
-		"vertex-scale" : [ 0.15, 0.15, 0.15 ]
+		"vertex-mesh" : "mesh.mesh",
+		"vertex-scale" : [ 0.1, 0.2, 0.3 ],
+		"edge-material" : "mat"
 	}
 
 }

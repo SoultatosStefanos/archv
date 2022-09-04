@@ -10,42 +10,6 @@ namespace rendering
 
 namespace
 {
-    auto default_background_config()
-    {
-        using namespace Ogre;
-
-        return background_config { .skybox_material = "materials/skybox",
-                                   .skybox_distance = 5000.0F,
-                                   .ambient_light = ColourValue(0.3, 0.3, 0.3),
-                                   .diffuse_light = ColourValue(1, 1, 1),
-                                   .specular_light = ColourValue(0.7, 0.7, 0.7),
-                                   .near_clip_distance = 5,
-                                   .far_clip_distance = 0 }; // 0 means infinite
-    }
-
-    auto default_graph_config()
-    {
-        using namespace Ogre;
-
-        return graph_config { .vertex_mesh = "ogrehead.mesh",
-                              .vertex_scale = Vector3(0.1, 0.2, 0.3) };
-    }
-
-} // namespace
-
-auto default_config() -> config_data
-{
-    using namespace Ogre;
-
-    auto&& background = default_background_config();
-    auto&& g = default_graph_config();
-
-    return config_data { .background = std::move(background),
-                         .graph = std::move(g) };
-}
-
-namespace
-{
     using namespace json;
 
     template < typename T >
@@ -135,10 +99,13 @@ namespace
 
         auto&& vertex_mesh = as< string >(get(val, "vertex-mesh"));
         auto&& vertex_scale = deserialize_vector3(get(val, "vertex-scale"));
+        auto&& edge_material = as< string >(get(val, "edge-material"));
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
-        return { std::move(vertex_mesh), std::move(vertex_scale) };
+        return { std::move(vertex_mesh),
+                 std::move(vertex_scale),
+                 std::move(edge_material) };
     }
 
 } // namespace
@@ -150,8 +117,5 @@ auto deserialize(const Json::Value& root) -> config_data
 
     return config_data { .background = std::move(bkg), .graph = std::move(g) };
 }
-
-// TODO
-auto serialize(const config_data&, Json::Value&) -> void { }
 
 } // namespace rendering

@@ -31,9 +31,7 @@ struct config_data
  * Utilities                                               *
  ***********************************************************/
 
-auto default_config() -> config_data;
 auto deserialize(const Json::Value& root) -> config_data;
-auto serialize(const config_data& config, Json::Value& root) -> void; // TODO
 
 } // namespace rendering
 

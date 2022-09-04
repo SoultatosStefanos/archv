@@ -352,6 +352,8 @@
 		
 		+ [x] Box meshes
 
-		+ [ ] Arrow Edges
+		+ [x] Line edges (Configurable)
+
+		+ [ ] Direction on edges
 
 	

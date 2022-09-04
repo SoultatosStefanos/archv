@@ -27,6 +27,8 @@ struct graph_config
     Ogre::String vertex_mesh;
     Ogre::Vector3 vertex_scale;
 
+    Ogre::String edge_material;
+
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
 };
@@ -180,7 +182,9 @@ private:
 
             line->estimateVertexCount(2); // From src to trgt node.
 
-            line->begin("mat", Ogre::RenderOperation::OT_LINE_LIST);
+            line->begin(
+                config_data().edge_material,
+                Ogre::RenderOperation::OT_LINE_LIST);
 
             const auto& [src_pos, trgt_pos] = edge_pos(e);
             line->position(src_pos);
