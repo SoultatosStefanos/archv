@@ -48,7 +48,7 @@ auto background_renderer::setup_scene() -> void
 
     ShaderGenerator::getSingleton().addSceneManager(scene());
 
-    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
+    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 }
 
 auto background_renderer::setup_lighting() -> void
