@@ -344,7 +344,7 @@
 
 # 04 / 09 / 2022
 
-	+ [ ] Any configurable layout
+	+ [n] Any configurable layout
 	
 	+ [ ] Graph Renderer
 
