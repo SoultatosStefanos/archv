@@ -237,7 +237,6 @@ auto app::setup_graph_rendering() -> void
         make_dynamic_weight_map(),
         make_position_map(),
         background_renderer()->scene(),
-        *getRenderWindow(),
         rendering_config().graph);
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";

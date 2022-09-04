@@ -1,6 +1,7 @@
 set(FILES
 	background_renderer.cpp
 	config.cpp
+	graph_renderer.cpp
 )
 set(SUBDIRECTORIES)
 
