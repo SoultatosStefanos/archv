@@ -356,4 +356,8 @@
 
 		+ [ ] Direction on edges
 
+	+ [ ] Id text billboards on each vertex
+
+	+ [ ] Vertex size scaling, based on num of fields
+
 	
