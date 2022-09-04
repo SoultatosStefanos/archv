@@ -84,7 +84,6 @@ auto graph_renderer_impl::update_vertex(
     node->setPosition(v.pos);
 }
 
-// FIXME?
 auto graph_renderer_impl::update_edge(const edge_rendering_properties& e) const
     -> void
 {

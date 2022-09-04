@@ -6,8 +6,7 @@
 
 #include "detail/graph_renderer.hpp"
 
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreSceneManager.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_concepts.hpp>
