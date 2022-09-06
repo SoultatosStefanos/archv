@@ -6,7 +6,7 @@
 
 #include <OGRE/OgreSceneManager.h>
 #include <memory>
-#include <vector>
+#include <unordered_map>
 
 namespace Ogre
 {
@@ -52,7 +52,7 @@ public:
 
     graph_renderer_impl(
         Ogre::SceneManager* scene, const config_data_type& config);
-    
+
     ~graph_renderer_impl();
 
     auto setup_vertex(const vertex_rendering_properties& v) const -> void;
@@ -71,12 +71,17 @@ protected:
     auto config_data() -> auto& { return m_config; }
 
 private:
-    auto setup_id_overlay(const vertex_rendering_properties& v) const -> void;
+    using id_billboards = std::
+        unordered_map< Ogre::String, std::unique_ptr< Ogre::MovableText > >;
+
+    auto setup_id_billboard(const vertex_rendering_properties& v) const -> void;
+    auto shutdown_id_billboard(const vertex_rendering_properties& v) const
+        -> void;
 
     Ogre::SceneManager* m_scene { nullptr };
     const config_data_type& m_config;
 
-    mutable std::vector< std::unique_ptr< Ogre::MovableText > > m_vertices_ids;
+    mutable id_billboards m_vertices_billboards;
 };
 
 } // namespace rendering::detail

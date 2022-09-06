@@ -93,6 +93,8 @@
 
 	+ [x] Quit
 
+	+ [ ] Camera speed
+
 
 	
 # 08 / 07 / 2022
@@ -357,10 +359,15 @@
 		+ [n] Direction on edges
 
 
-# 05 / 09 / 2022
+# 06 / 09 / 2022
 
 	+ [ ] Id text billboards on each vertex
 
+		+ [x] Id overlays
+
+		+ [ ] Configurable
+
 	+ [ ] Vertex size scaling, based on num of fields
+
 
 	

@@ -37,7 +37,7 @@ auto graph_renderer_impl::setup_vertex(
     node->setPosition(v.pos);
     node->attachObject(entity);
 
-    setup_id_overlay(v);
+    setup_id_billboard(v);
 }
 
 namespace
@@ -76,6 +76,8 @@ auto graph_renderer_impl::shutdown_vertex(
     scene()->getSceneNode(v.id)->detachAllObjects();
     scene()->destroySceneNode(v.id);
     scene()->destroyEntity(v.id);
+
+    shutdown_id_billboard(v);
 }
 
 auto graph_renderer_impl::shutdown_edge(
@@ -104,21 +106,34 @@ auto graph_renderer_impl::update_edge(const edge_rendering_properties& e) const
     setup_edge(e);
 }
 
-// FIXME
-auto graph_renderer_impl::setup_id_overlay(
+auto graph_renderer_impl::setup_id_billboard(
     const vertex_rendering_properties& v) const -> void
 {
     using namespace Ogre;
 
+    // TODO Config font name, font height, color, etc
+
+    const auto& name = v.id;
+    const auto& caption = v.id;
+
     auto text = std::make_unique< MovableText >(
-        v.id, v.id, "Fornire-Light", 10.0, ColourValue::Black);
+        name, caption, "Fornire-Light", 50.0, ColourValue::Black);
+
     text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
+    text->showOnTop(true);
 
     assert(scene()->hasSceneNode(v.id));
 
     scene()->getSceneNode(v.id)->attachObject(text.get());
 
-    m_vertices_ids.push_back(std::move(text));
+    m_vertices_billboards[name] = std::move(text);
+}
+
+auto graph_renderer_impl::shutdown_id_billboard(
+    const vertex_rendering_properties& v) const -> void
+{
+    const auto& name = v.id;
+    m_vertices_billboards.erase(name);
 }
 
 } // namespace rendering::detail
