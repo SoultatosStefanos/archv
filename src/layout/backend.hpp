@@ -59,7 +59,7 @@ class backend
     using topology_signal = boost::signals2::signal< void(const topology&) >;
 
 public:
-    using graph_type = Graph;
+    using graph = Graph;
     using weight_map = WeightMap;
     using layout_slot_type = typename layout_signal::slot_type;
     using topology_slot_type = topology_signal::slot_type;
@@ -67,7 +67,7 @@ public:
     using config_data_type = backend_config;
 
     backend(
-        const graph_type& g,
+        const graph& g,
         weight_map edge_weight,
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
@@ -78,9 +78,6 @@ public:
         set_layout(config_data().default_layout);
     }
 
-    auto graph() const -> const auto& { return m_g; }
-    auto edge_weight() const -> auto { return m_edge_weight; }
-    auto config_data() const -> const auto& { return m_config; }
     auto get_layout() const -> const auto& { return *m_layout; }
     auto get_topology() const -> const auto& { return *m_topology; }
 
@@ -122,12 +119,14 @@ public:
     }
 
 protected:
+    auto config_data() const -> const auto& { return m_config; }
+
     auto set_layout(const std::string& desc) -> void
     {
         assert(config_data().layouts.contains(desc));
 
-        m_layout = layout_factory< graph_type >::make_layout(
-            desc, graph(), get_topology(), edge_weight());
+        m_layout = layout_factory< graph >::make_layout(
+            desc, m_g, get_topology(), m_edge_weight);
 
         assert(m_layout);
         assert(m_topology);
@@ -147,10 +146,10 @@ protected:
     auto emit_topology() const -> void { m_topology_signal(get_topology()); }
 
 private:
-    using layout_pointer = typename layout_factory< graph_type >::pointer;
+    using layout_pointer = typename layout_factory< graph >::pointer;
     using topology_pointer = topology_factory::pointer;
 
-    const graph_type& m_g;
+    const graph& m_g;
     weight_map m_edge_weight;
 
     layout_signal m_layout_signal;
