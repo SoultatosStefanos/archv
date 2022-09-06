@@ -1,9 +1,7 @@
 set(FILES
-	background_renderer.cpp
-	config.cpp
-	graph_renderer.cpp
+	movable_text.cpp
 )
-set(SUBDIRECTORIES detail)
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

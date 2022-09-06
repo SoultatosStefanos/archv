@@ -346,7 +346,7 @@
 
 	+ [n] Any configurable layout
 	
-	+ [ ] Graph Renderer
+	+ [x] Graph Renderer
 
 		+ [x] Configs
 		
@@ -354,7 +354,10 @@
 
 		+ [x] Line edges (Configurable)
 
-		+ [ ] Direction on edges
+		+ [n] Direction on edges
+
+
+# 05 / 09 / 2022
 
 	+ [ ] Id text billboards on each vertex
 
