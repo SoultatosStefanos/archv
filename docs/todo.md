@@ -367,7 +367,9 @@
 
 		+ [ ] Configurable
 
-	+ [ ] Vertex size scaling, based on num of fields
+	+ [ ] Vertex material
+
+	+ [ ] Configurable via gui 
 
 
 	
