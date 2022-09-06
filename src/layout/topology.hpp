@@ -37,6 +37,7 @@ public:
     auto operator=(topology&&) -> topology& = default;
 
     // For runtime type identification.
+    // NOTE: Must conform with an enumerated type.
     virtual auto desc() const -> descriptor = 0;
 
     virtual auto scale() const -> scale_type = 0;

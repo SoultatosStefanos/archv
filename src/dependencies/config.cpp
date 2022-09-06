@@ -1,9 +1,10 @@
 #include "config.hpp"
 
-#include "json/all.hpp"
+#include "config/deserialization.hpp"
+
 #include <boost/log/trivial.hpp>
 
-using namespace json;
+using namespace config;
 
 namespace dependencies
 {

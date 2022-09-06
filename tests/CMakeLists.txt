@@ -12,12 +12,11 @@ add_executable(${TESTS} ${FILES})
 target_link_libraries(${TESTS} PRIVATE ${PROJECT_LIB} ${TESTS_LIBS})
 
 set(SUBDIRECTORIES
-  architecture
+  application
   dependencies
   layout
-  progress
+  metadata
   rendering
-  undo_redo
   utility
 )
 

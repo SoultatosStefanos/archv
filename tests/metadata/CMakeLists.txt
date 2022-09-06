@@ -1,8 +1,6 @@
 set(FILES
 	config_tests.cpp
-	layout_factory_tests.cpp
-	position_map_tests.cpp
-	topology_factory_tests.cpp
+	symbol_table_tests.cpp
 )
 set(SUBDIRECTORIES)
 

@@ -1,15 +1,12 @@
 set(FILES)
 set(SUBDIRECTORIES
 	application
-	architecture
+	config
 	dependencies
 	gui
-	json
 	layout
-	multithreading
-	progress
+	metadata
 	rendering
-	undo_redo
 )
 
 foreach(VAR ${SUBDIRECTORIES})

@@ -1,6 +1,7 @@
 #include "config.hpp"
 
-#include "json/deserialization.hpp"
+#include "config/deserialization.hpp"
+
 #include <OGRE/Ogre.h>
 #include <boost/log/trivial.hpp>
 #include <string>
@@ -10,7 +11,7 @@ namespace rendering
 
 namespace
 {
-    using namespace json;
+    using namespace config;
 
     template < typename T >
     auto deserialize_triad(const Json::Value& val)

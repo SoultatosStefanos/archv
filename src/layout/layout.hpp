@@ -34,6 +34,7 @@ public:
     auto operator=(layout&&) -> layout& = default;
 
     // For runtime type identification.
+    // NOTE: Must conform with an enumerated type.
     virtual auto desc() const -> descriptor = 0;
 
     virtual auto x(vertex v) const -> coord = 0;

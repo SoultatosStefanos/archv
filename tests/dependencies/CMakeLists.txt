@@ -1,6 +1,5 @@
 set(FILES
 	config_tests.cpp
-	core_tests.cpp
 	weight_map_tests.cpp
 	weight_repo_tests.cpp
 )

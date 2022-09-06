@@ -8,14 +8,6 @@
 			"Cube",
 			"Sphere"
 		],
-		"scales" :
-		[
-			600,
-			500,
-			400,
-			300,
-			200
-		],
 		"defaults" :
 		{
 			"layout" : "Gursoy Atun",

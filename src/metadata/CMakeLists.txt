@@ -1,6 +1,6 @@
 set(FILES
 	config.cpp
-	weight_repo.cpp
+	symbol_table.cpp
 )
 set(SUBDIRECTORIES)
 

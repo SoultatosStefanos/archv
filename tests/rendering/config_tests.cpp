@@ -1,14 +1,14 @@
+#include "config/deserialization.hpp"
 #include "rendering/config.hpp"
 #include "utility/json.hpp"
 
-#include "json/deserialization.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace rendering;
 using namespace testing;
 using namespace utility;
-using namespace json;
+using namespace config;
 
 namespace
 {

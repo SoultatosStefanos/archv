@@ -30,15 +30,6 @@ namespace
             if (!valid_topologies.contains(s))
                 BOOST_THROW_EXCEPTION(unknown_topology() << topology_info(s));
     }
-
-    void verify_scales(const config_data& data)
-    {
-        for (auto scale : data.scales)
-            if (scale < 0)
-                BOOST_THROW_EXCEPTION(
-                    invalid_negative_scale() << scale_info(scale));
-    }
-
     void verify_defaults(const config_data& data)
     {
         if (!data.layouts.contains(data.default_layout))
@@ -48,17 +39,12 @@ namespace
         if (!data.topologies.contains(data.default_topology))
             BOOST_THROW_EXCEPTION(
                 unknown_default() << topology_info(data.default_topology));
-
-        if (!data.scales.contains(data.default_scale))
-            BOOST_THROW_EXCEPTION(
-                unknown_default() << scale_info(data.default_scale));
     }
 
     void verify(const config_data& data)
     {
         verify_layouts(data);
         verify_topologies(data);
-        verify_scales(data);
         verify_defaults(data);
     }
 
@@ -66,7 +52,7 @@ namespace
 
 namespace
 {
-    using namespace json;
+    using namespace config;
 
     template < typename Container >
     inline auto read_json_array(const Json::Value& val) -> Container
@@ -99,13 +85,6 @@ namespace
     {
         BOOST_LOG_TRIVIAL(debug) << "reading topologies";
         return read_json_array< topology_options >(get(root, "topologies"));
-    }
-
-    inline auto deserialize_scales(const Json::Value& root)
-    {
-        using scale_options = config_data::scale_options;
-        BOOST_LOG_TRIVIAL(debug) << "reading scales";
-        return read_json_array< scale_options >(get(root, "scales"));
     }
 
     auto deserialize_defaults(const Json::Value& root)
@@ -160,12 +139,10 @@ auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& layouts = deserialize_layouts(root);
     auto&& topologies = deserialize_topologies(root);
-    auto&& scales = deserialize_scales(root);
     auto&& [layout, topology, scale] = deserialize_defaults(root);
 
     config_data res { .layouts = std::move(layouts),
                       .topologies = std::move(topologies),
-                      .scales = std::move(scales),
                       .default_layout = std::move(layout),
                       .default_topology = std::move(topology),
                       .default_scale = scale };

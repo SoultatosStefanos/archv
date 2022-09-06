@@ -1,13 +1,13 @@
+#include "config/deserialization.hpp"
 #include "dependencies/config.hpp"
 #include "utility/all.hpp"
 
-#include "json/all.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace dependencies;
 using namespace utility;
-using namespace json;
+using namespace config;
 using namespace testing;
 
 namespace

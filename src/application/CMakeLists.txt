@@ -1,6 +1,5 @@
 set(FILES
-	app.cpp
-	shortcut_input_listener.cpp
+	command_history.cpp
 )
 set(SUBDIRECTORIES)
 
