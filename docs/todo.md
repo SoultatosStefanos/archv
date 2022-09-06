@@ -371,5 +371,14 @@
 
 	+ [ ] Configurable via gui 
 
+	+ [ ] Backends Cleanup
+
+		+ [ ] Layout
+
+		+ [ ] Dependencies
+
+	+ [ ] Graph Data Access Layer
+
+	+ [ ] Application Layer
 
 	
