@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_CONFIG_HPP
 #define DEPENDENCIES_CONFIG_HPP
 
-#include "weight_repo.hpp"
+#include "backend.hpp"
 
 #include <jsoncpp/json/json.h>
 #include <string>
@@ -13,7 +13,7 @@
 namespace dependencies
 {
 
-using config_data = weight_repo::hash_table;
+using config_data = backend::config_data_type;
 
 auto deserialize(const Json::Value& root) -> config_data;
 

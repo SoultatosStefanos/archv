@@ -1,5 +1,6 @@
 set(FILES
 	config.cpp
+	backend.cpp
 	weight_repo.cpp
 )
 set(SUBDIRECTORIES)

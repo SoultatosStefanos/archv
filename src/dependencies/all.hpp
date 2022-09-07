@@ -4,8 +4,8 @@
 #ifndef DEPENDENCIES_ALL_HPP
 #define DEPENDENCIES_ALL_HPP
 
+#include "backend.hpp"
 #include "config.hpp"
-#include "core.hpp"
 #include "weight_map.hpp"
 #include "weight_repo.hpp"
 
