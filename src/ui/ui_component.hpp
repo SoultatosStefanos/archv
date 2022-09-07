@@ -1,8 +1,8 @@
 // Contains an ui_component configurable helper template.
 // Soultatos Stefanos 2022
 
-#ifndef UI_ui_component_HPP
-#define UI_ui_component_HPP
+#ifndef UI_UI_COMPONENT_HPP
+#define UI_UI_COMPONENT_HPP
 
 #include "config_interface.hpp"
 
@@ -59,4 +59,4 @@ private:
 
 } // namespace ui
 
-#endif // UI_ui_component_HPP
+#endif // UI_UI_COMPONENT_HPP

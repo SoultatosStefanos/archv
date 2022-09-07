@@ -6,7 +6,11 @@ set(SUBDIRECTORIES
 	gui
 	layout
 	metadata
+	multithreading
+	progress
 	rendering
+	ui
+	undo_redo
 )
 
 foreach(VAR ${SUBDIRECTORIES})

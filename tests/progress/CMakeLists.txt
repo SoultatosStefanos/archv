@@ -1,4 +1,5 @@
 set(FILES
+	task_tests.cpp
 )
 set(SUBDIRECTORIES)
 
@@ -7,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_LIB} PUBLIC ${FILES})
+	target_sources(${TESTS} PRIVATE ${FILES})
 endif()
