@@ -18,7 +18,7 @@ template < typename Graph, typename DependencyMap >
 using dynamic_weight_map = boost::function_property_map<
     detail::weight_dispatcher< Graph, DependencyMap >,
     typename boost::graph_traits< Graph >::edge_descriptor,
-    weight_repo::weight >;
+    weight_repo::weight_type >;
 
 // Creates a runtime managed edge-weight property map from a weight repository.
 template < typename Graph, typename DependencyMap >

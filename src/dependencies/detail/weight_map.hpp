@@ -15,17 +15,17 @@ template < typename Graph, typename DependencyMap >
 class weight_dispatcher
 {
 public:
-    using graph = Graph;
+    using graph_type = Graph;
     using dependency_map = DependencyMap;
-    using edge_type = typename boost::graph_traits< graph >::edge_descriptor;
-    using weight = weight_repo::weight;
+    using edge_type = typename graph_type ::edge_descriptor;
+    using weight_type = weight_repo::weight_type;
 
     weight_dispatcher(const weight_repo& repo, dependency_map edge_dependency)
     : m_repo { repo }, m_edge_dependency { edge_dependency }
     {
     }
 
-    auto operator()(edge_type e) const -> weight
+    auto operator()(edge_type e) const -> weight_type
     {
         const auto& dependency = boost::get(m_edge_dependency, e);
         return m_repo.get_weight(dependency);

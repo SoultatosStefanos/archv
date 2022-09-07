@@ -1,5 +1,5 @@
-// Contains a weight repository, which allowes for dynamic dependencies scoring.
-// Soultatos Stefanos 2022
+// Contains a weight_type repository, which allowes for dynamic dependencies
+// scoring. Soultatos Stefanos 2022
 
 #ifndef DEPENDENCIES_WEIGHT_REPO_HPP
 #define DEPENDENCIES_WEIGHT_REPO_HPP
@@ -14,14 +14,13 @@ class weight_repo
 {
 public:
     using dependency_type = std::string;
-    using weight = int;
-    using hash_table = std::unordered_map< dependency_type, weight >;
+    using weight_type = int;
+    using hash_table = std::unordered_map< dependency_type, weight_type >;
 
-    weight_repo() = default;
-    explicit weight_repo(hash_table table);
+    explicit weight_repo(hash_table table = hash_table());
 
-    auto get_weight(const dependency_type& type) const -> weight;
-    void set_weight(const dependency_type& type, weight score);
+    auto get_weight(const dependency_type& type) const -> weight_type;
+    auto set_weight(const dependency_type& type, weight_type score) -> void;
 
     auto begin() -> auto { return std::begin(m_map); }
     auto begin() const -> auto { return std::begin(m_map); }
