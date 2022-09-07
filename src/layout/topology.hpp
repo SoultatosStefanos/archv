@@ -47,16 +47,6 @@ public:
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };
 
-template < typename Topology >
-struct topology_traits
-{
-    using point_type = typename Topology::point_type;
-    using scale_type = typename Topology::scale_type;
-    using descriptor = typename Topology::descriptor;
-
-    static constexpr auto desc() -> auto { return Topology::description; }
-};
-
 } // namespace layout
 
 #endif // LAYOUT_TOPOLOGY_HPP

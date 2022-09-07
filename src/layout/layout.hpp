@@ -46,17 +46,6 @@ public:
     virtual auto clone() const -> std::unique_ptr< layout< graph > > = 0;
 };
 
-template < typename Layout >
-struct layout_traits
-{
-    using graph = typename Layout::graph;
-    using vertex = typename Layout::vertex;
-    using coord = typename Layout::coord;
-    using descriptor = typename Layout::descriptor;
-
-    static constexpr auto desc() -> auto { return Layout::description; }
-};
-
 } // namespace layout
 
 #endif // LAYOUT_LAYOUT_HPP

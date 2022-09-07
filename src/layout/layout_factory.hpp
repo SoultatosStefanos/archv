@@ -23,9 +23,6 @@ public:
     using pointer = std::unique_ptr< layout< graph > >;
     using descriptor = typename layout< graph >::descriptor;
 
-    static constexpr auto gursoy_atun_type = "Gursoy Atun";
-    static constexpr auto layout_types = { gursoy_atun_type };
-
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
 
@@ -39,11 +36,7 @@ public:
         const topology& space,
         WeightMap edge_weight) -> pointer
     {
-        static_assert(
-            gursoy_atun_type
-            == layout_traits< gursoy_atun_layout< graph > >::desc());
-
-        if (desc == gursoy_atun_type)
+        if (desc == gursoy_atun_layout< graph >::description)
         {
             return std::make_unique< gursoy_atun_layout< graph > >(
                 g, space, edge_weight);
