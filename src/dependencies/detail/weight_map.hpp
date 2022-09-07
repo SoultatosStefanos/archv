@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
 #define DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
 
-#include "dependencies/weight_repo.hpp"
+#include "dependencies/backend.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 
@@ -18,21 +18,23 @@ public:
     using graph_type = Graph;
     using dependency_map = DependencyMap;
     using edge_type = typename graph_type ::edge_descriptor;
-    using weight_type = weight_repo::weight_type;
+    using weight_type = backend::integer;
 
-    weight_dispatcher(const weight_repo& repo, dependency_map edge_dependency)
-    : m_repo { repo }, m_edge_dependency { edge_dependency }
+    weight_dispatcher(const backend& b, dependency_map edge_dependency)
+    : m_backend { &b }, m_edge_dependency { edge_dependency }
     {
+        assert(m_backend);
     }
 
     auto operator()(edge_type e) const -> weight_type
     {
+        const auto& repo = m_backend->get_weight_repo();
         const auto& dependency = boost::get(m_edge_dependency, e);
-        return m_repo.get_weight(dependency);
+        return repo.get_weight(dependency);
     }
 
 private:
-    const weight_repo& m_repo;
+    const backend* m_backend { nullptr };
     dependency_map m_edge_dependency;
 };
 

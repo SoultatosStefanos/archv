@@ -10,19 +10,19 @@ backend::backend(config_data_type config)
 {
 }
 
-auto backend::update_weight(const std::string& dep, double w) -> void
+auto backend::update_weight(const string& dependency, integer weight) -> void
 {
-    assert(config_data().contains(dep));
+    assert(config_data().contains(dependency));
 
-    m_repo.set_weight(dep, w);
+    m_repo.set_weight(dependency, weight);
 
-    m_signal(dep, w);
+    m_signal(dependency, weight);
 }
 
 auto restore_defaults(backend& b) -> void
 {
-    for (const auto& [dep, w] : b.config_data())
-        b.update_weight(dep, w);
+    for (const auto& [dependency, weight] : b.config_data())
+        b.update_weight(dependency, weight);
 }
 
 } // namespace dependencies

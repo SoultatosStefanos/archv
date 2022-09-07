@@ -43,6 +43,7 @@ struct backend_config
  * Backend                                                 *
  ***********************************************************/
 
+// Controls user interactions with the layout management system.
 template < typename Graph, typename WeightMap >
 class backend
 {
@@ -68,6 +69,9 @@ public:
     using connection_type = boost::signals2::connection;
     using config_data_type = backend_config;
 
+    using string = std::string;
+    using real = double;
+
     static_assert(
         std::is_convertible_v< std::string, typename layout_type::descriptor >);
     static_assert(std::is_convertible_v< std::string, topology::descriptor >);
@@ -90,7 +94,7 @@ public:
     auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_layout(const std::string& layout_type) -> void
+    auto update_layout(const string& layout_type) -> void
     {
         set_layout(layout_type);
 
@@ -98,9 +102,9 @@ public:
     }
 
     auto update_layout(
-        const std::string& topology_type,
-        double topology_scale,
-        const std::string& layout_type) -> void
+        const string& topology_type,
+        real topology_scale,
+        const string& layout_type) -> void
     {
         set_topology(topology_type, topology_scale);
         set_layout(layout_type);
@@ -167,28 +171,34 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline auto
-update_layout(backend< Graph, WeightMap >& b, const std::string& type)
+inline auto update_layout(
+    backend< Graph, WeightMap >& b,
+    const typename backend< Graph, WeightMap >::string& type)
 {
     b.update_layout(type);
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_topology(
-    backend< Graph, WeightMap >& b, const std::string& type, double scale)
+    backend< Graph, WeightMap >& b,
+    const typename backend< Graph, WeightMap >::string& type,
+    typename backend< Graph, WeightMap >::real scale)
 {
     b.update_layout(type, scale, b.get_layout().desc());
 }
 
 template < typename Graph, typename WeightMap >
-inline auto
-update_topology(backend< Graph, WeightMap >& b, const std::string& type)
+inline auto update_topology(
+    backend< Graph, WeightMap >& b,
+    const typename backend< Graph, WeightMap >::string& type)
 {
     update_topology(b, type, b.get_topology().scale());
 }
 
 template < typename Graph, typename WeightMap >
-inline auto update_scale(backend< Graph, WeightMap >& b, double scale)
+inline auto update_scale(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::real scale)
 {
     update_topology(b, b.get_topology().desc(), scale);
 }
