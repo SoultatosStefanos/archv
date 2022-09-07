@@ -26,6 +26,7 @@ class topology
 public:
     using point_type = typename boost::convex_topology< 3 >::point_type;
     using scale_type = double;
+    using visitor_type = topology_visitor;
     using descriptor = std::string;
 
     topology() = default;
@@ -36,13 +37,10 @@ public:
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
 
-    // For runtime type identification.
-    // NOTE: Must conform with an enumerated type.
     virtual auto desc() const -> descriptor = 0;
-
     virtual auto scale() const -> scale_type = 0;
 
-    virtual void accept(const topology_visitor&) const = 0;
+    virtual auto accept(const visitor_type&) const -> void = 0;
 
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };

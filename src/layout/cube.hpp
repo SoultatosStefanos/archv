@@ -27,10 +27,9 @@ public:
     auto data() -> data_type& { return m_cube; }
 
     virtual auto desc() const -> descriptor override { return description; }
-
     virtual auto scale() const -> scale_type override { return m_scale; }
 
-    virtual void accept(const topology_visitor& visitor) const override;
+    virtual auto accept(const visitor_type& visitor) const -> void override;
 
     virtual auto clone() const -> std::unique_ptr< topology > override;
 

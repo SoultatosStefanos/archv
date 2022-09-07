@@ -20,12 +20,12 @@ template < typename Graph, typename WeightMap, typename PositionMap >
 class gursoy_atun_visitor : public topology_visitor
 {
 public:
-    using graph = Graph;
-    using weight_map = WeightMap;
-    using position_map = PositionMap;
+    using graph_type = Graph;
+    using weight_map_type = WeightMap;
+    using position_map_type = PositionMap;
 
     gursoy_atun_visitor(
-        const graph& g, weight_map edge_weight, position_map map)
+        const graph_type& g, weight_map_type edge_weight, position_map_type map)
     : m_g { g }, m_edge_weight { edge_weight }, m_map { map }
     {
     }
@@ -35,22 +35,22 @@ public:
     // NOTE: Mind the different overloaded data() calls in each identical
     // implementation.
 
-    virtual void visit(const cube& c) const override
+    virtual auto visit(const cube& c) const  -> void override
     {
         boost::gursoy_atun_layout(
             m_g, c.data(), m_map, boost::weight_map(m_edge_weight));
     }
 
-    virtual void visit(const sphere& s) const override
+    virtual auto visit(const sphere& s) const  -> void override
     {
         boost::gursoy_atun_layout(
             m_g, s.data(), m_map, boost::weight_map(m_edge_weight));
     }
 
 private:
-    const graph& m_g;
-    weight_map m_edge_weight;
-    position_map m_map;
+    const graph_type& m_g;
+    weight_map_type m_edge_weight;
+    position_map_type m_map;
 };
 
 } // namespace layout::detail

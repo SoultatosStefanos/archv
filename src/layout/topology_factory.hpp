@@ -24,8 +24,7 @@ public:
     auto operator=(const topology_factory&) -> topology_factory& = delete;
     auto operator=(topology_factory&&) -> topology_factory& = delete;
 
-    static auto make_topology(const descriptor& desc, scale_type scale)
-        -> pointer;
+    static auto make_topology(const descriptor& d, scale_type s) -> pointer;
 
 private:
     topology_factory() = default;

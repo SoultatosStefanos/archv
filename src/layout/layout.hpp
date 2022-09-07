@@ -1,4 +1,4 @@
-// Contains a graph 3D layout interface.
+// Contains a graph_type 3D layout interface.
 // Soultatos Stefanos 2022
 
 #ifndef LAYOUT_LAYOUT_HPP
@@ -20,9 +20,10 @@ class layout
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
 public:
-    using graph = Graph;
-    using vertex = typename boost::graph_traits< graph >::vertex_descriptor;
-    using coord = double;
+    using graph_type = Graph;
+    using vertex_type = typename graph_type::vertex_descriptor;
+    using coord_type = double;
+    using visitor_type = layout_visitor< graph_type >;
     using descriptor = std::string;
 
     layout() = default;
@@ -33,17 +34,15 @@ public:
     auto operator=(const layout&) -> layout& = default;
     auto operator=(layout&&) -> layout& = default;
 
-    // For runtime type identification.
-    // NOTE: Must conform with an enumerated type.
     virtual auto desc() const -> descriptor = 0;
 
-    virtual auto x(vertex v) const -> coord = 0;
-    virtual auto y(vertex v) const -> coord = 0;
-    virtual auto z(vertex v) const -> coord = 0;
+    virtual auto x(vertex_type v) const -> coord_type = 0;
+    virtual auto y(vertex_type v) const -> coord_type = 0;
+    virtual auto z(vertex_type v) const -> coord_type = 0;
 
-    virtual void accept(const layout_visitor< graph >& visitor) const = 0;
+    virtual auto accept(const visitor_type& visitor) const -> void = 0;
 
-    virtual auto clone() const -> std::unique_ptr< layout< graph > > = 0;
+    virtual auto clone() const -> std::unique_ptr< layout< graph_type > > = 0;
 };
 
 } // namespace layout

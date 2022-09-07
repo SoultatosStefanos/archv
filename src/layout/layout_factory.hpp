@@ -19,9 +19,9 @@ template < typename Graph >
 class layout_factory final
 {
 public:
-    using graph = Graph;
-    using pointer = std::unique_ptr< layout< graph > >;
-    using descriptor = typename layout< graph >::descriptor;
+    using graph_type = Graph;
+    using pointer = std::unique_ptr< layout< graph_type > >;
+    using descriptor = typename layout< graph_type >::descriptor;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -32,13 +32,13 @@ public:
     template < typename WeightMap >
     static auto make_layout(
         const descriptor& desc,
-        const graph& g,
+        const graph_type& g,
         const topology& space,
         WeightMap edge_weight) -> pointer
     {
-        if (desc == gursoy_atun_layout< graph >::description)
+        if (desc == gursoy_atun_layout< graph_type >::description)
         {
-            return std::make_unique< gursoy_atun_layout< graph > >(
+            return std::make_unique< gursoy_atun_layout< graph_type > >(
                 g, space, edge_weight);
         }
         else
