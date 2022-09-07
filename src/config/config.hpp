@@ -1,11 +1,8 @@
 // Contains a configuration module for the application.
 // Soultatos Stefanos 2022
 
-#ifndef APPLICATION_CONFIG_HPP
-#define APPLICATION_CONFIG_HPP
-
-#include <jsoncpp/json/json.h>
-#include <string>
+#ifndef CONFIG_CONFIG_HPP
+#define CONFIG_CONFIG_HPP
 
 // Supress warnings, intellisense errors.
 #ifndef ARCHV_CONFIG_DIR
@@ -21,4 +18,4 @@
 // The path of the rendering.json config file.
 #define ARCHV_RENDERING_CONFIG_PATH ARCHV_CONFIG_DIR "/rendering.json"
 
-#endif // APPLICATION_CONFIG_HPP
+#endif // CONFIG_CONFIG_HPP

@@ -1,15 +1,32 @@
 #include "config.hpp"
 
-#include "config/deserialization.hpp"
 #include "symbol_table.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <cassert>
+#include <concepts>
 
 namespace architecture
 {
 
-using namespace config;
+namespace
+{
+    // Traverse json objects with ids.
+    template < typename BinaryOperation >
+    requires std::invocable<
+        BinaryOperation,
+        std::decay_t< Json::String >,
+        std::decay_t< Json::Value > >
+    auto for_each_object(const Json::Value& val, BinaryOperation func) -> void
+    {
+        if (val.isNull())
+            return;
+
+        for (auto iter = std::begin(val); iter != std::end(val); ++iter)
+            func(iter.name(), *iter);
+    }
+
+} // namespace
 
 namespace
 {
@@ -20,9 +37,9 @@ namespace
         using line_type = source_location::line_type;
         using column_type = source_location::column_type;
 
-        loc.file = as< file_type >(get(val, "file"));
-        loc.line = as< line_type >(get(val, "line"));
-        loc.col = as< column_type >(get(val, "col"));
+        loc.file = val["file"].as< file_type >();
+        loc.line = val["line"].as< line_type >();
+        loc.col = val["col"].as< column_type >();
     }
 
     inline void deserialize_definition(const Json::Value& val, definition& def)
@@ -31,10 +48,11 @@ namespace
         using full_type = definition::full_type;
         using type = definition::type;
 
-        def.sym.name = as< name_type >(get(val, "name"));
-        deserialize_source_location(get(val, "src_info"), def.sym.source);
-        def.full_t = as< full_type >(get(val, "full_type"));
-        def.t = as< type >(get(val, "type"), false);
+        def.sym.name = val["name"].as< name_type >();
+        deserialize_source_location(val["src_info"], def.sym.source);
+        def.full_t = val["full_type"].as< full_type >();
+        if (val["type"].is< type >())
+            def.t = val["type"].as< type >();
     }
 
     inline void deserialize_definition_with_access_specifier(
@@ -43,7 +61,7 @@ namespace
         using access_specifier = symbol::access_specifier;
 
         deserialize_definition(val, def);
-        def.sym.access = as< access_specifier >(get(val, "access"));
+        def.sym.access = val["access"].as< access_specifier >();
     }
 
     void deserialize_method(const Json::Value& val, method& m)
@@ -55,18 +73,18 @@ namespace
         using type = method::type;
         using return_type = method::return_type;
 
-        m.sym.access = as< access_specifier >(get(val, "access"));
-        m.branches = as< count_type >(get(val, "branches"));
-        m.lines = as< count_type >(get(val, "lines"));
-        m.literals = as< count_type >(get(val, "literals"));
-        m.loops = as< count_type >(get(val, "loops"));
-        m.max_scope = as< depth_type >(get(val, "max_scope"));
-        m.t = as< type >(get(val, "method_type"));
-        m.ret_type = as< return_type >(get(val, "ret_type"));
-        m.sym.name = as< name_type >(get(val, "name"));
-        deserialize_source_location(get(val, "src_info"), m.sym.source);
-        m.statements = as< count_type >(get(val, "statements"));
-        m.is_virtual = as< bool >(get(val, "virtual"));
+        m.sym.access = val["access"].as< access_specifier >();
+        m.branches = val["branches"].as< count_type >();
+        m.lines = val["lines"].as< count_type >();
+        m.literals = val["literals"].as< count_type >();
+        m.loops = val["loops"].as< count_type >();
+        m.max_scope = val["max_scope"].as< depth_type >();
+        m.t = val["method_type"].as< type >();
+        m.ret_type = val["ret_type"].as< return_type >();
+        m.sym.name = val["name"].as< name_type >();
+        deserialize_source_location(val["src_info"], m.sym.source);
+        m.statements = val["statements"].as< count_type >();
+        m.is_virtual = val["virtual"].as< bool >();
     }
 
     inline void deserialize_structure(const Json::Value& val, structure& s)
@@ -75,10 +93,10 @@ namespace
         using namespace_type = symbol::namespace_type;
         using type = structure::type;
 
-        s.sym.name = as< name_type >(get(val, "name"));
-        s.sym.name_space = as< namespace_type >(get(val, "namespace"));
-        s.t = as< type >(get(val, "structure_type"));
-        deserialize_source_location(get(val, "src_info"), s.sym.source);
+        s.sym.name = val["name"].as< name_type >();
+        s.sym.name_space = val["namespace"].as< namespace_type >();
+        s.t = val["structure_type"].as< type >();
+        deserialize_source_location(val["src_info"], s.sym.source);
     }
 
     template < typename Container, typename BinaryOperation >
@@ -101,16 +119,11 @@ namespace
         if (val.isNull())
             return;
 
-        if (!val.isArray())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
         std::transform(
             std::begin(val),
             std::end(val),
             std::back_inserter(data),
-            [](const auto& v) { return as< std::string >(v); });
+            [](const Json::Value& v) { return v.as< std::string >(); });
     }
 
     inline auto read_field(
@@ -154,18 +167,18 @@ namespace
         m.sym.name_space = owner.sym.name_space;
 
         get_composites(
-            get(val, "args"),
+            val["args"],
             m.arguments,
             [&m](const auto& id, const auto& val)
             { return read_method_definition(m, id, val); });
 
         get_composites(
-            get(val, "definitions"),
+            val["definitions"],
             m.definitions,
             [&m](const auto& id, const auto& val)
             { return read_method_definition(m, id, val); });
 
-        get_references(get(val, "template_args"), m.template_args);
+        get_references(val["template_args"], m.template_args);
 
         return m;
     }
@@ -182,21 +195,21 @@ namespace
         deserialize_structure(val, s);
 
         get_composites(
-            get(val, "fields"),
+            val["fields"],
             s.fields,
             [&s](const auto& id, const auto& val)
             { return read_field(s, id, val); });
 
         get_composites(
-            get(val, "methods"),
+            val["methods"],
             s.methods,
             [&s](const auto& id, const auto& val)
             { return read_method(s, id, val); });
 
-        get_references(get(val, "contains"), s.nested);
-        get_references(get(val, "bases"), s.bases);
-        get_references(get(val, "friends"), s.friends);
-        get_references(get(val, "template_args"), s.template_args);
+        get_references(val["contains"], s.nested);
+        get_references(val["bases"], s.bases);
+        get_references(val["friends"], s.friends);
+        get_references(val["template_args"], s.template_args);
 
         return s;
     }
@@ -223,10 +236,10 @@ namespace
 
         for (const auto& v : val)
         {
-            const auto& from = as< vertex_property >(get(v, "from"));
-            const auto& to = as< vertex_property >(get(v, "to"));
+            const auto& from = v["from"].as< vertex_property >();
+            const auto& to = v["to"].as< vertex_property >();
 
-            const auto& types_val = get(v, "types");
+            const auto& types_val = v["types"];
             const auto& type = std::cbegin(types_val).name();
 
             BOOST_LOG_TRIVIAL(debug) << "read dependency from: " << from
@@ -246,10 +259,10 @@ auto deserialize(const Json::Value& root) -> tuple
     auto g = graph();
     auto props = vertex_properties();
 
-    read_vertices(get(root, "structures"), st, g, props);
-    read_edges(get(root, "dependencies"), g, props);
+    read_vertices(root["structures"], st, g, props);
+    read_edges(root["dependencies"], g, props);
 
     return { std::move(st), std::move(g), std::move(props) };
 }
 
-} // namespace metadata
+} // namespace architecture

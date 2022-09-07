@@ -1,4 +1,3 @@
-#include "config/deserialization.hpp"
 #include "rendering/config.hpp"
 #include "utility/json.hpp"
 
@@ -8,18 +7,9 @@
 using namespace rendering;
 using namespace testing;
 using namespace utility;
-using namespace config;
 
 namespace
 {
-
-TEST(rendering_deserialization, sample_rendering_invalid)
-{
-    const auto root
-        = read_json_root("../../data/testfiles/sample_rendering_-1.json");
-
-    ASSERT_THROW(deserialize(root), deserialization_error);
-}
 
 auto make_sample_rendering_0()
 {

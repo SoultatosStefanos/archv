@@ -1,6 +1,5 @@
 #include "architecture/config.hpp"
 #include "architecture/symbol_table.hpp"
-#include "config/deserialization.hpp"
 #include "utility/all.hpp"
 
 #include <boost/graph/isomorphism.hpp>
@@ -13,15 +12,6 @@ using namespace architecture;
 
 namespace
 {
-
-// See sample_graph_-1.json
-TEST(arch_generation, sample_graph_invalid)
-{
-    const auto root
-        = read_json_root("../../data/testfiles/sample_graph_-1.json");
-
-    ASSERT_THROW(deserialize(root), config::deserialization_error);
-}
 
 // See sample_graph_0.json
 TEST(arch_generation, sample_graph_0)

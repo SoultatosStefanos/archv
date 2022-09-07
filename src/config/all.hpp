@@ -5,6 +5,6 @@
 #define CONFIG_ALL_HPP
 
 #include "archive.hpp"
-#include "deserialization.hpp"
+#include "config.hpp"
 
 #endif // CONFIG_ALL_HPP

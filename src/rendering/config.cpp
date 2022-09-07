@@ -1,7 +1,5 @@
 #include "config.hpp"
 
-#include "config/deserialization.hpp"
-
 #include <OGRE/Ogre.h>
 #include <boost/log/trivial.hpp>
 #include <string>
@@ -11,19 +9,12 @@ namespace rendering
 
 namespace
 {
-    using namespace config;
-
     template < typename T >
     auto deserialize_triad(const Json::Value& val)
     {
-        if (!val.isArray())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
         auto extract_val = [iter = std::begin(val)]() mutable -> T
         {
-            auto val = as< T >(*iter);
+            auto val = (*iter).as< T >();
             std::advance(iter, 1);
             return val;
         };
@@ -61,13 +52,13 @@ namespace
         static_assert(std::is_convertible_v< real, Ogre::Real >);
         static_assert(std::is_convertible_v< string, Ogre::String >);
 
-        auto&& skybox_material = as< string >(get(val, "skybox-material"));
-        auto skybox_dist = as< real >(get(val, "skybox-distance"));
-        auto&& ambient_light = deserialize_rgb(get(val, "ambient-light"));
-        auto&& diffuse_light = deserialize_rgb(get(val, "diffuse-light"));
-        auto&& specular_light = deserialize_rgb(get(val, "specular-light"));
-        auto near_clip_dist = as< real >(get(val, "near-clip-distance"));
-        auto far_clip_dist = as< real >(get(val, "far-clip-distance"));
+        auto&& skybox_material = val["skybox-material"].as< string >();
+        auto skybox_dist = val["skybox-distance"].as< real >();
+        auto&& ambient_light = deserialize_rgb(val["ambient-light"]);
+        auto&& diffuse_light = deserialize_rgb(val["diffuse-light"]);
+        auto&& specular_light = deserialize_rgb(val["specular-light"]);
+        auto near_clip_dist = val["near-clip-distance"].as< real >();
+        auto far_clip_dist = val["far-clip-distance"].as< real >();
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering background";
 
@@ -98,9 +89,9 @@ namespace
 
         static_assert(std::is_convertible_v< string, Ogre::String >);
 
-        auto&& vertex_mesh = as< string >(get(val, "vertex-mesh"));
-        auto&& vertex_scale = deserialize_vector3(get(val, "vertex-scale"));
-        auto&& edge_material = as< string >(get(val, "edge-material"));
+        auto&& vertex_mesh = val["vertex-mesh"].as< string >();
+        auto&& vertex_scale = deserialize_vector3(val["vertex-scale"]);
+        auto&& edge_material = val["edge-material"].as< string >();
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
@@ -113,8 +104,8 @@ namespace
 
 auto deserialize(const Json::Value& root) -> config_data
 {
-    auto&& bkg = deserialize_background(get(root, "background"));
-    auto&& g = deserialize_graph(get(root, "graph"));
+    auto&& bkg = deserialize_background(root["background"]);
+    auto&& g = deserialize_graph(root["graph"]);
 
     return config_data { .background = std::move(bkg), .graph = std::move(g) };
 }

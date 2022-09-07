@@ -17,20 +17,21 @@ namespace
     static const layout_options valid_layouts { "Gursoy Atun" };
     static const topology_options valid_topologies { "Cube", "Sphere" };
 
-    void verify_layouts(const config_data& data)
+    auto verify_layouts(const config_data& data)
     {
         for (const auto& lay : data.layouts)
             if (!valid_layouts.contains(lay))
                 BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(lay));
     }
 
-    void verify_topologies(const config_data& data)
+    auto verify_topologies(const config_data& data)
     {
         for (const auto& s : data.topologies)
             if (!valid_topologies.contains(s))
                 BOOST_THROW_EXCEPTION(unknown_topology() << topology_info(s));
     }
-    void verify_defaults(const config_data& data)
+
+    auto verify_defaults(const config_data& data)
     {
         if (!data.layouts.contains(data.layout))
             BOOST_THROW_EXCEPTION(
@@ -41,7 +42,7 @@ namespace
                 unknown_default() << topology_info(data.topology));
     }
 
-    void verify(const config_data& data)
+    auto verify(const config_data& data)
     {
         verify_layouts(data);
         verify_topologies(data);
@@ -52,8 +53,6 @@ namespace
 
 namespace
 {
-    using namespace config;
-
     template < typename Container >
     inline auto read_json_array(const Json::Value& val) -> Container
     {
@@ -61,16 +60,11 @@ namespace
 
         Container res;
 
-        if (!val.isArray())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type()
-                << json_type_info(val.type()) << json_value_info(val));
-
         std::transform(
             std::begin(val),
             std::end(val),
             std::inserter(res, std::begin(res)),
-            [](const auto& val) { return as< value_type >(val); });
+            [](const Json::Value& val) { return val.as< value_type >(); });
 
         return res;
     }
@@ -78,29 +72,20 @@ namespace
     inline auto deserialize_layouts(const Json::Value& root)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading layouts";
-        return read_json_array< layout_options >(get(root, "layouts"));
+        return read_json_array< layout_options >(root["layouts"]);
     }
 
     inline auto deserialize_topologies(const Json::Value& root)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading topologies";
-        return read_json_array< topology_options >(get(root, "topologies"));
+        return read_json_array< topology_options >(root["topologies"]);
     }
 
     auto deserialize_defaults(const Json::Value& root)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading defaults";
 
-        const auto defaults = get(root, "defaults");
-
-        if (!defaults.isObject())
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type() << json_type_info(defaults.type())
-                                          << json_value_info(defaults));
-
-        if (defaults.size() != 3)
-            BOOST_THROW_EXCEPTION(
-                invalid_json_value_type() << json_value_info(defaults));
+        const auto& defaults = root["defaults"];
 
         std::string layout, topology;
         double scale;
@@ -110,20 +95,15 @@ namespace
         {
             if (iter.name() == "layout")
             {
-                layout = as< std::string >(*iter);
+                layout = (*iter).asString();
             }
             else if (iter.name() == "topology")
             {
-                topology = as< std::string >(*iter);
+                topology = (*iter).asString();
             }
             else if (iter.name() == "scale")
             {
-                scale = as< double >(*iter);
-            }
-            else
-            {
-                BOOST_THROW_EXCEPTION(
-                    invalid_json_value_type() << json_value_info(*iter));
+                scale = (*iter).asDouble();
             }
         }
 
