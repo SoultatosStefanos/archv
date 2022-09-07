@@ -23,7 +23,6 @@ public:
     weight_dispatcher(const backend& b, dependency_map edge_dependency)
     : m_backend { &b }, m_edge_dependency { edge_dependency }
     {
-        assert(m_backend);
     }
 
     auto operator()(edge_type e) const -> weight_type

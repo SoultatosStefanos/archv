@@ -4,34 +4,41 @@
 #ifndef LAYOUT_DETAIL_POSITION_MAP_HPP
 #define LAYOUT_DETAIL_POSITION_MAP_HPP
 
-#include "layout/layout.hpp"
+#include "layout/backend.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
+#include <concepts>
 
 namespace layout::detail
 {
 
+template < std::floating_point Real >
 struct position
 {
-    double x, y, z;
+    Real x, y, z;
 };
 
-template < typename Graph >
+template < typename Graph, typename WeightMap >
 class position_dispatcher
 {
 public:
-    using graph = Graph;
-    using vertex = typename boost::graph_traits< graph >::vertex_descriptor;
+    using graph_type = Graph;
+    using weight_map_type = WeightMap;
+    using vertex_type = typename graph_type::vertex_descriptor;
+    using backend_type = backend< graph_type, weight_map_type >;
+    using real = typename backend_type::real;
+    using position_type = position< real >;
 
-    explicit position_dispatcher(const layout< graph >& l) : m_l { &l } { }
+    explicit position_dispatcher(const backend_type& b) : m_backend { &b } { }
 
-    auto operator()(vertex v) const -> position
+    auto operator()(vertex_type v) const -> position_type
     {
-        return { .x = m_l->x(v), .y = m_l->y(v), .z = m_l->z(v) };
+        const auto& l = m_backend->get_layout();
+        return { .x = l.x(v), .y = l.y(v), .z = l.z(v) };
     }
 
 private:
-    const layout< graph >* m_l { nullptr };
+    const backend_type* m_backend { nullptr };
 };
 
 } // namespace layout::detail
