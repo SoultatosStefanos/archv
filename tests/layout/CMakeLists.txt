@@ -1,4 +1,5 @@
 set(FILES
+	backend_tests.cpp
 	config_tests.cpp
 	layout_factory_tests.cpp
 	position_map_tests.cpp

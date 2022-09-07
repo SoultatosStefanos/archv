@@ -57,9 +57,9 @@ auto make_sample_layout_0()
 {
     return config_data { .layouts = { "Gursoy Atun" },
                          .topologies = { "Cube" },
-                         .default_layout = "Gursoy Atun",
-                         .default_topology = "Cube",
-                         .default_scale = 100 };
+                         .layout = "Gursoy Atun",
+                         .topology = "Cube",
+                         .scale = 100 };
 }
 
 TEST(layout_deserialization, sample_layout_0)

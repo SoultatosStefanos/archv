@@ -32,13 +32,13 @@ namespace
     }
     void verify_defaults(const config_data& data)
     {
-        if (!data.layouts.contains(data.default_layout))
+        if (!data.layouts.contains(data.layout))
             BOOST_THROW_EXCEPTION(
-                unknown_default() << layout_info(data.default_layout));
+                unknown_default() << layout_info(data.layout));
 
-        if (!data.topologies.contains(data.default_topology))
+        if (!data.topologies.contains(data.topology))
             BOOST_THROW_EXCEPTION(
-                unknown_default() << topology_info(data.default_topology));
+                unknown_default() << topology_info(data.topology));
     }
 
     void verify(const config_data& data)
@@ -102,23 +102,23 @@ namespace
             BOOST_THROW_EXCEPTION(
                 invalid_json_value_type() << json_value_info(defaults));
 
-        std::string default_layout, default_topology;
-        double default_scale;
+        std::string layout, topology;
+        double scale;
 
         for (auto iter = std::begin(defaults); iter != std::end(defaults);
              ++iter)
         {
             if (iter.name() == "layout")
             {
-                default_layout = as< std::string >(*iter);
+                layout = as< std::string >(*iter);
             }
             else if (iter.name() == "topology")
             {
-                default_topology = as< std::string >(*iter);
+                topology = as< std::string >(*iter);
             }
             else if (iter.name() == "scale")
             {
-                default_scale = as< double >(*iter);
+                scale = as< double >(*iter);
             }
             else
             {
@@ -127,10 +127,7 @@ namespace
             }
         }
 
-        return std::make_tuple(
-            std::move(default_layout),
-            std::move(default_topology),
-            default_scale);
+        return std::make_tuple(std::move(layout), std::move(topology), scale);
     }
 
 } // namespace
@@ -143,9 +140,9 @@ auto deserialize(const Json::Value& root) -> config_data
 
     config_data res { .layouts = std::move(layouts),
                       .topologies = std::move(topologies),
-                      .default_layout = std::move(layout),
-                      .default_topology = std::move(topology),
-                      .default_scale = scale };
+                      .layout = std::move(layout),
+                      .topology = std::move(topology),
+                      .scale = scale };
 
     verify(res);
 

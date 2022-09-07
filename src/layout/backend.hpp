@@ -31,9 +31,9 @@ struct backend_config
     layout_options layouts;
     topology_options topologies;
 
-    std::string default_layout;
-    std::string default_topology;
-    double default_scale;
+    std::string layout;
+    std::string topology;
+    double scale;
 
     auto operator==(const backend_config&) const -> bool = default;
     auto operator!=(const backend_config&) const -> bool = default;
@@ -53,92 +53,93 @@ class backend
             WeightMap,
             typename boost::graph_traits< Graph >::edge_descriptor >));
 
-    using layout_signal
+    using layout_signal_type
         = boost::signals2::signal< void(const layout< Graph >&) >;
 
-    using topology_signal = boost::signals2::signal< void(const topology&) >;
+    using topology_signal_type
+        = boost::signals2::signal< void(const topology&) >;
 
 public:
-    using graph = Graph;
-    using weight_map = WeightMap;
-    using layout_slot_type = typename layout_signal::slot_type;
-    using topology_slot_type = topology_signal::slot_type;
-    using connection = boost::signals2::connection;
+    using graph_type = Graph;
+    using weight_map_type = WeightMap;
+    using layout_type = layout< graph_type >;
+    using layout_slot_type = typename layout_signal_type::slot_type;
+    using topology_slot_type = topology_signal_type::slot_type;
+    using connection_type = boost::signals2::connection;
     using config_data_type = backend_config;
 
+    static_assert(
+        std::is_convertible_v< std::string, typename layout_type::descriptor >);
+    static_assert(std::is_convertible_v< std::string, topology::descriptor >);
+    static_assert(std::is_convertible_v< double, topology::scale_type >);
+
     backend(
-        const graph& g,
-        weight_map edge_weight,
+        const graph_type& g,
+        weight_map_type edge_weight,
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
-        set_topology(
-            config_data().default_topology, config_data().default_scale);
-
-        set_layout(config_data().default_layout);
+        set_topology(config_data().topology, config_data().scale);
+        set_layout(config_data().layout);
     }
 
-    auto get_layout() const -> const auto& { return *m_layout; }
-    auto get_topology() const -> const auto& { return *m_topology; }
+    auto get_layout() const -> const layout_type& { return *m_layout; }
+    auto get_topology() const -> const topology& { return *m_topology; }
 
-    auto connect_to_layout(const layout_slot_type& slot) -> connection
+    auto graph() const -> const graph_type& { return m_g; }
+    auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
+    auto config_data() const -> const config_data_type& { return m_config; }
+
+    auto update_layout(const std::string& layout_type) -> void
+    {
+        set_layout(layout_type);
+
+        emit_layout();
+    }
+
+    auto update_layout(
+        const std::string& topology_type,
+        double topology_scale,
+        const std::string& layout_type) -> void
+    {
+        set_topology(topology_type, topology_scale);
+        set_layout(layout_type);
+
+        emit_layout();
+        emit_topology();
+    }
+
+    auto connect_to_layout(const layout_slot_type& slot) -> connection_type
     {
         return m_layout_signal.connect(slot);
     }
 
-    auto connect_to_topology(const topology_slot_type& slot) -> connection
+    auto connect_to_topology(const topology_slot_type& slot) -> connection_type
     {
         return m_topology_signal.connect(slot);
     }
 
-    auto update_layout(const std::string& desc) -> void
-    {
-        set_layout(desc);
-
-        emit_layout();
-    }
-
-    auto update_topology(const std::string& desc, double scale) -> void
-    {
-        set_topology(desc, scale);
-        set_layout(get_layout().desc());
-
-        emit_layout();
-        emit_topology();
-    }
-
-    auto restore_defaults() -> void
-    {
-        set_topology(
-            config_data().default_topology, config_data().default_scale);
-
-        set_layout(config_data().default_layout);
-
-        emit_layout();
-        emit_topology();
-    }
-
 protected:
-    auto config_data() const -> const auto& { return m_config; }
+    using layout_factory_type = layout_factory< graph_type >;
 
-    auto set_layout(const std::string& desc) -> void
+    auto set_layout(const std::string& type) -> void
     {
-        assert(config_data().layouts.contains(desc));
+        assert(config_data().layouts.contains(type));
+        assert(m_topology);
 
-        m_layout = layout_factory< graph >::make_layout(
-            desc, m_g, get_topology(), m_edge_weight);
+        m_layout = layout_factory_type::make_layout(
+            type, graph(), get_topology(), weight_map());
 
         assert(m_layout);
         assert(m_topology);
     }
 
-    auto set_topology(const std::string& desc, double scale) -> void
+    auto set_topology(const std::string& type, double scale) -> void
     {
-        assert(config_data().topologies.contains(desc));
+        assert(config_data().topologies.contains(type));
 
-        m_topology = topology_factory::make_topology(desc, scale);
+        m_topology = topology_factory::make_topology(type, scale);
 
-        assert(m_layout);
         assert(m_topology);
     }
 
@@ -146,14 +147,14 @@ protected:
     auto emit_topology() const -> void { m_topology_signal(get_topology()); }
 
 private:
-    using layout_pointer = typename layout_factory< graph >::pointer;
+    using layout_pointer = typename layout_factory< graph_type >::pointer;
     using topology_pointer = topology_factory::pointer;
 
-    const graph& m_g;
-    weight_map m_edge_weight;
+    const graph_type& m_g;
+    weight_map_type m_edge_weight;
 
-    layout_signal m_layout_signal;
-    topology_signal m_topology_signal;
+    layout_signal_type m_layout_signal;
+    topology_signal_type m_topology_signal;
 
     topology_pointer m_topology;
     layout_pointer m_layout;
@@ -161,17 +162,44 @@ private:
     config_data_type m_config;
 };
 
+/***********************************************************
+ * Use Cases                                               *
+ ***********************************************************/
+
 template < typename Graph, typename WeightMap >
 inline auto
-update_topology(backend< Graph, WeightMap >& b, const std::string& desc)
+update_layout(backend< Graph, WeightMap >& b, const std::string& type)
 {
-    return b.update_topology(desc, b.space().scale());
+    b.update_layout(type);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_topology(
+    backend< Graph, WeightMap >& b, const std::string& type, double scale)
+{
+    b.update_layout(type, scale, b.get_layout().desc());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+update_topology(backend< Graph, WeightMap >& b, const std::string& type)
+{
+    update_topology(b, type, b.get_topology().scale());
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_scale(backend< Graph, WeightMap >& b, double scale)
 {
-    return b.update_topology(b.space().desc(), scale);
+    update_topology(b, b.get_topology().desc(), scale);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto restore_defaults(backend< Graph, WeightMap >& b)
+{
+    b.update_layout(
+        b.config_data().topology,
+        b.config_data().scale,
+        b.config_data().layout);
 }
 
 } // namespace layout
