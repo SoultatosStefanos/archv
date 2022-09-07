@@ -1,11 +1,10 @@
 set(FILES)
 set(SUBDIRECTORIES
-	application
+	architecture
 	config
 	dependencies
 	gui
 	layout
-	metadata
 	multithreading
 	progress
 	rendering

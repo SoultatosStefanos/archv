@@ -1,6 +1,6 @@
 #include "symbol_table.hpp"
 
-namespace metadata
+namespace architecture
 {
 
 auto symbol_table::lookup(const key_type& id) const -> const value_type*
@@ -15,4 +15,4 @@ auto symbol_table::insert(value_type s) -> void
 
 auto symbol_table::clear() -> void { m_table.clear(); }
 
-} // namespace metadata
+} // namespace architecture

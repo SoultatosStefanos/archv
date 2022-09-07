@@ -1,4 +1,4 @@
-#include "metadata/symbol_table.hpp"
+#include "architecture/symbol_table.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>
@@ -6,7 +6,7 @@
 #include <memory>
 
 using namespace testing;
-using namespace metadata;
+using namespace architecture;
 using namespace utility;
 
 namespace

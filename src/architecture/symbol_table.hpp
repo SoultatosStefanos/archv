@@ -1,14 +1,14 @@
 // Contains the symbol table for the visualized architecture components.
 // Soultatos Stefanos 2022
 
-#ifndef METADATA_SYMBOL_TABLE_HPP
-#define METADATA_SYMBOL_TABLE_HPP
+#ifndef ARCHITECTURE_SYMBOL_TABLE_HPP
+#define ARCHITECTURE_SYMBOL_TABLE_HPP
 
 #include "symbols.hpp"
 
 #include <unordered_map>
 
-namespace metadata
+namespace architecture
 {
 
 class symbol_table
@@ -41,4 +41,4 @@ private:
 
 } // namespace metadata
 
-#endif // METADATA_SYMBOL_TABLE_HPP
+#endif // ARCHITECTURE_SYMBOL_TABLE_HPP

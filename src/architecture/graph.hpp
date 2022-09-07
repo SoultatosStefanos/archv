@@ -1,14 +1,14 @@
 // Contains the dependencies graph for the visualized architecture components.
 // Soultatos Stefanos 2022
 
-#ifndef METADATA_GRAPH_HPP
-#define METADATA_GRAPH_HPP
+#ifndef ARCHITECTURE_GRAPH_HPP
+#define ARCHITECTURE_GRAPH_HPP
 
 #include "symbols.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 
-namespace metadata
+namespace architecture
 {
 
 /***********************************************************
@@ -40,4 +40,4 @@ using dependency_map
 
 } // namespace metadata
 
-#endif // METADATA_GRAPH_HPP
+#endif // ARCHITECTURE_GRAPH_HPP

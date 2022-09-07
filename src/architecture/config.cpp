@@ -6,7 +6,7 @@
 #include <boost/log/trivial.hpp>
 #include <cassert>
 
-namespace metadata
+namespace architecture
 {
 
 using namespace config;

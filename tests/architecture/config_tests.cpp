@@ -1,6 +1,6 @@
+#include "architecture/config.hpp"
+#include "architecture/symbol_table.hpp"
 #include "config/deserialization.hpp"
-#include "metadata/config.hpp"
-#include "metadata/symbol_table.hpp"
 #include "utility/all.hpp"
 
 #include <boost/graph/isomorphism.hpp>
@@ -9,7 +9,7 @@
 
 using namespace testing;
 using namespace utility;
-using namespace metadata;
+using namespace architecture;
 
 namespace
 {

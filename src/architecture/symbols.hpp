@@ -1,13 +1,13 @@
 // Contains the basic architecture components (structures).
 // Soultatos Stefanos 2022.
 
-#ifndef METADATA_SYMBOLS_HPP
-#define METADATA_SYMBOLS_HPP
+#ifndef ARCHITECTURE_SYMBOLS_HPP
+#define ARCHITECTURE_SYMBOLS_HPP
 
 #include <string>
 #include <vector>
 
-namespace metadata
+namespace architecture
 {
 
 /***********************************************************
@@ -133,6 +133,6 @@ struct structure
     template_args_type template_args;
 };
 
-} // namespace metadata
+} // namespace architecture
 
-#endif // METADATA_SYMBOLS_HPP
+#endif // ARCHITECTURE_SYMBOLS_HPP

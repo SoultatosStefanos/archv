@@ -1,10 +1,10 @@
 // Distributes all types from this directory fwd declared.
 // Soultatos Stefanos 2022
 
-#ifndef METADATA_ALLFWD_HPP
-#define METADATA_ALLFWD_HPP
+#ifndef ARCHITECTURE_ALLFWD_HPP
+#define ARCHITECTURE_ALLFWD_HPP
 
-namespace metadata
+namespace architecture
 {
 
 class graph;
@@ -17,6 +17,6 @@ struct structure;
 
 class tuple;
 
-} // namespace metadata
+} // namespace architecture
 
-#endif // METADATA_ALLFWD_HPP
+#endif // ARCHITECTURE_ALLFWD_HPP

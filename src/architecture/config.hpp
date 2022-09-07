@@ -2,15 +2,15 @@
 // graph.
 // Soultatos Stefanos 2022
 
-#ifndef METADATA_CONFIG_HPP
-#define METADATA_CONFIG_HPP
+#ifndef ARCHITECTURE_CONFIG_HPP
+#define ARCHITECTURE_CONFIG_HPP
 
 #include "graph.hpp"
 
 #include <jsoncpp/json/json.h>
 #include <unordered_map>
 
-namespace metadata
+namespace architecture
 {
 
 class symbol_table;
@@ -24,6 +24,6 @@ using tuple = std::tuple< symbol_table, graph, vertex_properties >;
 // query vertices by their properties.
 auto deserialize(const Json::Value& root) -> tuple;
 
-} // namespace metadata
+} // namespace architecture
 
-#endif // METADATA_CONFIG_HPP
+#endif // ARCHITECTURE_CONFIG_HPP
