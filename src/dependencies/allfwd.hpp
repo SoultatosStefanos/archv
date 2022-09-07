@@ -7,7 +7,7 @@
 namespace dependencies
 {
 
-class core;
+class backend;
 class weight_repo;
 
 template < typename Graph, typename DependencyMap >
