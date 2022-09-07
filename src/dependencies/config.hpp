@@ -17,8 +17,6 @@ using config_data = backend::config_data_type;
 
 auto deserialize(const Json::Value& root) -> config_data;
 
-// TODO: serialize, defaults
-
 } // namespace dependencies
 
 #endif // DEPENDENCIES_CONFIG_HPP
