@@ -6,8 +6,10 @@
 
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
+#include "layout_enumerator.hpp"
 #include "topology.hpp"
 
+#include <array>
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <memory>
@@ -36,20 +38,34 @@ public:
         const topology& space,
         WeightMap edge_weight) -> pointer
     {
-        if (desc == gursoy_atun_layout< graph_type >::description)
+        auto ptr = make_layout_impl(desc, g, space, edge_weight);
+        assert(ptr->desc() == desc);
+        assert(layout_enumerator::enumerates(ptr->desc()));
+        return ptr;
+    }
+
+private:
+    template < typename WeightMap >
+    static auto make_layout_impl(
+        const descriptor& desc,
+        const graph_type& g,
+        const topology& space,
+        WeightMap edge_weight) -> pointer
+    {
+        if (desc == layout_enumerator::gursoy_atun_type)
         {
             return std::make_unique< gursoy_atun_layout< graph_type > >(
                 g, space, edge_weight);
         }
         else
         {
+            assert(!layout_enumerator::enumerates(desc));
             BOOST_LOG_TRIVIAL(fatal) << "invalid layout description: " << desc;
             assert(false);
             return nullptr;
         }
     }
 
-private:
     layout_factory() = default;
     ~layout_factory() = default;
 };

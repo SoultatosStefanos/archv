@@ -27,6 +27,8 @@ public:
     static auto make_topology(const descriptor& d, scale_type s) -> pointer;
 
 private:
+    static auto make_topology_impl(const descriptor&, scale_type) -> pointer;
+
     topology_factory() = default;
     ~topology_factory() = default;
 };

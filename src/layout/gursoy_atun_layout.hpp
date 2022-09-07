@@ -6,6 +6,7 @@
 
 #include "detail/gursoy_atun_layout.hpp"
 #include "layout.hpp"
+#include "layout_enumerator.hpp"
 #include "topology.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
@@ -36,8 +37,6 @@ public:
     using coord_type = typename base::coord_type;
     using descriptor = typename base::descriptor;
 
-    static constexpr auto description = "Gursoy Atun";
-
     template < typename WeightMap >
     gursoy_atun_layout(
         const graph_type& g, const topology& space, WeightMap edge_weight)
@@ -58,7 +57,10 @@ public:
 
     virtual ~gursoy_atun_layout() override = default;
 
-    virtual auto desc() const -> descriptor override { return description; }
+    virtual auto desc() const -> descriptor override
+    {
+        return layout_enumerator::gursoy_atun_type;
+    }
 
     virtual auto x(vertex_type v) const -> coord_type override
     {
