@@ -1,16 +1,5 @@
 set(FILES)
-set(SUBDIRECTORIES
-	architecture
-	config
-	dependencies
-	gui
-	layout
-	multithreading
-	progress
-	rendering
-	ui
-	undo_redo
-)
+set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})
