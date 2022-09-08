@@ -59,13 +59,12 @@ public:
     using graph_type = Graph;
     using weight_map_type = WeightMap;
     using layout_type = layout< graph_type >;
+    using topology_type = topology;
+    using scale_type = topology_type::scale_type;
     using layout_slot_type = typename layout_signal_type::slot_type;
     using topology_slot_type = topology_signal_type::slot_type;
     using connection_type = boost::signals2::connection;
     using config_data_type = backend_config;
-
-    using string = std::string;
-    using real = double;
 
     backend(
         const graph_type& g,
@@ -87,20 +86,20 @@ public:
     auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_layout(const string& layout_type) -> void
+    auto update_layout(const std::string& layout_id) -> void
     {
-        set_layout(layout_type);
+        set_layout(layout_id);
 
         emit_layout();
     }
 
     auto update_layout(
-        const string& topology_type,
-        real topology_scale,
-        const string& layout_type) -> void
+        const std::string& topology_id,
+        scale_type topology_scale,
+        const std::string& layout_id) -> void
     {
-        set_topology(topology_type, topology_scale);
-        set_layout(layout_type);
+        set_topology(topology_id, topology_scale);
+        set_layout(layout_id);
 
         emit_layout();
         emit_topology();
@@ -119,20 +118,20 @@ public:
 protected:
     using layout_factory_type = layout_factory< graph_type >;
 
-    auto set_layout(const std::string& type) -> void
+    auto set_layout(const std::string& id) -> void
     {
         assert(m_topology);
 
         m_layout = layout_factory_type::make_layout(
-            type, graph(), get_topology(), weight_map());
+            id, graph(), get_topology(), weight_map());
 
         assert(m_layout);
         assert(m_topology);
     }
 
-    auto set_topology(const std::string& type, double scale) -> void
+    auto set_topology(const std::string& id, scale_type scale) -> void
     {
-        m_topology = topology_factory::make_topology(type, scale);
+        m_topology = topology_factory::make_topology(id, scale);
 
         assert(m_topology);
     }
@@ -161,34 +160,31 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline auto update_layout(
-    backend< Graph, WeightMap >& b,
-    const typename backend< Graph, WeightMap >::string& type)
+inline auto update_layout(backend< Graph, WeightMap >& b, const std::string& id)
 {
-    b.update_layout(type);
+    b.update_layout(id);
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_topology(
     backend< Graph, WeightMap >& b,
-    const typename backend< Graph, WeightMap >::string& type,
-    typename backend< Graph, WeightMap >::real scale)
+    const std::string& id,
+    typename backend< Graph, WeightMap >::scale_type scale)
 {
-    b.update_layout(type, scale, identify(b.get_layout()));
+    b.update_layout(id, scale, identify(b.get_layout()));
 }
 
 template < typename Graph, typename WeightMap >
-inline auto update_topology(
-    backend< Graph, WeightMap >& b,
-    const typename backend< Graph, WeightMap >::string& type)
+inline auto
+update_topology(backend< Graph, WeightMap >& b, const std::string& id)
 {
-    update_topology(b, type, b.get_topology().scale());
+    update_topology(b, id, b.get_topology().scale());
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_scale(
     backend< Graph, WeightMap >& b,
-    typename backend< Graph, WeightMap >::real scale)
+    typename backend< Graph, WeightMap >::scale_type scale)
 {
     update_topology(b, identify(b.get_topology()), scale);
 }

@@ -12,10 +12,10 @@
 namespace layout::detail
 {
 
-template < std::floating_point Real >
+template < std::floating_point Coord >
 struct position
 {
-    Real x, y, z;
+    Coord x, y, z;
 };
 
 template < typename Graph, typename WeightMap >
@@ -26,8 +26,8 @@ public:
     using weight_map_type = WeightMap;
     using vertex_type = typename graph_type::vertex_descriptor;
     using backend_type = backend< graph_type, weight_map_type >;
-    using real = typename backend_type::real;
-    using position_type = position< real >;
+    using coord_type = typename backend_type::layout_type::coord_type;
+    using position_type = position< coord_type >;
 
     explicit position_dispatcher(const backend_type& b) : m_backend { &b } { }
 
