@@ -18,6 +18,7 @@ namespace config
  * Archive                                                 *
  ***********************************************************/
 
+// Will update all archives when destroyed.
 class archive final
 {
 public:
@@ -36,25 +37,14 @@ public:
         return singleton;
     }
 
-    auto contains(file_name_type fname) const -> bool;
-
-    auto operator[](file_name_type fname) -> json_root_type&;
-
     auto at(file_name_type fname) const -> const json_root_type&;
-
-    auto begin() -> auto { return std::begin(m_roots); }
-    auto begin() const -> auto { return std::begin(m_roots); }
-    auto cbegin() const -> auto { return std::cbegin(m_roots); }
-
-    auto end() -> auto { return std::end(m_roots); }
-    auto end() const -> auto { return std::end(m_roots); }
-    auto cend() const -> auto { return std::cend(m_roots); }
+    auto at(file_name_type fname) -> json_root_type&;
 
 private:
     using holder = std::unordered_map< file_name_type, json_root_type >;
 
     archive() = default;
-    ~archive() = default;
+    ~archive();
 
     mutable holder m_roots;
 };
@@ -76,16 +66,6 @@ struct invalid_json_file : virtual archive_error
  ***********************************************************/
 
 using json_file_info = boost::error_info< struct tag_file, std::string_view >;
-
-/***********************************************************
- * Read/Write                                              *
- ***********************************************************/
-
-auto read_archive(archive::file_name_type fname) -> void;
-auto read_archive_once(archive::file_name_type fname) -> void;
-
-auto write_archive(archive::file_name_type fname) -> void;
-auto write_all_archives() -> void;
 
 } // namespace config
 

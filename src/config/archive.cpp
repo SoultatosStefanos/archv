@@ -7,56 +7,39 @@
 namespace config
 {
 
-auto archive::contains(file_name_type fname) const -> bool
-{
-    return m_roots.contains(fname);
-}
-
-auto archive::operator[](file_name_type fname) -> json_root_type&
-{
-    return m_roots[fname];
-}
-
-auto archive::at(file_name_type fname) const -> const json_root_type&
-{
-    assert(contains(fname));
-    return m_roots.at(fname);
-}
-
 namespace
 {
-    inline auto verify(archive::file_name_type fname) -> void
+    auto read_archive(archive::file_name_type fname)
     {
-        if (!std::filesystem::exists(fname))
-            BOOST_THROW_EXCEPTION(invalid_json_file() << json_file_info(fname));
+        archive::json_root_type root;
+        std::ifstream(fname.data()) >> root;
+        return root;
+    }
+
+    auto write_archive(archive::file_name_type fname) -> void
+    {
+        std::ofstream(fname.data()) << archive::get().at(fname);
     }
 
 } // namespace
 
-auto read_archive(archive::file_name_type fname) -> void
+archive::~archive()
 {
-    verify(fname);
-    std::ifstream(fname.data()) >> archive::get()[fname];
-}
-
-auto read_archive_once(archive::file_name_type fname) -> void
-{
-    if (!archive::get().contains(fname))
-        read_archive(fname);
-}
-
-auto write_archive(archive::file_name_type fname) -> void
-{
-    verify(fname);
-    std::ofstream(fname.data()) << archive::get().at(fname);
-}
-
-auto write_all_archives() -> void
-{
-    using std::ranges::views::keys;
-
-    for (auto fname : keys(archive::get()))
+    for (auto fname : std::ranges::views::keys(m_roots))
         write_archive(fname);
+
+    m_roots.clear();
+}
+
+auto archive::at(file_name_type fname) const -> const json_root_type&
+{
+    return m_roots.contains(fname) ? m_roots.at(fname)
+                                   : m_roots[fname] = read_archive(fname);
+}
+
+auto archive::at(file_name_type fname) -> json_root_type&
+{
+    return const_cast< json_root_type& >(std::as_const(*this).at(fname));
 }
 
 } // namespace config
