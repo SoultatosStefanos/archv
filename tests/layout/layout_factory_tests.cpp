@@ -29,7 +29,6 @@ public:
     mock_topology() = default;
     ~mock_topology() override = default;
 
-    MOCK_METHOD(descriptor, desc, (), (const, override));
     MOCK_METHOD(scale_type, scale, (), (const, override));
     MOCK_METHOD(
         void, accept, (const layout::topology_visitor&), (const, override));
@@ -41,7 +40,7 @@ using nice_mock_topology = NiceMock< mock_topology >;
 TEST(a_layout_factory, will_create_a_gursoy_atun_layout_upon_request)
 {
     auto lay = layout_factory::make_layout(
-        layout::layout_enumerator::gursoy_atun_desc,
+        layout::layout_plugin::gursoy_atun_id,
         graph(),
         nice_mock_topology(),
         weight_map());

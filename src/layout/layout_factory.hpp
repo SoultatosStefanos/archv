@@ -6,6 +6,7 @@
 
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
+#include "layout_plugin.hpp"
 #include "topology.hpp"
 
 #include <algorithm>
@@ -18,48 +19,13 @@
 namespace layout
 {
 
-/***********************************************************
- * Layout Enumerator                                       *
- ***********************************************************/
-
-// Helper struct to list the avalilable plugin types.
-struct layout_enumerator final
-{
-    static constexpr auto gursoy_atun_desc = "Gursoy Atun";
-
-    static constexpr auto enumeration = std::array { gursoy_atun_desc };
-
-    layout_enumerator() = delete;
-    layout_enumerator(const layout_enumerator&) = delete;
-    layout_enumerator(layout_enumerator&&) = delete;
-    ~layout_enumerator() = delete;
-
-    auto operator=(const layout_enumerator&) -> layout_enumerator& = delete;
-    auto operator=(layout_enumerator&&) -> layout_enumerator& = delete;
-};
-
-constexpr auto is_layout_enumerated(std::string_view desc) -> bool
-{
-    constexpr auto& set = layout_enumerator::enumeration;
-    return std::find(std::begin(set), std::end(set), desc) != std::end(set);
-}
-
-/***********************************************************
- * Layout Factory                                          *
- ***********************************************************/
-
 template < typename Graph >
 class layout_factory final
 {
 public:
     using graph_type = Graph;
     using pointer = std::unique_ptr< layout< graph_type > >;
-    using descriptor = typename layout< graph_type >::descriptor;
-    using enumerator = layout_enumerator;
-
-    static_assert(
-        gursoy_atun_layout< graph_type >::description
-        == enumerator::gursoy_atun_desc);
+    using identifier = layout_plugin::identifier;
 
     layout_factory(const layout_factory&) = default;
     layout_factory(layout_factory&&) = default;
@@ -69,39 +35,26 @@ public:
 
     template < typename WeightMap >
     static auto make_layout(
-        const descriptor& desc,
+        const identifier& id,
         const graph_type& g,
         const topology& space,
         WeightMap edge_weight) -> pointer
     {
-        auto ptr = make_layout_impl(desc, g, space, edge_weight);
-        assert(ptr->desc() == desc);
-        assert(is_layout_enumerated(ptr->desc()));
-        return ptr;
-    }
-
-private:
-    template < typename WeightMap >
-    static auto make_layout_impl(
-        const descriptor& desc,
-        const graph_type& g,
-        const topology& space,
-        WeightMap edge_weight) -> pointer
-    {
-        if (desc == enumerator::gursoy_atun_desc)
+        if (id == layout_plugin::gursoy_atun_id)
         {
             return std::make_unique< gursoy_atun_layout< graph_type > >(
                 g, space, edge_weight);
         }
         else
         {
-            assert(!is_layout_enumerated(desc));
-            BOOST_LOG_TRIVIAL(fatal) << "invalid layout description: " << desc;
+            assert(!layout_plugin::enumerates(id));
+            BOOST_LOG_TRIVIAL(fatal) << "invalid layout id: " << id;
             assert(false);
             return nullptr;
         }
     }
 
+private:
     layout_factory() = default;
     ~layout_factory() = default;
 };

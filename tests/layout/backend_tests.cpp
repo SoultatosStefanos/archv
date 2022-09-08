@@ -55,8 +55,11 @@ protected:
 
 TEST_F(given_a_layout_backend, initially_has_defaulted_entities)
 {
-    ASSERT_EQ(inst->get_layout().desc(), initial_layout);
-    ASSERT_EQ(inst->get_topology().desc(), initial_topology);
+    ASSERT_EQ(
+        layout::layout_plugin::identify(inst->get_layout()), initial_layout);
+    ASSERT_EQ(
+        layout::topology_plugin::identify(inst->get_topology()),
+        initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
@@ -66,7 +69,7 @@ TEST_F(given_a_layout_backend, a_layout_update_will_set_new_type)
 
     layout::update_layout(*inst, new_type);
 
-    ASSERT_EQ(inst->get_layout().desc(), new_type);
+    ASSERT_EQ(layout::layout_plugin::identify(inst->get_layout()), new_type);
 }
 
 TEST_F(given_a_layout_backend, a_layout_update_will_callback_observers)
@@ -85,7 +88,8 @@ TEST_F(given_a_layout_backend, a_topology_update_will_set_new_topology_type)
 
     layout::update_topology(*inst, new_type);
 
-    ASSERT_EQ(inst->get_topology().desc(), new_type);
+    ASSERT_EQ(
+        layout::topology_plugin::identify(inst->get_topology()), new_type);
 }
 
 TEST_F(given_a_layout_backend, a_topology_update_will_callback_observers)
@@ -126,12 +130,16 @@ TEST_F(given_a_layout_backend, restoring_defaults_sets_initial_values)
 {
     layout::update_topology(*inst, "Sphere", 300);
 
-    EXPECT_NE(inst->get_topology().desc(), initial_topology);
+    EXPECT_NE(
+        layout::topology_plugin::identify(inst->get_topology()),
+        initial_topology);
     EXPECT_NE(inst->get_topology().scale(), initial_scale);
 
     layout::restore_defaults(*inst);
 
-    ASSERT_EQ(inst->get_topology().desc(), initial_topology);
+    ASSERT_EQ(
+        layout::topology_plugin::identify(inst->get_topology()),
+        initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 

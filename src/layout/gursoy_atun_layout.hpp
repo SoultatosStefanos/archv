@@ -34,9 +34,6 @@ public:
     using graph_type = typename base::graph_type;
     using vertex_type = typename base::vertex_type;
     using coord_type = typename base::coord_type;
-    using descriptor = typename base::descriptor;
-
-    static constexpr auto description = "Gursoy Atun";
 
     template < typename WeightMap >
     gursoy_atun_layout(
@@ -57,8 +54,6 @@ public:
     }
 
     virtual ~gursoy_atun_layout() override = default;
-
-    virtual auto desc() const -> descriptor override { return description; }
 
     virtual auto x(vertex_type v) const -> coord_type override
     {

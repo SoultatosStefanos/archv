@@ -1,8 +1,7 @@
 #include "config.hpp"
 
-#include "gursoy_atun_layout.hpp"
-#include "layout_factory.hpp"
-#include "topology_factory.hpp"
+#include "layout_plugin.hpp"
+#include "topology_plugin.hpp"
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
@@ -16,13 +15,13 @@ namespace
 
     auto verify_layout(const config_data& data) -> void
     {
-        if (!is_layout_enumerated(data.layout))
+        if (!layout_plugin::enumerates(data.layout))
             BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(data.layout));
     }
 
     auto verify_topology(const config_data& data) -> void
     {
-        if (!is_topology_enumerated(data.topology))
+        if (!topology_plugin::enumerates(data.topology))
             BOOST_THROW_EXCEPTION(
                 unknown_topology() << topology_info(data.topology));
     }

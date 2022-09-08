@@ -24,7 +24,6 @@ public:
     using vertex_type = typename graph_type::vertex_descriptor;
     using coord_type = double;
     using visitor_type = layout_visitor< graph_type >;
-    using descriptor = std::string;
 
     layout() = default;
     layout(const layout&) = default;
@@ -33,8 +32,6 @@ public:
 
     auto operator=(const layout&) -> layout& = default;
     auto operator=(layout&&) -> layout& = default;
-
-    virtual auto desc() const -> descriptor = 0;
 
     virtual auto x(vertex_type v) const -> coord_type = 0;
     virtual auto y(vertex_type v) const -> coord_type = 0;

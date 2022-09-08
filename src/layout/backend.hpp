@@ -6,8 +6,10 @@
 
 #include "layout.hpp"
 #include "layout_factory.hpp"
+#include "layout_plugin.hpp"
 #include "topology.hpp"
 #include "topology_factory.hpp"
+#include "topology_plugin.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/signals2/signal.hpp>
@@ -66,19 +68,14 @@ public:
     using string = std::string;
     using real = double;
 
-    static_assert(
-        std::is_convertible_v< std::string, typename layout_type::descriptor >);
-    static_assert(std::is_convertible_v< std::string, topology::descriptor >);
-    static_assert(std::is_convertible_v< double, topology::scale_type >);
-
     backend(
         const graph_type& g,
         weight_map_type edge_weight,
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
-        assert(is_layout_enumerated(config_data().layout));
-        assert(is_topology_enumerated(config_data().topology));
+        assert(layout_plugin::enumerates(config_data().layout));
+        assert(topology_plugin::enumerates(config_data().topology));
 
         set_topology(config_data().topology, config_data().scale);
         set_layout(config_data().layout);
@@ -178,7 +175,7 @@ inline auto update_topology(
     const typename backend< Graph, WeightMap >::string& type,
     typename backend< Graph, WeightMap >::real scale)
 {
-    b.update_layout(type, scale, b.get_layout().desc());
+    b.update_layout(type, scale, layout_plugin::identify(b.get_layout()));
 }
 
 template < typename Graph, typename WeightMap >
@@ -194,7 +191,7 @@ inline auto update_scale(
     backend< Graph, WeightMap >& b,
     typename backend< Graph, WeightMap >::real scale)
 {
-    update_topology(b, b.get_topology().desc(), scale);
+    update_topology(b, topology_plugin::identify(b.get_topology()), scale);
 }
 
 template < typename Graph, typename WeightMap >
