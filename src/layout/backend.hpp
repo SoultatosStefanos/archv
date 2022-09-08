@@ -5,10 +5,8 @@
 #define LAYOUT_BACKEND_HPP
 
 #include "layout.hpp"
-#include "layout_enumerator.hpp"
 #include "layout_factory.hpp"
 #include "topology.hpp"
-#include "topology_enumerator.hpp"
 #include "topology_factory.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
@@ -79,8 +77,8 @@ public:
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
-        assert(layout_enumerator::enumerates(config_data().layout));
-        assert(topology_enumerator::enumerates(config_data().topology));
+        assert(is_layout_enumerated(config_data().layout));
+        assert(is_topology_enumerated(config_data().topology));
 
         set_topology(config_data().topology, config_data().scale);
         set_layout(config_data().layout);

@@ -16,13 +16,15 @@ class sphere : public topology
 public:
     using data_type = boost::sphere_topology< std::minstd_rand >;
 
+    static constexpr auto description = "Sphere";
+
     explicit sphere(scale_type scale);
     virtual ~sphere() override = default;
 
     auto data() const -> const data_type& { return m_sphere; }
     auto data() -> data_type& { return m_sphere; }
 
-    virtual auto desc() const -> descriptor override;
+    virtual auto desc() const -> descriptor override { return description; }
     virtual auto scale() const -> scale_type override { return m_scale; }
 
     virtual auto accept(const visitor_type& visitor) const -> void override;

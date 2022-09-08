@@ -41,7 +41,7 @@ using nice_mock_topology = NiceMock< mock_topology >;
 TEST(a_layout_factory, will_create_a_gursoy_atun_layout_upon_request)
 {
     auto lay = layout_factory::make_layout(
-        layout::layout_enumerator::gursoy_atun_type,
+        layout::layout_enumerator::gursoy_atun_desc,
         graph(),
         nice_mock_topology(),
         weight_map());

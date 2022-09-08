@@ -2,7 +2,6 @@
 
 #include "cube.hpp"
 #include "sphere.hpp"
-#include "topology_enumerator.hpp"
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
@@ -11,29 +10,35 @@
 namespace layout
 {
 
+static_assert(cube::description == topology_enumerator::cube_desc);
+static_assert(sphere::description == topology_enumerator::sphere_desc);
+
+static_assert(is_topology_enumerated(topology_enumerator::cube_desc));
+static_assert(is_topology_enumerated(topology_enumerator::sphere_desc));
+
 auto topology_factory::make_topology(const descriptor& desc, scale_type scale)
     -> pointer
 {
     auto ptr = make_topology_impl(desc, scale);
     assert(ptr->desc() == desc);
-    assert(topology_enumerator::enumerates(ptr->desc()));
+    assert(is_topology_enumerated(ptr->desc()));
     return ptr;
 }
 
 auto topology_factory::make_topology_impl(
     const descriptor& desc, scale_type scale) -> pointer
 {
-    if (desc == topology_enumerator::cube_type)
+    if (desc == enumerator::cube_desc)
     {
         return std::make_unique< cube >(scale);
     }
-    else if (desc == topology_enumerator::sphere_type)
+    else if (desc == enumerator::sphere_desc)
     {
         return std::make_unique< sphere >(scale);
     }
     else
     {
-        assert(!topology_enumerator::enumerates(desc));
+        assert(!is_topology_enumerated(desc));
         BOOST_LOG_TRIVIAL(fatal) << "invalid topology description: " << desc;
         assert(false);
         return nullptr;
