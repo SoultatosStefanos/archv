@@ -40,9 +40,7 @@ public:
         inst = std::make_unique< backend >(
             g,
             weight_map(),
-            backend::config_data_type { .layouts = { "Gursoy Atun" },
-                                        .topologies = { "Cube", "Sphere" },
-                                        .layout = initial_layout,
+            backend::config_data_type { .layout = initial_layout,
                                         .topology = initial_topology,
                                         .scale = initial_scale });
     }

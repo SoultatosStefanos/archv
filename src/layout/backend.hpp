@@ -5,8 +5,10 @@
 #define LAYOUT_BACKEND_HPP
 
 #include "layout.hpp"
+#include "layout_enumerator.hpp"
 #include "layout_factory.hpp"
 #include "topology.hpp"
+#include "topology_enumerator.hpp"
 #include "topology_factory.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
@@ -25,12 +27,6 @@ namespace layout
 
 struct backend_config
 {
-    using layout_options = std::unordered_set< std::string >;
-    using topology_options = std::unordered_set< std::string >;
-
-    layout_options layouts;
-    topology_options topologies;
-
     std::string layout;
     std::string topology;
     double scale;
@@ -83,6 +79,9 @@ public:
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
+        assert(layout_enumerator::enumerates(config_data().layout));
+        assert(topology_enumerator::enumerates(config_data().topology));
+
         set_topology(config_data().topology, config_data().scale);
         set_layout(config_data().layout);
     }
@@ -128,7 +127,6 @@ protected:
 
     auto set_layout(const std::string& type) -> void
     {
-        assert(config_data().layouts.contains(type));
         assert(m_topology);
 
         m_layout = layout_factory_type::make_layout(
@@ -140,8 +138,6 @@ protected:
 
     auto set_topology(const std::string& type, double scale) -> void
     {
-        assert(config_data().topologies.contains(type));
-
         m_topology = topology_factory::make_topology(type, scale);
 
         assert(m_topology);
