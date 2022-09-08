@@ -1,50 +1,25 @@
 {
 	"background" : 
 	{
-		"ambient-light" : 
-		[
-			0.2,
-			0.2,
-			0.2
-		],
-		"diffuse-light" : 
-		[
-			1,
-			1,
-			1
-		],
-		"far-clip-distance" : 0,
-		"near-clip-distance" : 5,
-		"skybox-distance" : 5000,
 		"skybox-material" : "materials/skybox",
-		"specular-light" : 
-		[
-			0.6,
-			0.6,
-			0.6
-		]
+		"skybox-distance" : 5000,
+		"ambient-light" : [ 0.2, 0.2, 0.2 ],
+		"diffuse-light" : [ 1, 1, 1 ],
+		"specular-light" : [ 0.6, 0.6, 0.6 ],
+		"far-clip-distance" : 0,
+		"near-clip-distance" : 5
 	},
 	"graph" : 
 	{
+		"vertex-mesh" : "cube.mesh",
+		"vertex-scale" :  [	0.05, 0.05, 0.05 ],
 		"edge-material" : "materials/edge",
 		"vertex-billboard" : 
 		{
-			"char-height" : 50.0,
-			"color" : 
-			[
-				0.2,
-				0.2,
-				0.2
-			],
 			"font-name" : "Fornire-Light",
+			"char-height" : 50.0,
+			"color" : [ 0.2, 0.2, 0.2 ],
 			"space-width" : 1.0
-		},
-		"vertex-mesh" : "cube.mesh",
-		"vertex-scale" : 
-		[
-			0.05,
-			0.05,
-			0.05
-		]
+		}
 	}
 }
