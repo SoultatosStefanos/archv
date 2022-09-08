@@ -374,11 +374,11 @@
 
 # 09 / 09 / 2022
 
-	+ [ ] Id text billboards on each vertex
+	+ [x] Id text billboards on each vertex
 
 		+ [x] Id overlays
 
-		+ [ ] Configurable
+		+ [x] Configurable
 
 	+ [ ] Vertex material
 

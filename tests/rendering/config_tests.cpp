@@ -24,9 +24,16 @@ auto make_sample_rendering_0()
                               .near_clip_distance = 3,
                               .far_clip_distance = 3 };
 
-    auto&& graph = graph_config { .vertex_mesh = "mesh.mesh",
-                                  .vertex_scale = Vector3(0.1, 0.2, 0.3),
-                                  .edge_material = "mat" };
+    auto&& graph
+        = graph_config { .vertex_mesh = "mesh.mesh",
+                         .vertex_scale = Vector3(0.1, 0.2, 0.3),
+                         .vbillboard_font_name = "a",
+                         .vbillboard_char_height = 1.0,
+                         .vbillboard_color = ColourValue(1.0, 1.0, 1.0),
+                         .vbillboard_space_width = 1.0,
+                         .edge_material = "mat"
+
+          };
 
     return config_data { .background = std::move(background),
                          .graph = std::move(graph) };

@@ -111,13 +111,17 @@ auto graph_renderer_impl::setup_id_billboard(
 {
     using namespace Ogre;
 
-    // TODO Config font name, font height, color, etc
-
     const auto& name = v.id;
     const auto& caption = v.id;
 
     auto text = std::make_unique< MovableText >(
-        name, caption, "Fornire-Light", 50.0, ColourValue::Black);
+        name,
+        caption,
+        config_data().vbillboard_font_name,
+        config_data().vbillboard_char_height,
+        config_data().vbillboard_color);
+
+    text->setSpaceWidth(config_data().vbillboard_space_width);
 
     text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
     text->showOnTop(true);
