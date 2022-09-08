@@ -5,6 +5,7 @@
 #define APPLICATION_APP_HPP
 
 #include "shortcut_input_listener.hpp"
+#include "typedefs.hpp"
 
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
@@ -18,14 +19,13 @@
  ***********************************************************/
 
 #include "architecture/all.hpp"
+#include "config/all.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
 #include "multithreading/all.hpp"
 #include "rendering/all.hpp"
 #include "undo_redo/all.hpp"
-
-#include "json/all.hpp"
 
 /***********************************************************
  * Application                                             *
@@ -53,55 +53,19 @@ public:
 
     auto go() -> void;
 
-protected:
-    using weight_map = dependencies::
-        dynamic_weight_map< architecture::graph, architecture::dependency_map >;
-
-    using position_map = layout::position_map< architecture::graph >;
-
-    auto dependencies_config() const -> const auto& { return m_deps_config; }
-    auto dependencies_config() -> auto& { return m_deps_config; }
-
-    auto layout_config() const -> const auto& { return m_layout_config; }
-    auto layout_config() -> auto& { return m_layout_config; }
-
-    auto rendering_config() const -> const auto& { return m_rendering_config; }
-    auto rendering_config() -> auto& { return m_rendering_config; }
-
-    auto symbol_table() const -> const auto& { return m_st; }
-    auto symbol_table() -> auto& { return m_st; }
-
-    auto graph() const -> const auto& { return m_g; }
-    auto graph() -> auto& { return m_g; }
-
-    auto cmd_history() const -> auto* { return m_cmds.get(); }
-
-    auto dependencies_core() const -> auto* { return m_deps.get(); }
-    auto layout_core() const -> auto* { return m_layout.get(); }
-
-    auto background_renderer() const -> auto* { return m_bkgrd_renderer.get(); }
-    auto graph_renderer() const -> auto* { return m_g_renderer.get(); }
-    auto cameraman() const -> auto* { return m_cameraman.get(); }
-    auto gui_input_handler() const -> auto* { return m_gui_input.get(); }
-    auto shortcut_handler() const -> auto* { return m_shortcut_handler.get(); }
-
-    auto menu_window() const -> auto* { return m_menu_win.get(); }
-    auto menu_bar() const -> auto* { return m_menu_bar.get(); }
-
-    auto tray_manager() const -> auto* { return m_tray_mnger.get(); }
-
     auto paused() const -> bool { return m_paused; }
 
+protected:
     auto toggle_pause_resume() -> void;
     auto toggle_frame_stats() -> void;
 
     auto make_id_map() const -> architecture::id_map;
     auto make_dependency_map() const -> architecture::dependency_map;
-    auto make_dynamic_weight_map() const -> weight_map;
+    auto make_weight_map() const -> weight_map;
     auto make_position_map() const -> position_map;
 
 private:
-    auto setup_architecture(const Json::Value& root) -> void;
+    auto setup_architecture() -> void;
     auto setup_commands() -> void;
     auto setup_dependencies() -> void;
     auto setup_layout() -> void;
@@ -128,35 +92,56 @@ private:
     auto pause() -> void;
     auto resume() -> void;
 
+    const char* m_graph_path { nullptr };
+
     bool m_paused { false };
 
-    dependencies::config_data m_deps_config;
+    std::unique_ptr< undo_redo::command_history > m_commands;
+
+    /***********************************************************
+     * Configs                                                 *
+     ***********************************************************/
+
+    dependencies::config_data m_dependencies_config;
     layout::config_data m_layout_config;
     rendering::config_data m_rendering_config;
 
-    architecture::symbol_table m_st;
-    architecture::graph m_g;
+    /***********************************************************
+     * Architecture                                            *
+     ***********************************************************/
 
-    std::unique_ptr< undo_redo::command_history > m_cmds;
-    std::unique_ptr< dependencies::core > m_deps;
-    std::unique_ptr< layout::core< architecture::graph, weight_map > > m_layout;
+    architecture::symbol_table m_symbol_table;
+    architecture::graph m_graph;
 
-    std::unique_ptr< rendering::background_renderer > m_bkgrd_renderer;
+    /***********************************************************
+     * Backends                                                *
+     ***********************************************************/
 
-    std::unique_ptr< rendering::graph_renderer<
-        architecture::graph,
-        architecture::id_map,
-        weight_map,
-        position_map > >
-        m_g_renderer;
+    std::unique_ptr< dependencies::backend > m_dependencies_backend;
+    std::unique_ptr< layout_backend > m_layout_backend;
 
-    std::unique_ptr< gui::menu_window > m_menu_win;
+    /***********************************************************
+     * Rendering                                               *
+     ***********************************************************/
+
+    std::unique_ptr< rendering::background_renderer > m_background_renderer;
+    std::unique_ptr< graph_renderer > m_graph_renderer;
+
+    /***********************************************************
+     * GUI                                                     *
+     ***********************************************************/
+
+    std::unique_ptr< gui::menu_window > m_menu_window;
     std::unique_ptr< gui::menu_bar > m_menu_bar;
-    std::unique_ptr< OgreBites::TrayManager > m_tray_mnger;
+    std::unique_ptr< OgreBites::TrayManager > m_tray_manager;
+
+    /***********************************************************
+     * Input                                                   *
+     ***********************************************************/
 
     std::unique_ptr< OgreBites::CameraMan > m_cameraman;
-    std::unique_ptr< OgreBites::ImGuiInputListener > m_gui_input;
-    std::unique_ptr< shortcut_input_listener > m_shortcut_handler;
+    std::unique_ptr< OgreBites::ImGuiInputListener > m_gui_input_listener;
+    std::unique_ptr< shortcut_input_listener > m_shortcut_input_listener;
 };
 
 } // namespace application

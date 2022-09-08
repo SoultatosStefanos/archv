@@ -1,5 +1,6 @@
 #include "archive.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <filesystem>
 #include <fstream>
 #include <ranges>
@@ -25,8 +26,15 @@ namespace
 
 archive::~archive()
 {
-    for (auto fname : std::ranges::views::keys(m_roots))
-        write_archive(fname);
+    try
+    {
+        for (auto fname : std::ranges::views::keys(m_roots))
+            write_archive(fname);
+    }
+    catch (const std::exception& e)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "failed to serialize all archives";
+    }
 
     m_roots.clear();
 }
