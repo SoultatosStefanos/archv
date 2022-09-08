@@ -39,6 +39,6 @@ private:
     hash_table m_table;
 };
 
-} // namespace architecture
+} // namespace metadata
 
 #endif // ARCHITECTURE_SYMBOL_TABLE_HPP

@@ -15,7 +15,7 @@ struct definition;
 struct method;
 struct structure;
 
-class generation;
+class tuple;
 
 } // namespace architecture
 

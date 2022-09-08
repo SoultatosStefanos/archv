@@ -1,5 +1,5 @@
 set(FILES
-	generation.cpp
+	config.cpp
 	symbol_table.cpp
 )
 set(SUBDIRECTORIES)

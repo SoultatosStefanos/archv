@@ -1,7 +1,9 @@
 set(FILES
+	backend_tests.cpp
 	config_tests.cpp
-	core_tests.cpp
+	layout_factory_tests.cpp
 	position_map_tests.cpp
+	topology_factory_tests.cpp
 )
 set(SUBDIRECTORIES)
 

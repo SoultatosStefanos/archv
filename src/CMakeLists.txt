@@ -2,13 +2,14 @@ set(FILES)
 set(SUBDIRECTORIES
 	application
 	architecture
+	config
 	dependencies
 	gui
-	json
 	layout
 	multithreading
 	progress
 	rendering
+	ui
 	undo_redo
 )
 

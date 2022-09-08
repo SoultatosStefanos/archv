@@ -11,12 +11,10 @@ namespace gui
 menu_window::menu_window(
     dependency_options deps,
     layout_options layouts,
-    topology_options topologies,
-    scale_options scales)
+    topology_options topologies)
 : m_dependencies { std::move(deps) }
 , m_layouts { std::move(layouts) }
 , m_topologies { std::move(topologies) }
-, m_scales { std::move(scales) }
 {
     namespace views = std::ranges::views;
 
@@ -123,19 +121,8 @@ void menu_window::draw_layout_header() const
 
         if (ImGui::TreeNode("Scale"))
         {
-            for (auto i = 0; const auto& option : m_scales)
-            {
-                const auto* buffer = std::to_string(option).c_str();
-
-                if (ImGui::Selectable(buffer, m_selected_scale == i))
-                {
-                    m_selected_scale = i;
-
-                    m_scale_signal(option);
-                }
-
-                ++i;
-            }
+            if (ImGui::SliderFloat("", &m_selected_scale, 0.0F, 1000.0F))
+                m_scale_signal(m_selected_scale);
 
             ImGui::TreePop();
         }
@@ -207,12 +194,9 @@ void menu_window::set_topology(const std::string& type)
     BOOST_LOG_TRIVIAL(info) << "topology set to " << type;
 }
 
-void menu_window::set_scale(double val)
+void menu_window::set_scale(float val)
 {
-    const auto index = find_assoc_index(m_scales, val);
-    assert(static_cast< std::size_t >(index) != m_scales.size());
-
-    m_selected_scale = index;
+    m_selected_scale = val;
 
     BOOST_LOG_TRIVIAL(info) << "scale set to " << val;
 }

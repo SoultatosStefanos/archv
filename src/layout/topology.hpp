@@ -26,7 +26,7 @@ class topology
 public:
     using point_type = typename boost::convex_topology< 3 >::point_type;
     using scale_type = double;
-    using descriptor = std::string;
+    using visitor_type = topology_visitor;
 
     topology() = default;
     topology(const topology&) = default;
@@ -36,24 +36,11 @@ public:
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
 
-    // For runtime type identification.
-    virtual auto desc() const -> descriptor = 0;
-
     virtual auto scale() const -> scale_type = 0;
 
-    virtual void accept(const topology_visitor&) const = 0;
+    virtual auto accept(const visitor_type&) const -> void = 0;
 
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
-};
-
-template < typename Topology >
-struct topology_traits
-{
-    using point_type = typename Topology::point_type;
-    using scale_type = typename Topology::scale_type;
-    using descriptor = typename Topology::descriptor;
-
-    static constexpr auto desc() -> auto { return Topology::description; }
 };
 
 } // namespace layout

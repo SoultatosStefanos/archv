@@ -22,7 +22,7 @@ class menu_window : public overlay
 
     using layout_signal = boost::signals2::signal< void(const std::string&) >;
     using topology_signal = boost::signals2::signal< void(const std::string&) >;
-    using scale_signal = boost::signals2::signal< void(double) >;
+    using scale_signal = boost::signals2::signal< void(float) >;
     using dependencies_restore_signal = boost::signals2::signal< void() >;
     using layout_restore_signal = boost::signals2::signal< void() >;
 
@@ -30,7 +30,6 @@ public:
     using dependency_options = std::unordered_map< std::string, int >;
     using layout_options = std::unordered_set< std::string >;
     using topology_options = std::unordered_set< std::string >;
-    using scale_options = std::unordered_set< double >;
 
     using dependency_slot = dependency_signal::slot_type;
     using layout_slot = layout_signal::slot_type;
@@ -44,8 +43,7 @@ public:
     explicit menu_window(
         dependency_options deps = dependency_options(),
         layout_options layouts = layout_options(),
-        topology_options topologies = topology_options(),
-        scale_options scales = scale_options());
+        topology_options topologies = topology_options());
 
     virtual ~menu_window() = default;
 
@@ -86,7 +84,7 @@ public:
     auto set_dependency(const std::string& type, int weight) -> void;
     auto set_layout(const std::string& type) -> void;
     auto set_topology(const std::string& type) -> void;
-    auto set_scale(double val) -> void;
+    auto set_scale(float val) -> void;
 
 private:
     auto draw_dependencies_header() const -> void;
@@ -97,7 +95,6 @@ private:
     dependency_options m_dependencies;
     layout_options m_layouts;
     topology_options m_topologies;
-    scale_options m_scales;
 
     dependency_signal m_dependency_signal;
     layout_signal m_layout_signal;
@@ -109,7 +106,7 @@ private:
     mutable std::vector< std::string > m_weight_strs;
     mutable int m_selected_layout { -1 };
     mutable int m_selected_topology { -1 };
-    mutable int m_selected_scale { -1 };
+    mutable float m_selected_scale { -1 };
 };
 
 } // namespace gui

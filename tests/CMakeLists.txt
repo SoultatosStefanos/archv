@@ -16,6 +16,7 @@ set(SUBDIRECTORIES
   dependencies
   layout
   progress
+  rendering
   undo_redo
   utility
 )

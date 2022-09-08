@@ -7,7 +7,7 @@ namespace layout
 
 sphere::sphere(scale_type scale) : m_sphere { scale }, m_scale { scale } { }
 
-void sphere::accept(const topology_visitor& visitor) const
+auto sphere::accept(const visitor_type& visitor) const -> void
 {
     visitor.visit(*this);
 }

@@ -4,8 +4,8 @@
 #ifndef LAYOUT_POSITION_MAP_HPP
 #define LAYOUT_POSITION_MAP_HPP
 
+#include "backend.hpp"
 #include "detail/position_map.hpp"
-#include "layout.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/property_map/function_property_map.hpp>
@@ -14,17 +14,18 @@ namespace layout
 {
 
 // A runtime managed 3D vertex-position property map from a layout.
-template < typename Graph >
+template < typename Graph, typename WeightMap >
 using position_map = boost::function_property_map<
-    detail::position_dispatcher< Graph >,
+    detail::position_dispatcher< Graph, WeightMap >,
     typename boost::graph_traits< Graph >::vertex_descriptor,
-    detail::position >;
+    typename detail::position_dispatcher< Graph, WeightMap >::position_type >;
 
 // Creates a runtime managed 3D vertex-position property map from a layout.
-template < typename Graph >
-inline auto make_position_map(const layout< Graph >& l)
+template < typename Graph, typename WeightMap >
+inline auto make_position_map(const backend< Graph, WeightMap >& b)
 {
-    return position_map< Graph >(detail::position_dispatcher< Graph >(l));
+    return position_map< Graph, WeightMap >(
+        detail::position_dispatcher< Graph, WeightMap >(b));
 }
 
 } // namespace layout

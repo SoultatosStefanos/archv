@@ -13,6 +13,9 @@ class sphere;
 class topology_visitor
 {
 public:
+    using cube_type = cube;
+    using sphere_type = sphere;
+
     topology_visitor() = default;
     topology_visitor(const topology_visitor&) = default;
     topology_visitor(topology_visitor&&) = default;
@@ -21,8 +24,8 @@ public:
     auto operator=(const topology_visitor&) -> topology_visitor& = default;
     auto operator=(topology_visitor&&) -> topology_visitor& = default;
 
-    virtual void visit(const cube& c) const = 0;
-    virtual void visit(const sphere& s) const = 0;
+    virtual void visit(const cube_type& c) const = 0;
+    virtual void visit(const sphere_type& s) const = 0;
 };
 
 } // namespace layout

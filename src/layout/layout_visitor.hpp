@@ -18,7 +18,8 @@ class layout_visitor
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
 public:
-    using graph = Graph;
+    using graph_type = Graph;
+    using gursoy_atun_type = gursoy_atun_layout< graph_type >;
 
     layout_visitor() = default;
     layout_visitor(const layout_visitor&) = default;
@@ -28,7 +29,7 @@ public:
     auto operator=(const layout_visitor&) -> layout_visitor& = default;
     auto operator=(layout_visitor&&) -> layout_visitor& = default;
 
-    virtual void visit(const gursoy_atun_layout< graph >& c) const = 0;
+    virtual auto visit(const gursoy_atun_type&) const -> void = 0;
 };
 
 } // namespace layout

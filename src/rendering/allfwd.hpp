@@ -7,6 +7,9 @@
 namespace rendering
 {
 
+struct background_config;
+class background_config_api;
+
 class background_renderer;
 
 template <

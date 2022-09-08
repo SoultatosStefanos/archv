@@ -72,11 +72,28 @@
 
 ## Features
 
-	+ [ ] Boxes
+	+ [x] Boxes
 
-	+ [ ] Illumintation
+	+ [x] Illumintation
 
 	+ [ ] Texts
+
+	+ [ ] Controlls Hud
+
+
+# Controls
+
+	+ [x] Free Camera 
+
+	+ [ ] Control Hud on/off
+
+	+ [ ] Frame Hud on/off
+
+	+ [x] Pause/Resume
+
+	+ [x] Quit
+
+	+ [ ] Camera speed
 
 
 	
@@ -302,18 +319,66 @@
 
 		+ [n] Avoid unnecessary subsystem setups 
  
-	+ [ ] Config from project root
+	+ [n] Config from project root
 
-	+ [ ] Background Renderer
-		
-		+ [ ] Live wallpaper? 
 
-		+ [?] ?
+# 02 / 09 / 2022
+
+	+ [x] Background Renderer
+
+		+ [x] Studio Skybox
+
+		+ [x] Configs
+
+	
+# 03 / 09 / 2022
 
 	+ [ ] Graph Renderer
 
+		+ [x] Configs
+		
+		+ [x] Box meshes
+
 		+ [ ] Arrow Edges
 
-		+ [ ] Box meshes
+	+ [n] Slider layout scale
 
-		+ [?] ?
+
+# 04 / 09 / 2022
+
+	+ [n] Any configurable layout
+	
+	+ [x] Graph Renderer
+
+		+ [x] Configs
+		
+		+ [x] Box meshes
+
+		+ [x] Line edges (Configurable)
+
+		+ [n] Direction on edges
+
+
+# 06 / 09 / 2022
+
+	+ [ ] Id text billboards on each vertex
+
+		+ [x] Id overlays
+
+		+ [ ] Configurable
+
+	+ [ ] Vertex material
+
+	+ [ ] Configurable via gui 
+
+	+ [ ] Backends Cleanup
+
+		+ [ ] Layout
+
+		+ [ ] Dependencies
+
+	+ [ ] Graph Data Access Layer
+
+	+ [ ] Application Layer
+
+	

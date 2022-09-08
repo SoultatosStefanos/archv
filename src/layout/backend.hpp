@@ -1,0 +1,213 @@
+// Contains a manager class of the layout subsystem.
+// Soultatos Stefanos 2022
+
+#ifndef LAYOUT_BACKEND_HPP
+#define LAYOUT_BACKEND_HPP
+
+#include "layout.hpp"
+#include "layout_factory.hpp"
+#include "layout_plugin.hpp"
+#include "topology.hpp"
+#include "topology_factory.hpp"
+#include "topology_plugin.hpp"
+
+#include <boost/graph/graph_concepts.hpp>
+#include <boost/signals2/signal.hpp>
+#include <cassert>
+#include <memory>
+#include <string>
+
+namespace layout
+{
+
+/***********************************************************
+ * Config Data                                             *
+ ***********************************************************/
+
+struct backend_config
+{
+    std::string layout;
+    std::string topology;
+    double scale;
+
+    auto operator==(const backend_config&) const -> bool = default;
+    auto operator!=(const backend_config&) const -> bool = default;
+};
+
+/***********************************************************
+ * Backend                                                 *
+ ***********************************************************/
+
+// Controls user interactions with the layout management system.
+template < typename Graph, typename WeightMap >
+class backend
+{
+    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
+
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept<
+            WeightMap,
+            typename boost::graph_traits< Graph >::edge_descriptor >));
+
+    using layout_signal_type
+        = boost::signals2::signal< void(const layout< Graph >&) >;
+
+    using topology_signal_type
+        = boost::signals2::signal< void(const topology&) >;
+
+public:
+    using graph_type = Graph;
+    using weight_map_type = WeightMap;
+    using layout_type = layout< graph_type >;
+    using topology_type = topology;
+    using scale_type = topology_type::scale_type;
+    using layout_slot_type = typename layout_signal_type::slot_type;
+    using topology_slot_type = topology_signal_type::slot_type;
+    using connection_type = boost::signals2::connection;
+    using config_data_type = backend_config;
+
+    backend(
+        const graph_type& g,
+        weight_map_type edge_weight,
+        config_data_type config = config_data_type())
+    : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
+    {
+        assert(is_layout_plugged_in(config_data().layout));
+        assert(is_topology_plugged_in(config_data().topology));
+
+        set_topology(config_data().topology, config_data().scale);
+        set_layout(config_data().layout);
+    }
+
+    auto get_layout() const -> const layout_type& { return *m_layout; }
+    auto get_topology() const -> const topology& { return *m_topology; }
+
+    auto graph() const -> const graph_type& { return m_g; }
+    auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
+    auto config_data() const -> const config_data_type& { return m_config; }
+
+    auto update_layout(const std::string& layout_id) -> void
+    {
+        set_layout(layout_id);
+
+        emit_layout();
+    }
+
+    auto update_layout(
+        const std::string& topology_id,
+        scale_type topology_scale,
+        const std::string& layout_id) -> void
+    {
+        set_topology(topology_id, topology_scale);
+        set_layout(layout_id);
+
+        emit_layout();
+        emit_topology();
+    }
+
+    auto connect_to_layout(const layout_slot_type& slot) -> connection_type
+    {
+        return m_layout_signal.connect(slot);
+    }
+
+    auto connect_to_topology(const topology_slot_type& slot) -> connection_type
+    {
+        return m_topology_signal.connect(slot);
+    }
+
+protected:
+    using layout_factory_type = layout_factory< graph_type >;
+
+    auto set_layout(const std::string& id) -> void
+    {
+        assert(m_topology);
+
+        m_layout = layout_factory_type::make_layout(
+            id, graph(), get_topology(), weight_map());
+
+        assert(m_layout);
+        assert(m_topology);
+    }
+
+    auto set_topology(const std::string& id, scale_type scale) -> void
+    {
+        m_topology = topology_factory::make_topology(id, scale);
+
+        assert(m_topology);
+    }
+
+    auto emit_layout() const -> void { m_layout_signal(get_layout()); }
+    auto emit_topology() const -> void { m_topology_signal(get_topology()); }
+
+private:
+    using layout_pointer = typename layout_factory< graph_type >::pointer;
+    using topology_pointer = topology_factory::pointer;
+
+    const graph_type& m_g;
+    weight_map_type m_edge_weight;
+
+    layout_signal_type m_layout_signal;
+    topology_signal_type m_topology_signal;
+
+    topology_pointer m_topology;
+    layout_pointer m_layout;
+
+    config_data_type m_config;
+};
+
+/***********************************************************
+ * Use Cases                                               *
+ ***********************************************************/
+
+template < typename Graph, typename WeightMap >
+inline auto update_layout(backend< Graph, WeightMap >& b, const std::string& id)
+{
+    b.update_layout(id);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_layout(
+    backend< Graph, WeightMap >& b,
+    const std::string& layout_id,
+    const std::string& topology_id,
+    typename backend< Graph, WeightMap >::scale_type scale)
+{
+    b.update_layout(topology_id, scale, layout_id);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_topology(
+    backend< Graph, WeightMap >& b,
+    const std::string& id,
+    typename backend< Graph, WeightMap >::scale_type scale)
+{
+    b.update_layout(id, scale, identify(b.get_layout()));
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+update_topology(backend< Graph, WeightMap >& b, const std::string& id)
+{
+    update_topology(b, id, b.get_topology().scale());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_scale(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::scale_type scale)
+{
+    update_topology(b, identify(b.get_topology()), scale);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto restore_defaults(backend< Graph, WeightMap >& b)
+{
+    b.update_layout(
+        b.config_data().topology,
+        b.config_data().scale,
+        b.config_data().layout);
+}
+
+} // namespace layout
+
+#endif // LAYOUT_BACKEND_HPP

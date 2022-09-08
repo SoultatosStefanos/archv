@@ -1,0 +1,50 @@
+{
+	"background" : 
+	{
+		"ambient-light" : 
+		[
+			0.29999999999999999,
+			0.29999999999999999,
+			0.29999999999999999
+		],
+		"diffuse-light" : 
+		[
+			1,
+			1,
+			1
+		],
+		"far-clip-distance" : 0,
+		"near-clip-distance" : 5,
+		"skybox-distance" : 5000,
+		"skybox-material" : "materials/skybox",
+		"specular-light" : 
+		[
+			0.69999999999999996,
+			0.69999999999999996,
+			0.69999999999999996
+		]
+	},
+	"graph" : 
+	{
+		"edge-material" : "materials/edge",
+		"vertex-billboard" : 
+		{
+			"char-height" : 50.0,
+			"color" : 
+			[
+				0.29999999999999999,
+				0.29999999999999999,
+				0.29999999999999999
+			],
+			"font-name" : "Fornire-Light",
+			"space-width" : 1.0
+		},
+		"vertex-mesh" : "cube.mesh",
+		"vertex-scale" : 
+		[
+			0.050000000000000003,
+			0.050000000000000003,
+			0.050000000000000003
+		]
+	}
+}

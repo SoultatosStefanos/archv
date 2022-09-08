@@ -25,6 +25,9 @@ foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
 
+# provide config path
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="/home/stef/Documents/Projects/archv/data/config")
+
 # make the src/ directory visible for include directives, as well as the tests/ (for testing utilites)
 target_include_directories(${PROJECT_LIB} PUBLIC src tests)
 

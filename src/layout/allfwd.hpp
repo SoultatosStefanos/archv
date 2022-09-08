@@ -8,7 +8,7 @@ namespace layout
 {
 
 template < typename Graph, typename WeightMap >
-class core;
+class backend;
 
 class topology_visitor;
 

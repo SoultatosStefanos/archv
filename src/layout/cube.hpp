@@ -17,8 +17,6 @@ public:
     using point_type = typename boost::convex_topology< 3 >::point_type;
     using data_type = boost::cube_topology< std::minstd_rand >;
 
-    static constexpr auto description = "Cube";
-
     explicit cube(scale_type scale);
     virtual ~cube() override = default;
 
@@ -26,11 +24,9 @@ public:
     auto data() const -> const data_type& { return m_cube; }
     auto data() -> data_type& { return m_cube; }
 
-    virtual auto desc() const -> descriptor override { return description; }
-
     virtual auto scale() const -> scale_type override { return m_scale; }
 
-    virtual void accept(const topology_visitor& visitor) const override;
+    virtual auto accept(const visitor_type& visitor) const -> void override;
 
     virtual auto clone() const -> std::unique_ptr< topology > override;
 

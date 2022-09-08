@@ -9,9 +9,11 @@
 namespace utility
 {
 
-auto read_json_root(std::string_view to) -> Json::Value
+auto read_json_root(
+    std::string_view to, const std::experimental::source_location& from)
+    -> Json::Value
 {
-    const auto path = resolve_path(to);
+    const auto path = resolve_path(to, from);
     assert(std::filesystem::exists(path));
 
     std::ifstream archive { path };

@@ -1,7 +1,5 @@
 #include "menu_bar.hpp"
 
-#include "detail/imfilebrowser.h"
-
 #include <boost/log/trivial.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
@@ -21,38 +19,9 @@ auto menu_bar::draw() const -> void
 {
     if (ImGui::BeginMainMenuBar())
     {
-        m_file_browser.draw(); // always due to 3rd party weird quirk.
-
-        draw_file_submenu();
         draw_edit_submenu();
 
         ImGui::EndMainMenuBar();
-    }
-}
-
-void menu_bar::draw_file_submenu() const
-{
-
-    if (ImGui::BeginMenu("File"))
-    {
-        if (ImGui::MenuItem("Open", "Ctrl+O"))
-            m_file_browser.open();
-
-        if (ImGui::MenuItem("Open Recent"))
-        {
-        }
-
-        if (ImGui::MenuItem("Save", "Ctrl+S"))
-        {
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Quit", "Esc"))
-        {
-        }
-
-        ImGui::EndMenu();
     }
 }
 

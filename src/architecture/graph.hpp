@@ -38,6 +38,6 @@ using id_map
 using dependency_map
     = decltype(boost::get(boost::edge_bundle, std::declval< graph >()));
 
-} // namespace architecture
+} // namespace metadata
 
 #endif // ARCHITECTURE_GRAPH_HPP

@@ -1,6 +1,10 @@
 set(FILES
+	app_backends.cpp
+	app_connections.cpp
+	app_frontends.cpp
+	app_input.cpp
 	app.cpp
-	config.cpp
+	commands.cpp
 	shortcut_input_listener.cpp
 )
 set(SUBDIRECTORIES)

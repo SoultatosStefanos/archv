@@ -4,7 +4,6 @@
 #ifndef GUI_ALL_HPP
 #define GUI_ALL_HPP
 
-#include "file_dialog.hpp"
 #include "menu_bar.hpp"
 #include "menu_window.hpp"
 #include "overlay.hpp"
