@@ -23,6 +23,9 @@ constexpr auto is_topology_plugged_in(std::string_view id) -> bool
     return std::find(std::begin(set), std::end(set), id) != std::end(set);
 }
 
+static_assert(is_topology_plugged_in(cube_id));
+static_assert(is_topology_plugged_in(sphere_id));
+
 auto identify(const topology&) -> std::string;
 
 } // namespace layout

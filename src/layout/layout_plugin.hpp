@@ -25,6 +25,8 @@ constexpr auto is_layout_plugged_in(std::string_view id) -> bool
     return std::find(std::begin(set), std::end(set), id) != std::end(set);
 }
 
+static_assert(is_layout_plugged_in(gursoy_atun_id));
+
 namespace detail
 {
     template < typename Graph >
