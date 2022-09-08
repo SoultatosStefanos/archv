@@ -1,17 +1,6 @@
 {
-		"layouts" : 
-		[
-			"Gursoy Atun"
-		],
-		"topologies" : 
-		[
-			"Cube",
-			"Sphere"
-		],
-		"defaults" :
-		{
-			"layout" : "Gursoy Atun",
-			"topology" : "Sphere",
-			"scale" : 200
-		}
+
+	"layout" : "Gursoy Atun",
+	"topology" : "Sphere",
+	"scale" : 200
 }
