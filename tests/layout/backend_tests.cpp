@@ -31,8 +31,9 @@ using mock_topology_slot
 class given_a_layout_backend : public Test
 {
 public:
-    static constexpr auto initial_layout = "Gursoy Atun";
-    static constexpr auto initial_topology = "Cube";
+    static constexpr auto initial_layout
+        = layout::layout_plugin::gursoy_atun_id;
+    static constexpr auto initial_topology = layout::topology_plugin::cube_id;
     static constexpr auto initial_scale = 22;
 
     void SetUp() override
@@ -65,7 +66,7 @@ TEST_F(given_a_layout_backend, initially_has_defaulted_entities)
 
 TEST_F(given_a_layout_backend, a_layout_update_will_set_new_type)
 {
-    static constexpr auto new_type = "Gursoy Atun";
+    static constexpr auto new_type = layout::layout_plugin::gursoy_atun_id;
 
     layout::update_layout(*inst, new_type);
 
@@ -74,7 +75,7 @@ TEST_F(given_a_layout_backend, a_layout_update_will_set_new_type)
 
 TEST_F(given_a_layout_backend, a_layout_update_will_callback_observers)
 {
-    static constexpr auto new_type = "Gursoy Atun";
+    static constexpr auto new_type = layout::layout_plugin::gursoy_atun_id;
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
 
     EXPECT_CALL(mock_layout_observer, Call(_)).Times(1);
@@ -84,7 +85,7 @@ TEST_F(given_a_layout_backend, a_layout_update_will_callback_observers)
 
 TEST_F(given_a_layout_backend, a_topology_update_will_set_new_topology_type)
 {
-    static constexpr auto new_type = "Sphere";
+    static constexpr auto new_type = layout::topology_plugin::sphere_id;
 
     layout::update_topology(*inst, new_type);
 
@@ -94,7 +95,7 @@ TEST_F(given_a_layout_backend, a_topology_update_will_set_new_topology_type)
 
 TEST_F(given_a_layout_backend, a_topology_update_will_callback_observers)
 {
-    static constexpr auto new_type = "Sphere";
+    static constexpr auto new_type = layout::topology_plugin::sphere_id;
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
     inst->connect_to_topology(mock_space_observer.AsStdFunction());
 
@@ -128,7 +129,7 @@ TEST_F(given_a_layout_backend, a_scale_update_will_callback_observers)
 
 TEST_F(given_a_layout_backend, restoring_defaults_sets_initial_values)
 {
-    layout::update_topology(*inst, "Sphere", 300);
+    layout::update_topology(*inst, layout::topology_plugin::sphere_id, 300);
 
     EXPECT_NE(
         layout::topology_plugin::identify(inst->get_topology()),

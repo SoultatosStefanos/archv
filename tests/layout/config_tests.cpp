@@ -1,4 +1,6 @@
 #include "layout/config.hpp"
+#include "layout/layout_plugin.hpp"
+#include "layout/topology_plugin.hpp"
 #include "utility/all.hpp"
 
 #include <gmock/gmock.h>
@@ -37,8 +39,8 @@ TEST(layout_deserialization, sample_layout_unknown_topology)
 
 auto make_sample_layout_0()
 {
-    return config_data { .layout = "Gursoy Atun",
-                         .topology = "Cube",
+    return config_data { .layout = layout_plugin::gursoy_atun_id,
+                         .topology = topology_plugin::cube_id,
                          .scale = 100 };
 }
 

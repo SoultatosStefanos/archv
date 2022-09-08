@@ -25,7 +25,7 @@ using backend = layout::backend< graph, weight_map >;
 
 inline auto default_config()
 {
-    return lay::backend_config { .layout = "Gursoy Atun",
+    return lay::backend_config { .layout = lay::layout_plugin::gursoy_atun_id,
                                  .topology = "Cube",
                                  .scale = 20 };
 }
