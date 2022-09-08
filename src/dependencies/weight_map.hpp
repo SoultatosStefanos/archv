@@ -18,7 +18,7 @@ template < typename Graph, typename DependencyMap >
 using weight_map = boost::function_property_map<
     detail::weight_dispatcher< Graph, DependencyMap >,
     typename boost::graph_traits< Graph >::edge_descriptor,
-    backend::integer >;
+    backend::weight_type >;
 
 // Creates a runtime managed edge-weight property map from a dependencies
 // backend.
@@ -34,7 +34,7 @@ inline auto make_weight_map(const backend& b, DependencyMap edge_dependency)
 
     static_assert(std::is_convertible_v<
                   typename boost::property_traits< DependencyMap >::value_type,
-                  backend::string >);
+                  std::string >);
 
     return weight_map< Graph, DependencyMap >(
         detail::weight_dispatcher< Graph, DependencyMap >(b, edge_dependency));

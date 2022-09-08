@@ -10,7 +10,8 @@ backend::backend(config_data_type config)
 {
 }
 
-auto backend::update_weight(const string& dependency, integer weight) -> void
+auto backend::update_weight(const std::string& dependency, weight_type weight)
+    -> void
 {
     assert(config_data().contains(dependency));
 

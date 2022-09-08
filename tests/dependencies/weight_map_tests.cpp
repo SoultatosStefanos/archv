@@ -21,7 +21,7 @@ using graph = boost::adjacency_list<
     boost::no_property,
     boost::no_property >;
 
-using dependency_type = backend::string;
+using dependency_type = std::string;
 
 using dependency_map
     = boost::constant_property_map< graph::edge_descriptor, dependency_type >;
