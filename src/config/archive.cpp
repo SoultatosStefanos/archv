@@ -17,27 +17,14 @@ namespace
         return root;
     }
 
-    auto write_archive(archive::file_name_type fname) -> void
+    [[maybe_unused]] auto write_archive(archive::file_name_type fname) -> void
     {
         std::ofstream(fname.data()) << archive::get().at(fname);
     }
 
 } // namespace
 
-archive::~archive()
-{
-    try
-    {
-        for (auto fname : std::ranges::views::keys(m_roots))
-            write_archive(fname);
-    }
-    catch (const std::exception& e)
-    {
-        BOOST_LOG_TRIVIAL(warning) << "failed to serialize all archives";
-    }
-
-    m_roots.clear();
-}
+archive::~archive() = default;
 
 auto archive::at(file_name_type fname) const -> const json_root_type&
 {
