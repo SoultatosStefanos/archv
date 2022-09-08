@@ -16,7 +16,6 @@
 #include <cassert>
 #include <memory>
 #include <string>
-#include <unordered_set>
 
 namespace layout
 {
@@ -74,8 +73,8 @@ public:
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
-        assert(layout_plugin::enumerates(config_data().layout));
-        assert(topology_plugin::enumerates(config_data().topology));
+        assert(is_layout_plugged_in(config_data().layout));
+        assert(is_topology_plugged_in(config_data().topology));
 
         set_topology(config_data().topology, config_data().scale);
         set_layout(config_data().layout);
@@ -175,7 +174,7 @@ inline auto update_topology(
     const typename backend< Graph, WeightMap >::string& type,
     typename backend< Graph, WeightMap >::real scale)
 {
-    b.update_layout(type, scale, layout_plugin::identify(b.get_layout()));
+    b.update_layout(type, scale, identify(b.get_layout()));
 }
 
 template < typename Graph, typename WeightMap >
@@ -191,7 +190,7 @@ inline auto update_scale(
     backend< Graph, WeightMap >& b,
     typename backend< Graph, WeightMap >::real scale)
 {
-    update_topology(b, topology_plugin::identify(b.get_topology()), scale);
+    update_topology(b, identify(b.get_topology()), scale);
 }
 
 template < typename Graph, typename WeightMap >

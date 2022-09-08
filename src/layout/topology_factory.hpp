@@ -5,11 +5,9 @@
 #define LAYOUT_TOPOLOGY_FACTORY_HPP
 
 #include "topology.hpp"
-#include "topology_plugin.hpp"
 
-#include <algorithm>
 #include <memory>
-#include <string_view>
+#include <string>
 
 namespace layout
 {
@@ -19,7 +17,6 @@ class topology_factory final
 public:
     using pointer = std::unique_ptr< topology >;
     using scale_type = topology::scale_type;
-    using identifier = topology_plugin::identifier;
 
     topology_factory(const topology_factory&) = delete;
     topology_factory(topology_factory&&) = delete;
@@ -27,7 +24,7 @@ public:
     auto operator=(const topology_factory&) -> topology_factory& = delete;
     auto operator=(topology_factory&&) -> topology_factory& = delete;
 
-    static auto make_topology(const identifier& id, scale_type s) -> pointer;
+    static auto make_topology(const std::string& id, scale_type s) -> pointer;
 
 private:
     topology_factory() = default;

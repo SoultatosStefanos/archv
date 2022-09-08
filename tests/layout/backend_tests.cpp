@@ -9,8 +9,6 @@
 namespace
 {
 
-using namespace testing;
-
 using graph = boost::adjacency_list<
     boost::vecS,
     boost::vecS,
@@ -22,18 +20,17 @@ using weight_map = boost::constant_property_map< graph::edge_descriptor, int >;
 
 using backend = layout::backend< graph, weight_map >;
 
-using mock_layout_slot
-    = NiceMock< MockFunction< void(const backend::layout_type&) > >;
+using mock_layout_slot = testing::NiceMock<
+    testing::MockFunction< void(const backend::layout_type&) > >;
 
-using mock_topology_slot
-    = NiceMock< MockFunction< void(const layout::topology&) > >;
+using mock_topology_slot = testing::NiceMock<
+    testing::MockFunction< void(const layout::topology&) > >;
 
-class given_a_layout_backend : public Test
+class given_a_layout_backend : public testing::Test
 {
 public:
-    static constexpr auto initial_layout
-        = layout::layout_plugin::gursoy_atun_id;
-    static constexpr auto initial_topology = layout::topology_plugin::cube_id;
+    static constexpr auto initial_layout = layout::gursoy_atun_id;
+    static constexpr auto initial_topology = layout::cube_id;
     static constexpr auto initial_scale = 22;
 
     void SetUp() override
@@ -56,91 +53,74 @@ protected:
 
 TEST_F(given_a_layout_backend, initially_has_defaulted_entities)
 {
-    ASSERT_EQ(
-        layout::layout_plugin::identify(inst->get_layout()), initial_layout);
-    ASSERT_EQ(
-        layout::topology_plugin::identify(inst->get_topology()),
-        initial_topology);
+    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
+    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
 TEST_F(given_a_layout_backend, a_layout_update_will_set_new_type)
 {
-    static constexpr auto new_type = layout::layout_plugin::gursoy_atun_id;
+    layout::update_layout(*inst, layout::gursoy_atun_id);
 
-    layout::update_layout(*inst, new_type);
-
-    ASSERT_EQ(layout::layout_plugin::identify(inst->get_layout()), new_type);
+    ASSERT_EQ(layout::identify(inst->get_layout()), layout::gursoy_atun_id);
 }
 
 TEST_F(given_a_layout_backend, a_layout_update_will_callback_observers)
 {
-    static constexpr auto new_type = layout::layout_plugin::gursoy_atun_id;
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
 
-    EXPECT_CALL(mock_layout_observer, Call(_)).Times(1);
+    EXPECT_CALL(mock_layout_observer, Call(testing::_)).Times(1);
 
-    layout::update_layout(*inst, new_type);
+    layout::update_layout(*inst, layout::gursoy_atun_id);
 }
 
 TEST_F(given_a_layout_backend, a_topology_update_will_set_new_topology_type)
 {
-    static constexpr auto new_type = layout::topology_plugin::sphere_id;
+    layout::update_topology(*inst, layout::sphere_id);
 
-    layout::update_topology(*inst, new_type);
-
-    ASSERT_EQ(
-        layout::topology_plugin::identify(inst->get_topology()), new_type);
+    ASSERT_EQ(layout::identify(inst->get_topology()), layout::sphere_id);
 }
 
 TEST_F(given_a_layout_backend, a_topology_update_will_callback_observers)
 {
-    static constexpr auto new_type = layout::topology_plugin::sphere_id;
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
     inst->connect_to_topology(mock_space_observer.AsStdFunction());
 
-    EXPECT_CALL(mock_layout_observer, Call(_)).Times(1);
-    EXPECT_CALL(mock_space_observer, Call(_)).Times(1);
+    EXPECT_CALL(mock_layout_observer, Call(testing::_)).Times(1);
+    EXPECT_CALL(mock_space_observer, Call(testing::_)).Times(1);
 
-    layout::update_topology(*inst, new_type);
+    layout::update_topology(*inst, layout::sphere_id);
 }
 
 TEST_F(given_a_layout_backend, a_scale_update_will_set_new_scale)
 {
-    static constexpr auto new_scale = 34;
+    layout::update_scale(*inst, 34);
 
-    layout::update_scale(*inst, new_scale);
-
-    ASSERT_EQ(inst->get_topology().scale(), new_scale);
+    ASSERT_EQ(inst->get_topology().scale(), 34);
 }
 
 TEST_F(given_a_layout_backend, a_scale_update_will_callback_observers)
 {
-    static constexpr auto new_scale = 34;
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
     inst->connect_to_layout(mock_layout_observer.AsStdFunction());
     inst->connect_to_topology(mock_space_observer.AsStdFunction());
 
-    EXPECT_CALL(mock_layout_observer, Call(_)).Times(2);
-    EXPECT_CALL(mock_space_observer, Call(_)).Times(1);
+    EXPECT_CALL(mock_layout_observer, Call(testing::_)).Times(2);
+    EXPECT_CALL(mock_space_observer, Call(testing::_)).Times(1);
 
-    layout::update_scale(*inst, new_scale);
+    layout::update_scale(*inst, 34);
 }
 
 TEST_F(given_a_layout_backend, restoring_defaults_sets_initial_values)
 {
-    layout::update_topology(*inst, layout::topology_plugin::sphere_id, 300);
+    layout::update_topology(*inst, layout::sphere_id, 300);
 
-    EXPECT_NE(
-        layout::topology_plugin::identify(inst->get_topology()),
-        initial_topology);
+    EXPECT_NE(identify(inst->get_topology()), initial_topology);
     EXPECT_NE(inst->get_topology().scale(), initial_scale);
 
     layout::restore_defaults(*inst);
 
-    ASSERT_EQ(
-        layout::topology_plugin::identify(inst->get_topology()),
-        initial_topology);
+    ASSERT_EQ(identify(inst->get_topology()), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 

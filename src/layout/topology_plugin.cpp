@@ -15,32 +15,24 @@ namespace
     class topology_identifier : public topology_visitor
     {
     public:
-        using identifier = topology_plugin::identifier;
-
-        explicit topology_identifier(identifier& id) : m_id { id } { }
+        explicit topology_identifier(std::string& id) : m_id { id } { }
         ~topology_identifier() override = default;
 
-        auto visit(const cube&) const -> void override
-        {
-            m_id = topology_plugin::cube_id;
-        }
+        auto visit(const cube&) const -> void override { m_id = cube_id; }
 
-        auto visit(const sphere&) const -> void override
-        {
-            m_id = topology_plugin::sphere_id;
-        }
+        auto visit(const sphere&) const -> void override { m_id = sphere_id; }
 
     private:
-        identifier& m_id;
+        std::string& m_id;
     };
 
 } // namespace
 
-auto topology_plugin::identify(const topology& space) -> identifier
+auto identify(const topology& space) -> std::string
 {
-    identifier res;
+    std::string res;
     space.accept(topology_identifier(res));
-    assert(topology_plugin::enumerates(res));
+    assert(is_topology_plugged_in(res));
     return res;
 }
 

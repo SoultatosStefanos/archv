@@ -4,8 +4,6 @@
 #ifndef LAYOUT_CONFIG_HPP
 #define LAYOUT_CONFIG_HPP
 
-#include "backend.hpp"
-
 #include <boost/exception/all.hpp>
 #include <exception>
 #include <jsoncpp/json/json.h>
@@ -41,6 +39,8 @@ using topology_info = boost::error_info< struct tag_topology, std::string >;
 /***********************************************************
  * Config Data                                             *
  ***********************************************************/
+
+struct backend_config;
 
 using config_data = backend_config;
 

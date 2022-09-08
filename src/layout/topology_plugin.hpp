@@ -12,24 +12,18 @@ namespace layout
 
 class topology;
 
-namespace topology_plugin
+static constexpr auto cube_id = "Cube";
+static constexpr auto sphere_id = "Sphere";
+
+static constexpr auto topology_ids = std::array { cube_id, sphere_id };
+
+constexpr auto is_topology_plugged_in(std::string_view id) -> bool
 {
-    using identifier = std::string;
+    constexpr auto& set = topology_ids;
+    return std::find(std::begin(set), std::end(set), id) != std::end(set);
+}
 
-    static constexpr auto cube_id = "Cube";
-    static constexpr auto sphere_id = "Sphere";
-
-    static constexpr auto enumeration = std::array { cube_id, sphere_id };
-
-    constexpr auto enumerates(const identifier& tag) -> bool
-    {
-        constexpr auto& set = enumeration;
-        return std::find(std::begin(set), std::end(set), tag) != std::end(set);
-    }
-
-    auto identify(const topology&) -> identifier;
-
-} // namespace topology_plugin
+auto identify(const topology&) -> std::string;
 
 } // namespace layout
 

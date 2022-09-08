@@ -1,11 +1,11 @@
 #include "config.hpp"
 
+#include "backend.hpp"
 #include "layout_plugin.hpp"
 #include "topology_plugin.hpp"
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
-#include <unordered_set>
 
 namespace layout
 {
@@ -15,13 +15,13 @@ namespace
 
     auto verify_layout(const config_data& data) -> void
     {
-        if (!layout_plugin::enumerates(data.layout))
+        if (!is_layout_plugged_in(data.layout))
             BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(data.layout));
     }
 
     auto verify_topology(const config_data& data) -> void
     {
-        if (!topology_plugin::enumerates(data.topology))
+        if (!is_topology_plugged_in(data.topology))
             BOOST_THROW_EXCEPTION(
                 unknown_topology() << topology_info(data.topology));
     }

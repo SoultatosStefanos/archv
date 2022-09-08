@@ -1,3 +1,4 @@
+#include "layout/backend.hpp"
 #include "layout/config.hpp"
 #include "layout/layout_plugin.hpp"
 #include "layout/topology_plugin.hpp"
@@ -39,8 +40,8 @@ TEST(layout_deserialization, sample_layout_unknown_topology)
 
 auto make_sample_layout_0()
 {
-    return config_data { .layout = layout_plugin::gursoy_atun_id,
-                         .topology = topology_plugin::cube_id,
+    return config_data { .layout = gursoy_atun_id,
+                         .topology = cube_id,
                          .scale = 100 };
 }
 

@@ -8,58 +8,57 @@
 #include "layout_visitor.hpp"
 
 #include <array>
+#include <concepts>
 #include <string>
+#include <string_view>
 
 namespace layout
 {
 
-namespace layout_plugin
+constexpr auto gursoy_atun_id = "Gursoy Atun";
+
+constexpr auto layout_ids = std::array { gursoy_atun_id };
+
+constexpr auto is_layout_plugged_in(std::string_view id) -> bool
 {
-    using identifier = std::string;
+    constexpr auto& set = layout_ids;
+    return std::find(std::begin(set), std::end(set), id) != std::end(set);
+}
 
-    static constexpr auto gursoy_atun_id = "Gursoy Atun";
-
-    static constexpr auto enumeration = std::array { gursoy_atun_id };
-
-    constexpr auto enumerates(const identifier& tag) -> bool
-    {
-        constexpr auto& set = enumeration;
-        return std::find(std::begin(set), std::end(set), tag) != std::end(set);
-    }
-
-    namespace detail
-    {
-        template < typename Graph >
-        class layout_identifier : public layout_visitor< Graph >
-        {
-        public:
-            using base = layout_visitor< Graph >;
-            using gursoy_atun_type = typename base::gursoy_atun_type;
-
-            explicit layout_identifier(identifier& i) : m_i { i } { }
-            ~layout_identifier() override = default;
-
-            auto visit(const gursoy_atun_type&) const -> void
-            {
-                m_i = gursoy_atun_id;
-            }
-
-        private:
-            identifier& m_i;
-        };
-
-    } // namespace detail
-
+namespace detail
+{
     template < typename Graph >
-    auto identify(const layout< Graph >& l) -> identifier
+    class layout_identifier : public layout_visitor< Graph >
     {
-        identifier res;
-        l.accept(detail::layout_identifier< Graph >(res));
-        assert(enumerates(res));
-        return res;
-    }
+    public:
+        using base = layout_visitor< Graph >;
+        using gursoy_atun_type = typename base::gursoy_atun_type;
 
-} // namespace layout_plugin
+        explicit layout_identifier(std::string& i) : m_i { i } { }
+        ~layout_identifier() override = default;
+
+        auto visit(const gursoy_atun_type&) const -> void
+        {
+            m_i = gursoy_atun_id;
+        }
+
+    private:
+        std::string& m_i;
+    };
+
+} // namespace detail
+
+template < typename Layout >
+requires std::derived_from< Layout, layout< typename Layout::graph_type > >
+auto identify(const Layout& l) -> std::string
+{
+    using graph_type = typename Layout::graph_type;
+
+    std::string res;
+    l.accept(detail::layout_identifier< graph_type >(res));
+    assert(is_layout_plugged_in(res));
+    return res;
+}
 
 } // namespace layout
 
