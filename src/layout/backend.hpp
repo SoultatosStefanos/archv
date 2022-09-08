@@ -166,6 +166,16 @@ inline auto update_layout(backend< Graph, WeightMap >& b, const std::string& id)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto update_layout(
+    backend< Graph, WeightMap >& b,
+    const std::string& layout_id,
+    const std::string& topology_id,
+    typename backend< Graph, WeightMap >::scale_type scale)
+{
+    b.update_layout(topology_id, scale, layout_id);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto update_topology(
     backend< Graph, WeightMap >& b,
     const std::string& id,

@@ -1,4 +1,6 @@
 set(FILES
+	commands.cpp
+	shortcut_input_listener.cpp
 )
 set(SUBDIRECTORIES)
 

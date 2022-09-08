@@ -1,5 +1,6 @@
 set(FILES)
 set(SUBDIRECTORIES
+	application
 	architecture
 	config
 	dependencies
