@@ -361,6 +361,19 @@
 
 # 06 / 09 / 2022
 
+	+ [x] Backends Cleanup
+
+		+ [x] Layout
+
+		+ [x] Dependencies
+
+	+ [n] Graph Data Access Layer
+
+	+ [x] Application Layer
+
+
+# 09 / 09 / 2022
+
 	+ [ ] Id text billboards on each vertex
 
 		+ [x] Id overlays
@@ -370,15 +383,5 @@
 	+ [ ] Vertex material
 
 	+ [ ] Configurable via gui 
-
-	+ [ ] Backends Cleanup
-
-		+ [ ] Layout
-
-		+ [ ] Dependencies
-
-	+ [ ] Graph Data Access Layer
-
-	+ [ ] Application Layer
 
 	
