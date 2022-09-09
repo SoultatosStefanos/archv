@@ -380,8 +380,9 @@
 
 		+ [x] Configurable
 
-	+ [ ] Vertex material
+	+ [n] Vertex material
 
-	+ [ ] Configurable via gui 
 
-	
+# 10 / 10 / 2022
+
+	+ [ ] GUI to config style
