@@ -49,6 +49,8 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
     multithreading::poll_message();
+    // if (paused())
+    //     ImGui::ShowDemoWindow();
     gui::overlay_manager::get().draw_all();
     return true;
 }
