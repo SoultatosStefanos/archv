@@ -229,11 +229,101 @@ auto menu_bar::draw_graph_rendering_settings() const -> void
     }
 }
 
+namespace
+{
+    auto draw_style_selector(const char* label)
+    {
+        static int style_idx = -1;
+        if (ImGui::Combo(label, &style_idx, "Dark\0Light\0Classic\0"))
+        {
+            switch (style_idx)
+            {
+            case 0:
+                ImGui::StyleColorsDark(); // FIXME
+                return 0;
+            case 1:
+                ImGui::StyleColorsLight(); // FIXME
+                return 1;
+            case 2:
+                ImGui::StyleColorsClassic(); // FIXME
+                return 2;
+            }
+        }
+        return -1;
+    }
+
+    auto draw_font_selector(const char* label)
+    {
+        auto& io = ImGui::GetIO();
+        auto* font_curr = ImGui::GetFont();
+
+        if (ImGui::BeginCombo(label, font_curr->GetDebugName()))
+        {
+            for (auto i = 0; i < io.Fonts->Fonts.Size; ++i)
+            {
+                auto* font = io.Fonts->Fonts[i];
+                ImGui::PushID((void*)font);
+
+                // FIXME
+                if (ImGui::Selectable(font->GetDebugName(), font == font_curr))
+                    io.FontDefault = font;
+
+                ImGui::PopID();
+            }
+            ImGui::EndCombo();
+        }
+    }
+} // namespace
+
+// Shamelessly copied from dear-imgui docs.
+
+// FIXME
 auto menu_bar::draw_gui_settings() const -> void
 {
     if (ImGui::BeginMenu("GUI"))
     {
-        ImGui::ShowStyleEditor();
+        auto& style = ImGui::GetStyle();
+
+        ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
+
+        draw_style_selector("Colors##Selector");
+        draw_font_selector("Fonts##Selector");
+
+        if (ImGui::SliderFloat(
+                "FrameRounding", &style.FrameRounding, 0.0f, 12.0f, "%.0f"))
+            style.GrabRounding = style.FrameRounding;
+
+        spaced_separator();
+
+        {
+            bool border = style.WindowBorderSize > 0.0f;
+
+            if (ImGui::Checkbox("WindowBorder", &border))
+                style.WindowBorderSize = border ? 1.0f : 0.0f;
+        }
+
+        ImGui::SameLine();
+
+        {
+            bool border = style.FrameBorderSize > 0.0f;
+
+            if (ImGui::Checkbox("FrameBorder", &border))
+                style.FrameBorderSize = border ? 1.0f : 0.0f;
+        }
+
+        ImGui::SameLine();
+
+        {
+            bool border = style.PopupBorderSize > 0.0f;
+
+            if (ImGui::Checkbox("PopupBorder", &border))
+                style.PopupBorderSize = border ? 1.0f : 0.0f;
+        }
+
+        spaced_separator();
+
+        config_buttons();
+
         ImGui::EndMenu();
     }
 }
