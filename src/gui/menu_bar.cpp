@@ -120,12 +120,12 @@ auto menu_bar::draw_background_rendering_settings() const -> void
         {
             static const char* items[] = { "AAAA", "BBBB" };
             static int curr;
-            ImGui::Combo("Material", &curr, items, IM_ARRAYSIZE(items));
+            ImGui::Combo("Material Name", &curr, items, IM_ARRAYSIZE(items));
         }
 
         {
-            static double d;
-            ImGui::InputDouble("Distance", &d);
+            static float f;
+            ImGui::InputFloat("Distance", &f, 1);
         }
 
         spaced_separator();
@@ -134,17 +134,17 @@ auto menu_bar::draw_background_rendering_settings() const -> void
 
         {
             static float col[3];
-            ImGui::ColorEdit3("Ambient", col);
+            ImGui::ColorEdit3("Ambient Color", col);
         }
 
         {
             static float col[3];
-            ImGui::ColorEdit3("Diffuse", col);
+            ImGui::ColorEdit3("Diffuse Color", col);
         }
 
         {
             static float col[3];
-            ImGui::ColorEdit3("Specular", col);
+            ImGui::ColorEdit3("Specular Color", col);
         }
 
         spaced_separator();
@@ -152,13 +152,13 @@ auto menu_bar::draw_background_rendering_settings() const -> void
         spaced_text("Camera");
 
         {
-            static double d;
-            ImGui::InputDouble("Far Clip Distance", &d);
+            static float f;
+            ImGui::InputFloat("Far Clip Distance", &f, 1);
         }
 
         {
-            static double d;
-            ImGui::InputDouble("Near Clip Distance", &d);
+            static float f;
+            ImGui::InputFloat("Near Clip Distance", &f, 1);
         }
 
         spaced_separator();
@@ -179,13 +179,13 @@ auto menu_bar::draw_graph_rendering_settings() const -> void
             static const char* items[] = { "AAAA", "BBBB" };
             static int curr;
 
-            ImGui::Combo("Mesh", &curr, items, IM_ARRAYSIZE(items));
+            ImGui::Combo("Mesh Name", &curr, items, IM_ARRAYSIZE(items));
         }
 
         {
             static float scale[4];
 
-            ImGui::InputFloat3("Scale", scale);
+            ImGui::InputFloat("Scale", scale, 1);
         }
 
         spaced_text("ID Caption");
@@ -198,8 +198,8 @@ auto menu_bar::draw_graph_rendering_settings() const -> void
         }
 
         {
-            static double d;
-            ImGui::InputDouble("Char Height", &d);
+            static float f;
+            ImGui::InputFloat("Char Height", &f, 1);
         }
 
         {
@@ -208,8 +208,8 @@ auto menu_bar::draw_graph_rendering_settings() const -> void
         }
 
         {
-            static double d;
-            ImGui::InputDouble("Space Width", &d);
+            static float f;
+            ImGui::InputFloat("Space Width", &f, 1);
         }
 
         spaced_separator();
@@ -220,7 +220,7 @@ auto menu_bar::draw_graph_rendering_settings() const -> void
             static const char* items[] = { "GGGG", "HHHH" };
             static int curr;
 
-            ImGui::Combo("Material", &curr, items, IM_ARRAYSIZE(items));
+            ImGui::Combo("Material Name", &curr, items, IM_ARRAYSIZE(items));
         }
 
         config_buttons();
