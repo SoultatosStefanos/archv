@@ -35,10 +35,10 @@ void menu_bar::draw_edit_submenu() const
         if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
             m_undo_sig();
 
+        ImGui::Spacing();
+
         if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
             m_redo_sig();
-
-        ImGui::Separator();
 
         ImGui::EndMenu();
     }
@@ -90,6 +90,7 @@ auto menu_bar::draw_settings_submenu() const -> void
     if (ImGui::BeginMenu("Settings"))
     {
         draw_rendering_settings();
+        ImGui::Spacing();
         draw_gui_settings();
 
         ImGui::EndMenu();
