@@ -9,22 +9,32 @@
 namespace ui
 {
 
-template < ui_component UIComponent >
+template < typename UIComponent >
+requires interactive_configurable< UIComponent > && drawable< UIComponent >
+inline auto apply_configs(UIComponent& c) -> void
+{
+    c.draw(c.config_data() = c.config_api().config_data());
+}
+
+template < typename UIComponent >
+requires interactive_configurable< UIComponent > && drawable< UIComponent >
 inline auto begin_preview(UIComponent& c) -> void
 {
     c.draw(c.config_api().config_data());
 }
 
-template < ui_component UIComponent >
+template < typename UIComponent >
+requires configurable< UIComponent > && drawable< UIComponent >
 inline auto end_preview(UIComponent& c) -> void
 {
     c.draw(c.config_data());
 }
 
-template < ui_component UIComponent >
-inline auto apply_configs(UIComponent& c) -> void
+template < typename UIComponent >
+requires default_configurable< UIComponent > && drawable< UIComponent >
+inline auto restore_defaults(UIComponent& c) -> void
 {
-    c.draw(c.config_data() = c.config_api().config_data());
+    c.draw(c.config_data() = c.default_config_data());
 }
 
 } // namespace ui

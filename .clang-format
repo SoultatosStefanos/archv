@@ -1,5 +1,7 @@
 AlwaysBreakTemplateDeclarations: Yes
 
+AllowShortFunctionsOnASingleLine: InlineOnly
+
 BasedOnStyle: WebKit
 Standard: c++20
 AlignAfterOpenBracket: AlwaysBreak

@@ -17,6 +17,16 @@ concept configurable = requires(Class val)
 };
 
 template < typename Class >
+concept default_configurable = configurable< Class > && requires(Class val)
+{
+    // clang-format off
+    { val.default_config_data() }
+        ->
+	std::same_as< decltype(val.config_data()) >;
+    // clang-format on
+};
+
+template < typename Class >
 concept interactive_configurable = configurable< Class > && requires(Class val)
 {
     { val.config_api() };
@@ -32,9 +42,6 @@ concept drawable = configurable< Class > && requires(Class val)
 {
     { val.draw(val.config_data()) };
 };
-
-template < typename Class >
-concept ui_component = interactive_configurable< Class > && drawable< Class >;
 
 } // namespace ui
 
