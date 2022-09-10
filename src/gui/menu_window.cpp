@@ -30,19 +30,19 @@ menu_window::menu_window(
 
 auto menu_window::draw() const -> void
 {
-    if (!ImGui::Begin("ARCHV"))
-    {
-        ImGui::End();
-        return;
-    }
+    // if (!ImGui::Begin("ARCHV"))
+    // {
+    //     ImGui::End();
+    //     return;
+    // }
 
-    ImGui::Text("Architecture visualization in 3D!");
-    ImGui::Spacing();
+    // ImGui::Text("Architecture visualization in 3D!");
+    // ImGui::Spacing();
 
-    draw_dependencies_header();
-    draw_layout_header();
-    draw_clustering_header();
-    draw_code_inspection_header();
+    // draw_dependencies_header();
+    // draw_layout_header();
+    // draw_clustering_header();
+    // draw_code_inspection_header();
 }
 
 auto menu_window::draw_dependencies_header() const -> void

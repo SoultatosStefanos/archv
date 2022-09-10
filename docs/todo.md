@@ -385,4 +385,23 @@
 
 # 10 / 10 / 2022
 
-	+ [ ] GUI to config style
+	+ [x] GUI to config style
+
+
+# 11 / 10 / 2022
+
+	+ [ ] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
+
+	+ [ ] GUI Rendering Configurator
+
+	+ [ ] GUI GUI Configurator
+
+	+ [ ] GUI Dependencies Editor 
+
+	+ [ ] GUI Layout Editor 
+
+	+ [ ] GUI Config Facade / GUI as a UI Component
+
+	+ [ ] GUI Graph Actions Cleanup
+
+	+ [ ] GUI File Browser

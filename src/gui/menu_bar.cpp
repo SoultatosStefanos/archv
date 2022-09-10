@@ -4,6 +4,9 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
 
+// NOTE:    Configurators interface with the frontends
+//          Editors interface with the backends.
+
 namespace gui
 {
 
@@ -20,25 +23,52 @@ auto menu_bar::draw() const -> void
 
     if (ImGui::BeginMainMenuBar())
     {
-        draw_edit_submenu();
-        draw_settings_submenu();
-        draw_help_submenu();
+        draw_file_menu();
+        draw_edit_menu();
+        draw_config_menu();
+        draw_help_menu();
 
         ImGui::EndMainMenuBar();
     }
 }
 
-void menu_bar::draw_edit_submenu() const
+auto menu_bar::draw_file_menu() const -> void
+{
+    if (ImGui::BeginMenu("File"))
+    {
+        // TODO Open file browser and select new graph
+        if (ImGui::MenuItem("New"))
+        {
+        }
+
+        // TODO Save config data with default naming
+        if (ImGui::MenuItem("Save", "Ctrl+S"))
+        {
+        }
+
+        // TODO Save config data with custom naming
+        if (ImGui::MenuItem("Save As.."))
+        {
+        }
+
+        ImGui::EndMenu();
+    }
+}
+
+// TODO
+void menu_bar::draw_edit_menu() const
 {
     if (ImGui::BeginMenu("Edit"))
     {
         if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
             m_undo_sig();
 
-        ImGui::Spacing();
-
         if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
             m_redo_sig();
+
+        ImGui::Separator();
+        ImGui::MenuItem("Dependencies");
+        ImGui::MenuItem("Layout/Topology");
 
         ImGui::EndMenu();
     }
@@ -85,26 +115,25 @@ namespace
 
 } // namespace
 
-auto menu_bar::draw_settings_submenu() const -> void
+auto menu_bar::draw_config_menu() const -> void
 {
-    if (ImGui::BeginMenu("Settings"))
+    if (ImGui::BeginMenu("Configuration"))
     {
-        draw_rendering_settings();
-        ImGui::Spacing();
-        draw_gui_settings();
+        draw_rendering_configurator();
+        draw_gui_configurator();
 
         ImGui::EndMenu();
     }
 }
 
-auto menu_bar::draw_rendering_settings() const -> void
+auto menu_bar::draw_rendering_configurator() const -> void
 {
     if (ImGui::BeginMenu("Rendering"))
     {
         if (ImGui::BeginTabBar("##rendering tabs", ImGuiTabBarFlags_None))
         {
-            draw_background_rendering_settings();
-            draw_graph_rendering_settings();
+            draw_background_rendering_configurator();
+            draw_graph_rendering_configurator();
             ImGui::EndTabBar();
         }
 
@@ -112,7 +141,7 @@ auto menu_bar::draw_rendering_settings() const -> void
     }
 }
 
-auto menu_bar::draw_background_rendering_settings() const -> void
+auto menu_bar::draw_background_rendering_configurator() const -> void
 {
     if (ImGui::BeginTabItem("Background"))
     {
@@ -170,7 +199,7 @@ auto menu_bar::draw_background_rendering_settings() const -> void
     }
 }
 
-auto menu_bar::draw_graph_rendering_settings() const -> void
+auto menu_bar::draw_graph_rendering_configurator() const -> void
 {
     if (ImGui::BeginTabItem("Graph"))
     {
@@ -279,7 +308,7 @@ namespace
 // Shamelessly copied from dear-imgui docs.
 
 // FIXME
-auto menu_bar::draw_gui_settings() const -> void
+auto menu_bar::draw_gui_configurator() const -> void
 {
     if (ImGui::BeginMenu("GUI"))
     {
@@ -329,11 +358,12 @@ auto menu_bar::draw_gui_settings() const -> void
     }
 }
 
-auto menu_bar::draw_help_submenu() const -> void
+// TODO
+auto menu_bar::draw_help_menu() const -> void
 {
     if (ImGui::BeginMenu("Help"))
     {
-
+        // Some documention, purpose, controls, references, credits
         ImGui::EndMenu();
     }
 }

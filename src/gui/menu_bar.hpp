@@ -61,17 +61,15 @@ public:
     auto redo_shortcut() -> void;
 
 private:
-    auto draw_edit_submenu() const -> void;
+    auto draw_file_menu() const -> void;
+    auto draw_edit_menu() const -> void;
+    auto draw_config_menu() const -> void;
+    auto draw_help_menu() const -> void;
 
-    auto draw_settings_submenu() const -> void;
-
-    auto draw_rendering_settings() const -> void;
-    auto draw_background_rendering_settings() const -> void;
-    auto draw_graph_rendering_settings() const -> void;
-
-    auto draw_gui_settings() const -> void;
-
-    auto draw_help_submenu() const -> void;
+    auto draw_rendering_configurator() const -> void;
+    auto draw_background_rendering_configurator() const -> void;
+    auto draw_graph_rendering_configurator() const -> void;
+    auto draw_gui_configurator() const -> void;
 
     undo_enabled m_undo_enabled;
     redo_enabled m_redo_enabled;
