@@ -1,4 +1,5 @@
 set(FILES
+	gui.cpp
 	menu_bar.cpp
 	menu_window.cpp
 	overlay_manager.cpp
