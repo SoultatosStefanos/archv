@@ -390,7 +390,7 @@
 
 # 11 / 10 / 2022
 
-	+ [ ] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
+	+ [ny] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
 
 	+ [ ] GUI Rendering Configurator
 

@@ -37,19 +37,19 @@ auto menu_bar::draw_file_menu() const -> void
     if (ImGui::BeginMenu("File"))
     {
         // TODO Open file browser and select new graph
-        if (ImGui::MenuItem("New"))
+        if (ImGui::MenuItem("Open", "Ctrl+O"))
         {
         }
 
-        // TODO Save config data with default naming
-        if (ImGui::MenuItem("Save", "Ctrl+S"))
+        // TODO Open graph from recent opened
+        if (ImGui::BeginMenu("Open Recent"))
         {
+            ImGui::EndMenu();
         }
 
-        // TODO Save config data with custom naming
-        if (ImGui::MenuItem("Save As.."))
-        {
-        }
+        ImGui::Separator();
+
+        ImGui::MenuItem("Quit", "Alt+F4");
 
         ImGui::EndMenu();
     }
