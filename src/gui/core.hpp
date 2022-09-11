@@ -5,7 +5,6 @@
 #define GUI_CORE_HPP
 
 #include <string>
-#include <vector>
 
 // NOTE: Implemented as a singleton because:
 //  i)  Dear-ImGui holds a global state.
