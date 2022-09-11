@@ -87,9 +87,9 @@ auto core_config_api::set_popup_bordered(bool toggle) -> void
  * Core                                                    *
  ***********************************************************/
 
-core::core(config_data_type cfg) : base(std::move(cfg))
+core::core(config_data_type cfg)
+: m_cfg { cfg }, m_defaults { cfg }, m_api { std::move(cfg) }
 {
-    assert(config_api().config_data() == config_data());
 }
 
 namespace
@@ -107,7 +107,6 @@ auto core::initialize(config_data_type cfg) -> void
 {
     assert(!is_initialized());
     config = std::make_unique< core::config_data_type >(std::move(cfg));
-    get().draw(get().config_data());
     assert(is_initialized());
 }
 

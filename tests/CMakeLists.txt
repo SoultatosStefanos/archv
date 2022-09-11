@@ -17,6 +17,7 @@ set(SUBDIRECTORIES
   layout
   progress
   rendering
+  ui
   undo_redo
   utility
 )

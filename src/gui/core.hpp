@@ -4,8 +4,6 @@
 #ifndef GUI_CORE_HPP
 #define GUI_CORE_HPP
 
-#include "ui/ui_component.hpp"
-
 #include <string>
 #include <vector>
 
@@ -62,12 +60,11 @@ private:
 //  ii) Must implement a ui component.
 
 // Provides a config interface fot the entire gui.
-class core final : public ui::ui_component< core_config, core_config_api >
+class core final
 {
 public:
-    using base = ui::ui_component< core_config, core_config_api >;
-    using config_data_type = typename base::config_data_type;
-    using config_api_type = typename base::config_api_type;
+    using config_data_type = core_config;
+    using config_api_type = core_config_api;
 
     core(const core&) = delete;
     core(core&&) = delete;
@@ -78,13 +75,25 @@ public:
     static auto is_initialized() -> bool;
     static auto initialize(config_data_type cfg) -> void;
 
+    // Precondition: (gui::core::is_initialized() == true);
     static auto get() -> core&;
+
+    auto default_data() const -> const config_data_type& { return m_defaults; }
+
+    auto config_data() const -> const config_data_type& { return m_cfg; }
+    auto config_data() -> config_data_type& { return m_cfg; }
+
+    auto config_api() const -> const config_api_type& { return m_api; }
+    auto config_api() -> config_api_type& { return m_api; }
+
+    auto draw(const config_data_type& cfg) const -> void;
 
 private:
     explicit core(config_data_type cfg = config_data_type());
-    ~core() override = default;
+    ~core() = default;
 
-    auto draw(const config_data_type& cfg) const -> void override final;
+    config_data_type m_cfg, m_defaults;
+    config_api_type m_api;
 };
 
 } // namespace gui

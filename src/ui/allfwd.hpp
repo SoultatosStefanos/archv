@@ -6,10 +6,6 @@
 
 namespace ui
 {
-
-template < typename ConfigData, typename ConfigAPI >
-class ui_component;
-
 }
 
 #endif // UI_ALLFWD_HPP
