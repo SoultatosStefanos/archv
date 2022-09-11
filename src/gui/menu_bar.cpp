@@ -316,8 +316,8 @@ auto menu_bar::draw_gui_configurator() const -> void
 
         ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.50f);
 
-        draw_style_selector("Colors##Selector");
-        draw_font_selector("Fonts##Selector");
+        draw_style_selector("Color Theme##Selector");
+        draw_font_selector("Font##Selector");
 
         if (ImGui::SliderFloat(
                 "FrameRounding", &style.FrameRounding, 0.0f, 12.0f, "%.0f"))
