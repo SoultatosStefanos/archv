@@ -19,20 +19,16 @@ concept configurable = requires(Class val)
 template < typename Class >
 concept default_configurable = configurable< Class > && requires(Class val)
 {
-    // clang-format off
-    { val.default_data() } -> 
-        std::same_as< const std::decay_t<decltype(val.config_data())>& >;
-    // clang-format on
+    { val.default_data() };
+    { val.config_data() = val.default_data() };
 };
 
 template < typename Class >
 concept interactive_configurable = configurable< Class > && requires(Class val)
 {
     { val.config_api() };
-    // clang-format off
-    { val.config_api().config_data() } ->
-         std::same_as<const decltype(val.config_data())& >;
-    // clang-format on
+    { val.config_api().config_data() };
+    { val.config_data() = val.config_api().config_data() };
 };
 
 template < typename Class >

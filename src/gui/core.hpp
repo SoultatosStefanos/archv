@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+// NOTE: Implemented as a singleton because:
+//  i)  Dear-ImGui holds a global state.
+//  ii) Must implement a ui component.
+
 namespace gui
 {
 
@@ -54,10 +58,6 @@ private:
 /***********************************************************
  * Core                                                    *
  ***********************************************************/
-
-// NOTE: Implemented as a singleton because:
-//  i)  Dear-ImGui holds a global state.
-//  ii) Must implement a ui component.
 
 // Provides a config interface fot the entire gui.
 class core final
