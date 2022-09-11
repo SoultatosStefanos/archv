@@ -1,21 +1,22 @@
-// Contains a class responsible for dear-imgui global configurations.
+// Contains classes responsible for dear-imgui global configurations.
 // Soultatos Stefanos 2022
 
-#ifndef GUI_GUI_HPP
-#define GUI_GUI_HPP
+#ifndef GUI_CORE_HPP
+#define GUI_CORE_HPP
 
 #include "ui/ui_component.hpp"
 
 #include <string>
+#include <vector>
 
 namespace gui
 {
 
 /***********************************************************
- * GUI Config Data                                         *
+ * Core Config Data                                        *
  ***********************************************************/
 
-struct gui_config
+struct core_config
 {
     std::string color_theme;
     std::string font_name;
@@ -24,20 +25,20 @@ struct gui_config
     bool frame_bordered;
     bool popup_bordered;
 
-    auto operator==(const gui_config&) const -> bool = default;
-    auto operator!=(const gui_config&) const -> bool = default;
+    auto operator==(const core_config&) const -> bool = default;
+    auto operator!=(const core_config&) const -> bool = default;
 };
 
 /***********************************************************
- * GUI Config API                                          *
+ * Core Config API                                         *
  ***********************************************************/
 
-class gui_config_api
+class core_config_api
 {
 public:
-    using config_data_type = gui_config;
+    using config_data_type = core_config;
 
-    explicit gui_config_api(config_data_type cfg);
+    explicit core_config_api(config_data_type cfg);
 
     auto config_data() const -> const config_data_type& { return m_cfg; }
 
@@ -53,40 +54,39 @@ private:
 };
 
 /***********************************************************
- * GUI                                                     *
+ * Core                                                    *
  ***********************************************************/
 
 // NOTE: Implemented as a singleton because:
 //  i)  Dear-ImGui holds a global state.
 //  ii) Must implement a ui component.
 
-class gui final : public ui::ui_component< gui_config, gui_config_api >
+// Provides a config interface fot the entire gui.
+class core final : public ui::ui_component< core_config, core_config_api >
 {
 public:
-    using base = ui::ui_component< gui_config, gui_config_api >;
+    using base = ui::ui_component< core_config, core_config_api >;
     using config_data_type = typename base::config_data_type;
     using config_api_type = typename base::config_api_type;
 
-    gui(const gui&) = delete;
-    gui(gui&&) = delete;
+    core(const core&) = delete;
+    core(core&&) = delete;
 
-    auto operator=(const gui&) -> gui& = delete;
-    auto operator=(gui&&) -> gui& = delete;
+    auto operator=(const core&) -> core& = delete;
+    auto operator=(core&&) -> core& = delete;
 
-    static auto get(const config_data_type& cfg) -> gui&
-    {
-        static auto singleton = gui(cfg);
-        return singleton;
-    }
+    static auto is_initialized() -> bool;
+    static auto initialize(config_data_type cfg) -> void;
 
-    // Call once at start.
-    auto draw(const config_data_type& cfg) const -> void override final;
+    static auto get() -> core&;
 
 private:
-    explicit gui(config_data_type cfg = config_data_type());
-    ~gui() override = default;
+    explicit core(config_data_type cfg = config_data_type());
+    ~core() override = default;
+
+    auto draw(const config_data_type& cfg) const -> void override final;
 };
 
 } // namespace gui
 
-#endif // GUI_GUI_HPP
+#endif // GUI_CORE_HPP
