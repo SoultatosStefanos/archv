@@ -5,14 +5,13 @@
 #define GUI_GUI_CONFIGURATOR_HPP
 
 #include <boost/signals2/signal.hpp>
-#include <string>
 
 namespace gui
 {
 
 class gui_configurator
 {
-    using string_signal = boost::signals2::signal< void(const std::string&) >;
+    using string_signal = boost::signals2::signal< void(const char*) >;
     using int_signal = boost::signals2::signal< void(int) >;
     using bool_signal = boost::signals2::signal< void(bool) >;
 
