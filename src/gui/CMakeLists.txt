@@ -3,6 +3,8 @@ set(FILES
 	menu_bar.cpp
 	menu_window.cpp
 	overlay_manager.cpp
+	plugins.cpp
+	resources.cpp
 )
 set(SUBDIRECTORIES)
 

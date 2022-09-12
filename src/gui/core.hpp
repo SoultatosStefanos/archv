@@ -85,7 +85,11 @@ public:
     auto config_api() const -> const config_api_type& { return m_api; }
     auto config_api() -> config_api_type& { return m_api; }
 
+    // Draws the gui configurations.
     auto draw(const config_data_type& cfg) const -> void;
+
+    // At each frame.
+    auto render() const -> void; // TODO
 
 private:
     explicit core(config_data_type cfg = config_data_type());

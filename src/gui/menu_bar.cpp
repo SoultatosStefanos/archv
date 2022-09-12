@@ -150,6 +150,7 @@ auto menu_bar::draw_background_rendering_configurator() const -> void
         {
             static const char* items[] = { "AAAA", "BBBB" };
             static int curr;
+
             ImGui::Combo("Material Name", &curr, items, IM_ARRAYSIZE(items));
         }
 
