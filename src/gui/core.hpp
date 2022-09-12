@@ -59,6 +59,7 @@ private:
  ***********************************************************/
 
 // Provides a config interface fot the entire gui.
+// TODO Rename to gui, make it non singleton.
 class core final
 {
 public:
