@@ -7,32 +7,65 @@
 namespace gui
 {
 
+namespace
+{
+    auto spaced_separator()
+    {
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+    }
+
+    auto config_buttons()
+    {
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        ImGui::Button("Preview");
+        ImGui::Spacing();
+        ImGui::Button("Apply");
+        ImGui::Spacing();
+        ImGui::Button("Cancel");
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        ImGui::Button("Restore Defaults");
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+
+} // namespace
+
 auto gui_configurator::render() const -> void
 {
     render_color_theme_selector();
     render_font_selector();
     render_frame_rounding_selector();
 
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
+    spaced_separator();
 
     render_window_bordered_selector();
     ImGui::SameLine();
     render_frame_bordered_selector();
     ImGui::SameLine();
     render_popup_bordered_selector();
+
+    spaced_separator();
+
+    config_buttons();
 }
 
 auto gui_configurator::render_color_theme_selector() const -> void
 {
-    using resources::color_themes;
-
     static auto i = -1;
+    constexpr auto themes = resources::color_themes;
 
-    if (ImGui::Combo(
-            "Color Theme", &i, color_themes.data(), color_themes.size()))
-        m_color_theme_sig(color_themes[i]);
+    if (ImGui::Combo("Color Theme", &i, themes.data(), themes.size()))
+        m_color_theme_sig(themes[i]);
 }
 
 auto gui_configurator::render_font_selector() const -> void
