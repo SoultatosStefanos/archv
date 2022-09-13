@@ -13,9 +13,11 @@ namespace gui
 
 class dependencies_editor
 {
+public:
     using dependency_type = const char*;
     using weight_type = int;
 
+private:
     using dependency_signal
         = boost::signals2::signal< void(dependency_type, weight_type) >;
 
@@ -30,6 +32,8 @@ public:
 
     auto render() const -> void;
 
+    auto set_dependency(dependency_type val, weight_type w) -> void;
+
     auto connect_to_dependency(const dependency_slot_type& f) -> connection_type
     {
         return m_dependency_sig.connect(f);
@@ -41,6 +45,9 @@ public:
     }
 
 private:
+    auto render_dependencies() const -> void;
+    auto render_restore_button() const -> void;
+
     dependency_signal m_dependency_sig;
     restore_signal m_restore_sig;
 
