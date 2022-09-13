@@ -5,7 +5,7 @@
 namespace application
 {
 
-shortcut_input_listener::shortcut_input_listener(menu_bar& bar) : m_menu { bar }
+shortcut_input_listener::shortcut_input_listener(editor& bar) : m_menu { bar }
 {
 }
 

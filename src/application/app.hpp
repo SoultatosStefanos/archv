@@ -74,9 +74,9 @@ private:
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
+    auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
-    auto connect_gui_with_command_history() -> void;
 
     auto connect_rendering_with_layout() -> void;
 
@@ -131,8 +131,7 @@ private:
      * GUI                                                     *
      ***********************************************************/
 
-    std::unique_ptr< gui::menu_window > m_menu_window;
-    std::unique_ptr< gui::menu_bar > m_menu_bar;
+    std::unique_ptr< gui::gui > m_gui;
     std::unique_ptr< OgreBites::TrayManager > m_tray_manager;
 
     /***********************************************************

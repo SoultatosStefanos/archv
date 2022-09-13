@@ -43,6 +43,7 @@ auto app::setup_graph_rendering() -> void
 
 auto app::setup_gui() -> void
 {
+    /*
     assert(m_commands);
 
     auto* imgui = new Ogre::ImGuiOverlay();
@@ -80,6 +81,7 @@ auto app::setup_gui() -> void
     addInputListener(m_tray_manager.get());
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
+    */
 }
 
 /***********************************************************
@@ -88,6 +90,7 @@ auto app::setup_gui() -> void
 
 auto app::shutdown_gui() -> void
 {
+    /*
     removeInputListener(m_tray_manager.get());
     m_tray_manager.reset();
 
@@ -101,6 +104,7 @@ auto app::shutdown_gui() -> void
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
 
     BOOST_LOG_TRIVIAL(info) << "shutdown gui";
+    */
 }
 
 auto app::shutdown_graph_rendering() -> void

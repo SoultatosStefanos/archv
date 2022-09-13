@@ -66,7 +66,8 @@ include_directories(${IMGUI_INCLUDE_DIR})
 target_link_libraries(${PROJECT_LIB} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
 # setup driver target
-# set(APP_FILES src/application/main.cpp)
+set(APP_FILES src/application/main.cpp)
+
 if(APP_FILES)
   add_executable(${PROJECT_APP} ${APP_FILES})
 

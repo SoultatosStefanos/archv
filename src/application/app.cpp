@@ -49,9 +49,10 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
     multithreading::poll_message();
+    if (paused())
+        m_gui->render();
     // if (paused())
     //     ImGui::ShowDemoWindow();
-    gui::overlay_manager::get().draw_all();
     return true;
 }
 
@@ -99,16 +100,11 @@ auto app::toggle_frame_stats() -> void
 auto app::pause() -> void
 {
     assert(!paused());
-    assert(m_menu_bar);
-    assert(m_menu_window);
 
     m_cameraman->manualStop();
     removeInputListener(m_cameraman.get());
 
     addInputListener(m_gui_input_listener.get());
-
-    gui::overlay_manager::get().submit(m_menu_bar.get());
-    gui::overlay_manager::get().submit(m_menu_window.get());
 
     m_paused = true;
 
@@ -122,15 +118,10 @@ auto app::resume() -> void
     assert(paused());
     assert(m_gui_input_listener);
     assert(m_cameraman);
-    assert(m_menu_bar);
-    assert(m_menu_window);
 
     removeInputListener(m_gui_input_listener.get());
 
     addInputListener(m_cameraman.get());
-
-    gui::overlay_manager::get().withdraw(m_menu_bar.get());
-    gui::overlay_manager::get().withdraw(m_menu_window.get());
 
     m_paused = false;
 
@@ -189,6 +180,9 @@ auto app::shutdown() -> void
  * Main loop                                               *
  ***********************************************************/
 
-auto app::go() -> void { getRoot()->startRendering(); }
+auto app::go() -> void
+{
+    getRoot()->startRendering();
+}
 
 } // namespace application
