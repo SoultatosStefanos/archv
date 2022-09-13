@@ -29,11 +29,9 @@ auto materials() -> const materials_vector&
     return loaded_materials;
 }
 
-auto load_fonts(fonts_vector vec) -> void
+auto load_fonts(fonts_config_vector vec) -> void
 {
-    loaded_fonts = std::move(vec);
-
-    for (const auto& font : loaded_fonts)
+    for (const auto& font : vec)
     {
         auto* atlas = ImGui::GetIO().Fonts;
 
@@ -44,6 +42,14 @@ auto load_fonts(fonts_vector vec) -> void
 
         assert(ptr);
     }
+
+    const auto& fonts = ImGui::GetIO().Fonts->Fonts;
+    loaded_fonts.clear();
+    std::transform(
+        std::begin(fonts),
+        std::end(fonts),
+        std::back_inserter(loaded_fonts),
+        [](const auto* f) { return f->GetDebugName(); });
 
     BOOST_LOG_TRIVIAL(info) << "loaded fonts for the gui";
 }

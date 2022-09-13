@@ -1,5 +1,7 @@
 set(FILES
 	core.cpp
+	background_configurator.cpp
+	graph_configurator.cpp
 	gui_configurator.cpp
 	menu_bar.cpp
 	menu_window.cpp

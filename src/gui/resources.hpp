@@ -15,19 +15,21 @@ namespace gui::resources
  * Resources                                               *
  ***********************************************************/
 
-struct font
+struct font_config
 {
     std::string file_name;
     float pixel_size;
 
-    auto operator==(const font&) const -> bool = default;
-    auto operator!=(const font&) const -> bool = default;
+    auto operator==(const font_config&) const -> bool = default;
+    auto operator!=(const font_config&) const -> bool = default;
 };
 
 using mesh = const char*;
 using material = const char*;
+using font = const char*;
 
 using color_themes_array = std::array< const char*, 3 >;
+using fonts_config_vector = std::vector< font_config >;
 using fonts_vector = std::vector< font >;
 using meshes_vector = std::vector< mesh >;
 using materials_vector = std::vector< material >;
@@ -51,7 +53,7 @@ auto materials() -> const materials_vector&;
  * Loaders                                                 *
  ***********************************************************/
 
-auto load_fonts(fonts_vector vec) -> void;
+auto load_fonts(fonts_config_vector vec) -> void;
 auto load_meshes(meshes_vector vec) -> void;
 auto load_materials(materials_vector vec) -> void;
 
