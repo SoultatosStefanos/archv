@@ -1,4 +1,4 @@
-#include "core.hpp"
+#include "gui.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <cassert>
@@ -11,7 +11,7 @@ namespace gui
 {
 
 /***********************************************************
- * core Config API                                          *
+ * GUI Config API                                          *
  ***********************************************************/
 
 namespace
@@ -40,81 +40,55 @@ namespace
 
 } // namespace
 
-core_config_api::core_config_api(config_data_type cfg)
-: m_cfg { std::move(cfg) }
+gui_config_api::gui_config_api(config_data_type cfg) : m_cfg { std::move(cfg) }
 {
 }
 
-auto core_config_api::set_color_theme(std::string theme) -> void
+auto gui_config_api::set_color_theme(std::string theme) -> void
 {
     assert(is_color_theme_plugged_in(theme));
     m_cfg.color_theme = std::move(theme);
     BOOST_LOG_TRIVIAL(info) << "selected color theme: " << theme;
 }
 
-auto core_config_api::set_font_name(std::string name) -> void
+auto gui_config_api::set_font_name(std::string name) -> void
 {
     assert(is_font_plugged_in(name));
     m_cfg.font_name = std::move(name);
     BOOST_LOG_TRIVIAL(info) << "selected font name: " << name;
 }
 
-auto core_config_api::set_frame_rounding(int frame_rounding) -> void
+auto gui_config_api::set_frame_rounding(int frame_rounding) -> void
 {
     m_cfg.frame_rounding = frame_rounding;
     BOOST_LOG_TRIVIAL(info) << "selected frame rounding: " << frame_rounding;
 }
 
-auto core_config_api::set_window_bordered(bool toggle) -> void
+auto gui_config_api::set_window_bordered(bool toggle) -> void
 {
     m_cfg.window_bordered = toggle;
     BOOST_LOG_TRIVIAL(info) << "selected window boredered: " << toggle;
 }
 
-auto core_config_api::set_frame_bordered(bool toggle) -> void
+auto gui_config_api::set_frame_bordered(bool toggle) -> void
 {
     m_cfg.frame_bordered = toggle;
     BOOST_LOG_TRIVIAL(info) << "selected frame boredered: " << toggle;
 }
 
-auto core_config_api::set_popup_bordered(bool toggle) -> void
+auto gui_config_api::set_popup_bordered(bool toggle) -> void
 {
     m_cfg.popup_bordered = toggle;
     BOOST_LOG_TRIVIAL(info) << "selected poup boredered: " << toggle;
 }
 
 /***********************************************************
- * Core                                                    *
+ * GUI                                                     *
  ***********************************************************/
 
-core::core(config_data_type cfg)
+gui::gui(config_data_type cfg)
 : m_cfg { cfg }, m_defaults { cfg }, m_api { std::move(cfg) }
 {
-}
-
-namespace
-{
-    std::unique_ptr< core::config_data_type > config;
-
-} // namespace
-
-auto core::is_initialized() -> bool
-{
-    return config != nullptr;
-}
-
-auto core::initialize(config_data_type cfg) -> void
-{
-    assert(!is_initialized());
-    config = std::make_unique< core::config_data_type >(std::move(cfg));
-    assert(is_initialized());
-}
-
-auto core::get() -> core&
-{
-    assert(is_initialized());
-    static auto singleton = core(*config);
-    return singleton;
 }
 
 namespace
@@ -151,10 +125,8 @@ namespace
 
 } // namespace
 
-auto core::draw(const config_data_type& cfg) const -> void
+auto gui::draw(const config_data_type& cfg) const -> void
 {
-    assert(is_initialized());
-
     draw_color_theme(cfg.color_theme);
     draw_font(cfg.font_name);
 
@@ -165,6 +137,10 @@ auto core::draw(const config_data_type& cfg) const -> void
     style.WindowBorderSize = cfg.window_bordered ? 1.0f : 0.0f;
     style.PopupBorderSize = cfg.popup_bordered ? 1.0f : 0.0f;
     style.FrameBorderSize = cfg.frame_bordered ? 1.0f : 0.0f;
+}
+
+auto gui::render() const -> void
+{
 }
 
 } // namespace gui

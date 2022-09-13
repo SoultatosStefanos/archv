@@ -1,13 +1,11 @@
 set(FILES
-	core.cpp
 	dependencies_editor.cpp
+	editor.cpp
 	background_configurator.cpp
 	graph_configurator.cpp
 	gui_configurator.cpp
+	gui.cpp
 	layout_editor.cpp
-	menu_bar.cpp
-	menu_window.cpp
-	overlay_manager.cpp
 	plugins.cpp
 	resources.cpp
 )
