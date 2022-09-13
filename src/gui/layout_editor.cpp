@@ -8,11 +8,22 @@
 namespace gui
 {
 
+namespace
+{
+    auto spaces()
+    {
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+
+} // namespace
+
 auto layout_editor::render() const -> void
 {
     render_layout_editor();
     render_topology_editor();
     render_scale_editor();
+    spaces();
     render_restore_button();
 }
 
@@ -39,7 +50,7 @@ auto layout_editor::render_topology_editor() const -> void
 
 auto layout_editor::render_scale_editor() const -> void
 {
-    if (ImGui::SliderFloat("", &m_selected_scale, 0.0F, 1000.0F))
+    if (ImGui::SliderFloat("Scale", &m_selected_scale, 0.0F, 1000.0F))
         m_scale_sig(m_selected_scale);
 }
 

@@ -53,8 +53,8 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
     multithreading::poll_message();
     if (paused())
         m_gui->render();
-    if (paused())
-        ImGui::ShowDemoWindow();
+    // if (paused())
+    //     ImGui::ShowDemoWindow();
     return true;
 }
 

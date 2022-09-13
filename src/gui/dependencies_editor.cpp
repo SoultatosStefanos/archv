@@ -9,6 +9,16 @@
 namespace gui
 {
 
+namespace
+{
+    auto spaces()
+    {
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+
+} // namespace
+
 dependencies_editor::dependencies_editor()
 {
     const auto& dependencies = plugins::dependencies();
@@ -26,6 +36,7 @@ dependencies_editor::dependencies_editor()
 auto dependencies_editor::render() const -> void
 {
     render_dependencies();
+    spaces();
     render_restore_button();
 }
 
