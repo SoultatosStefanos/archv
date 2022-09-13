@@ -27,39 +27,39 @@ public:
     auto connect_to_skybox_material(const string_slot_type& f)
         -> connection_type
     {
-        return m_skybox_material.connect(f);
+        return m_skybox_material_sig.connect(f);
     }
 
     auto connect_to_skybox_distance(const float_slot_type& f) -> connection_type
     {
-        return m_skybox_distance.connect(f);
+        return m_skybox_distance_sig.connect(f);
     }
 
     auto connect_to_ambient_color(const rgba_slot_type& f) -> connection_type
     {
-        return m_ambient_col.connect(f);
+        return m_ambient_col_sig.connect(f);
     }
 
     auto connect_to_diffuse_color(const rgba_slot_type& f) -> connection_type
     {
-        return m_diffuse_col.connect(f);
+        return m_diffuse_col_sig.connect(f);
     }
 
     auto connect_to_specular_color(const rgba_slot_type& f) -> connection_type
     {
-        return m_specular_col.connect(f);
+        return m_specular_col_sig.connect(f);
     }
 
     auto connect_to_cam_far_clip_distance(const float_signal& f)
         -> connection_type
     {
-        return m_cam_far_clip_distance.connect(f);
+        return m_cam_far_clip_distance_sig.connect(f);
     }
 
     auto connect_to_cam_near_clip_distance(const float_signal& f)
         -> connection_type
     {
-        return m_cam_near_clip_distance.connect(f);
+        return m_cam_near_clip_distance_sig.connect(f);
     }
 
 private:
@@ -75,10 +75,10 @@ private:
     auto render_cam_far_clip_distance_selector() const -> void;
     auto render_cam_near_clip_distance_selector() const -> void;
 
-    string_signal m_skybox_material;
-    float_signal m_skybox_distance, m_cam_far_clip_distance,
-        m_cam_near_clip_distance;
-    rgba_signal m_ambient_col, m_diffuse_col, m_specular_col;
+    string_signal m_skybox_material_sig;
+    float_signal m_skybox_distance_sig, m_cam_far_clip_distance_sig,
+        m_cam_near_clip_distance_sig;
+    rgba_signal m_ambient_col_sig, m_diffuse_col_sig, m_specular_col_sig;
 };
 
 } // namespace gui
