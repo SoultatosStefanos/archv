@@ -1,10 +1,8 @@
-// Contains a class responsible for the edge weights editiing gui.
+// Contains a class responsible for the edge weights editing gui.
 // Soultatos Stefanos 2022
 
 #ifndef GUI_DEPENDENCIES_EDITOR_HPP
 #define GUI_DEPENDENCIES_EDITOR_HPP
-
-#include "plugins.hpp"
 
 #include <boost/signals2/signal.hpp>
 #include <string>
@@ -15,11 +13,9 @@ namespace gui
 
 class dependencies_editor
 {
-public:
-    using dependency_type = plugins::dependency;
-    using weight_type = plugins::weight;
+    using dependency_type = const char*;
+    using weight_type = int;
 
-private:
     using dependency_signal
         = boost::signals2::signal< void(dependency_type, weight_type) >;
 

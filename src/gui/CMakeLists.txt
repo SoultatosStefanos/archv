@@ -4,6 +4,7 @@ set(FILES
 	background_configurator.cpp
 	graph_configurator.cpp
 	gui_configurator.cpp
+	layout_editor.cpp
 	menu_bar.cpp
 	menu_window.cpp
 	overlay_manager.cpp
