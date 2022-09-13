@@ -25,28 +25,6 @@ namespace
         ImGui::Spacing();
     }
 
-    auto config_buttons()
-    {
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Preview");
-        ImGui::Spacing();
-        ImGui::Button("Apply");
-        ImGui::Spacing();
-        ImGui::Button("Cancel");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Restore Defaults");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-    }
-
 } // namespace
 
 auto background_configurator::render() const -> void
@@ -63,7 +41,7 @@ auto background_configurator::render() const -> void
 
     spaced_separator();
 
-    config_buttons();
+    render_config_buttons();
 }
 
 auto background_configurator::render_skybox_configurator() const -> void
@@ -142,6 +120,36 @@ auto background_configurator::render_cam_near_clip_distance_selector() const
     static float f;
     if (ImGui::InputFloat("Near Clip Distance", &f, 1))
         m_cam_near_clip_distance_sig(f);
+}
+
+auto background_configurator::render_config_buttons() const -> void
+{
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Preview"))
+        m_preview_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Apply"))
+        m_apply_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Cancel"))
+        m_cancel_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Restore Defaults"))
+        m_restore_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
 }
 
 } // namespace gui

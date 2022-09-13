@@ -16,28 +16,6 @@ namespace
         ImGui::Spacing();
     }
 
-    auto config_buttons()
-    {
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Preview");
-        ImGui::Spacing();
-        ImGui::Button("Apply");
-        ImGui::Spacing();
-        ImGui::Button("Cancel");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Restore Defaults");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-    }
-
 } // namespace
 
 auto gui_configurator::render() const -> void
@@ -56,7 +34,7 @@ auto gui_configurator::render() const -> void
 
     spaced_separator();
 
-    config_buttons();
+    render_config_buttons();
 }
 
 auto gui_configurator::render_color_theme_selector() const -> void
@@ -110,6 +88,36 @@ auto gui_configurator::render_popup_bordered_selector() const -> void
 
     if (ImGui::Checkbox("PopupBorder", &border))
         m_popup_bordered_sig(border);
+}
+
+auto gui_configurator::render_config_buttons() const -> void
+{
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Preview"))
+        m_preview_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Apply"))
+        m_apply_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Cancel"))
+        m_cancel_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Restore Defaults"))
+        m_restore_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
 }
 
 } // namespace gui

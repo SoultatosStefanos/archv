@@ -24,28 +24,6 @@ namespace
         ImGui::Spacing();
     }
 
-    auto config_buttons()
-    {
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Preview");
-        ImGui::Spacing();
-        ImGui::Button("Apply");
-        ImGui::Spacing();
-        ImGui::Button("Cancel");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::Button("Restore Defaults");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-    }
-
 } // namespace
 
 auto graph_configurator::render() const -> void
@@ -59,7 +37,7 @@ auto graph_configurator::render() const -> void
 
     spaced_separator();
 
-    config_buttons();
+    render_config_buttons();
 }
 
 auto graph_configurator::render_nodes_configurator() const -> void
@@ -137,6 +115,36 @@ auto graph_configurator::render_edge_material_selector() const -> void
     static int curr;
     if (ImGui::Combo("Material Name", &curr, mats.data(), mats.size()))
         m_edge_material_sig(mats.at(curr));
+}
+
+auto graph_configurator::render_config_buttons() const -> void
+{
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Preview"))
+        m_preview_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Apply"))
+        m_apply_sig();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Cancel"))
+        m_cancel_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Restore Defaults"))
+        m_restore_sig();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
 }
 
 } // namespace gui
