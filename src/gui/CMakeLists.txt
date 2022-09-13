@@ -1,5 +1,6 @@
 set(FILES
 	background_configurator.cpp
+	config.cpp
 	configurator.cpp
 	dependencies_editor.cpp
 	editor.cpp

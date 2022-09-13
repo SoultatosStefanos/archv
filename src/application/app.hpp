@@ -105,6 +105,7 @@ private:
     dependencies::config_data m_dependencies_config;
     layout::config_data m_layout_config;
     rendering::config_data m_rendering_config;
+    gui::config_data m_gui_config;
 
     /***********************************************************
      * Architecture                                            *

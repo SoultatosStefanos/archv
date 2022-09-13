@@ -43,9 +43,6 @@ auto app::setup_graph_rendering() -> void
 
 auto app::setup_gui() -> void
 {
-    /*
-    assert(m_commands);
-
     auto* imgui = new Ogre::ImGuiOverlay();
     imgui->show();
     assert(imgui->isInitialised());
@@ -55,24 +52,30 @@ auto app::setup_gui() -> void
     auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
     m_background_renderer->scene()->addRenderQueueListener(ogre_overlay);
 
-    const auto& layouts = layout::layout_ids;
-    const auto& topologies = layout::topology_ids;
+    gui::plugins::install_dependencies(
+        [this]()
+        {
+            auto dependencies = gui::plugins::dependency_map();
 
-    m_menu_window = std::make_unique< gui::menu_window >(
-        m_dependencies_config,
-        gui::menu_window::layout_options { std::begin(layouts),
-                                           std::end(layouts) },
-        gui::menu_window::topology_options { std::begin(topologies),
-                                             std::end(topologies) });
+            for (const auto& [d, w] : m_dependencies_config)
+                dependencies[d.c_str()] = w;
 
-    m_menu_bar = std::make_unique< gui::menu_bar >(
-        [this]() { return m_commands->can_undo(); },
-        [this]() { return m_commands->can_redo(); });
+            return dependencies;
+        }());
 
-    // Default selections
-    m_menu_window->set_layout(m_layout_config.layout);
-    m_menu_window->set_topology(m_layout_config.topology);
-    m_menu_window->set_scale(m_layout_config.scale);
+    gui::plugins::install_layouts(
+        { std::begin(layout::layout_ids), std::end(layout::layout_ids) });
+
+    gui::plugins::install_topologies(
+        { std::begin(layout::topology_ids), std::end(layout::topology_ids) });
+
+    m_gui = std::make_unique< gui::gui >(m_gui_config);
+
+    m_gui->get_editor().set_undo_enabled([this]()
+                                         { return m_commands->can_undo(); });
+
+    m_gui->get_editor().set_redo_enabled([this]()
+                                         { return m_commands->can_redo(); });
 
     m_tray_manager = std::make_unique< OgreBites::TrayManager >(
         "TrayManager", getRenderWindow());
@@ -80,8 +83,9 @@ auto app::setup_gui() -> void
     m_tray_manager->showCursor();
     addInputListener(m_tray_manager.get());
 
+    // TODO Defaults, Resources, Plugins
+
     BOOST_LOG_TRIVIAL(info) << "setup gui";
-    */
 }
 
 /***********************************************************
@@ -90,12 +94,10 @@ auto app::setup_gui() -> void
 
 auto app::shutdown_gui() -> void
 {
-    /*
     removeInputListener(m_tray_manager.get());
     m_tray_manager.reset();
 
-    m_menu_bar.reset();
-    m_menu_window.reset();
+    m_gui.reset();
 
     auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
     m_background_renderer->scene()->removeRenderQueueListener(ogre_overlay);
@@ -104,7 +106,6 @@ auto app::shutdown_gui() -> void
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");
 
     BOOST_LOG_TRIVIAL(info) << "shutdown gui";
-    */
 }
 
 auto app::shutdown_graph_rendering() -> void

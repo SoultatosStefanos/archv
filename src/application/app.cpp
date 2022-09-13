@@ -37,6 +37,8 @@ app::app(int argc, const char** argv) : base("ARCHV")
     m_rendering_config
         = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
 
+    m_gui_config = gui::default_config(); // FIXME
+
     assert(!paused());
 }
 
@@ -51,8 +53,8 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
     multithreading::poll_message();
     if (paused())
         m_gui->render();
-    // if (paused())
-    //     ImGui::ShowDemoWindow();
+    if (paused())
+        ImGui::ShowDemoWindow();
     return true;
 }
 

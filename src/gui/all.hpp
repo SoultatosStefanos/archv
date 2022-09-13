@@ -4,6 +4,7 @@
 #ifndef GUI_ALL_HPP
 #define GUI_ALL_HPP
 
+#include "config.hpp"
 #include "background_configurator.hpp"
 #include "configurator.hpp"
 #include "dependencies_editor.hpp"

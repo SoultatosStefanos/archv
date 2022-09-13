@@ -22,6 +22,9 @@ auto editor::render() const -> void
 
 auto editor::render_undo_redo() const -> void
 {
+    assert(m_undo_enabled);
+    assert(m_redo_enabled);
+
     if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
         m_undo_sig();
 
@@ -31,31 +34,19 @@ auto editor::render_undo_redo() const -> void
 
 auto editor::render_dependencies_editor() const -> void
 {
-    if (ImGui::MenuItem("Dependencies"))
+    if (ImGui::BeginMenu("Dependencies"))
     {
-        static bool close = false;
-        if (!ImGui::Begin("Dependencies", &close))
-        {
-            ImGui::End();
-            return;
-        }
-
         get_dependencies_editor().render();
+        ImGui::EndMenu();
     }
 }
 
 auto editor::render_layout_editor() const -> void
 {
-    if (ImGui::MenuItem("Layout"))
+    if (ImGui::BeginMenu("Layout"))
     {
-        static bool close = false;
-        if (!ImGui::Begin("Layout", &close))
-        {
-            ImGui::End();
-            return;
-        }
-
         get_layout_editor().render();
+        ImGui::EndMenu();
     }
 }
 
