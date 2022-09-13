@@ -4,11 +4,8 @@
 #ifndef GUI_GUI_HPP
 #define GUI_GUI_HPP
 
-#include "background_configurator.hpp"
-#include "dependencies_editor.hpp"
-#include "graph_configurator.hpp"
-#include "gui_configurator.hpp"
-#include "layout_editor.hpp"
+#include "configurator.hpp"
+#include "editor.hpp"
 
 #include <string>
 
@@ -77,24 +74,11 @@ public:
     auto config_api() const -> const config_api_type& { return m_api; }
     auto config_api() -> config_api_type& { return m_api; }
 
-    auto get_dependencies_editor() const -> const auto& { return m_deps_edit; }
-    auto get_dependencies_editor() -> auto& { return m_deps_edit; }
+    auto get_editor() const -> const auto& { return m_editor; }
+    auto get_editor() -> auto& { return m_editor; }
 
-    auto get_layout_editor() const -> const auto& { return m_layout_edit; }
-    auto get_layout_editor() -> auto& { return m_layout_edit; }
-
-    auto get_background_configurator() const -> const auto&
-    {
-        return m_bkg_cfg;
-    }
-
-    auto get_background_configurator() -> auto& { return m_bkg_cfg; }
-
-    auto get_graph_configurator() const -> const auto& { return m_graph_cfg; }
-    auto get_graph_configurator() -> auto& { return m_graph_cfg; }
-
-    auto get_gui_configurator() const -> const auto& { return m_gui_cfg; }
-    auto get_gui_configurator() -> auto& { return m_gui_cfg; }
+    auto get_configurator() const -> const auto& { return m_configurator; }
+    auto get_configurator() -> auto& { return m_configurator; }
 
     auto draw(const config_data_type& cfg) const -> void;
 
@@ -102,19 +86,13 @@ public:
 
 private:
     auto render_file_menu() const -> void;
-    auto render_edit_menu() const -> void;
-    auto render_configuration_menu() const -> void;
     auto render_help_menu() const -> void;
 
     config_data_type m_cfg, m_defaults;
     config_api_type m_api;
 
-    dependencies_editor m_deps_edit;
-    layout_editor m_layout_edit;
-
-    background_configurator m_bkg_cfg;
-    graph_configurator m_graph_cfg;
-    gui_configurator m_gui_cfg;
+    editor m_editor;
+    configurator m_configurator;
 };
 
 } // namespace gui

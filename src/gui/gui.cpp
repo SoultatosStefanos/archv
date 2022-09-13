@@ -141,6 +141,44 @@ auto gui::draw(const config_data_type& cfg) const -> void
 
 auto gui::render() const -> void
 {
+    if (ImGui::BeginMainMenuBar())
+    {
+        render_file_menu();
+        get_editor().render();
+        get_configurator().render();
+        render_help_menu();
+
+        ImGui::EndMainMenuBar();
+    }
+}
+
+// TODO
+auto gui::render_file_menu() const -> void
+{
+    if (ImGui::BeginMenu("File"))
+    {
+        ImGui::MenuItem("Open", "Ctrl+O");
+
+        if (ImGui::BeginMenu("Open Recent"))
+        {
+            ImGui::EndMenu();
+        }
+
+        ImGui::Separator();
+
+        ImGui::MenuItem("Quit", "Alt+F4");
+
+        ImGui::EndMenu();
+    }
+}
+
+// TODO
+auto gui::render_help_menu() const -> void
+{
+    if (ImGui::BeginMenu("Help"))
+    {
+        ImGui::EndMenu();
+    }
 }
 
 } // namespace gui

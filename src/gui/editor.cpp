@@ -59,4 +59,16 @@ auto editor::render_layout_editor() const -> void
     }
 }
 
+void editor::undo_shortcut()
+{
+    if (m_undo_enabled())
+        m_undo_sig();
+}
+
+void editor::redo_shortcut()
+{
+    if (m_redo_enabled())
+        m_redo_sig();
+}
+
 } // namespace gui

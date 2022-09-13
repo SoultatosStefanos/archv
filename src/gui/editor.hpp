@@ -47,6 +47,9 @@ public:
         m_redo_enabled = std::move(pred);
     }
 
+    auto undo_shortcut() -> void;
+    auto redo_shortcut() -> void;
+
     auto connect_to_undo(const undo_slot_type& f) -> connection_type
     {
         return m_undo_sig.connect(f);

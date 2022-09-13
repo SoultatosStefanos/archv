@@ -6,11 +6,16 @@
 
 namespace gui
 {
-class overlay;
-class overlay_manager;
 
-class menu_bar;
-class menu_window;
+class background_configurator;
+class configurator;
+class dependencies_editor;
+class editor;
+class graph_configurator;
+class gui_configurator;
+class gui;
+class layout_editor;
+
 
 } // namespace gui
 
