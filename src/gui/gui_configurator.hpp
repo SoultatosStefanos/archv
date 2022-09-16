@@ -34,6 +34,12 @@ public:
 
     auto render() const -> void;
 
+    auto set_color_theme(const char* theme) -> void;
+    auto set_frame_rounding(int value) -> void;
+    auto set_window_bordered(bool toggle) -> void;
+    auto set_frame_bordered(bool toggle) -> void;
+    auto set_popup_bordered(bool toggle) -> void;
+
     auto connect_to_color_theme(const string_slot_type& f) -> connection_type
     {
         return m_color_theme_sig.connect(f);
@@ -96,6 +102,12 @@ private:
     preview_signal m_preview_sig;
     cancel_signal m_cancel_sig;
     restore_signal m_restore_sig;
+
+    mutable int m_color_theme_selected { 0 };
+    mutable int m_frame_rounding_selected { 0 };
+    mutable bool m_window_bordered_selected { false };
+    mutable bool m_frame_bordered_selected { false };
+    mutable bool m_popup_bordered_selected { false };
 };
 
 } // namespace gui

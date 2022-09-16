@@ -38,43 +38,39 @@ auto gui_configurator::render() const -> void
 
 auto gui_configurator::render_color_theme_selector() const -> void
 {
-    static auto i = -1;
     constexpr auto themes = resources::color_themes;
 
-    if (ImGui::Combo("Color Theme", &i, themes.data(), themes.size()))
-        m_color_theme_sig(themes[i]);
+    if (ImGui::Combo(
+            "Color Theme",
+            &m_color_theme_selected,
+            themes.data(),
+            themes.size()))
+        m_color_theme_sig(themes[m_color_theme_selected]);
 }
 
 auto gui_configurator::render_frame_rounding_selector() const -> void
 {
-    static float round;
-
-    if (ImGui::SliderFloat("Frame Rounding", &round, 0.0f, 12.0f, "%.0f"))
-        m_frame_rounding_sig(round);
+    if (ImGui::SliderInt(
+            "Frame Rounding", &m_frame_rounding_selected, 0, 12, "%.0f"))
+        m_frame_rounding_sig(m_frame_rounding_selected);
 }
 
 auto gui_configurator::render_window_bordered_selector() const -> void
 {
-    bool border = ImGui::GetStyle().WindowBorderSize > 0.0f;
-
-    if (ImGui::Checkbox("WindowBorder", &border))
-        m_window_bordered_sig(border);
+    if (ImGui::Checkbox("WindowBorder", &m_window_bordered_selected))
+        m_window_bordered_sig(m_window_bordered_selected);
 }
 
 auto gui_configurator::render_frame_bordered_selector() const -> void
 {
-    bool border = ImGui::GetStyle().FrameBorderSize > 0.0f;
-
-    if (ImGui::Checkbox("FrameBorder", &border))
-        m_frame_bordered_sig(border);
+    if (ImGui::Checkbox("FrameBorder", &m_frame_bordered_selected))
+        m_frame_bordered_sig(m_frame_bordered_selected);
 }
 
 auto gui_configurator::render_popup_bordered_selector() const -> void
 {
-    bool border = ImGui::GetStyle().PopupBorderSize > 0.0f;
-
-    if (ImGui::Checkbox("PopupBorder", &border))
-        m_popup_bordered_sig(border);
+    if (ImGui::Checkbox("PopupBorder", &m_popup_bordered_selected))
+        m_popup_bordered_sig(m_popup_bordered_selected);
 }
 
 auto gui_configurator::render_config_buttons() const -> void
@@ -105,6 +101,48 @@ auto gui_configurator::render_config_buttons() const -> void
 
     ImGui::Spacing();
     ImGui::Spacing();
+}
+
+namespace
+{
+    // Returns index == data.size() if the key was not found.
+    template < typename Container >
+    inline auto
+    find_index(const Container& data, const typename Container::value_type& val)
+    {
+        const auto iter = std::find(std::begin(data), std::end(data), val);
+        return std::distance(std::begin(data), iter);
+    }
+
+} // namespace
+
+auto gui_configurator::set_color_theme(const char* theme) -> void
+{
+    constexpr auto themes = resources::color_themes;
+    const auto index = find_index(themes, theme);
+    assert(static_cast< std::size_t >(index) != themes.size());
+
+    m_color_theme_selected = index;
+}
+
+auto gui_configurator::set_frame_rounding(int value) -> void
+{
+    m_frame_rounding_selected = value;
+}
+
+auto gui_configurator::set_window_bordered(bool toggle) -> void
+{
+    m_window_bordered_selected = toggle;
+}
+
+auto gui_configurator::set_frame_bordered(bool toggle) -> void
+{
+    m_frame_bordered_selected = toggle;
+}
+
+auto gui_configurator::set_popup_bordered(bool toggle) -> void
+{
+    m_popup_bordered_selected = toggle;
 }
 
 } // namespace gui
