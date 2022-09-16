@@ -10,6 +10,13 @@ namespace ui
 {
 
 template < typename UIComponent >
+requires configurable< UIComponent > && drawable< UIComponent >
+inline auto start(UIComponent& c) -> void
+{
+    c.draw(c.config_data());
+}
+
+template < typename UIComponent >
 requires interactive_configurable< UIComponent > && drawable< UIComponent >
 inline auto begin_preview(UIComponent& c) -> void
 {
