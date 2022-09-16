@@ -189,7 +189,7 @@ auto background_configurator::set_skybox_distance(distance_type dist) -> void
 
 auto background_configurator::set_ambient_color(rgba_type rgba) -> void
 {
-    m_ambient_col = rgba;
+    m_ambient_col = std::move(rgba);
 }
 
 auto background_configurator::set_diffuse_color(rgba_type rgba) -> void
