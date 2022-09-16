@@ -11,9 +11,15 @@ namespace gui
 
 class gui_configurator
 {
-    using string_signal = boost::signals2::signal< void(const char*) >;
-    using int_signal = boost::signals2::signal< void(int) >;
-    using bool_signal = boost::signals2::signal< void(bool) >;
+public:
+    using name_type = const char*;
+    using rounding_type = int;
+    using bordered_type = bool;
+
+private:
+    using name_signal = boost::signals2::signal< void(name_type) >;
+    using rounding_signal = boost::signals2::signal< void(rounding_type) >;
+    using bordered_signal = boost::signals2::signal< void(bordered_type) >;
 
     using apply_signal = boost::signals2::signal< void() >;
     using preview_signal = boost::signals2::signal< void() >;
@@ -21,71 +27,55 @@ class gui_configurator
     using restore_signal = boost::signals2::signal< void() >;
 
 public:
-    using string_slot_type = string_signal::slot_type;
-    using int_slot_type = int_signal::slot_type;
-    using bool_slot_type = bool_signal::slot_type;
+    using name_slot = name_signal::slot_type;
+    using rounding_slot = rounding_signal::slot_type;
+    using bordered_slot = bordered_signal::slot_type;
 
-    using apply_slot_type = apply_signal::slot_type;
-    using preview_slot_type = preview_signal::slot_type;
-    using cancel_slot_type = cancel_signal::slot_type;
-    using restore_slot_type = restore_signal::slot_type;
+    using apply_slot = apply_signal::slot_type;
+    using preview_slot = preview_signal::slot_type;
+    using cancel_slot = cancel_signal::slot_type;
+    using restore_slot = restore_signal::slot_type;
 
-    using connection_type = boost::signals2::connection;
+    using connection = boost::signals2::connection;
 
     auto render() const -> void;
 
-    auto set_color_theme(const char* theme) -> void;
-    auto set_frame_rounding(int value) -> void;
-    auto set_window_bordered(bool toggle) -> void;
-    auto set_frame_bordered(bool toggle) -> void;
-    auto set_popup_bordered(bool toggle) -> void;
+    auto color_theme() const -> name_type;
+    auto frame_rounding() const -> rounding_type;
+    auto window_bordered() const -> bordered_type;
+    auto frame_bordered() const -> bordered_type;
+    auto popup_bordered() const -> bordered_type;
 
-    auto connect_to_color_theme(const string_slot_type& f) -> connection_type
-    {
-        return m_color_theme_sig.connect(f);
-    }
+    auto set_color_theme(name_type theme) -> void;
+    auto set_frame_rounding(rounding_type value) -> void;
+    auto set_window_bordered(bordered_type toggle) -> void;
+    auto set_frame_bordered(bordered_type toggle) -> void;
+    auto set_popup_bordered(bordered_type toggle) -> void;
 
-    auto connect_to_frame_rounding(const int_slot_type& f) -> connection_type
-    {
-        return m_frame_rounding_sig.connect(f);
-    }
+    auto connect_to_color_theme(const name_slot& f) -> connection;
+    auto connect_to_frame_rounding(const rounding_slot& f) -> connection;
+    auto connect_to_window_bordered(const bordered_slot& f) -> connection;
+    auto connect_to_frame_bordered(const bordered_slot& f) -> connection;
+    auto connect_to_popup_bordered(const bordered_slot& f) -> connection;
+    auto connect_to_apply(const apply_slot& f) -> connection;
+    auto connect_to_preview(const preview_slot& f) -> connection;
+    auto connect_to_cancel(const cancel_slot& f) -> connection;
+    auto connect_to_restore(const restore_slot& f) -> connection;
 
-    auto connect_to_window_bordered(const bool_slot_type& f) -> connection_type
-    {
-        return m_window_bordered_sig.connect(f);
-    }
-
-    auto connect_to_frame_bordered(const bool_slot_type& f) -> connection_type
-    {
-        return m_frame_bordered_sig.connect(f);
-    }
-
-    auto connect_to_popup_bordered(const bool_slot_type& f) -> connection_type
-    {
-        return m_popup_bordered_sig.connect(f);
-    }
-
-    auto connect_to_apply(const apply_slot_type& f) -> connection_type
-    {
-        return m_apply_sig.connect(f);
-    }
-
-    auto connect_to_preview(const preview_slot_type& f) -> connection_type
-    {
-        return m_preview_sig.connect(f);
-    }
-
-    auto connect_to_cancel(const cancel_slot_type& f) -> connection_type
-    {
-        return m_cancel_sig.connect(f);
-    }
-
-    auto connect_to_restore(const restore_slot_type& f) -> connection_type
-    {
-        return m_restore_sig.connect(f);
-    }
+protected:
+    auto emit_color_theme() const -> void;
+    auto emit_frame_rounding() const -> void;
+    auto emit_window_bordered() const -> void;
+    auto emit_frame_bordered() const -> void;
+    auto emit_popup_bordered() const -> void;
+    auto emit_apply() const -> void;
+    auto emit_preview() const -> void;
+    auto emit_cancel() const -> void;
+    auto emit_restore() const -> void;
 
 private:
+    using index_type = int;
+
     auto render_color_theme_selector() const -> void;
     auto render_frame_rounding_selector() const -> void;
     auto render_window_bordered_selector() const -> void;
@@ -93,21 +83,21 @@ private:
     auto render_popup_bordered_selector() const -> void;
     auto render_config_buttons() const -> void;
 
-    string_signal m_color_theme_sig;
-    int_signal m_frame_rounding_sig;
-    bool_signal m_window_bordered_sig, m_frame_bordered_sig,
-        m_popup_bordered_sig;
-
+    name_signal m_color_theme_sig;
+    rounding_signal m_frame_rounding_sig;
+    bordered_signal m_window_bordered_sig;
+    bordered_signal m_frame_bordered_sig;
+    bordered_signal m_popup_bordered_sig;
     apply_signal m_apply_sig;
     preview_signal m_preview_sig;
     cancel_signal m_cancel_sig;
     restore_signal m_restore_sig;
 
-    mutable int m_color_theme_selected { 0 };
-    mutable int m_frame_rounding_selected { 0 };
-    mutable bool m_window_bordered_selected { false };
-    mutable bool m_frame_bordered_selected { false };
-    mutable bool m_popup_bordered_selected { false };
+    mutable index_type m_color_theme { 0 };
+    mutable rounding_type m_frame_rounding { 0 };
+    mutable bordered_type m_window_bordered { false };
+    mutable bordered_type m_frame_bordered { false };
+    mutable bordered_type m_popup_bordered { false };
 };
 
 } // namespace gui
