@@ -6,10 +6,34 @@
 
 #include "gui.hpp"
 
+#include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
+#include <stdexcept>
 
 namespace gui
 {
+
+/***********************************************************
+ * Errors                                                  *
+ ***********************************************************/
+
+struct deserialization_error : virtual std::exception, virtual boost::exception
+{
+};
+
+struct unknown_color_theme : virtual deserialization_error
+{
+};
+
+/***********************************************************
+ * Error Info                                              *
+ ***********************************************************/
+
+using color_theme_info = boost::error_info< struct tag_layout, std::string >;
+
+/***********************************************************
+ * Functions                                               *
+ ***********************************************************/
 
 using config_data = gui::config_data_type;
 

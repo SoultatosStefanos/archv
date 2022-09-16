@@ -1,5 +1,7 @@
 #include "gui.hpp"
 
+#include "resources.hpp"
+
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <imgui/imgui.h>
@@ -16,13 +18,13 @@ namespace gui
 
 namespace
 {
-    constexpr std::string_view color_themes[3] { "Dark", "Light", "Classic" };
-
     constexpr auto is_color_theme_plugged_in(std::string_view theme) -> bool
     {
-        return std::find(
-                   std::begin(color_themes), std::end(color_themes), theme)
-            != std::end(color_themes);
+        return std::find_if(
+                   std::cbegin(resources::color_themes),
+                   std::cend(resources::color_themes),
+                   [&theme](const auto* t) { return std::string(t) == theme; })
+            != std::cend(resources::color_themes);
     }
 
 } // namespace
@@ -75,11 +77,11 @@ namespace
 {
     auto draw_color_theme(const std::string& theme)
     {
-        if (theme == color_themes[0])
+        if (theme == resources::dark_theme)
             ImGui::StyleColorsDark();
-        else if (theme == color_themes[1])
+        else if (theme == resources::light_theme)
             ImGui::StyleColorsLight();
-        else if (theme == color_themes[2])
+        else if (theme == resources::classic_theme)
             ImGui::StyleColorsClassic();
         else
             BOOST_LOG_TRIVIAL(warning) << "unknown color theme: " << theme;
