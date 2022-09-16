@@ -14,6 +14,7 @@ target_link_libraries(${TESTS} PRIVATE ${PROJECT_LIB} ${TESTS_LIBS})
 set(SUBDIRECTORIES
   architecture
   dependencies
+  gui
   layout
   progress
   rendering

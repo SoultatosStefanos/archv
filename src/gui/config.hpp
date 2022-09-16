@@ -15,7 +15,7 @@ using config_data = gui::config_data_type;
 
 auto default_config() -> config_data;
 
-auto deserialize(const Json::Value& root) -> config_data; // TODO
+auto deserialize(const Json::Value& root) -> config_data;
 
 } // namespace gui
 
