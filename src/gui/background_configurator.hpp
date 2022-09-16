@@ -12,9 +12,15 @@ namespace gui
 
 class background_configurator
 {
-    using string_signal = boost::signals2::signal< void(const char*) >;
-    using float_signal = boost::signals2::signal< void(float) >;
-    using rgba_signal = boost::signals2::signal< void(float[4]) >;
+public:
+    using name_type = const char*;
+    using distance_type = float;
+    using rgba_type = std::array< float, 4 >;
+
+private:
+    using name_signal = boost::signals2::signal< void(name_type) >;
+    using distance_signal = boost::signals2::signal< void(distance_type) >;
+    using rgba_signal = boost::signals2::signal< void(const rgba_type&) >;
 
     using apply_signal = boost::signals2::signal< void() >;
     using preview_signal = boost::signals2::signal< void() >;
@@ -22,78 +28,64 @@ class background_configurator
     using restore_signal = boost::signals2::signal< void() >;
 
 public:
-    using string_slot_type = string_signal::slot_type;
-    using float_slot_type = float_signal::slot_type;
-    using rgba_slot_type = rgba_signal::slot_type;
+    using name_slot = name_signal::slot_type;
+    using distance_slot = distance_signal::slot_type;
+    using rgba_slot = rgba_signal::slot_type;
 
-    using apply_slot_type = apply_signal::slot_type;
-    using preview_slot_type = preview_signal::slot_type;
-    using cancel_slot_type = cancel_signal::slot_type;
-    using restore_slot_type = restore_signal::slot_type;
+    using apply_slot = apply_signal::slot_type;
+    using preview_slot = preview_signal::slot_type;
+    using cancel_slot = cancel_signal::slot_type;
+    using restore_slot = restore_signal::slot_type;
 
-    using connection_type = boost::signals2::connection;
+    using connection = boost::signals2::connection;
 
     auto render() const -> void;
 
-    auto connect_to_skybox_material(const string_slot_type& f)
-        -> connection_type
-    {
-        return m_skybox_material_sig.connect(f);
-    }
+    auto skybox_material() const -> name_type;
+    auto skybox_distance() const -> distance_type;
+    auto ambient_color() const -> const rgba_type&;
+    auto specular_color() const -> const rgba_type&;
+    auto diffuse_color() const -> const rgba_type&;
+    auto cam_far_cip_distance() const -> distance_type;
+    auto cam_near_cip_distance() const -> distance_type;
 
-    auto connect_to_skybox_distance(const float_slot_type& f) -> connection_type
-    {
-        return m_skybox_distance_sig.connect(f);
-    }
+    auto set_skybox_material(name_type materal) -> void;
+    auto set_skybox_distance(distance_type dist) -> void;
+    auto set_ambient_color(rgba_type rgba) -> void;
+    auto set_diffuse_color(rgba_type rgba) -> void;
+    auto set_specular_color(rgba_type rgba) -> void;
+    auto set_cam_far_clip_distance(distance_type dist) -> void;
+    auto set_cam_near_clip_distance(distance_type dist) -> void;
 
-    auto connect_to_ambient_color(const rgba_slot_type& f) -> connection_type
-    {
-        return m_ambient_col_sig.connect(f);
-    }
+    auto connect_to_skybox_material(const name_slot& f) -> connection;
+    auto connect_to_skybox_distance(const distance_slot& f) -> connection;
+    auto connect_to_ambient_color(const rgba_slot& f) -> connection;
+    auto connect_to_diffuse_color(const rgba_slot& f) -> connection;
+    auto connect_to_specular_color(const rgba_slot& f) -> connection;
+    auto connect_to_cam_far_clip_distance(const distance_slot& f) -> connection;
+    auto connect_to_cam_near_clip_distance(const distance_slot& f)
+        -> connection;
+    auto connect_to_apply(const apply_slot& f) -> connection;
+    auto connect_to_preview(const preview_slot& f) -> connection;
+    auto connect_to_cancel(const cancel_slot& f) -> connection;
+    auto connect_to_restore(const restore_slot& f) -> connection;
 
-    auto connect_to_diffuse_color(const rgba_slot_type& f) -> connection_type
-    {
-        return m_diffuse_col_sig.connect(f);
-    }
-
-    auto connect_to_specular_color(const rgba_slot_type& f) -> connection_type
-    {
-        return m_specular_col_sig.connect(f);
-    }
-
-    auto connect_to_cam_far_clip_distance(const float_signal& f)
-        -> connection_type
-    {
-        return m_cam_far_clip_distance_sig.connect(f);
-    }
-
-    auto connect_to_cam_near_clip_distance(const float_signal& f)
-        -> connection_type
-    {
-        return m_cam_near_clip_distance_sig.connect(f);
-    }
-
-    auto connect_to_apply(const apply_slot_type& f) -> connection_type
-    {
-        return m_apply_sig.connect(f);
-    }
-
-    auto connect_to_preview(const preview_slot_type& f) -> connection_type
-    {
-        return m_preview_sig.connect(f);
-    }
-
-    auto connect_to_cancel(const cancel_slot_type& f) -> connection_type
-    {
-        return m_cancel_sig.connect(f);
-    }
-
-    auto connect_to_restore(const restore_slot_type& f) -> connection_type
-    {
-        return m_restore_sig.connect(f);
-    }
+protected:
+    auto emit_skybox_material() const -> void;
+    auto emit_skybox_distance() const -> void;
+    auto emit_ambient_color() const -> void;
+    auto emit_diffuse_color() const -> void;
+    auto emit_specular_color() const -> void;
+    auto emit_cam_far_clip_distance() const -> void;
+    auto emit_cam_near_clip_distance() const -> void;
+    auto emit_apply() const -> void;
+    auto emit_preview() const -> void;
+    auto emit_cancel() const -> void;
+    auto emit_restore() const -> void;
 
 private:
+    using index_type = int;
+
     auto render_skybox_configurator() const -> void;
     auto render_lighting_configurator() const -> void;
     auto render_camera_configurator() const -> void;
@@ -107,15 +99,25 @@ private:
     auto render_cam_far_clip_distance_selector() const -> void;
     auto render_cam_near_clip_distance_selector() const -> void;
 
-    string_signal m_skybox_material_sig;
-    float_signal m_skybox_distance_sig, m_cam_far_clip_distance_sig,
-        m_cam_near_clip_distance_sig;
-    rgba_signal m_ambient_col_sig, m_diffuse_col_sig, m_specular_col_sig;
-
+    name_signal m_skybox_material_sig;
+    distance_signal m_skybox_distance_sig;
+    distance_signal m_cam_far_clip_distance_sig;
+    distance_signal m_cam_near_clip_distance_sig;
+    rgba_signal m_ambient_col_sig;
+    rgba_signal m_diffuse_col_sig;
+    rgba_signal m_specular_col_sig;
     apply_signal m_apply_sig;
     preview_signal m_preview_sig;
     cancel_signal m_cancel_sig;
     restore_signal m_restore_sig;
+
+    mutable index_type m_skybox_material { 0 };
+    mutable distance_type m_skybox_distance { 0 };
+    mutable distance_type m_cam_far_clip_distance { 0 };
+    mutable distance_type m_cam_near_clip_distance { 0 };
+    mutable rgba_type m_ambient_col { 0, 0, 0, 0 };
+    mutable rgba_type m_diffuse_col { 0, 0, 0, 0 };
+    mutable rgba_type m_specular_col { 0, 0, 0, 0 };
 };
 
 } // namespace gui
