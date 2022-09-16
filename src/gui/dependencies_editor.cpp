@@ -43,10 +43,8 @@ auto dependencies_editor::render() const -> void
 
 auto dependencies_editor::render_dependencies() const -> void
 {
-    static const auto& dependencies = plugins::dependencies();
-
-    for (auto i = 0;
-         const auto* dependency : std::ranges::views::keys(dependencies))
+    for (auto i = 0; const auto* dependency :
+                     std::ranges::views::keys(plugins::dependencies()))
     {
         auto& weight_str = m_weight_strs[i++];
 
@@ -59,7 +57,7 @@ auto dependencies_editor::render_dependencies() const -> void
             if (weight_str == "")
                 weight_str = "0";
 
-            m_dependency_sig(dependency, std::stod(weight_str));
+            emit_dependency(dependency, std::stoi(weight_str));
         }
     }
 }
@@ -67,7 +65,7 @@ auto dependencies_editor::render_dependencies() const -> void
 auto dependencies_editor::render_restore_button() const -> void
 {
     if (ImGui::Button("Restore Defaults"))
-        m_restore_sig();
+        emit_restore();
 }
 
 auto dependencies_editor::set_dependency(dependency_type val, weight_type w)
@@ -77,6 +75,29 @@ auto dependencies_editor::set_dependency(dependency_type val, weight_type w)
 
     auto& weight_str = m_weight_strs.at(index);
     weight_str = std::to_string(w);
+}
+
+auto dependencies_editor::connect_to_dependency(const dependency_slot& f)
+    -> connection
+{
+    return m_dependency_sig.connect(f);
+}
+
+auto dependencies_editor::connect_to_restore(const restore_slot& f)
+    -> connection
+{
+    return m_restore_sig.connect(f);
+}
+
+auto dependencies_editor::emit_dependency(
+    dependency_type val, weight_type w) const -> void
+{
+    m_dependency_sig(val, w);
+}
+
+auto dependencies_editor::emit_restore() const -> void
+{
+    m_restore_sig();
 }
 
 } // namespace gui

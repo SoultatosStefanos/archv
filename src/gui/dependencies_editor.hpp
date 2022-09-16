@@ -21,12 +21,12 @@ private:
     using dependency_signal
         = boost::signals2::signal< void(dependency_type, weight_type) >;
 
-    using restore_signal = boost::signals2::signal< void(void) >;
+    using restore_signal = boost::signals2::signal< void() >;
 
 public:
-    using dependency_slot_type = dependency_signal::slot_type;
-    using restore_slot_type = restore_signal::slot_type;
-    using connection_type = boost::signals2::connection;
+    using dependency_slot = dependency_signal::slot_type;
+    using restore_slot = restore_signal::slot_type;
+    using connection = boost::signals2::connection;
 
     dependencies_editor();
 
@@ -34,15 +34,12 @@ public:
 
     auto set_dependency(dependency_type val, weight_type w) -> void;
 
-    auto connect_to_dependency(const dependency_slot_type& f) -> connection_type
-    {
-        return m_dependency_sig.connect(f);
-    }
+    auto connect_to_dependency(const dependency_slot& f) -> connection;
+    auto connect_to_restore(const restore_slot& f) -> connection;
 
-    auto connect_to_restore(const restore_slot_type& f) -> connection_type
-    {
-        return m_restore_sig.connect(f);
-    }
+protected:
+    auto emit_dependency(dependency_type val, weight_type w) const -> void;
+    auto emit_restore() const -> void;
 
 private:
     auto render_dependencies() const -> void;

@@ -23,9 +23,9 @@ public:
     using undo_enabled_pred = std::function< bool() >;
     using redo_enabled_pred = std::function< bool() >;
 
-    using undo_slot_type = undo_signal::slot_type;
-    using redo_slot_type = redo_signal::slot_type;
-    using connection_type = boost::signals2::connection;
+    using undo_slot = undo_signal::slot_type;
+    using redo_slot = redo_signal::slot_type;
+    using connection = boost::signals2::connection;
 
     auto render() const -> void;
 
@@ -50,15 +50,19 @@ public:
     auto undo_shortcut() -> void;
     auto redo_shortcut() -> void;
 
-    auto connect_to_undo(const undo_slot_type& f) -> connection_type
+    auto connect_to_undo(const undo_slot& f) -> connection
     {
         return m_undo_sig.connect(f);
     }
 
-    auto connect_to_redo(const redo_slot_type& f) -> connection_type
+    auto connect_to_redo(const redo_slot& f) -> connection
     {
         return m_redo_sig.connect(f);
     }
+
+protected:
+    auto emit_undo() const -> void;
+    auto emit_redo() const -> void;
 
 private:
     auto render_undo_redo() const -> void;

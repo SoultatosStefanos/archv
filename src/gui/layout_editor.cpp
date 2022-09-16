@@ -30,52 +30,104 @@ auto layout_editor::render() const -> void
 
 auto layout_editor::render_layout_editor() const -> void
 {
-    static const auto& layouts = plugins::layouts();
-
     if (ImGui::Combo(
-            "Layout", &m_selected_layout, layouts.data(), layouts.size()))
-        m_layout_sig(layouts.at(m_selected_layout));
+            "Layout",
+            &m_layout,
+            plugins::layouts().data(),
+            plugins::layouts().size()))
+        emit_layout();
 }
 
 auto layout_editor::render_topology_editor() const -> void
 {
-    static const auto& topologies = plugins::topologies();
-
     if (ImGui::Combo(
             "Topology",
-            &m_selected_topology,
-            topologies.data(),
-            topologies.size()))
-        m_topology_sig(topologies.at(m_selected_topology));
+            &m_topology,
+            plugins::topologies().data(),
+            plugins::topologies().size()))
+        emit_topology();
 }
 
 auto layout_editor::render_scale_editor() const -> void
 {
-    if (ImGui::SliderFloat("Scale", &m_selected_scale, 0.0F, 1000.0F))
-        m_scale_sig(m_selected_scale);
+    if (ImGui::SliderFloat("Scale", &m_scale, 0.0F, 1000.0F))
+        emit_scale();
 }
 
 auto layout_editor::render_restore_button() const -> void
 {
     if (ImGui::Button("Restore Defaults"))
-        m_restore_sig();
+        emit_restore();
+}
+
+auto layout_editor::layout() const -> layout_type
+{
+    return plugins::layouts().at(m_layout);
+}
+
+auto layout_editor::topology() const -> topology_type
+{
+    return plugins::topologies().at(m_topology);
+}
+
+auto layout_editor::scale() const -> scale_type
+{
+    return m_scale;
 }
 
 auto layout_editor::set_layout(layout_type val) -> void
 {
-    const auto index = detail::find_index(plugins::layouts(), val);
-    m_selected_layout = index;
+    m_layout = detail::find_index(plugins::layouts(), val);
 }
 
 auto layout_editor::set_topology(topology_type val) -> void
 {
-    const auto index = detail::find_index(plugins::topologies(), val);
-    m_selected_topology = index;
+    m_topology = detail::find_index(plugins::topologies(), val);
 }
 
 auto layout_editor::set_scale(scale_type val) -> void
 {
-    m_selected_scale = val;
+    m_scale = val;
+}
+
+auto layout_editor::connect_to_layout(const layout_slot& f) -> connection
+{
+    return m_layout_sig.connect(f);
+}
+
+auto layout_editor::connect_to_topology(const topology_slot& f) -> connection
+{
+    return m_topology_sig.connect(f);
+}
+
+auto layout_editor::connect_to_scale(const scale_slot& f) -> connection
+{
+    return m_scale_sig.connect(f);
+}
+
+auto layout_editor::connect_to_restore(const restore_slot& f) -> connection
+{
+    return m_restore_sig.connect(f);
+}
+
+auto layout_editor::emit_layout() const -> void
+{
+    m_layout_sig(layout());
+}
+
+auto layout_editor::emit_topology() const -> void
+{
+    m_topology_sig(topology());
+}
+
+auto layout_editor::emit_scale() const -> void
+{
+    m_scale_sig(scale());
+}
+
+auto layout_editor::emit_restore() const -> void
+{
+    m_restore_sig();
 }
 
 } // namespace gui

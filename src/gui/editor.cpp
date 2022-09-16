@@ -26,10 +26,10 @@ auto editor::render_undo_redo() const -> void
     assert(m_redo_enabled);
 
     if (ImGui::MenuItem("Undo", "CTRL+Z", false, m_undo_enabled()))
-        m_undo_sig();
+        emit_undo();
 
     if (ImGui::MenuItem("Redo", "CTRL+Y", false, m_redo_enabled()))
-        m_redo_sig();
+        emit_redo();
 }
 
 auto editor::render_dependencies_editor() const -> void
@@ -60,6 +60,16 @@ void editor::redo_shortcut()
 {
     if (m_redo_enabled())
         m_redo_sig();
+}
+
+auto editor::emit_undo() const -> void
+{
+    m_undo_sig();
+}
+
+auto editor::emit_redo() const -> void
+{
+    m_redo_sig();
 }
 
 } // namespace gui
