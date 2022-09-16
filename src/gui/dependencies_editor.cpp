@@ -1,5 +1,6 @@
 #include "dependencies_editor.hpp"
 
+#include "detail/utility.hpp"
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
@@ -69,25 +70,10 @@ auto dependencies_editor::render_restore_button() const -> void
         m_restore_sig();
 }
 
-namespace
-{
-    // Returns index == data.size() if the key was not found.
-    template < typename AssociativeContainer >
-    inline auto find_assoc_index(
-        const AssociativeContainer& data,
-        const typename AssociativeContainer::key_type& key)
-    {
-        const auto iter = data.find(key);
-        return std::distance(std::begin(data), iter);
-    }
-
-} // namespace
-
 auto dependencies_editor::set_dependency(dependency_type val, weight_type w)
     -> void
 {
-    const auto index = find_assoc_index(plugins::dependencies(), val);
-    assert(static_cast< std::size_t >(index) != plugins::dependencies().size());
+    const auto index = detail::find_assoc_index(plugins::dependencies(), val);
 
     auto& weight_str = m_weight_strs.at(index);
     weight_str = std::to_string(w);

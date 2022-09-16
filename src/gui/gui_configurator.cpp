@@ -1,5 +1,6 @@
 #include "gui_configurator.hpp"
 
+#include "detail/utility.hpp"
 #include "resources.hpp"
 
 #include <imgui/imgui.h>
@@ -103,25 +104,9 @@ auto gui_configurator::render_config_buttons() const -> void
     ImGui::Spacing();
 }
 
-namespace
-{
-    // Returns index == data.size() if the key was not found.
-    template < typename Container >
-    inline auto
-    find_index(const Container& data, const typename Container::value_type& val)
-    {
-        const auto iter = std::find(std::begin(data), std::end(data), val);
-        return std::distance(std::begin(data), iter);
-    }
-
-} // namespace
-
 auto gui_configurator::set_color_theme(const char* theme) -> void
 {
-    constexpr auto themes = resources::color_themes;
-    const auto index = find_index(themes, theme);
-    assert(static_cast< std::size_t >(index) != themes.size());
-
+    const auto index = detail::find_index(resources::color_themes, theme);
     m_color_theme_selected = index;
 }
 

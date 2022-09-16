@@ -1,5 +1,6 @@
 #include "layout_editor.hpp"
 
+#include "detail/utility.hpp"
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
@@ -60,32 +61,15 @@ auto layout_editor::render_restore_button() const -> void
         m_restore_sig();
 }
 
-namespace
-{
-    // Returns index == data.size() if the key was not found.
-    template < typename Container >
-    inline auto
-    find_index(const Container& data, const typename Container::value_type& val)
-    {
-        const auto iter = std::find(std::begin(data), std::end(data), val);
-        return std::distance(std::begin(data), iter);
-    }
-
-} // namespace
-
 auto layout_editor::set_layout(layout_type val) -> void
 {
-    const auto index = find_index(plugins::layouts(), val);
-    assert(static_cast< std::size_t >(index) != plugins::layouts().size());
-
+    const auto index = detail::find_index(plugins::layouts(), val);
     m_selected_layout = index;
 }
 
 auto layout_editor::set_topology(topology_type val) -> void
 {
-    const auto index = find_index(plugins::topologies(), val);
-    assert(static_cast< std::size_t >(index) != plugins::topologies().size());
-
+    const auto index = detail::find_index(plugins::topologies(), val);
     m_selected_topology = index;
 }
 
