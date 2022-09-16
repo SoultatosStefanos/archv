@@ -19,7 +19,6 @@ namespace gui
 struct gui_config
 {
     std::string color_theme;
-    std::string font_name;
     int frame_rounding;
     bool window_bordered;
     bool frame_bordered;
@@ -43,7 +42,6 @@ public:
     auto config_data() const -> const config_data_type& { return m_cfg; }
 
     auto set_color_theme(std::string theme) -> void;
-    auto set_font_name(std::string name) -> void;
     auto set_frame_rounding(int frame_rounding) -> void;
     auto set_window_bordered(bool toggle) -> void;
     auto set_frame_bordered(bool toggle) -> void;

@@ -39,11 +39,6 @@ public:
         return m_color_theme_sig.connect(f);
     }
 
-    auto connect_to_font_name(const string_slot_type& f) -> connection_type
-    {
-        return m_font_name_sig.connect(f);
-    }
-
     auto connect_to_frame_rounding(const int_slot_type& f) -> connection_type
     {
         return m_frame_rounding_sig.connect(f);
@@ -86,14 +81,13 @@ public:
 
 private:
     auto render_color_theme_selector() const -> void;
-    auto render_font_selector() const -> void;
     auto render_frame_rounding_selector() const -> void;
     auto render_window_bordered_selector() const -> void;
     auto render_frame_bordered_selector() const -> void;
     auto render_popup_bordered_selector() const -> void;
     auto render_config_buttons() const -> void;
 
-    string_signal m_color_theme_sig, m_font_name_sig;
+    string_signal m_color_theme_sig;
     int_signal m_frame_rounding_sig;
     bool_signal m_window_bordered_sig, m_frame_bordered_sig,
         m_popup_bordered_sig;

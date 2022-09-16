@@ -21,7 +21,6 @@ namespace
 auto gui_configurator::render() const -> void
 {
     render_color_theme_selector();
-    render_font_selector();
     render_frame_rounding_selector();
 
     spaced_separator();
@@ -44,18 +43,6 @@ auto gui_configurator::render_color_theme_selector() const -> void
 
     if (ImGui::Combo("Color Theme", &i, themes.data(), themes.size()))
         m_color_theme_sig(themes[i]);
-}
-
-auto gui_configurator::render_font_selector() const -> void
-{
-    assert(ImGui::GetIO().Fonts);
-
-    auto* curr_font = ImGui::GetFont();
-
-    if (ImGui::BeginCombo("Font", ImGui::GetFont()->GetDebugName()))
-        for (const auto* font : ImGui::GetIO().Fonts->Fonts)
-            if (ImGui::Selectable(font->GetDebugName(), font == curr_font))
-                m_font_name_sig(font->GetDebugName());
 }
 
 auto gui_configurator::render_frame_rounding_selector() const -> void

@@ -25,19 +25,6 @@ namespace
             != std::end(color_themes);
     }
 
-    inline auto is_font_plugged_in(std::string_view font_name) -> bool
-    {
-        const auto* atlas = ImGui::GetIO().Fonts;
-
-        assert(atlas);
-
-        return std::any_of(
-            std::begin(atlas->Fonts),
-            std::end(atlas->Fonts),
-            [font_name](const auto* font)
-            { return font->GetDebugName() == font_name; });
-    }
-
 } // namespace
 
 gui_config_api::gui_config_api(config_data_type cfg) : m_cfg { std::move(cfg) }
@@ -49,13 +36,6 @@ auto gui_config_api::set_color_theme(std::string theme) -> void
     assert(is_color_theme_plugged_in(theme));
     m_cfg.color_theme = std::move(theme);
     BOOST_LOG_TRIVIAL(info) << "selected color theme: " << theme;
-}
-
-auto gui_config_api::set_font_name(std::string name) -> void
-{
-    assert(is_font_plugged_in(name));
-    m_cfg.font_name = std::move(name);
-    BOOST_LOG_TRIVIAL(info) << "selected font name: " << name;
 }
 
 auto gui_config_api::set_frame_rounding(int frame_rounding) -> void
@@ -89,6 +69,7 @@ auto gui_config_api::set_popup_bordered(bool toggle) -> void
 gui::gui(config_data_type cfg)
 : m_cfg { cfg }, m_defaults { cfg }, m_api { std::move(cfg) }
 {
+    draw(config_data());
 }
 
 namespace
@@ -105,30 +86,11 @@ namespace
             BOOST_LOG_TRIVIAL(warning) << "unknown color theme: " << theme;
     }
 
-    auto draw_font(const std::string& name)
-    {
-        auto& io = ImGui::GetIO();
-        const auto* atlas = io.Fonts;
-
-        assert(atlas);
-
-        for (auto* font : atlas->Fonts)
-        {
-            ImGui::PushID(font);
-
-            if (font->GetDebugName() == name)
-                io.FontDefault = font;
-
-            ImGui::PopID();
-        }
-    }
-
 } // namespace
 
 auto gui::draw(const config_data_type& cfg) const -> void
 {
     draw_color_theme(cfg.color_theme);
-    draw_font(cfg.font_name);
 
     auto& style = ImGui::GetStyle();
 
