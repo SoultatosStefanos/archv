@@ -96,6 +96,7 @@ auto gui::draw(const config_data_type& cfg) const -> void
     auto& style = ImGui::GetStyle();
 
     style.GrabRounding = cfg.frame_rounding;
+    style.FrameRounding = cfg.frame_rounding;
 
     style.WindowBorderSize = cfg.window_bordered ? 1.0f : 0.0f;
     style.PopupBorderSize = cfg.popup_bordered ? 1.0f : 0.0f;

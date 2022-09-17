@@ -74,6 +74,14 @@ private:
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
+    auto setup_gui_overlay() -> void;
+    auto setup_gui_tray_manager() -> void;
+    auto install_gui_plugins() -> void;
+    auto load_gui_resources() -> void;
+    auto create_gui() -> void;
+    auto set_gui_defaults() -> void;
+    auto start_gui() -> void;
+
     auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;

@@ -1,5 +1,6 @@
 #include "app.hpp"
 #include "commands.hpp"
+#include "ui/ui_component.hpp"
 
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
@@ -43,6 +44,19 @@ auto app::setup_graph_rendering() -> void
 
 auto app::setup_gui() -> void
 {
+    setup_gui_overlay();
+    setup_gui_tray_manager();
+    install_gui_plugins();
+    load_gui_resources();
+    create_gui();
+    set_gui_defaults();
+    start_gui();
+
+    BOOST_LOG_TRIVIAL(info) << "setup gui";
+}
+
+auto app::setup_gui_overlay() -> void
+{
     auto* imgui = new Ogre::ImGuiOverlay();
     imgui->show();
     assert(imgui->isInitialised());
@@ -51,7 +65,19 @@ auto app::setup_gui() -> void
 
     auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
     m_background_renderer->scene()->addRenderQueueListener(ogre_overlay);
+}
 
+auto app::setup_gui_tray_manager() -> void
+{
+    m_tray_manager = std::make_unique< OgreBites::TrayManager >(
+        "TrayManager", getRenderWindow());
+
+    m_tray_manager->showCursor();
+    addInputListener(m_tray_manager.get());
+}
+
+auto app::install_gui_plugins() -> void
+{
     gui::plugins::install_dependencies(
         [this]()
         {
@@ -68,24 +94,34 @@ auto app::setup_gui() -> void
 
     gui::plugins::install_topologies(
         { std::begin(layout::topology_ids), std::end(layout::topology_ids) });
+}
 
+// TODO
+auto app::load_gui_resources() -> void
+{
+}
+
+auto app::create_gui() -> void
+{
     m_gui = std::make_unique< gui::gui >(m_gui_config);
+}
+
+// TODO
+auto app::set_gui_defaults() -> void
+{
+    assert(m_gui);
 
     m_gui->get_editor().set_undo_enabled([this]()
                                          { return m_commands->can_undo(); });
 
     m_gui->get_editor().set_redo_enabled([this]()
                                          { return m_commands->can_redo(); });
+}
 
-    m_tray_manager = std::make_unique< OgreBites::TrayManager >(
-        "TrayManager", getRenderWindow());
-
-    m_tray_manager->showCursor();
-    addInputListener(m_tray_manager.get());
-
-    // TODO Defaults, Resources, Plugins
-
-    BOOST_LOG_TRIVIAL(info) << "setup gui";
+auto app::start_gui() -> void
+{
+    assert(m_gui);
+    ui::start(*m_gui);
 }
 
 /***********************************************************

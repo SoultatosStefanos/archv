@@ -37,7 +37,7 @@ app::app(int argc, const char** argv) : base("ARCHV")
     m_rendering_config
         = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
 
-    m_gui_config = gui::default_config(); // FIXME
+    m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
 
     assert(!paused());
 }
