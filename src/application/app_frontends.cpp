@@ -49,7 +49,10 @@ auto app::setup_gui() -> void
     install_gui_plugins();
     load_gui_resources();
     create_gui();
-    set_gui_defaults();
+    setup_gui_undo_redo();
+    setup_gui_background_configurator();
+    setup_gui_graph_configurator();
+    setup_gui_gui_configurator();
     start_gui();
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
@@ -99,11 +102,28 @@ auto app::install_gui_plugins() -> void
 // TODO
 auto app::load_gui_resources() -> void
 {
+    gui::resources::load_materials(
+        { "materials/skybox", "materials/edge" }); // FIXME
+
+    gui::resources::load_fonts({ "Fornire-Light" });
+
+    gui::resources::load_meshes({ "cube.mesh" });
 }
 
 auto app::create_gui() -> void
 {
     m_gui = std::make_unique< gui::gui >(m_gui_config);
+}
+
+auto app::setup_gui_undo_redo() -> void
+{
+    assert(m_gui);
+
+    m_gui->get_editor().set_undo_enabled([this]()
+                                         { return m_commands->can_undo(); });
+
+    m_gui->get_editor().set_redo_enabled([this]()
+                                         { return m_commands->can_redo(); });
 }
 
 namespace
@@ -114,35 +134,57 @@ namespace
         return rgba_type { val.r, val.g, val.b, val.a };
     }
 
+    inline auto to_scale(const Ogre::Vector3& vec) // FIXME
+    {
+        return vec.x;
+    }
+
 } // namespace
 
-// TODO
-auto app::set_gui_defaults() -> void
+auto app::setup_gui_background_configurator() -> void
 {
     assert(m_gui);
 
-    m_gui->get_editor().set_undo_enabled([this]()
-                                         { return m_commands->can_undo(); });
+    auto& bkg_gui = m_gui->get_configurator().get_background_configurator();
+    const auto& cfg = m_rendering_config.background; // FIXME
 
-    m_gui->get_editor().set_redo_enabled([this]()
-                                         { return m_commands->can_redo(); });
+    bkg_gui.set_skybox_material(cfg.skybox_material);
+    bkg_gui.set_skybox_distance(cfg.skybox_distance);
+    bkg_gui.set_ambient_color(to_rgba(cfg.ambient_light));
+    bkg_gui.set_diffuse_color(to_rgba(cfg.diffuse_light));
+    bkg_gui.set_specular_color(to_rgba(cfg.specular_light));
+    bkg_gui.set_cam_far_clip_distance(cfg.far_clip_distance);
+    bkg_gui.set_cam_near_clip_distance(cfg.near_clip_distance);
+}
 
-    /*
-        auto& gui_configurator =
-       m_gui->get_configurator().get_gui_configurator();
-        gui_configurator.set_color_theme(m_gui_config.color_theme.c_str());
-        gui_configurator.set_frame_rounding(m_gui_config.frame_rounding);
-        gui_configurator.set_frame_bordered(m_gui_config.frame_bordered);
-        gui_configurator.set_window_bordered(m_gui_config.window_bordered);
-        gui_configurator.set_popup_bordered(m_gui_config.popup_bordered);
+auto app::setup_gui_graph_configurator() -> void
+{
+    assert(m_gui);
 
-        auto& bkg_configurator
-            = m_gui->get_configurator().get_background_configurator();
-        bkg_configurator.set_ambient_color(
-            to_rgba(m_rendering_config.background.ambient_light));
-        bkg_configurator.set_diffuse_color(
-            to_rgba(m_rendering_config.background.diffuse_light));
-            */
+    auto& graph_gui = m_gui->get_configurator().get_graph_configurator();
+    const auto& cfg = m_rendering_config.graph; // FIXME
+
+    graph_gui.set_node_mesh(cfg.vertex_mesh);
+    graph_gui.set_node_scale(to_scale(cfg.vertex_scale));
+    graph_gui.set_node_font(cfg.vbillboard_font_name);
+    graph_gui.set_node_font_color(to_rgba(cfg.vbillboard_color));
+    graph_gui.set_node_char_height(cfg.vbillboard_char_height);
+    graph_gui.set_node_space_width(cfg.vbillboard_space_width);
+    graph_gui.set_edge_material(cfg.edge_material);
+}
+
+auto app::setup_gui_gui_configurator() -> void
+{
+    assert(m_gui);
+
+    auto& gui_configurator = m_gui->get_configurator().get_gui_configurator();
+    const auto& cfg = m_gui->config_data();
+
+    gui_configurator.set_color_theme(cfg.color_theme);
+    gui_configurator.set_frame_rounding(cfg.frame_rounding);
+    gui_configurator.set_frame_bordered(cfg.frame_bordered);
+    gui_configurator.set_window_bordered(cfg.window_bordered);
+    gui_configurator.set_popup_bordered(cfg.popup_bordered);
 }
 
 auto app::start_gui() -> void

@@ -79,7 +79,10 @@ private:
     auto install_gui_plugins() -> void;
     auto load_gui_resources() -> void;
     auto create_gui() -> void;
-    auto set_gui_defaults() -> void;
+    auto setup_gui_undo_redo() -> void;
+    auto setup_gui_gui_configurator() -> void;
+    auto setup_gui_background_configurator() -> void;
+    auto setup_gui_graph_configurator() -> void;
     auto start_gui() -> void;
 
     auto connect_gui_with_command_history() -> void;
