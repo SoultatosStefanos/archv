@@ -106,6 +106,16 @@ auto app::create_gui() -> void
     m_gui = std::make_unique< gui::gui >(m_gui_config);
 }
 
+namespace
+{
+    inline auto to_rgba(const Ogre::ColourValue& val)
+    {
+        using rgba_type = std::array< float, 4 >;
+        return rgba_type { val.r, val.g, val.b, val.a };
+    }
+
+} // namespace
+
 // TODO
 auto app::set_gui_defaults() -> void
 {
@@ -117,12 +127,22 @@ auto app::set_gui_defaults() -> void
     m_gui->get_editor().set_redo_enabled([this]()
                                          { return m_commands->can_redo(); });
 
-    auto& gui_configurator = m_gui->get_configurator().get_gui_configurator();
-    gui_configurator.set_color_theme(m_gui_config.color_theme.c_str());
-    gui_configurator.set_frame_rounding(m_gui_config.frame_rounding);
-    gui_configurator.set_frame_bordered(m_gui_config.frame_bordered);
-    gui_configurator.set_window_bordered(m_gui_config.window_bordered);
-    gui_configurator.set_popup_bordered(m_gui_config.popup_bordered);
+    /*
+        auto& gui_configurator =
+       m_gui->get_configurator().get_gui_configurator();
+        gui_configurator.set_color_theme(m_gui_config.color_theme.c_str());
+        gui_configurator.set_frame_rounding(m_gui_config.frame_rounding);
+        gui_configurator.set_frame_bordered(m_gui_config.frame_bordered);
+        gui_configurator.set_window_bordered(m_gui_config.window_bordered);
+        gui_configurator.set_popup_bordered(m_gui_config.popup_bordered);
+
+        auto& bkg_configurator
+            = m_gui->get_configurator().get_background_configurator();
+        bkg_configurator.set_ambient_color(
+            to_rgba(m_rendering_config.background.ambient_light));
+        bkg_configurator.set_diffuse_color(
+            to_rgba(m_rendering_config.background.diffuse_light));
+            */
 }
 
 auto app::start_gui() -> void
