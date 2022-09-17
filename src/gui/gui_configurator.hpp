@@ -5,6 +5,7 @@
 #define GUI_GUI_CONFIGURATOR_HPP
 
 #include <boost/signals2/signal.hpp>
+#include <string_view>
 
 namespace gui
 {
@@ -12,7 +13,7 @@ namespace gui
 class gui_configurator
 {
 public:
-    using name_type = const char*;
+    using name_type = std::string_view;
     using rounding_type = int;
     using bordered_type = bool;
 
@@ -37,6 +38,8 @@ public:
     using restore_slot = restore_signal::slot_type;
 
     using connection = boost::signals2::connection;
+
+    gui_configurator();
 
     auto render() const -> void;
 
@@ -73,6 +76,12 @@ protected:
     auto emit_cancel() const -> void;
     auto emit_restore() const -> void;
 
+protected:
+    using render_vector = std::vector< const char* >;
+
+    auto color_themes() const -> const render_vector& { return m_color_themes; }
+    auto color_themes() -> render_vector& { return m_color_themes; }
+
 private:
     using index_type = int;
 
@@ -98,6 +107,8 @@ private:
     mutable bordered_type m_window_bordered { false };
     mutable bordered_type m_frame_bordered { false };
     mutable bordered_type m_popup_bordered { false };
+
+    mutable render_vector m_color_themes;
 };
 
 } // namespace gui

@@ -6,6 +6,7 @@
 #define GUI_BACKGROUND_CONFIGURATOR_HPP
 
 #include <boost/signals2/signal.hpp>
+#include <string_view>
 
 namespace gui
 {
@@ -13,7 +14,7 @@ namespace gui
 class background_configurator
 {
 public:
-    using name_type = const char*;
+    using name_type = std::string_view;
     using distance_type = float;
     using rgba_type = std::array< float, 4 >;
 
@@ -38,6 +39,8 @@ public:
     using restore_slot = restore_signal::slot_type;
 
     using connection = boost::signals2::connection;
+
+    background_configurator();
 
     auto render() const -> void;
 
@@ -71,6 +74,11 @@ public:
     auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
+    using render_vector = std::vector< const char* >;
+
+    auto materials() const -> const render_vector& { return m_materials; }
+    auto materials() -> render_vector& { return m_materials; }
+
     auto emit_skybox_material() const -> void;
     auto emit_skybox_distance() const -> void;
     auto emit_ambient_color() const -> void;
@@ -118,6 +126,8 @@ private:
     mutable rgba_type m_ambient_col { 0, 0, 0, 0 };
     mutable rgba_type m_diffuse_col { 0, 0, 0, 0 };
     mutable rgba_type m_specular_col { 0, 0, 0, 0 };
+
+    mutable render_vector m_materials;
 };
 
 } // namespace gui

@@ -9,6 +9,16 @@
 namespace gui
 {
 
+layout_editor::layout_editor()
+{
+    detail::to_char_view(plugins::layouts(), std::back_inserter(layouts()));
+    detail::to_char_view(
+        plugins::topologies(), std::back_inserter(topologies()));
+
+    assert(layouts().size() == plugins::layouts().size());
+    assert(topologies().size() == plugins::topologies().size());
+}
+
 namespace
 {
     auto spaces()
@@ -30,21 +40,14 @@ auto layout_editor::render() const -> void
 
 auto layout_editor::render_layout_editor() const -> void
 {
-    if (ImGui::Combo(
-            "Layout",
-            &m_layout,
-            plugins::layouts().data(),
-            plugins::layouts().size()))
+    if (ImGui::Combo("Layout", &m_layout, layouts().data(), layouts().size()))
         emit_layout();
 }
 
 auto layout_editor::render_topology_editor() const -> void
 {
     if (ImGui::Combo(
-            "Topology",
-            &m_topology,
-            plugins::topologies().data(),
-            plugins::topologies().size()))
+            "Topology", &m_topology, topologies().data(), topologies().size()))
         emit_topology();
 }
 

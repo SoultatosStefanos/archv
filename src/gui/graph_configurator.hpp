@@ -7,6 +7,7 @@
 
 #include <array>
 #include <boost/signals2/signal.hpp>
+#include <string_view>
 
 namespace gui
 {
@@ -14,7 +15,7 @@ namespace gui
 class graph_configurator
 {
 public:
-    using name_type = const char*;
+    using name_type = std::string_view;
     using scale_type = float;
     using char_height_type = float;
     using space_width_type = float;
@@ -48,6 +49,8 @@ public:
 
     using connection = boost::signals2::connection;
 
+    graph_configurator();
+
     auto render() const -> void;
 
     auto node_mesh() const -> name_type;
@@ -79,6 +82,17 @@ public:
     auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
+    using render_vector = std::vector< const char* >;
+
+    auto meshes() const -> const render_vector& { return m_meshes; }
+    auto meshes() -> render_vector& { return m_meshes; }
+
+    auto fonts() const -> const render_vector& { return m_fonts; }
+    auto fonts() -> render_vector& { return m_fonts; }
+
+    auto materials() const -> const render_vector& { return m_materials; }
+    auto materials() -> render_vector& { return m_materials; }
+
     auto emit_node_mesh() const -> void;
     auto emit_node_scale() const -> void;
     auto emit_node_font() const -> void;
@@ -126,6 +140,10 @@ private:
     mutable rgba_type m_node_font_col { 0, 0, 0, 0 };
     mutable scale_type m_node_scale { 0 };
     mutable space_width_type m_node_space_width { 0 };
+
+    mutable render_vector m_meshes;
+    mutable render_vector m_materials;
+    mutable render_vector m_fonts;
 };
 
 } // namespace gui

@@ -116,6 +116,13 @@ auto app::set_gui_defaults() -> void
 
     m_gui->get_editor().set_redo_enabled([this]()
                                          { return m_commands->can_redo(); });
+
+    auto& gui_configurator = m_gui->get_configurator().get_gui_configurator();
+    gui_configurator.set_color_theme(m_gui_config.color_theme.c_str());
+    gui_configurator.set_frame_rounding(m_gui_config.frame_rounding);
+    gui_configurator.set_frame_bordered(m_gui_config.frame_bordered);
+    gui_configurator.set_window_bordered(m_gui_config.window_bordered);
+    gui_configurator.set_popup_bordered(m_gui_config.popup_bordered);
 }
 
 auto app::start_gui() -> void

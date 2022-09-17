@@ -6,6 +6,7 @@
 
 #include <boost/signals2/signal.hpp>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace gui
@@ -14,7 +15,7 @@ namespace gui
 class dependencies_editor
 {
 public:
-    using dependency_type = const char*;
+    using dependency_type = std::string_view;
     using weight_type = int;
 
 private:
@@ -38,10 +39,18 @@ public:
     auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
+    using render_vector = std::vector< const char* >;
+
+    auto dependencies() const -> const render_vector& { return m_dependencies; }
+    auto dependencies() -> render_vector& { return m_dependencies; }
+
     auto emit_dependency(dependency_type val, weight_type w) const -> void;
     auto emit_restore() const -> void;
 
 private:
+    auto prepare_weight_strings() -> void;
+    auto prepare_dependencies_render_map() -> void;
+
     auto render_dependencies() const -> void;
     auto render_restore_button() const -> void;
 
@@ -49,6 +58,7 @@ private:
     restore_signal m_restore_sig;
 
     mutable std::vector< std::string > m_weight_strs;
+    mutable render_vector m_dependencies;
 };
 
 } // namespace gui

@@ -32,19 +32,16 @@ auto materials() -> const materials_vector&
 auto load_fonts(fonts_vector vec) -> void
 {
     loaded_fonts = std::move(vec);
-    BOOST_LOG_TRIVIAL(info) << "loaded fonts for the gui";
 }
 
 auto load_meshes(meshes_vector vec) -> void
 {
     loaded_meshes = std::move(vec);
-    BOOST_LOG_TRIVIAL(info) << "loaded meshes for the gui";
 }
 
 auto load_materials(materials_vector vec) -> void
 {
     loaded_materials = std::move(vec);
-    BOOST_LOG_TRIVIAL(info) << "loaded materials for the gui";
 }
 
 } // namespace gui::resources

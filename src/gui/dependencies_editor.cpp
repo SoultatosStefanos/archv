@@ -10,6 +10,34 @@
 namespace gui
 {
 
+dependencies_editor::dependencies_editor()
+{
+    prepare_weight_strings();
+    prepare_dependencies_render_map();
+}
+
+auto dependencies_editor::prepare_weight_strings() -> void
+{
+    const auto weights = std::ranges::views::values(plugins::dependencies());
+
+    std::transform(
+        std::begin(weights),
+        std::end(weights),
+        std::back_inserter(m_weight_strs),
+        [](auto w) { return std::to_string(w); });
+
+    assert(m_weight_strs.size() == plugins::dependencies().size());
+}
+
+auto dependencies_editor::prepare_dependencies_render_map() -> void
+{
+    detail::to_char_view(
+        std::ranges::views::keys(plugins::dependencies()),
+        std::back_inserter(dependencies()));
+
+    assert(dependencies().size() == plugins::dependencies().size());
+}
+
 namespace
 {
     auto spaces()
@@ -20,20 +48,6 @@ namespace
 
 } // namespace
 
-dependencies_editor::dependencies_editor()
-{
-    const auto& dependencies = plugins::dependencies();
-    const auto weights = std::ranges::views::values(dependencies);
-
-    std::transform(
-        std::begin(weights),
-        std::end(weights),
-        std::back_inserter(m_weight_strs),
-        [](auto w) { return std::to_string(w); });
-
-    assert(m_weight_strs.size() == dependencies.size());
-}
-
 auto dependencies_editor::render() const -> void
 {
     render_dependencies();
@@ -43,8 +57,7 @@ auto dependencies_editor::render() const -> void
 
 auto dependencies_editor::render_dependencies() const -> void
 {
-    for (auto i = 0; const auto* dependency :
-                     std::ranges::views::keys(plugins::dependencies()))
+    for (auto i = 0; const auto* dependency : dependencies())
     {
         auto& weight_str = m_weight_strs[i++];
 

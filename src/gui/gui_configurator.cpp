@@ -8,6 +8,14 @@
 namespace gui
 {
 
+gui_configurator::gui_configurator()
+{
+    detail::to_char_view(
+        resources::color_themes, std::back_inserter(color_themes()));
+
+    assert(resources::color_themes.size() == color_themes().size());
+}
+
 namespace
 {
     auto spaced_separator()
@@ -40,8 +48,8 @@ auto gui_configurator::render_color_theme_selector() const -> void
     if (ImGui::Combo(
             "Color Theme",
             &m_color_theme,
-            resources::color_themes.data(),
-            resources::color_themes.size()))
+            color_themes().data(),
+            color_themes().size()))
         emit_color_theme();
 }
 

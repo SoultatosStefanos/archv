@@ -21,10 +21,10 @@ namespace
 
     auto verify_color_theme(const std::string& theme)
     {
-        if (std::find_if(
+        if (std::find(
                 std::cbegin(resources::color_themes),
                 std::cend(resources::color_themes),
-                [&theme](const auto* t) { return std::string(t) == theme; })
+                theme)
             == std::cend(resources::color_themes))
             BOOST_THROW_EXCEPTION(
                 unknown_color_theme() << color_theme_info(theme));

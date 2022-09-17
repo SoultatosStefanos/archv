@@ -4,6 +4,7 @@
 #ifndef GUI_PLUGINS_HPP
 #define GUI_PLUGINS_HPP
 
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -14,10 +15,10 @@ namespace gui::plugins
  * Pluggins                                                *
  ***********************************************************/
 
-using dependency = const char*;
+using dependency = std::string_view;
 using weight = int;
-using layout = const char*;
-using topology = const char*;
+using layout = std::string_view;
+using topology = std::string_view;
 
 using dependency_map = std::unordered_map< dependency, weight >;
 using layout_vector = std::vector< layout >;

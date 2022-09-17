@@ -31,19 +31,16 @@ auto topologies() -> const topology_vector&
 auto install_dependencies(dependency_map map) -> void
 {
     plugged_dependencies = std::move(map);
-    BOOST_LOG_TRIVIAL(info) << "installed dependencies plugins for the gui";
 }
 
 auto install_layouts(layout_vector vec) -> void
 {
     plugged_layouts = std::move(vec);
-    BOOST_LOG_TRIVIAL(info) << "installed layouts plugins for the gui";
 }
 
 auto install_topologies(topology_vector vec) -> void
 {
     plugged_topologies = std::move(vec);
-    BOOST_LOG_TRIVIAL(info) << "installed topologies plugins for the gui";
 }
 
 } // namespace gui::plugins

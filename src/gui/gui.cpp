@@ -18,12 +18,13 @@ namespace gui
 
 namespace
 {
-    constexpr auto is_color_theme_plugged_in(std::string_view theme) -> bool
+    constexpr auto is_color_theme_plugged_in(resources::color_theme theme)
+        -> bool
     {
-        return std::find_if(
+        return std::find(
                    std::cbegin(resources::color_themes),
                    std::cend(resources::color_themes),
-                   [&theme](const auto* t) { return std::string(t) == theme; })
+                   theme)
             != std::cend(resources::color_themes);
     }
 
@@ -37,31 +38,26 @@ auto gui_config_api::set_color_theme(std::string theme) -> void
 {
     assert(is_color_theme_plugged_in(theme));
     m_cfg.color_theme = std::move(theme);
-    BOOST_LOG_TRIVIAL(info) << "selected color theme: " << theme;
 }
 
 auto gui_config_api::set_frame_rounding(int frame_rounding) -> void
 {
     m_cfg.frame_rounding = frame_rounding;
-    BOOST_LOG_TRIVIAL(info) << "selected frame rounding: " << frame_rounding;
 }
 
 auto gui_config_api::set_window_bordered(bool toggle) -> void
 {
     m_cfg.window_bordered = toggle;
-    BOOST_LOG_TRIVIAL(info) << "selected window boredered: " << toggle;
 }
 
 auto gui_config_api::set_frame_bordered(bool toggle) -> void
 {
     m_cfg.frame_bordered = toggle;
-    BOOST_LOG_TRIVIAL(info) << "selected frame boredered: " << toggle;
 }
 
 auto gui_config_api::set_popup_bordered(bool toggle) -> void
 {
     m_cfg.popup_bordered = toggle;
-    BOOST_LOG_TRIVIAL(info) << "selected poup boredered: " << toggle;
 }
 
 /***********************************************************

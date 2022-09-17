@@ -9,6 +9,14 @@
 namespace gui
 {
 
+background_configurator::background_configurator()
+{
+    detail::to_char_view(
+        resources::materials(), std::back_inserter(materials()));
+
+    assert(resources::materials().size() == materials().size());
+}
+
 namespace
 {
     auto spaced_text(const char* str)
@@ -66,10 +74,11 @@ auto background_configurator::render_camera_configurator() const -> void
 
 auto background_configurator::render_skybox_material_selector() const -> void
 {
-    static const auto& mats = resources::materials();
-
     if (ImGui::Combo(
-            "Material Name", &m_skybox_material, mats.data(), mats.size()))
+            "Material Name",
+            &m_skybox_material,
+            materials().data(),
+            materials().size()))
         emit_skybox_material();
 }
 

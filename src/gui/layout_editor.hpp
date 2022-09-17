@@ -5,6 +5,7 @@
 #define GUI_LAYOUT_EDITOR_HPP
 
 #include <boost/signals2/signal.hpp>
+#include <string_view>
 
 namespace gui
 {
@@ -12,8 +13,8 @@ namespace gui
 class layout_editor
 {
 public:
-    using layout_type = const char*;
-    using topology_type = const char*;
+    using layout_type = std::string_view;
+    using topology_type = std::string_view;
     using scale_type = float;
 
 private:
@@ -28,6 +29,8 @@ public:
     using scale_slot = scale_signal::slot_type;
     using restore_slot = restore_signal::slot_type;
     using connection = boost::signals2::connection;
+
+    layout_editor();
 
     auto render() const -> void;
 
@@ -45,6 +48,14 @@ public:
     auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
+    using render_vector = std::vector< const char* >;
+
+    auto layouts() const -> const render_vector& { return m_layouts; }
+    auto layouts() -> render_vector& { return m_layouts; }
+
+    auto topologies() const -> const render_vector& { return m_topologies; }
+    auto topologies() -> render_vector& { return m_topologies; }
+
     auto emit_layout() const -> void;
     auto emit_topology() const -> void;
     auto emit_scale() const -> void;
@@ -66,6 +77,10 @@ private:
     mutable index_type m_layout { 0 };
     mutable index_type m_topology { 0 };
     mutable scale_type m_scale { 0 };
+
+    // For rendering only.
+    mutable render_vector m_layouts;
+    mutable render_vector m_topologies;
 };
 
 } // namespace gui

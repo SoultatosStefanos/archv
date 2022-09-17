@@ -5,6 +5,7 @@
 #define GUI_RESOURCES_HPP
 
 #include <array>
+#include <string_view>
 #include <vector>
 
 namespace gui::resources
@@ -14,11 +15,12 @@ namespace gui::resources
  * Resources                                               *
  ***********************************************************/
 
-using mesh = const char*;
-using material = const char*;
-using font = const char*;
+using mesh = std::string_view;
+using material = std::string_view;
+using font = std::string_view;
+using color_theme = std::string_view;
 
-using color_themes_array = std::array< const char*, 3 >;
+using color_themes_array = std::array< color_theme, 3 >;
 using fonts_vector = std::vector< font >;
 using meshes_vector = std::vector< mesh >;
 using materials_vector = std::vector< material >;
@@ -27,12 +29,13 @@ using materials_vector = std::vector< material >;
  * Observers                                               *
  ***********************************************************/
 
-constexpr auto dark_theme = "Dark";
-constexpr auto light_theme = "Light";
-constexpr auto classic_theme = "Classic";
+constexpr color_theme dark_theme { "Dark" };
+constexpr color_theme light_theme { "Light" };
+constexpr color_theme classic_theme { "Classic" };
 
-constexpr auto color_themes
-    = color_themes_array { dark_theme, light_theme, classic_theme };
+constexpr color_themes_array color_themes { dark_theme,
+                                            light_theme,
+                                            classic_theme };
 
 auto fonts() -> const fonts_vector&;
 auto meshes() -> const meshes_vector&;

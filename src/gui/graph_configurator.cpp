@@ -8,6 +8,18 @@
 namespace gui
 {
 
+graph_configurator::graph_configurator()
+{
+    detail::to_char_view(resources::meshes(), std::back_inserter(meshes()));
+    detail::to_char_view(
+        resources::materials(), std::back_inserter(materials()));
+    detail::to_char_view(resources::fonts(), std::back_inserter(fonts()));
+
+    assert(resources::meshes().size() == meshes().size());
+    assert(resources::materials().size() == materials().size());
+    assert(resources::fonts().size() == fonts().size());
+}
+
 namespace
 {
     auto spaced_text(const char* str)
@@ -65,10 +77,7 @@ auto graph_configurator::render_edges_configurator() const -> void
 auto graph_configurator::render_node_mesh_selector() const -> void
 {
     if (ImGui::Combo(
-            "Mesh Name",
-            &m_node_mesh,
-            resources::meshes().data(),
-            resources::meshes().size()))
+            "Mesh Name", &m_node_mesh, meshes().data(), meshes().size()))
         emit_node_mesh();
 }
 
@@ -80,11 +89,7 @@ auto graph_configurator::render_node_scale_selector() const -> void
 
 auto graph_configurator::render_node_font_selector() const -> void
 {
-    if (ImGui::Combo(
-            "Font Name",
-            &m_node_font,
-            resources::fonts().data(),
-            resources::fonts().size()))
+    if (ImGui::Combo("Font Name", &m_node_font, fonts().data(), fonts().size()))
         emit_node_font();
 }
 
@@ -111,8 +116,8 @@ auto graph_configurator::render_edge_material_selector() const -> void
     if (ImGui::Combo(
             "Material Name",
             &m_edge_material,
-            resources::materials().data(),
-            resources::materials().size()))
+            materials().data(),
+            materials().size()))
         emit_edge_material();
 }
 
