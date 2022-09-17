@@ -66,6 +66,8 @@ protected:
 
 private:
     auto render_undo_redo() const -> void;
+    auto render_dependencies_editor_item() const -> void;
+    auto render_layout_editor_item() const -> void;
     auto render_dependencies_editor() const -> void;
     auto render_layout_editor() const -> void;
 
@@ -77,6 +79,9 @@ private:
 
     dependencies_editor m_deps_edit;
     layout_editor m_layout_edit;
+
+    mutable bool m_dependencies_open { false };
+    mutable bool m_layout_open { false };
 };
 
 } // namespace gui

@@ -1,5 +1,6 @@
 #include "editor.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <imgui/imgui.h>
 
 namespace gui
@@ -13,11 +14,17 @@ auto editor::render() const -> void
 
         ImGui::Separator();
 
-        render_dependencies_editor();
-        render_layout_editor();
+        render_dependencies_editor_item();
+        render_layout_editor_item();
 
         ImGui::EndMenu();
     }
+
+    if (m_dependencies_open)
+        render_dependencies_editor();
+
+    if (m_layout_open)
+        render_layout_editor();
 }
 
 auto editor::render_undo_redo() const -> void
@@ -32,22 +39,30 @@ auto editor::render_undo_redo() const -> void
         emit_redo();
 }
 
+auto editor::render_dependencies_editor_item() const -> void
+{
+    if (ImGui::MenuItem("Dependencies", "", m_dependencies_open, true))
+        m_dependencies_open = m_dependencies_open ? false : true;
+}
+
+auto editor::render_layout_editor_item() const -> void
+{
+    if (ImGui::MenuItem("Layout", "", m_layout_open, true))
+        m_layout_open = m_layout_open ? false : true;
+}
+
 auto editor::render_dependencies_editor() const -> void
 {
-    if (ImGui::BeginMenu("Dependencies"))
-    {
-        get_dependencies_editor().render();
-        ImGui::EndMenu();
-    }
+    ImGui::Begin("Dependencies Edit", &m_dependencies_open);
+    get_dependencies_editor().render();
+    ImGui::End();
 }
 
 auto editor::render_layout_editor() const -> void
 {
-    if (ImGui::BeginMenu("Layout"))
-    {
-        get_layout_editor().render();
-        ImGui::EndMenu();
-    }
+    ImGui::Begin("Layout Edit", &m_layout_open);
+    get_layout_editor().render();
+    ImGui::End();
 }
 
 void editor::undo_shortcut()
