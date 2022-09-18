@@ -102,31 +102,50 @@ auto app::install_gui_plugins() -> void
         { std::begin(layout::topology_ids), std::end(layout::topology_ids) });
 }
 
+namespace
+{
+    auto load_gui_resources(Ogre::ResourceManager& manager)
+    {
+        using resources_vector = std::vector< std::string_view >;
+
+        auto range = manager.getResourceIterator();
+        const auto ptrs_range = std::ranges::views::values(range);
+        auto resources = resources_vector();
+
+        std::transform(
+            std::cbegin(ptrs_range),
+            std::cend(ptrs_range),
+            std::back_inserter(resources),
+            [](const auto& ptr) { return ptr->getName().c_str(); });
+
+        std::sort(std::begin(resources), std::end(resources)); // alphabetically
+
+        return resources;
+    }
+
+    inline auto load_gui_materials()
+    {
+        using namespace Ogre;
+        auto&& materials = load_gui_resources(MaterialManager::getSingleton());
+        gui::resources::load_materials(std::move(materials));
+    }
+
+    inline auto load_gui_meshes()
+    {
+        using namespace Ogre;
+        auto&& meshes = load_gui_resources(MeshManager::getSingleton());
+        gui::resources::load_meshes(std::move(meshes));
+    }
+
+} // namespace
+
 // TODO
 auto app::load_gui_resources() -> void
 {
     load_gui_materials();
+    load_gui_meshes();
 
-    gui::resources::load_fonts({ "Fornire-Light" });
-
-    gui::resources::load_meshes({ "cube.mesh" });
-}
-
-auto app::load_gui_materials() -> void
-{
-    auto range = Ogre::MaterialManager::getSingleton().getResourceIterator();
-    const auto ptrs_range = std::ranges::views::values(range);
-    auto materials = gui::resources::materials_vector();
-
-    std::transform(
-        std::cbegin(ptrs_range),
-        std::cend(ptrs_range),
-        std::back_inserter(materials),
-        [](const auto& ptr) { return ptr->getName().c_str(); });
-
-    std::sort(std::begin(materials), std::end(materials)); // alphabetically
-
-    gui::resources::load_materials(std::move(materials));
+    gui::resources::load_fonts({ "Fornire-Light" }); // FIXME
 }
 
 auto app::create_gui() -> void
