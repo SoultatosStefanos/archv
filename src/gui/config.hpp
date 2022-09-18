@@ -29,7 +29,7 @@ struct unknown_color_theme : virtual deserialization_error
  * Error Info                                              *
  ***********************************************************/
 
-using color_theme_info = boost::error_info< struct tag_layout, std::string >;
+using color_theme_info = boost::error_info< struct tag_theme, std::string >;
 
 /***********************************************************
  * Functions                                               *
