@@ -168,13 +168,12 @@ namespace
 {
     inline auto to_rgba(const Ogre::ColourValue& val)
     {
-        using rgba_type = std::array< float, 4 >;
-        return rgba_type { val.r, val.g, val.b, val.a };
+        return std::array { val.r, val.g, val.b, val.a };
     }
 
-    inline auto to_scale(const Ogre::Vector3& vec) // FIXME
+    inline auto to_scale(const Ogre::Vector3& vec)
     {
-        return vec.x;
+        return std::array { vec.x, vec.y, vec.z };
     }
 
 } // namespace

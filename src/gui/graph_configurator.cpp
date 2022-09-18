@@ -82,7 +82,7 @@ auto graph_configurator::render_node_mesh_selector() const -> void
 
 auto graph_configurator::render_node_scale_selector() const -> void
 {
-    if (ImGui::InputFloat("Scale", &m_node_scale, 1))
+    if (ImGui::InputFloat3("Scale", m_node_scale.data()))
         emit_node_scale();
 }
 
@@ -155,7 +155,7 @@ auto graph_configurator::node_mesh() const -> name_type
     return resources::meshes().at(m_node_mesh);
 }
 
-auto graph_configurator::node_scale() const -> scale_type
+auto graph_configurator::node_scale() const -> const scale_type&
 {
     return m_node_scale;
 }
@@ -175,7 +175,7 @@ auto graph_configurator::node_font_color() const -> const rgba_type&
     return m_node_font_col;
 }
 
-auto graph_configurator::node_space_width() const -> const space_width_type&
+auto graph_configurator::node_space_width() const -> space_width_type
 {
     return m_node_space_width;
 }

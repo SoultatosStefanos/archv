@@ -16,14 +16,14 @@ class graph_configurator
 {
 public:
     using name_type = std::string_view;
-    using scale_type = float;
+    using scale_type = std::array< float, 3 >;
     using char_height_type = float;
     using space_width_type = float;
     using rgba_type = std::array< float, 4 >;
 
 private:
     using name_signal = boost::signals2::signal< void(name_type) >;
-    using scale_signal = boost::signals2::signal< void(scale_type) >;
+    using scale_signal = boost::signals2::signal< void(const scale_type&) >;
     using char_height_signal
         = boost::signals2::signal< void(char_height_type) >;
     using space_width_signal
@@ -54,11 +54,11 @@ public:
     auto render() const -> void;
 
     auto node_mesh() const -> name_type;
-    auto node_scale() const -> scale_type;
+    auto node_scale() const -> const scale_type&;
     auto node_font() const -> name_type;
     auto node_char_height() const -> char_height_type;
     auto node_font_color() const -> const rgba_type&;
-    auto node_space_width() const -> const space_width_type&;
+    auto node_space_width() const -> space_width_type;
     auto edge_material() const -> name_type;
 
     auto set_node_mesh(name_type mesh) -> void;
@@ -127,7 +127,7 @@ private:
     char_height_signal m_node_char_height_sig;
     rgba_signal m_node_font_col_sig;
     scale_signal m_node_scale_sig;
-    scale_signal m_node_space_width_sig;
+    space_width_signal m_node_space_width_sig;
     apply_signal m_apply_sig;
     preview_signal m_preview_sig;
     cancel_signal m_cancel_sig;
@@ -138,7 +138,7 @@ private:
     mutable index_type m_edge_material { 0 };
     mutable char_height_type m_node_char_height { 0 };
     mutable rgba_type m_node_font_col { 0, 0, 0, 0 };
-    mutable scale_type m_node_scale { 0 };
+    mutable scale_type m_node_scale { 0, 0, 0 };
     mutable space_width_type m_node_space_width { 0 };
 
     mutable render_vector m_meshes;
