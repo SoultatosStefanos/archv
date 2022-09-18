@@ -2,6 +2,7 @@
 
 #include "commands.hpp"
 
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -9,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <ranges>
 
 namespace application
 {

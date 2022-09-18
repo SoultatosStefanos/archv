@@ -34,7 +34,7 @@ namespace
 
 auto deserialize(const Json::Value& root) -> config_data
 {
-    auto color_theme = root["color-theme"].as< std::string >();
+    auto&& color_theme = root["color-theme"].as< std::string >();
     auto frame_rounding = root["frame-rounding"].as< int >();
     auto window_bordered = root["window-bordered"].as< bool >();
     auto frame_bordered = root["frame-bordered"].as< bool >();

@@ -5,15 +5,18 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_stdlib.h>
+#include <ranges>
 
 namespace gui
 {
 
 layout_editor::layout_editor()
 {
-    detail::to_char_view(plugins::layouts(), std::back_inserter(layouts()));
-    detail::to_char_view(
-        plugins::topologies(), std::back_inserter(topologies()));
+    using detail::to_char_view;
+    using std::ranges::views::all;
+
+    to_char_view(all(plugins::layouts()), std::back_inserter(layouts()));
+    to_char_view(all(plugins::topologies()), std::back_inserter(topologies()));
 
     assert(layouts().size() == plugins::layouts().size());
     assert(topologies().size() == plugins::topologies().size());

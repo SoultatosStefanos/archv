@@ -383,25 +383,39 @@
 	+ [n] Vertex material
 
 
-# 10 / 10 / 2022
+# 10 / 09 / 2022
 
 	+ [x] GUI to config style
 
 
-# 11 / 10 / 2022
+# 11 / 09 / 2022
 
 	+ [ny] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
 
-	+ [ ] GUI Rendering Configurator
+	+ [x] GUI Rendering Configurator
 
-	+ [ ] GUI GUI Configurator
+	+ [x] GUI GUI Configurator
 
-	+ [ ] GUI Dependencies Editor 
+	+ [x] GUI Dependencies Editor 
 
-	+ [ ] GUI Layout Editor 
+	+ [x] GUI Layout Editor 
 
-	+ [ ] GUI Config Facade / GUI as a UI Component
+	+ [x] GUI Config Facade / GUI as a UI Component
 
-	+ [ ] GUI Graph Actions Cleanup
+	+ [x] GUI Graph Actions Cleanup
 
 	+ [ ] GUI File Browser
+
+
+# 17 / 09 / 2022 
+
+	+ [ ] GUI resources
+
+	+ [ ] GUI Defaults
+
+	+ [ ] GUI Editor Hooks
+
+	+ [ ] GUI Plugins
+
+	+ [ ] GUI Connections
+

@@ -4,14 +4,18 @@
 #include "resources.hpp"
 
 #include <imgui/imgui.h>
+#include <ranges>
 
 namespace gui
 {
 
 gui_configurator::gui_configurator()
 {
-    detail::to_char_view(
-        resources::color_themes, std::back_inserter(color_themes()));
+    using detail::to_char_view;
+    using std::ranges::views::all;
+
+    to_char_view(
+        all(resources::color_themes), std::back_inserter(color_themes()));
 
     assert(resources::color_themes.size() == color_themes().size());
 }
@@ -134,8 +138,7 @@ auto gui_configurator::popup_bordered() const -> bordered_type
 
 auto gui_configurator::set_color_theme(name_type theme) -> void
 {
-    const auto index = detail::find_index(resources::color_themes, theme);
-    m_color_theme = index;
+    m_color_theme = detail::find_index(resources::color_themes, theme);
 }
 
 auto gui_configurator::set_frame_rounding(rounding_type value) -> void

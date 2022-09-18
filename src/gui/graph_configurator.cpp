@@ -4,20 +4,19 @@
 #include "resources.hpp"
 
 #include <imgui/imgui.h>
+#include <ranges>
 
 namespace gui
 {
 
 graph_configurator::graph_configurator()
 {
-    detail::to_char_view(resources::meshes(), std::back_inserter(meshes()));
-    detail::to_char_view(
-        resources::materials(), std::back_inserter(materials()));
-    detail::to_char_view(resources::fonts(), std::back_inserter(fonts()));
+    using detail::to_char_view;
+    using std::ranges::views::all;
 
-    assert(resources::meshes().size() == meshes().size());
-    assert(resources::materials().size() == materials().size());
-    assert(resources::fonts().size() == fonts().size());
+    to_char_view(all(resources::meshes()), std::back_inserter(meshes()));
+    to_char_view(all(resources::materials()), std::back_inserter(materials()));
+    to_char_view(all(resources::fonts()), std::back_inserter(fonts()));
 }
 
 namespace
@@ -188,8 +187,7 @@ auto graph_configurator::edge_material() const -> name_type
 
 auto graph_configurator::set_node_mesh(name_type mesh) -> void
 {
-    const auto index = detail::find_index(resources::meshes(), mesh);
-    m_node_mesh = index;
+    m_node_mesh = detail::find_index(resources::meshes(), mesh);
 }
 
 auto graph_configurator::set_node_scale(scale_type scale) -> void

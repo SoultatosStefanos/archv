@@ -5,15 +5,17 @@
 
 #include <cassert>
 #include <imgui/imgui.h>
+#include <ranges>
 
 namespace gui
 {
 
 background_configurator::background_configurator()
 {
-    detail::to_char_view(
-        resources::materials(), std::back_inserter(materials()));
+    using detail::to_char_view;
+    using std::ranges::views::all;
 
+    to_char_view(all(resources::materials()), std::back_inserter(materials()));
     assert(resources::materials().size() == materials().size());
 }
 
@@ -187,8 +189,7 @@ auto background_configurator::cam_near_cip_distance() const -> distance_type
 
 auto background_configurator::set_skybox_material(name_type material) -> void
 {
-    const auto index = detail::find_index(resources::materials(), material);
-    m_skybox_material = index;
+    m_skybox_material = detail::find_index(resources::materials(), material);
 }
 
 auto background_configurator::set_skybox_distance(distance_type dist) -> void

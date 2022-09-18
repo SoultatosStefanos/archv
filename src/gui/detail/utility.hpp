@@ -29,6 +29,7 @@ constexpr auto
 find_index(const Container& data, const typename Container::value_type& val)
 {
     const auto iter = std::find(std::cbegin(data), std::cend(data), val);
+    assert(iter != std::cend(data));
     return find_index(data, iter);
 }
 
@@ -39,6 +40,7 @@ constexpr auto find_assoc_index(
     const typename AssociativeContainer::key_type& key)
 {
     const auto iter = data.find(key);
+    assert(iter != std::cend(data));
     return find_index(data, iter);
 }
 
@@ -54,8 +56,9 @@ constexpr auto to_char_view(InputRange range, OutputIterator out) -> void
         out,
         [](auto string)
         {
-            assert(string[string.size()] == '\0'); // null termination
-            return string.data();
+            auto* chars = string.data();
+            assert(chars[string.size()] == '\0'); // null termination
+            return chars;
         });
 }
 

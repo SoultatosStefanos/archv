@@ -2,6 +2,8 @@
 #include "commands.hpp"
 #include "ui/ui_component.hpp"
 
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -9,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <ranges>
 
 namespace application
 {
@@ -102,12 +105,28 @@ auto app::install_gui_plugins() -> void
 // TODO
 auto app::load_gui_resources() -> void
 {
-    gui::resources::load_materials(
-        { "materials/skybox", "materials/edge" }); // FIXME
+    load_gui_materials();
 
     gui::resources::load_fonts({ "Fornire-Light" });
 
     gui::resources::load_meshes({ "cube.mesh" });
+}
+
+auto app::load_gui_materials() -> void
+{
+    auto range = Ogre::MaterialManager::getSingleton().getResourceIterator();
+    const auto ptrs_range = std::ranges::views::values(range);
+    auto materials = gui::resources::materials_vector();
+
+    std::transform(
+        std::cbegin(ptrs_range),
+        std::cend(ptrs_range),
+        std::back_inserter(materials),
+        [](const auto& ptr) { return ptr->getName().c_str(); });
+
+    std::sort(std::begin(materials), std::end(materials)); // alphabetically
+
+    gui::resources::load_materials(std::move(materials));
 }
 
 auto app::create_gui() -> void
