@@ -17,7 +17,7 @@ template < typename Container >
 constexpr auto
 find_index(const Container& data, typename Container::const_iterator iter)
 {
-    using size_type = typename Container::size_type;
+    using size_type [[maybe_unused]] = typename Container::size_type;
     auto index = std::distance(std::cbegin(data), iter);
     assert(static_cast< size_type >(index) != data.size());
     return index;

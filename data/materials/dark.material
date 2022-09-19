@@ -1,4 +1,4 @@
-material materials/edge
+material Dark
 {
 	technique
 	{

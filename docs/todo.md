@@ -409,13 +409,15 @@
 
 # 17 / 09 / 2022 
 
-	+ [ ] GUI resources
+	+ [x] GUI Defaults
 
-	+ [ ] GUI Defaults
+	+ [x] GUI Plugins
+
+
+# 19 / 09 / 2022 
+
+	+ [ ] GUI resources
 
 	+ [ ] GUI Editor Hooks
 
-	+ [ ] GUI Plugins
-
 	+ [ ] GUI Connections
-

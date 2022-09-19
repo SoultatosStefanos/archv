@@ -1,4 +1,4 @@
-material materials/skybox
+material Studio
 {
         technique
         {

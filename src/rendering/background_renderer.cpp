@@ -1,5 +1,7 @@
 #include "background_renderer.hpp"
 
+#include "config/config.hpp"
+
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
@@ -133,7 +135,11 @@ auto background_renderer::setup_scene_configs() -> void
     assert(scene());
 
     scene()->setSkyBox(
-        true, config_data().skybox_material, config_data().skybox_distance);
+        true,
+        config_data().skybox_material,
+        config_data().skybox_distance,
+        ARCHV_RESOURCE_GROUP);
+
     scene()->setAmbientLight(config_data().ambient_light);
 
     assert(scene()->isSkyBoxEnabled());

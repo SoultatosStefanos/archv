@@ -4,7 +4,9 @@
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMeshManager.h>
+#include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreRoot.h>
+#include <OGRE/Overlay/OgreFontManager.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
@@ -104,19 +106,32 @@ auto app::install_gui_plugins() -> void
 
 namespace
 {
+    inline auto from_archv_group(const Ogre::ResourcePtr& ptr)
+    {
+        return ptr->getGroup() == ARCHV_RESOURCE_GROUP;
+    }
+
     auto load_gui_resources(Ogre::ResourceManager& manager)
     {
         using resources_vector = std::vector< std::string_view >;
 
         auto range = manager.getResourceIterator();
-        const auto ptrs_range = std::ranges::views::values(range);
+
+        // clang-format off
+        auto ptrs_range = std::ranges::views::values(range)
+                        | std::ranges::views::filter(from_archv_group);
+        // clang-format on
+
         auto resources = resources_vector();
 
         std::transform(
-            std::cbegin(ptrs_range),
-            std::cend(ptrs_range),
+            std::begin(ptrs_range),
+            std::end(ptrs_range),
             std::back_inserter(resources),
-            [](const auto& ptr) { return ptr->getName().c_str(); });
+            [](const auto& ptr)
+            {
+                return ptr->getName().c_str();
+            });
 
         std::sort(std::begin(resources), std::end(resources)); // alphabetically
 
@@ -128,29 +143,43 @@ namespace
         using namespace Ogre;
         auto&& materials = load_gui_resources(MaterialManager::getSingleton());
         gui::resources::load_materials(std::move(materials));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui materials";
     }
 
     inline auto load_gui_meshes()
     {
         using namespace Ogre;
+        ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
         auto&& meshes = load_gui_resources(MeshManager::getSingleton());
         gui::resources::load_meshes(std::move(meshes));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui meshes";
+    }
+
+    inline auto load_gui_fonts()
+    {
+        using namespace Ogre;
+        auto&& fonts = load_gui_resources(FontManager::getSingleton());
+        gui::resources::load_fonts(std::move(fonts));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui fonts";
     }
 
 } // namespace
 
-// TODO
 auto app::load_gui_resources() -> void
 {
     load_gui_materials();
     load_gui_meshes();
-
-    gui::resources::load_fonts({ "Fornire-Light" }); // FIXME
+    load_gui_fonts();
 }
 
 auto app::create_gui() -> void
 {
     m_gui = std::make_unique< gui::gui >(m_gui_config);
+
+    BOOST_LOG_TRIVIAL(debug) << "created gui";
 }
 
 auto app::setup_gui_undo_redo() -> void
@@ -162,6 +191,8 @@ auto app::setup_gui_undo_redo() -> void
 
     m_gui->get_editor().set_redo_enabled([this]()
                                          { return m_commands->can_redo(); });
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui hooks";
 }
 
 namespace
@@ -192,6 +223,8 @@ auto app::setup_gui_background_configurator() -> void
     bkg_gui.set_specular_color(to_rgba(cfg.specular_light));
     bkg_gui.set_cam_far_clip_distance(cfg.far_clip_distance);
     bkg_gui.set_cam_near_clip_distance(cfg.near_clip_distance);
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui background values";
 }
 
 auto app::setup_gui_graph_configurator() -> void
@@ -208,6 +241,8 @@ auto app::setup_gui_graph_configurator() -> void
     graph_gui.set_node_char_height(cfg.vbillboard_char_height);
     graph_gui.set_node_space_width(cfg.vbillboard_space_width);
     graph_gui.set_edge_material(cfg.edge_material);
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui graph values";
 }
 
 auto app::setup_gui_gui_configurator() -> void
@@ -222,6 +257,8 @@ auto app::setup_gui_gui_configurator() -> void
     gui_configurator.set_frame_bordered(cfg.frame_bordered);
     gui_configurator.set_window_bordered(cfg.window_bordered);
     gui_configurator.set_popup_bordered(cfg.popup_bordered);
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui gui values";
 }
 
 auto app::start_gui() -> void
