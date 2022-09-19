@@ -44,6 +44,6 @@ font Roboto-Medium
 {
 	type 		truetype
 	source 		Roboto-Medium.ttf
-	size 		50
+	size 		100
 	resolution 	96
 }

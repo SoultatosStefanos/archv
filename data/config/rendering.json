@@ -11,12 +11,12 @@
 	},
 	"graph" : 
 	{
-		"vertex-mesh" : "Cube.mesh",
-		"vertex-scale" :  [	1, 1, 1 ],
+		"vertex-mesh" : "cube.mesh",
+		"vertex-scale" :  [	0.05, 0.05, 0.05 ],
 		"vertex-billboard" : 
 		{
 			"font-name" : "Roboto-Medium",
-			"char-height" : 1.0,
+			"char-height" : 25.0,
 			"color" : [ 0.2, 0.2, 0.2 ],
 			"space-width" : 1.0
 		},
