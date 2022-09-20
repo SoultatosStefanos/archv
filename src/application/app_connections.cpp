@@ -1,5 +1,6 @@
 #include "app.hpp"
 #include "commands.hpp"
+#include "ui/all.hpp"
 
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
@@ -273,36 +274,67 @@ auto app::connect_gui_gui_configurator() -> void
     auto& iface = m_gui->get_configurator().get_gui_configurator();
 
     iface.connect_to_color_theme(
-        [](auto theme)
-        { BOOST_LOG_TRIVIAL(info) << "selected gui color theme: " << theme; });
+        [this](auto theme)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui color theme: " << theme;
+            m_gui->config_api().set_color_theme(std::string(theme));
+        });
 
     iface.connect_to_frame_rounding(
-        [](auto r)
-        { BOOST_LOG_TRIVIAL(info) << "selected gui frame rounding: " << r; });
+        [this](auto r)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui frame rounding: " << r;
+            m_gui->config_api().set_frame_rounding(r);
+        });
 
     iface.connect_to_window_bordered(
-        [](auto b)
-        { BOOST_LOG_TRIVIAL(info) << "selected gui window bordered: " << b; });
+        [this](auto b)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui window bordered: " << b;
+            m_gui->config_api().set_window_bordered(b);
+        });
 
     iface.connect_to_frame_bordered(
-        [](auto b)
-        { BOOST_LOG_TRIVIAL(info) << "selected gui frame bordered: " << b; });
+        [this](auto b)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui frame bordered: " << b;
+            m_gui->config_api().set_frame_bordered(b);
+        });
 
     iface.connect_to_popup_bordered(
-        [](auto b)
-        { BOOST_LOG_TRIVIAL(info) << "selected gui popup bordered: " << b; });
+        [this](auto b)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui popup bordered: " << b;
+            m_gui->config_api().set_popup_bordered(b);
+        });
 
     iface.connect_to_apply(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs apply"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui configs apply";
+            ui::apply_configs(*m_gui);
+        });
 
     iface.connect_to_preview(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs preview"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui configs preview";
+            ui::begin_preview(*m_gui);
+        });
 
     iface.connect_to_cancel(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs cancel"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui configs cancel";
+            ui::end_preview(*m_gui);
+        });
 
     iface.connect_to_restore(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs restore"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected gui configs restore";
+            ui::restore_defaults(*m_gui);
+        });
 }
 
 } // namespace application
