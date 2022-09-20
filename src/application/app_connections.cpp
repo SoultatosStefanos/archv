@@ -206,4 +206,64 @@ auto app::connect_gui_background_configurator() -> void
         { BOOST_LOG_TRIVIAL(info) << "selected background configs restore"; });
 }
 
+auto app::connect_gui_graph_configurator() -> void
+{
+    assert(m_gui);
+
+    auto& iface = m_gui->get_configurator().get_graph_configurator();
+
+    iface.connect_to_node_mesh(
+        [](auto mesh)
+        { BOOST_LOG_TRIVIAL(info) << "selected graph node mesh: " << mesh; });
+
+    iface.connect_to_node_scale(
+        [](const auto& scale)
+        {
+            assert(scale.size() == 3);
+            BOOST_LOG_TRIVIAL(info) << "selected graph node scale: " << scale[0]
+                                    << ", " << scale[1] << ", " << scale[2];
+        });
+
+    iface.connect_to_node_font(
+        [](auto font)
+        { BOOST_LOG_TRIVIAL(info) << "selected graph node font: " << font; });
+
+    iface.connect_to_node_font_color(
+        [](const auto& col)
+        {
+            assert(col.size() == 4);
+
+            BOOST_LOG_TRIVIAL(info)
+                << "selected graph node font color: " << col[0] << ", "
+                << col[1] << ", " << col[2] << ", " << col[3];
+        });
+
+    iface.connect_to_node_char_height(
+        [](auto h) {
+            BOOST_LOG_TRIVIAL(info) << "selected graph node char height: " << h;
+        });
+
+    iface.connect_to_node_space_width(
+        [](auto w) {
+            BOOST_LOG_TRIVIAL(info) << "selected graph node space width: " << w;
+        });
+
+    iface.connect_to_edge_material(
+        [](auto mat) {
+            BOOST_LOG_TRIVIAL(info) << "selected graph edge material: " << mat;
+        });
+
+    iface.connect_to_apply(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs apply"; });
+
+    iface.connect_to_preview(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs preview"; });
+
+    iface.connect_to_cancel(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs cancel"; });
+
+    iface.connect_to_restore(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs restore"; });
+}
+
 } // namespace application
