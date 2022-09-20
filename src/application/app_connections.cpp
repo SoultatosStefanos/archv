@@ -266,4 +266,43 @@ auto app::connect_gui_graph_configurator() -> void
         []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs restore"; });
 }
 
+auto app::connect_gui_gui_configurator() -> void
+{
+    assert(m_gui);
+
+    auto& iface = m_gui->get_configurator().get_gui_configurator();
+
+    iface.connect_to_color_theme(
+        [](auto theme)
+        { BOOST_LOG_TRIVIAL(info) << "selected gui color theme: " << theme; });
+
+    iface.connect_to_frame_rounding(
+        [](auto r)
+        { BOOST_LOG_TRIVIAL(info) << "selected gui frame rounding: " << r; });
+
+    iface.connect_to_window_bordered(
+        [](auto b)
+        { BOOST_LOG_TRIVIAL(info) << "selected gui window bordered: " << b; });
+
+    iface.connect_to_frame_bordered(
+        [](auto b)
+        { BOOST_LOG_TRIVIAL(info) << "selected gui frame bordered: " << b; });
+
+    iface.connect_to_popup_bordered(
+        [](auto b)
+        { BOOST_LOG_TRIVIAL(info) << "selected gui popup bordered: " << b; });
+
+    iface.connect_to_apply(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs apply"; });
+
+    iface.connect_to_preview(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs preview"; });
+
+    iface.connect_to_cancel(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs cancel"; });
+
+    iface.connect_to_restore(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected gui configs restore"; });
+}
+
 } // namespace application

@@ -92,6 +92,7 @@ private:
     auto connect_gui_with_layout() -> void;
     auto connect_gui_background_configurator() -> void;
     auto connect_gui_graph_configurator() -> void;
+    auto connect_gui_gui_configurator() -> void;
 
     auto connect_rendering_with_layout() -> void;
 
