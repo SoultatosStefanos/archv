@@ -53,14 +53,14 @@ MovableText::~MovableText()
         delete mRenderOp.vertexData;
     // May cause crashing... check this and comment if it does
     if (!mpMaterial.isNull())
-        MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), RGN_INTERNAL);
+        MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), RGN_AUTODETECT);
 }
  
 void MovableText::setFontName(const String &fontName, const String& groupName)
 {
-    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName, RGN_INTERNAL))) 
+    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName, groupName))) 
     { 
-        Ogre::MaterialManager::getSingleton().remove(mName, RGN_INTERNAL); 
+        Ogre::MaterialManager::getSingleton().remove(mName, groupName); 
     }
  
     if (mFontName != fontName || mpMaterial.isNull() || !mpFont)
@@ -74,11 +74,11 @@ void MovableText::setFontName(const String &fontName, const String& groupName)
         mpFont->load();
         if (!mpMaterial.isNull())
         {
-            MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), RGN_INTERNAL);
+            MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), groupName);
             mpMaterial.setNull();
         }
  
-        mpMaterial = mpFont->getMaterial()->clone(mName, RGN_INTERNAL);
+        mpMaterial = mpFont->getMaterial()->clone(mName, groupName);
         if (!mpMaterial->isLoaded())
             mpMaterial->load();
  

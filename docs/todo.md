@@ -420,7 +420,7 @@
 
 		+ [x] Layout plugins
 
-		+ [ ] Configure Resources manually
+		+ [x] Configure Resources manually
 
 	+ [ ] GUI Editor Hooks
 
