@@ -125,4 +125,85 @@ auto app::connect_rendering_with_layout() -> void
         { m_graph_renderer->set_vertex_pos(make_position_map()); });
 }
 
+auto app::connect_gui_background_configurator() -> void
+{
+    assert(m_gui);
+
+    auto& iface = m_gui->get_configurator().get_background_configurator();
+
+    iface.connect_to_skybox_material(
+        [](auto material)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background skybox material: " << material;
+        });
+
+    iface.connect_to_skybox_distance(
+        [](auto dist)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background skybox distance:  " << dist;
+        });
+
+    iface.connect_to_ambient_color(
+        [](const auto& col)
+        {
+            assert(col.size() == 4);
+
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background ambient color: " << col[0] << ", "
+                << col[1] << ", " << col[2] << ", " << col[3];
+        });
+
+    iface.connect_to_diffuse_color(
+        [](const auto& col)
+        {
+            assert(col.size() == 4);
+
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background diffuse color: " << col[0] << ", "
+                << col[1] << ", " << col[2] << ", " << col[3];
+        });
+
+    iface.connect_to_specular_color(
+        [](const auto& col)
+        {
+            assert(col.size() == 4);
+
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background specular color: " << col[0] << ", "
+                << col[1] << ", " << col[2] << ", " << col[3];
+        });
+
+    iface.connect_to_cam_far_clip_distance(
+        [](auto dist)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background camera far clip distance: " << dist;
+        });
+
+    iface.connect_to_cam_near_clip_distance(
+        [](auto dist)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected background camera near clip distance: " << dist;
+        });
+
+    iface.connect_to_apply(
+        []()
+        { BOOST_LOG_TRIVIAL(info) << "selected background configs apply"; });
+
+    iface.connect_to_preview(
+        []()
+        { BOOST_LOG_TRIVIAL(info) << "selected background configs preview"; });
+
+    iface.connect_to_cancel(
+        []()
+        { BOOST_LOG_TRIVIAL(info) << "selected background configs cancel"; });
+
+    iface.connect_to_restore(
+        []()
+        { BOOST_LOG_TRIVIAL(info) << "selected background configs restore"; });
+}
+
 } // namespace application

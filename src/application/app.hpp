@@ -90,6 +90,7 @@ private:
     auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
+    auto connect_gui_background_configurator() -> void;
 
     auto connect_rendering_with_layout() -> void;
 
