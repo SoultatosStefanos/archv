@@ -56,7 +56,12 @@ auto layout_editor::render_topology_editor() const -> void
 
 auto layout_editor::render_scale_editor() const -> void
 {
-    if (ImGui::SliderFloat("Scale", &m_scale, 0.0F, 1000.0F))
+    static const auto [low, high] = plugins::scales();
+    if (ImGui::SliderFloat(
+            "Scale",
+            &m_scale,
+            static_cast< float >(low),
+            static_cast< float >(high)))
         emit_scale();
 }
 

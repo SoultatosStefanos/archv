@@ -38,6 +38,14 @@ TEST(layout_deserialization, sample_layout_unknown_plugin_topology)
     EXPECT_THROW(deserialize(root), unknown_plugin);
 }
 
+TEST(layout_deserialization, sample_layout_unlisted_default_scale)
+{
+    const auto root
+        = read_json_root("../../data/testfiles/sample_layout_-4.json");
+
+    EXPECT_THROW(deserialize(root), unlisted_default);
+}
+
 TEST(layout_deserialization, sample_layout_unlisted_default_layout)
 {
     const auto root
@@ -58,6 +66,7 @@ auto make_sample_layout_0()
 {
     return config_data { .layouts = { "Gursoy Atun" },
                          .topologies = { "Cube" },
+                         .scales = { 0, 2000 },
                          .layout = "Gursoy Atun",
                          .topology = "Cube",
                          .scale = 100 };

@@ -8,6 +8,7 @@
 		"Cube",
 		"Sphere"
 	],
+	"scales" : { "low" : 0, "high" : 2000 },
 	"layout" : "aa",
 	"topology" : "Cube",
 	"scale" : 100 

@@ -126,6 +126,8 @@ auto app::install_gui_plugins() -> void
 
               return topologies;
           }() });
+
+    gui::plugins::install_scales(m_layout_config.scales);
 }
 
 namespace

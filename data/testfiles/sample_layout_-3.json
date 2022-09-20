@@ -8,6 +8,7 @@
 		"aa",
 		"Sphere"
 	],
+	"scales" : { "low" : 0, "high" : 2000 },
 	"layout" : "Gursoy Atun",
 	"topology" : "Sphere",
 	"scale" : 100 

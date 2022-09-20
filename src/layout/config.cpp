@@ -43,6 +43,9 @@ namespace
         if (!contains(data.topologies, data.topology))
             BOOST_THROW_EXCEPTION(
                 unlisted_default() << topology_info(data.topology));
+
+        if (data.scales.first > data.scale or data.scales.second < data.scale)
+            BOOST_THROW_EXCEPTION(unlisted_default() << scale_info(data.scale));
     }
 
     auto verify(const config_data& data)
@@ -86,6 +89,15 @@ namespace
         return read_json_array< json_topologies >(root["topologies"]);
     }
 
+    inline auto deserialize_scales(const Json::Value& root)
+    {
+        const auto& range = root["scales"];
+        auto low = range["low"].as< double >();
+        auto high = range["high"].as< double >();
+
+        return std::make_pair(low, high);
+    }
+
     auto deserialize_defaults(const Json::Value& root)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading defaults";
@@ -121,10 +133,12 @@ auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& layouts = deserialize_layouts(root);
     auto&& topologies = deserialize_topologies(root);
+    auto&& scales = deserialize_scales(root);
     auto&& [layout, topology, scale] = deserialize_defaults(root);
 
     config_data res { .layouts = std::move(layouts),
                       .topologies = std::move(topologies),
+                      .scales = std::move(scales),
                       .layout = std::move(layout),
                       .topology = std::move(topology),
                       .scale = scale };

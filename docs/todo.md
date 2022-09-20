@@ -418,7 +418,7 @@
 
 	+ [ ] GUI resources
 
-		+ [ ] Layout plugins
+		+ [x] Layout plugins
 
 		+ [ ] Configure Resources manually
 

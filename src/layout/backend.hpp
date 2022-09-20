@@ -14,6 +14,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/signals2/signal.hpp>
 #include <cassert>
+#include <limits>
 #include <memory>
 #include <string>
 
@@ -33,6 +34,10 @@ struct backend_config
     // All available by default.
     std::vector< std::string > topologies { std::cbegin(topology_ids),
                                             std::cend(topology_ids) };
+
+    // From 0 to max double by default.
+    std::pair< double, double > scales { 0,
+                                         std::numeric_limits< double >::max() };
 
     std::string layout;
     std::string topology;
@@ -151,6 +156,10 @@ protected:
                 std::cend(config_data().topologies),
                 id)
             != std::cend(config_data().topologies));
+
+        assert(
+            scale >= config_data().scales.first
+            and scale <= config_data().scales.second);
 
         m_topology = topology_factory::make_topology(id, scale);
 
