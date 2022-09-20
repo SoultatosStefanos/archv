@@ -1,7 +1,5 @@
 #include "config.hpp"
 
-#include "resources.hpp"
-
 namespace resources
 {
 
@@ -25,15 +23,15 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> void
+auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& meshes = deserialize_resources(root["meshes"]);
     auto&& materials = deserialize_resources(root["materials"]);
     auto&& fonts = deserialize_resources(root["fonts"]);
 
-    load_meshes(std::move(meshes));
-    load_materials(std::move(materials));
-    load_fonts(std::move(fonts));
+    return config_data { .meshes = std::move(meshes),
+                         .materials = std::move(materials),
+                         .fonts = std::move(fonts) };
 }
 
 } // namespace resources

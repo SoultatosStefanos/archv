@@ -25,6 +25,7 @@
 #include "layout/all.hpp"
 #include "multithreading/all.hpp"
 #include "rendering/all.hpp"
+#include "resources/all.hpp"
 #include "undo_redo/all.hpp"
 
 /***********************************************************
@@ -76,6 +77,7 @@ private:
 
     auto setup_gui_overlay() -> void;
     auto setup_gui_tray_manager() -> void;
+    auto load_gui_resources() -> void;
     auto install_gui_plugins() -> void;
     auto create_gui() -> void;
     auto setup_gui_undo_redo() -> void;
@@ -116,6 +118,7 @@ private:
     layout::config_data m_layout_config;
     rendering::config_data m_rendering_config;
     gui::config_data m_gui_config;
+    resources::config_data m_resources_config;
 
     /***********************************************************
      * Architecture                                            *

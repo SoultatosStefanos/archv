@@ -1,5 +1,4 @@
 #include "resources/config.hpp"
-#include "resources/resources.hpp"
 #include "utility/json.hpp"
 
 #include <gtest/gtest.h>
@@ -11,31 +10,22 @@ using namespace utility;
 namespace
 {
 
-auto sample_0_meshes()
+auto sample_0_resources()
 {
-    return mesh_vector { "a", "a" };
-}
-
-auto sample_0_materials()
-{
-    return material_vector { "b" };
-}
-
-auto sample_0_fonts()
-{
-    return font_vector { "c", "c", "c" };
+    return config_data { .meshes = { "a", "a" },
+                         .materials = { "b" },
+                         .fonts = { "c", "c", "c" } };
 }
 
 TEST(resources_deserialization, sample_resources_0)
 {
     const auto root
         = read_json_root("../../data/testfiles/sample_resources_0.json");
+    const auto expected = sample_0_resources();
 
-    deserialize(root);
+    const auto actual = deserialize(root);
 
-    ASSERT_EQ(sample_0_meshes(), meshes());
-    ASSERT_EQ(sample_0_materials(), materials());
-    ASSERT_EQ(sample_0_fonts(), fonts());
+    ASSERT_EQ(actual, expected);
 }
 
 } // namespace

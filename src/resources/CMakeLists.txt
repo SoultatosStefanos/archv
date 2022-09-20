@@ -1,5 +1,4 @@
 set(FILES
-	resources.cpp
 	config.cpp
 )
 set(SUBDIRECTORIES)

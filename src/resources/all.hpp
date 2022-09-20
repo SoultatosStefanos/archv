@@ -5,6 +5,5 @@
 #define RESOURCES_ALL_HPP
 
 #include "config.hpp"
-#include "resources.hpp"
 
 #endif // RESOURCES_ALL_HPP
