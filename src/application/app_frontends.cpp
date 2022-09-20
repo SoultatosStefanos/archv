@@ -98,10 +98,34 @@ auto app::install_gui_plugins() -> void
         }());
 
     gui::plugins::install_layouts(
-        { std::begin(layout::layout_ids), std::end(layout::layout_ids) });
+        [this]()
+        {
+            auto layouts = gui::plugins::layouts();
+            const auto& plugged = m_layout_config.layouts;
+
+            std::transform(
+                std::cbegin(plugged),
+                std::cend(plugged),
+                std::back_inserter(layouts),
+                [](const auto& lay) { return lay.c_str(); });
+
+            return layouts;
+        }());
 
     gui::plugins::install_topologies(
-        { std::begin(layout::topology_ids), std::end(layout::topology_ids) });
+        { [this]()
+          {
+              auto topologies = gui::plugins::topologies();
+              const auto& plugged = m_layout_config.topologies;
+
+              std::transform(
+                  std::cbegin(plugged),
+                  std::cend(plugged),
+                  std::back_inserter(topologies),
+                  [](const auto& space) { return space.c_str(); });
+
+              return topologies;
+          }() });
 }
 
 namespace
@@ -128,10 +152,7 @@ namespace
             std::begin(ptrs_range),
             std::end(ptrs_range),
             std::back_inserter(resources),
-            [](const auto& ptr)
-            {
-                return ptr->getName().c_str();
-            });
+            [](const auto& ptr) { return ptr->getName().c_str(); });
 
         std::sort(std::begin(resources), std::end(resources)); // alphabetically
 

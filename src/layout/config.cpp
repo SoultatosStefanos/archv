@@ -12,24 +12,44 @@ namespace layout
 
 namespace
 {
-
-    auto verify_layout(const config_data& data) -> void
+    auto verify_layouts(const config_data& data)
     {
-        if (!is_layout_plugged_in(data.layout))
-            BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(data.layout));
+        for (const auto& lay : data.layouts)
+            if (!is_layout_plugged_in(lay))
+                BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(lay));
     }
 
-    auto verify_topology(const config_data& data) -> void
+    auto verify_topologies(const config_data& data)
     {
-        if (!is_topology_plugged_in(data.topology))
+        for (const auto& s : data.topologies)
+            if (!is_topology_plugged_in(s))
+                BOOST_THROW_EXCEPTION(unknown_topology() << topology_info(s));
+    }
+
+    template < typename Container >
+    auto
+    contains(const Container& data, const typename Container::value_type& val)
+    {
+        return std::find(std::begin(data), std::end(data), val)
+            != std::end(data);
+    }
+
+    auto verify_defaults(const config_data& data)
+    {
+        if (!contains(data.layouts, data.layout))
             BOOST_THROW_EXCEPTION(
-                unknown_topology() << topology_info(data.topology));
+                unknown_default() << layout_info(data.layout));
+
+        if (!contains(data.topologies, data.topology))
+            BOOST_THROW_EXCEPTION(
+                unknown_default() << topology_info(data.topology));
     }
 
     auto verify(const config_data& data)
     {
-        verify_layout(data);
-        verify_topology(data);
+        verify_layouts(data);
+        verify_topologies(data);
+        verify_defaults(data);
     }
 
 } // namespace
@@ -50,6 +70,20 @@ namespace
             [](const Json::Value& val) { return val.as< value_type >(); });
 
         return res;
+    }
+
+    inline auto deserialize_layouts(const Json::Value& root)
+    {
+        using json_layouts = std::vector< std::string >;
+        BOOST_LOG_TRIVIAL(debug) << "reading layouts";
+        return read_json_array< json_layouts >(root["layouts"]);
+    }
+
+    inline auto deserialize_topologies(const Json::Value& root)
+    {
+        using json_topologies = std::vector< std::string >;
+        BOOST_LOG_TRIVIAL(debug) << "reading topologies";
+        return read_json_array< json_topologies >(root["topologies"]);
     }
 
     auto deserialize_defaults(const Json::Value& root)
@@ -85,9 +119,13 @@ namespace
 
 auto deserialize(const Json::Value& root) -> config_data
 {
+    auto&& layouts = deserialize_layouts(root);
+    auto&& topologies = deserialize_topologies(root);
     auto&& [layout, topology, scale] = deserialize_defaults(root);
 
-    config_data res { .layout = std::move(layout),
+    config_data res { .layouts = std::move(layouts),
+                      .topologies = std::move(topologies),
+                      .layout = std::move(layout),
                       .topology = std::move(topology),
                       .scale = scale };
 

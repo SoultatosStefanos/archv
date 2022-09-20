@@ -414,9 +414,13 @@
 	+ [x] GUI Plugins
 
 
-# 19 / 09 / 2022 
+# 20 / 09 / 2022 
 
 	+ [ ] GUI resources
+
+		+ [ ] Layout plugins
+
+		+ [ ] Configure Resources manually
 
 	+ [ ] GUI Editor Hooks
 

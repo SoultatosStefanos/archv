@@ -29,6 +29,10 @@ struct unknown_topology : virtual deserialization_error
 {
 };
 
+struct unknown_default : virtual deserialization_error
+{
+};
+
 /***********************************************************
  * Error Info                                              *
  ***********************************************************/

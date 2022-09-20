@@ -1,4 +1,12 @@
 {
+	"layouts" :
+	[
+		"Gursoy Atun"
+	],
+	"topologies" :
+	[
+		"Cube"
+	],
 	"layout" : "Gursoy Atun",
 	"topology" : "Cube",
 	"scale" : 100 

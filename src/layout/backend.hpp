@@ -26,6 +26,14 @@ namespace layout
 
 struct backend_config
 {
+    // All available by default.
+    std::vector< std::string > layouts { std::cbegin(layout_ids),
+                                         std::cend(layout_ids) };
+
+    // All available by default.
+    std::vector< std::string > topologies { std::cbegin(topology_ids),
+                                            std::cend(topology_ids) };
+
     std::string layout;
     std::string topology;
     double scale;
@@ -121,6 +129,12 @@ protected:
     auto set_layout(const std::string& id) -> void
     {
         assert(m_topology);
+        assert(
+            std::find(
+                std::cbegin(config_data().layouts),
+                std::cend(config_data().layouts),
+                id)
+            != std::cend(config_data().layouts));
 
         m_layout = layout_factory_type::make_layout(
             id, graph(), get_topology(), weight_map());
@@ -131,6 +145,13 @@ protected:
 
     auto set_topology(const std::string& id, scale_type scale) -> void
     {
+        assert(
+            std::find(
+                std::cbegin(config_data().topologies),
+                std::cend(config_data().topologies),
+                id)
+            != std::cend(config_data().topologies));
+
         m_topology = topology_factory::make_topology(id, scale);
 
         assert(m_topology);

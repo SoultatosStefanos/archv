@@ -5,10 +5,10 @@
 	],
 	"topologies" :
 	[
-		"Cube",
+		"aa",
 		"Sphere"
 	],
 	"layout" : "Gursoy Atun",
-	"topology" : "aa",
+	"topology" : "Sphere",
 	"scale" : 100 
 }

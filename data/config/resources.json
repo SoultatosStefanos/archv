@@ -1,0 +1,23 @@
+{
+	"meshes" : 
+	[
+		"cube.mesh",
+		"sphere.mesh"
+	],
+	"materials" :
+	[
+		"Dark",
+		"White",
+		"Studio"
+	],
+	"fonts" :
+	[
+		"Cousine-Regular",
+		"Droid-Sans",
+		"Fornire-Light",
+		"Karla-Regular",
+		"Proggy-Clean",
+		"Proggy-Tiny",
+		"Roboto-Medium"
+	]
+}
