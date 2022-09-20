@@ -38,20 +38,20 @@ TEST(layout_deserialization, sample_layout_unknown_topology)
     EXPECT_THROW(deserialize(root), unknown_topology);
 }
 
-TEST(layout_deserialization, sample_layout_unknown_default_layout)
+TEST(layout_deserialization, sample_layout_unlisted_default_layout)
 {
     const auto root
         = read_json_root("../../data/testfiles/sample_layout_-5.json");
 
-    EXPECT_THROW(deserialize(root), unknown_default);
+    EXPECT_THROW(deserialize(root), unlisted_default);
 }
 
-TEST(layout_deserialization, sample_layout_unknown_default_topology)
+TEST(layout_deserialization, sample_layout_unlisted_default_topology)
 {
     const auto root
         = read_json_root("../../data/testfiles/sample_layout_-6.json");
 
-    EXPECT_THROW(deserialize(root), unknown_default);
+    EXPECT_THROW(deserialize(root), unlisted_default);
 }
 
 auto make_sample_layout_0()

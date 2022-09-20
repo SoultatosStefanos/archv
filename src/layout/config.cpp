@@ -38,11 +38,11 @@ namespace
     {
         if (!contains(data.layouts, data.layout))
             BOOST_THROW_EXCEPTION(
-                unknown_default() << layout_info(data.layout));
+                unlisted_default() << layout_info(data.layout));
 
         if (!contains(data.topologies, data.topology))
             BOOST_THROW_EXCEPTION(
-                unknown_default() << topology_info(data.topology));
+                unlisted_default() << topology_info(data.topology));
     }
 
     auto verify(const config_data& data)
