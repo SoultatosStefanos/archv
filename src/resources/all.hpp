@@ -4,7 +4,7 @@
 #ifndef RESOURCES_ALL_HPP
 #define RESOURCES_ALL_HPP
 
-#include "configurator.hpp"
+#include "config.hpp"
 #include "resources.hpp"
 
 #endif // RESOURCES_ALL_HPP

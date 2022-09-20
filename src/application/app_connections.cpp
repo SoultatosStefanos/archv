@@ -14,6 +14,7 @@ namespace application
 
 auto app::connect_gui_with_dependencies() -> void
 {
+
     // assert(m_menu_window);
     // assert(m_commands);
     // assert(m_dependencies_backend);
@@ -27,7 +28,8 @@ auto app::connect_gui_with_dependencies() -> void
 
     // m_menu_window->connect_to_dependencies_restore(
     //     [this]() {
-    //         restore_dependencies_defaults(*m_commands, *m_dependencies_backend);
+    //         restore_dependencies_defaults(*m_commands,
+    //         *m_dependencies_backend);
     //     });
 
     // m_dependencies_backend->connect(
@@ -48,17 +50,20 @@ auto app::connect_gui_with_layout() -> void
 
     // m_menu_window->connect_to_topology(
     //     [this](const auto& selection)
-    //     { update_layout_topology(*m_commands, *m_layout_backend, selection); });
+    //     { update_layout_topology(*m_commands, *m_layout_backend, selection);
+    //     });
 
     // m_menu_window->connect_to_scale(
     //     [this](auto selection)
     //     {
     //         layout::update_scale(*m_layout_backend, selection);
-    //         // update_layout_scale(*m_commands, *m_layout_backend, selection);
+    //         // update_layout_scale(*m_commands, *m_layout_backend,
+    //         selection);
     //     });
 
     // m_menu_window->connect_to_layout_restore(
-    //     [this]() { restore_layout_defaults(*m_commands, *m_layout_backend); });
+    //     [this]() { restore_layout_defaults(*m_commands, *m_layout_backend);
+    //     });
 
     // m_layout_backend->connect_to_layout(
     //     [this](const auto& layout)

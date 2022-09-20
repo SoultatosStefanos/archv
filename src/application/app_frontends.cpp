@@ -1,5 +1,6 @@
 #include "app.hpp"
 #include "commands.hpp"
+#include "resources/all.hpp"
 #include "ui/ui_component.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
@@ -47,11 +48,79 @@ auto app::setup_graph_rendering() -> void
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
 
+namespace
+{
+    inline auto load_gui_materials()
+    {
+        gui::resources::load_materials(
+            []()
+            {
+                auto res = gui::resources::materials_vector();
+                const auto& mats = resources::materials();
+
+                std::transform(
+                    std::cbegin(mats),
+                    std::cend(mats),
+                    std::back_inserter(res),
+                    [](const auto& mat) { return mat.c_str(); });
+
+                return res;
+            }());
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui materials";
+    }
+
+    inline auto load_gui_meshes()
+    {
+        gui::resources::load_meshes(
+            []()
+            {
+                auto res = gui::resources::meshes_vector();
+                const auto& meshes = resources::meshes();
+
+                std::transform(
+                    std::cbegin(meshes),
+                    std::cend(meshes),
+                    std::back_inserter(res),
+                    [](const auto& mesh) { return mesh.c_str(); });
+
+                return res;
+            }());
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui meshes";
+    }
+
+    inline auto load_gui_fonts()
+    {
+        gui::resources::load_fonts(
+            []()
+            {
+                auto res = gui::resources::fonts_vector();
+                const auto& fonts = resources::fonts();
+
+                std::transform(
+                    std::cbegin(fonts),
+                    std::cend(fonts),
+                    std::back_inserter(res),
+                    [](const auto& font) { return font.c_str(); });
+
+                return res;
+            }());
+    }
+
+    auto load_gui_resources() -> void
+    {
+        load_gui_materials();
+        load_gui_meshes();
+        load_gui_fonts();
+    }
+
+} // namespace
+
 auto app::setup_gui() -> void
 {
     setup_gui_overlay();
     setup_gui_tray_manager();
-    install_gui_plugins();
     load_gui_resources();
     create_gui();
     setup_gui_undo_redo();
@@ -128,74 +197,6 @@ auto app::install_gui_plugins() -> void
           }() });
 
     gui::plugins::install_scales(m_layout_config.scales);
-}
-
-namespace
-{
-    inline auto from_archv_group(const Ogre::ResourcePtr& ptr)
-    {
-        return ptr->getGroup() == ARCHV_RESOURCE_GROUP;
-    }
-
-    auto load_gui_resources(Ogre::ResourceManager& manager)
-    {
-        using resources_vector = std::vector< std::string_view >;
-
-        auto range = manager.getResourceIterator();
-
-        // clang-format off
-        auto ptrs_range = std::ranges::views::values(range)
-                        | std::ranges::views::filter(from_archv_group);
-        // clang-format on
-
-        auto resources = resources_vector();
-
-        std::transform(
-            std::begin(ptrs_range),
-            std::end(ptrs_range),
-            std::back_inserter(resources),
-            [](const auto& ptr) { return ptr->getName().c_str(); });
-
-        std::sort(std::begin(resources), std::end(resources)); // alphabetically
-
-        return resources;
-    }
-
-    inline auto load_gui_materials()
-    {
-        using namespace Ogre;
-        auto&& materials = load_gui_resources(MaterialManager::getSingleton());
-        gui::resources::load_materials(std::move(materials));
-
-        BOOST_LOG_TRIVIAL(debug) << "loaded gui materials";
-    }
-
-    inline auto load_gui_meshes()
-    {
-        using namespace Ogre;
-        ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-        auto&& meshes = load_gui_resources(MeshManager::getSingleton());
-        gui::resources::load_meshes(std::move(meshes));
-
-        BOOST_LOG_TRIVIAL(debug) << "loaded gui meshes";
-    }
-
-    inline auto load_gui_fonts()
-    {
-        using namespace Ogre;
-        auto&& fonts = load_gui_resources(FontManager::getSingleton());
-        gui::resources::load_fonts(std::move(fonts));
-
-        BOOST_LOG_TRIVIAL(debug) << "loaded gui fonts";
-    }
-
-} // namespace
-
-auto app::load_gui_resources() -> void
-{
-    load_gui_materials();
-    load_gui_meshes();
-    load_gui_fonts();
 }
 
 auto app::create_gui() -> void

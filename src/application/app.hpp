@@ -77,7 +77,6 @@ private:
     auto setup_gui_overlay() -> void;
     auto setup_gui_tray_manager() -> void;
     auto install_gui_plugins() -> void;
-    auto load_gui_resources() -> void;
     auto create_gui() -> void;
     auto setup_gui_undo_redo() -> void;
     auto setup_gui_gui_configurator() -> void;

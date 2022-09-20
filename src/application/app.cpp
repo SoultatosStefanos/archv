@@ -1,6 +1,7 @@
 #include "app.hpp"
 
 #include "commands.hpp"
+#include "resources/all.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRoot.h>
@@ -40,6 +41,8 @@ app::app(int argc, const char** argv) : base("ARCHV")
         = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
 
     m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
+
+    resources::deserialize(jsons.at(ARCHV_RESOURCES_CONFIG_PATH));
 
     assert(!paused());
 }

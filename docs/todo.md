@@ -416,12 +416,12 @@
 
 # 20 / 09 / 2022 
 
-	+ [ ] GUI resources
+	+ [x] GUI resources
 
 		+ [x] Layout plugins
 
 		+ [x] Configure Resources manually
 
-	+ [ ] GUI Editor Hooks
+	+ [n] GUI Editor Hooks
 
 	+ [ ] GUI Connections

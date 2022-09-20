@@ -21,6 +21,9 @@
 // The path of the gui.json config file.
 #define ARCHV_GUI_CONFIG_PATH ARCHV_CONFIG_DIR "/gui.json"
 
+// The path of the resources.json config file.
+#define ARCHV_RESOURCES_CONFIG_PATH ARCHV_CONFIG_DIR "/resources.json"
+
 #ifndef ARCHV_RESOURCE_GROUP
 #define ARCHV_RESOURCE_GROUP "Archv"
 #endif
