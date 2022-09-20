@@ -59,6 +59,7 @@ auto app::setup_gui() -> void
     setup_gui_background_configurator();
     setup_gui_graph_configurator();
     setup_gui_gui_configurator();
+    setup_gui_layout_editor();
     start_gui();
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
@@ -267,6 +268,17 @@ auto app::setup_gui_gui_configurator() -> void
     gui_configurator.set_popup_bordered(cfg.popup_bordered);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui gui values";
+}
+
+auto app::setup_gui_layout_editor() -> void
+{
+    auto& editor = m_gui->get_editor().get_layout_editor();
+
+    editor.set_layout(layout::identify(m_layout_backend->get_layout()));
+    editor.set_topology(layout::identify(m_layout_backend->get_topology()));
+    editor.set_scale(m_layout_backend->get_topology().scale());
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui layout editor";
 }
 
 auto app::start_gui() -> void
