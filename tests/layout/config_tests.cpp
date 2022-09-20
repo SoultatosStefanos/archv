@@ -22,20 +22,20 @@ TEST(layout_deserialization, sample_layout_invalid)
     EXPECT_THROW(deserialize(root), deserialization_error);
 }
 
-TEST(layout_deserialization, sample_layout_unknown_layout)
+TEST(layout_deserialization, sample_layout_unknown_plugin_layout)
 {
     const auto root
         = read_json_root("../../data/testfiles/sample_layout_-2.json");
 
-    EXPECT_THROW(deserialize(root), unknown_layout);
+    EXPECT_THROW(deserialize(root), unknown_plugin);
 }
 
-TEST(layout_deserialization, sample_layout_unknown_topology)
+TEST(layout_deserialization, sample_layout_unknown_plugin_topology)
 {
     const auto root
         = read_json_root("../../data/testfiles/sample_layout_-3.json");
 
-    EXPECT_THROW(deserialize(root), unknown_topology);
+    EXPECT_THROW(deserialize(root), unknown_plugin);
 }
 
 TEST(layout_deserialization, sample_layout_unlisted_default_layout)

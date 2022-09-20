@@ -16,14 +16,14 @@ namespace
     {
         for (const auto& lay : data.layouts)
             if (!is_layout_plugged_in(lay))
-                BOOST_THROW_EXCEPTION(unknown_layout() << layout_info(lay));
+                BOOST_THROW_EXCEPTION(unknown_plugin() << layout_info(lay));
     }
 
     auto verify_topologies(const config_data& data)
     {
         for (const auto& s : data.topologies)
             if (!is_topology_plugged_in(s))
-                BOOST_THROW_EXCEPTION(unknown_topology() << topology_info(s));
+                BOOST_THROW_EXCEPTION(unknown_plugin() << topology_info(s));
     }
 
     template < typename Container >
