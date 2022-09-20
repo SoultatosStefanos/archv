@@ -424,4 +424,11 @@
 
 	+ [n] GUI Editor Hooks
 
-	+ [ ] GUI Connections
+	+ [x] GUI Connections
+
+
+# 21 / 09 / 2022
+
+	+ [ ] Background Renderer Config
+
+	+ [ ] Graph Renderer Config
