@@ -1,8 +1,8 @@
 #include "app.hpp"
 #include "commands.hpp"
-#include "resources/all.hpp"
 #include "ui/ui_component.hpp"
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreResourceGroupManager.h>
@@ -52,7 +52,6 @@ auto app::setup_gui() -> void
 {
     setup_gui_overlay();
     setup_gui_tray_manager();
-    load_gui_resources();
     install_gui_plugins();
     create_gui();
     setup_gui_undo_redo();
@@ -87,52 +86,85 @@ auto app::setup_gui_tray_manager() -> void
     addInputListener(m_tray_manager.get());
 }
 
+namespace
+{
+    inline auto from_archv_group(const Ogre::ResourcePtr& ptr)
+    {
+        return ptr->getGroup() == ARCHV_RESOURCE_GROUP;
+    }
+
+    auto load_gui_resources(Ogre::ResourceManager& manager)
+    {
+        using resources_vector = std::vector< std::string_view >;
+
+        auto range = manager.getResourceIterator();
+
+        // clang-format off
+        auto ptrs_range = std::ranges::views::values(range)
+                        | std::ranges::views::filter(from_archv_group);
+        // clang-format on
+
+        auto resources = resources_vector();
+
+        std::transform(
+            std::begin(ptrs_range),
+            std::end(ptrs_range),
+            std::back_inserter(resources),
+            [](const auto& ptr) { return ptr->getName().c_str(); });
+
+        std::sort(std::begin(resources), std::end(resources)); // alphabetically
+
+        return resources;
+    }
+
+    inline auto load_gui_meshes()
+    {
+        auto res = gui::resources::meshes_vector();
+
+        const auto& mnger = Ogre::ResourceGroupManager::getSingleton();
+        static const auto meshes_ptr
+            = mnger.findResourceNames(ARCHV_RESOURCE_GROUP, "*.mesh");
+
+        assert(meshes_ptr);
+
+        std::transform(
+            std::cbegin(*meshes_ptr),
+            std::cend(*meshes_ptr),
+            std::back_inserter(res),
+            [](const auto& mesh) { return mesh.c_str(); });
+
+        std::sort(std::begin(res), std::end(res)); // alphabetically
+
+        gui::resources::load_meshes(std::move(res));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui meshes";
+    }
+
+    inline auto load_gui_materials()
+    {
+        using namespace Ogre;
+        auto&& materials = load_gui_resources(MaterialManager::getSingleton());
+        gui::resources::load_materials(std::move(materials));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui materials";
+    }
+
+    inline auto load_gui_fonts()
+    {
+        using namespace Ogre;
+        auto&& fonts = load_gui_resources(FontManager::getSingleton());
+        gui::resources::load_fonts(std::move(fonts));
+
+        BOOST_LOG_TRIVIAL(debug) << "loaded gui fonts";
+    }
+
+} // namespace
+
 auto app::load_gui_resources() -> void
 {
-    gui::resources::load_materials(
-        [this]()
-        {
-            auto res = gui::resources::materials_vector();
-            const auto& mats = m_resources_config.materials;
-
-            std::transform(
-                std::cbegin(mats),
-                std::cend(mats),
-                std::back_inserter(res),
-                [](const auto& mat) { return mat.c_str(); });
-
-            return res;
-        }());
-
-    gui::resources::load_meshes(
-        [this]()
-        {
-            auto res = gui::resources::meshes_vector();
-            const auto& meshes = m_resources_config.meshes;
-
-            std::transform(
-                std::cbegin(meshes),
-                std::cend(meshes),
-                std::back_inserter(res),
-                [](const auto& mesh) { return mesh.c_str(); });
-
-            return res;
-        }());
-
-    gui::resources::load_fonts(
-        [this]()
-        {
-            auto res = gui::resources::fonts_vector();
-            const auto& fonts = m_resources_config.fonts;
-
-            std::transform(
-                std::cbegin(fonts),
-                std::cend(fonts),
-                std::back_inserter(res),
-                [](const auto& font) { return font.c_str(); });
-
-            return res;
-        }());
+    load_gui_meshes();
+    load_gui_materials();
+    load_gui_fonts();
 
     BOOST_LOG_TRIVIAL(debug) << "loaded gui resources";
 }

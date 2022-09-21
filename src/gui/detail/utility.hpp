@@ -4,7 +4,6 @@
 #ifndef GUI_DETAIL_UTILITY_HPP
 #define GUI_DETAIL_UTILITY_HPP
 
-#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <concepts>
 #include <iterator>
