@@ -5,9 +5,7 @@
 #define GUI_GUI_CONFIGURATOR_HPP
 
 #include <boost/signals2/signal.hpp>
-#include <functional>
 #include <string_view>
-#include <vector>
 
 namespace gui
 {
@@ -18,10 +16,6 @@ public:
     using name_type = std::string_view;
     using rounding_type = int;
     using bordered_type = bool;
-
-    using name_accessor = std::function< name_type() >;
-    using rounding_accessor = std::function< rounding_type() >;
-    using bordered_accessor = std::function< bordered_type() >;
 
 private:
     using name_signal = boost::signals2::signal< void(name_type) >;
@@ -55,11 +49,11 @@ public:
     auto frame_bordered() const -> bordered_type;
     auto popup_bordered() const -> bordered_type;
 
-    auto set_color_theme(name_accessor f) -> void;
-    auto set_frame_rounding(rounding_accessor f) -> void;
-    auto set_window_bordered(bordered_accessor f) -> void;
-    auto set_frame_bordered(bordered_accessor f) -> void;
-    auto set_popup_bordered(bordered_accessor f) -> void;
+    auto set_color_theme(name_type theme) -> void;
+    auto set_frame_rounding(rounding_type value) -> void;
+    auto set_window_bordered(bordered_type toggle) -> void;
+    auto set_frame_bordered(bordered_type toggle) -> void;
+    auto set_popup_bordered(bordered_type toggle) -> void;
 
     auto connect_to_color_theme(const name_slot& f) -> connection;
     auto connect_to_frame_rounding(const rounding_slot& f) -> connection;
@@ -72,11 +66,11 @@ public:
     auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
-    auto emit_color_theme(name_type theme) const -> void;
-    auto emit_frame_rounding(rounding_type r) const -> void;
-    auto emit_window_bordered(bordered_type b) const -> void;
-    auto emit_frame_bordered(bordered_type b) const -> void;
-    auto emit_popup_bordered(bordered_type b) const -> void;
+    auto emit_color_theme() const -> void;
+    auto emit_frame_rounding() const -> void;
+    auto emit_window_bordered() const -> void;
+    auto emit_frame_bordered() const -> void;
+    auto emit_popup_bordered() const -> void;
     auto emit_apply() const -> void;
     auto emit_preview() const -> void;
     auto emit_cancel() const -> void;
@@ -89,6 +83,8 @@ protected:
     auto color_themes() -> render_vector& { return m_color_themes; }
 
 private:
+    using index_type = int;
+
     auto render_color_theme_selector() const -> void;
     auto render_frame_rounding_selector() const -> void;
     auto render_window_bordered_selector() const -> void;
@@ -106,11 +102,11 @@ private:
     cancel_signal m_cancel_sig;
     restore_signal m_restore_sig;
 
-    name_accessor m_color_theme;
-    rounding_accessor m_frame_rounding;
-    bordered_accessor m_window_bordered;
-    bordered_accessor m_frame_bordered;
-    bordered_accessor m_popup_bordered;
+    mutable index_type m_color_theme { 0 };
+    mutable rounding_type m_frame_rounding { 0 };
+    mutable bordered_type m_window_bordered { false };
+    mutable bordered_type m_frame_bordered { false };
+    mutable bordered_type m_popup_bordered { false };
 
     mutable render_vector m_color_themes;
 };
