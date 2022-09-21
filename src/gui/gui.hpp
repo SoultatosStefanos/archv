@@ -37,15 +37,10 @@ class gui_config_api
 public:
     using config_data_type = gui_config;
 
-    explicit gui_config_api(config_data_type cfg);
+    explicit gui_config_api(config_data_type cfg) : m_cfg { std::move(cfg) } { }
 
     auto config_data() const -> const config_data_type& { return m_cfg; }
-
-    auto set_color_theme(std::string theme) -> void;
-    auto set_frame_rounding(int frame_rounding) -> void;
-    auto set_window_bordered(bool toggle) -> void;
-    auto set_frame_bordered(bool toggle) -> void;
-    auto set_popup_bordered(bool toggle) -> void;
+    auto config_data() -> config_data_type& { return m_cfg; }
 
 private:
     config_data_type m_cfg;

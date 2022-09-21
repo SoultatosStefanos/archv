@@ -49,36 +49,47 @@ auto gui_configurator::render() const -> void
 
 auto gui_configurator::render_color_theme_selector() const -> void
 {
+    const auto dif = detail::find_index(resources::color_themes, color_theme());
+    auto index = static_cast< int >(dif);
+
     if (ImGui::Combo(
             "Color Theme",
-            &m_color_theme,
+            &index,
             color_themes().data(),
             color_themes().size()))
-        emit_color_theme();
+        emit_color_theme(resources::color_themes.at(index));
 }
 
 auto gui_configurator::render_frame_rounding_selector() const -> void
 {
-    if (ImGui::SliderInt("Frame Rounding", &m_frame_rounding, 0, 12, "%.0f"))
-        emit_frame_rounding();
+    auto r = frame_rounding();
+
+    if (ImGui::SliderInt("Frame Rounding", &r, 0, 12, "%.0f"))
+        emit_frame_rounding(r);
 }
 
 auto gui_configurator::render_window_bordered_selector() const -> void
 {
-    if (ImGui::Checkbox("WindowBorder", &m_window_bordered))
-        emit_window_bordered();
+    auto b = window_bordered();
+
+    if (ImGui::Checkbox("WindowBorder", &b))
+        emit_window_bordered(b);
 }
 
 auto gui_configurator::render_frame_bordered_selector() const -> void
 {
-    if (ImGui::Checkbox("FrameBorder", &m_frame_bordered))
-        emit_frame_bordered();
+    auto b = frame_bordered();
+
+    if (ImGui::Checkbox("FrameBorder", &b))
+        emit_frame_bordered(b);
 }
 
 auto gui_configurator::render_popup_bordered_selector() const -> void
 {
-    if (ImGui::Checkbox("PopupBorder", &m_popup_bordered))
-        emit_popup_bordered();
+    auto b = popup_bordered();
+
+    if (ImGui::Checkbox("PopupBorder", &b))
+        emit_popup_bordered(b);
 }
 
 auto gui_configurator::render_config_buttons() const -> void
@@ -113,52 +124,62 @@ auto gui_configurator::render_config_buttons() const -> void
 
 auto gui_configurator::color_theme() const -> name_type
 {
-    return resources::color_themes.at(m_color_theme);
+    assert(m_color_theme);
+    return m_color_theme();
 }
 
 auto gui_configurator::frame_rounding() const -> rounding_type
 {
-    return m_frame_rounding;
+    assert(m_frame_rounding);
+    return m_frame_rounding();
 }
 
 auto gui_configurator::window_bordered() const -> bordered_type
 {
-    return m_window_bordered;
+    assert(m_window_bordered);
+    return m_window_bordered();
 }
 
 auto gui_configurator::frame_bordered() const -> bordered_type
 {
-    return m_frame_bordered;
+    assert(m_frame_bordered);
+    return m_frame_bordered();
 }
 
 auto gui_configurator::popup_bordered() const -> bordered_type
 {
-    return m_popup_bordered;
+    assert(m_frame_bordered);
+    return m_popup_bordered();
 }
 
-auto gui_configurator::set_color_theme(name_type theme) -> void
+auto gui_configurator::set_color_theme(name_accessor f) -> void
 {
-    m_color_theme = detail::find_index(resources::color_themes, theme);
+    assert(f);
+    m_color_theme = std::move(f);
 }
 
-auto gui_configurator::set_frame_rounding(rounding_type value) -> void
+auto gui_configurator::set_frame_rounding(rounding_accessor f) -> void
 {
-    m_frame_rounding = value;
+    assert(f);
+    m_frame_rounding = std::move(f);
 }
 
-auto gui_configurator::set_window_bordered(bordered_type toggle) -> void
+auto gui_configurator::set_window_bordered(bordered_accessor f) -> void
 {
-    m_window_bordered = toggle;
+    assert(f);
+    m_window_bordered = std::move(f);
 }
 
-auto gui_configurator::set_frame_bordered(bordered_type toggle) -> void
+auto gui_configurator::set_frame_bordered(bordered_accessor f) -> void
 {
-    m_frame_bordered = toggle;
+    assert(f);
+    m_frame_bordered = std::move(f);
 }
 
-auto gui_configurator::set_popup_bordered(bordered_type toggle) -> void
+auto gui_configurator::set_popup_bordered(bordered_accessor f) -> void
 {
-    m_popup_bordered = toggle;
+    assert(f);
+    m_popup_bordered = std::move(f);
 }
 
 auto gui_configurator::connect_to_color_theme(const name_slot& f) -> connection
@@ -210,29 +231,29 @@ auto gui_configurator::connect_to_restore(const restore_slot& f) -> connection
     return m_restore_sig.connect(f);
 }
 
-auto gui_configurator::emit_color_theme() const -> void
+auto gui_configurator::emit_color_theme(name_type theme) const -> void
 {
-    m_color_theme_sig(color_theme());
+    m_color_theme_sig(theme);
 }
 
-auto gui_configurator::emit_frame_rounding() const -> void
+auto gui_configurator::emit_frame_rounding(rounding_type r) const -> void
 {
-    m_frame_rounding_sig(frame_rounding());
+    m_frame_rounding_sig(r);
 }
 
-auto gui_configurator::emit_window_bordered() const -> void
+auto gui_configurator::emit_window_bordered(bordered_type b) const -> void
 {
-    m_window_bordered_sig(window_bordered());
+    m_window_bordered_sig(b);
 }
 
-auto gui_configurator::emit_frame_bordered() const -> void
+auto gui_configurator::emit_frame_bordered(bordered_type b) const -> void
 {
-    m_frame_bordered_sig(frame_bordered());
+    m_frame_bordered_sig(b);
 }
 
-auto gui_configurator::emit_popup_bordered() const -> void
+auto gui_configurator::emit_popup_bordered(bordered_type b) const -> void
 {
-    m_popup_bordered_sig(popup_bordered());
+    m_popup_bordered_sig(b);
 }
 
 auto gui_configurator::emit_apply() const -> void

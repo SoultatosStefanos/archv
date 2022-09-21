@@ -38,10 +38,12 @@ inline auto apply_configs(UIComponent& c) -> void
 }
 
 template < typename UIComponent >
-requires default_configurable< UIComponent > && drawable< UIComponent >
+requires default_configurable< UIComponent > && interactive_configurable<
+    UIComponent > && drawable< UIComponent >
 inline auto restore_defaults(UIComponent& c) -> void
 {
     c.draw(c.config_data() = c.default_data());
+    c.config_api().config_data() = c.config_data(); // Clear intermediate cfgs.
 }
 
 } // namespace ui

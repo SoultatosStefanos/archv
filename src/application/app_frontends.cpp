@@ -258,16 +258,22 @@ auto app::setup_gui_gui_configurator() -> void
 {
     assert(m_gui);
 
-    auto& gui_configurator = m_gui->get_configurator().get_gui_configurator();
-    const auto& cfg = m_gui->config_data();
+    m_gui->get_configurator().get_gui_configurator().set_color_theme(
+        [this]() { return m_gui->config_api().config_data().color_theme; });
 
-    gui_configurator.set_color_theme(cfg.color_theme);
-    gui_configurator.set_frame_rounding(cfg.frame_rounding);
-    gui_configurator.set_frame_bordered(cfg.frame_bordered);
-    gui_configurator.set_window_bordered(cfg.window_bordered);
-    gui_configurator.set_popup_bordered(cfg.popup_bordered);
+    m_gui->get_configurator().get_gui_configurator().set_frame_rounding(
+        [this]() { return m_gui->config_api().config_data().frame_rounding; });
 
-    BOOST_LOG_TRIVIAL(debug) << "setup gui gui values";
+    m_gui->get_configurator().get_gui_configurator().set_frame_bordered(
+        [this]() { return m_gui->config_api().config_data().frame_bordered; });
+
+    m_gui->get_configurator().get_gui_configurator().set_window_bordered(
+        [this]() { return m_gui->config_api().config_data().window_bordered; });
+
+    m_gui->get_configurator().get_gui_configurator().set_popup_bordered(
+        [this]() { return m_gui->config_api().config_data().popup_bordered; });
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui gui hooks";
 }
 
 auto app::setup_gui_layout_editor() -> void

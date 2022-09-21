@@ -277,35 +277,35 @@ auto app::connect_gui_gui_configurator() -> void
         [this](auto theme)
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui color theme: " << theme;
-            m_gui->config_api().set_color_theme(std::string(theme));
+            m_gui->config_api().config_data().color_theme = std::string(theme);
         });
 
     iface.connect_to_frame_rounding(
         [this](auto r)
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui frame rounding: " << r;
-            m_gui->config_api().set_frame_rounding(r);
+            m_gui->config_api().config_data().frame_rounding = r;
         });
 
     iface.connect_to_window_bordered(
         [this](auto b)
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui window bordered: " << b;
-            m_gui->config_api().set_window_bordered(b);
+            m_gui->config_api().config_data().window_bordered = b;
         });
 
     iface.connect_to_frame_bordered(
         [this](auto b)
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui frame bordered: " << b;
-            m_gui->config_api().set_frame_bordered(b);
+            m_gui->config_api().config_data().frame_bordered = b;
         });
 
     iface.connect_to_popup_bordered(
         [this](auto b)
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui popup bordered: " << b;
-            m_gui->config_api().set_popup_bordered(b);
+            m_gui->config_api().config_data().popup_bordered = b;
         });
 
     iface.connect_to_apply(

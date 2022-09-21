@@ -13,54 +13,6 @@ namespace gui
 {
 
 /***********************************************************
- * GUI Config API                                          *
- ***********************************************************/
-
-namespace
-{
-    constexpr auto is_color_theme_plugged_in(resources::color_theme theme)
-        -> bool
-    {
-        return std::find(
-                   std::cbegin(resources::color_themes),
-                   std::cend(resources::color_themes),
-                   theme)
-            != std::cend(resources::color_themes);
-    }
-
-} // namespace
-
-gui_config_api::gui_config_api(config_data_type cfg) : m_cfg { std::move(cfg) }
-{
-}
-
-auto gui_config_api::set_color_theme(std::string theme) -> void
-{
-    assert(is_color_theme_plugged_in(theme));
-    m_cfg.color_theme = std::move(theme);
-}
-
-auto gui_config_api::set_frame_rounding(int frame_rounding) -> void
-{
-    m_cfg.frame_rounding = frame_rounding;
-}
-
-auto gui_config_api::set_window_bordered(bool toggle) -> void
-{
-    m_cfg.window_bordered = toggle;
-}
-
-auto gui_config_api::set_frame_bordered(bool toggle) -> void
-{
-    m_cfg.frame_bordered = toggle;
-}
-
-auto gui_config_api::set_popup_bordered(bool toggle) -> void
-{
-    m_cfg.popup_bordered = toggle;
-}
-
-/***********************************************************
  * GUI                                                     *
  ***********************************************************/
 
