@@ -21,6 +21,7 @@ class layout_factory final
 {
 public:
     using graph_type = Graph;
+    using id_type = layout_id;
     using pointer = std::unique_ptr< layout< graph_type > >;
 
     layout_factory(const layout_factory&) = default;
@@ -31,7 +32,7 @@ public:
 
     template < typename WeightMap >
     static auto make_layout(
-        const std::string& id,
+        id_type id,
         const graph_type& g,
         const topology& space,
         WeightMap edge_weight) -> pointer

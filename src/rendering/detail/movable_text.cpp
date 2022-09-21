@@ -19,7 +19,7 @@ using namespace Ogre;
 #define POS_TEX_BINDING    0
 #define COLOUR_BINDING     1
  
-MovableText::MovableText(const String &name, const String &caption, const String &fontName, Real charHeight, const ColourValue &color)
+MovableText::MovableText(const String &name, const String &caption, const String &fontName, Real charHeight, const ColourValue &color, const String& groupName)
 : mpCam(NULL)
 , mpWin(NULL)
 , mpFont(NULL)
@@ -43,7 +43,7 @@ MovableText::MovableText(const String &name, const String &caption, const String
     assert(caption != "" && "Trying to create MovableText without caption");
  
     mRenderOp.vertexData = NULL;
-    this->setFontName(mFontName);
+    this->setFontName(mFontName, groupName);
     this->_setupGeometry();
 }
  
@@ -53,32 +53,32 @@ MovableText::~MovableText()
         delete mRenderOp.vertexData;
     // May cause crashing... check this and comment if it does
     if (!mpMaterial.isNull())
-        MaterialManager::getSingletonPtr()->remove(mpMaterial->getName());
+        MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), RGN_AUTODETECT);
 }
  
-void MovableText::setFontName(const String &fontName)
+void MovableText::setFontName(const String &fontName, const String& groupName)
 {
-    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName + "Material"))) 
+    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName, groupName))) 
     { 
-        Ogre::MaterialManager::getSingleton().remove(mName + "Material"); 
+        Ogre::MaterialManager::getSingleton().remove(mName, groupName); 
     }
  
     if (mFontName != fontName || mpMaterial.isNull() || !mpFont)
     {
         mFontName = fontName;
 
-        mpFont = (Font *)FontManager::getSingleton().getByName(mFontName).getPointer();
+        mpFont = (Font *)FontManager::getSingleton().getByName(mFontName, groupName).getPointer();
         if (!mpFont)
             throw Exception(Exception::ERR_ITEM_NOT_FOUND, "Could not find font " + fontName, "MovableText::setFontName");
  
         mpFont->load();
         if (!mpMaterial.isNull())
         {
-            MaterialManager::getSingletonPtr()->remove(mpMaterial->getName());
+            MaterialManager::getSingletonPtr()->remove(mpMaterial->getName(), groupName);
             mpMaterial.setNull();
         }
  
-        mpMaterial = mpFont->getMaterial()->clone(mName + "Material");
+        mpMaterial = mpFont->getMaterial()->clone(mName, groupName);
         if (!mpMaterial->isLoaded())
             mpMaterial->load();
  

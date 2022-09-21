@@ -21,11 +21,11 @@ struct deserialization_error : virtual std::exception, virtual boost::exception
 {
 };
 
-struct unknown_layout : virtual deserialization_error
+struct unknown_plugin : virtual deserialization_error
 {
 };
 
-struct unknown_topology : virtual deserialization_error
+struct unlisted_default : virtual deserialization_error
 {
 };
 
@@ -35,6 +35,7 @@ struct unknown_topology : virtual deserialization_error
 
 using layout_info = boost::error_info< struct tag_layout, std::string >;
 using topology_info = boost::error_info< struct tag_topology, std::string >;
+using scale_info = boost::error_info< struct tag_scale, double >;
 
 /***********************************************************
  * Config Data                                             *

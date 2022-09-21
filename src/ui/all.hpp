@@ -4,7 +4,8 @@
 #ifndef UI_ALL_HPP
 #define UI_ALL_HPP
 
-#include "concepts.hpp"
-#include "ui.hpp"
+#include "ui_component.hpp"
+#include "ui_concepts.hpp"
+#include "ui_traits.hpp"
 
 #endif // UI_ALL_HPP

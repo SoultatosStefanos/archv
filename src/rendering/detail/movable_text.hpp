@@ -62,14 +62,14 @@ namespace Ogre {
 
 		/******************************** public methods ******************************/
 	public:
-		MovableText(const String &name, const String &caption, const String &fontName = "BlueHighway-8", Real charHeight = 1.0, const ColourValue &color = ColourValue::White);
+		MovableText(const String &name, const String &caption, const String &fontName = "BlueHighway-8", Real charHeight = 1.0, const ColourValue &color = ColourValue::White, const String& groupName = RGN_DEFAULT);
 		virtual ~MovableText();
 
 		// Add to build on Shoggoth:
 		virtual void				visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables = false);
 
 		// Set settings
-		void						setFontName(const String &fontName);
+		void						setFontName(const String &fontName, const String& groupName = RGN_DEFAULT);
 		void						setCaption(const String &caption);
 		void						setColor(const ColourValue &color);
 		void						setCharacterHeight(Real height);

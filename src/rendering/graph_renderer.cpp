@@ -1,5 +1,6 @@
 #include "detail/graph_renderer.hpp"
 
+#include "config/config.hpp"
 #include "detail/movable_text.hpp"
 #include "graph_renderer.hpp"
 
@@ -30,7 +31,9 @@ graph_renderer_impl::~graph_renderer_impl() = default;
 auto graph_renderer_impl::setup_vertex(
     const vertex_rendering_properties& v) const -> void
 {
-    auto* entity = scene()->createEntity(v.id, config_data().vertex_mesh);
+    auto* entity = scene()->createEntity(
+        v.id, config_data().vertex_mesh, ARCHV_RESOURCE_GROUP);
+
     auto* node = scene()->getRootSceneNode()->createChildSceneNode(v.id);
 
     node->setScale(config_data().vertex_scale);
@@ -60,7 +63,12 @@ auto graph_renderer_impl::setup_edge(const edge_rendering_properties& e) const
     auto* node = scene()->getRootSceneNode()->createChildSceneNode(id);
 
     line->estimateVertexCount(2); // From src to trgt node.
-    line->begin(config_data().edge_material, RenderOperation::OT_LINE_LIST);
+
+    line->begin(
+        config_data().edge_material,
+        RenderOperation::OT_LINE_LIST,
+        ARCHV_RESOURCE_GROUP);
+
     line->position(e.source.pos);
     line->position(e.target.pos);
     line->end();
@@ -111,13 +119,18 @@ auto graph_renderer_impl::setup_id_billboard(
 {
     using namespace Ogre;
 
-    // TODO Config font name, font height, color, etc
-
     const auto& name = v.id;
     const auto& caption = v.id;
 
     auto text = std::make_unique< MovableText >(
-        name, caption, "Fornire-Light", 50.0, ColourValue::Black);
+        name,
+        caption,
+        config_data().vbillboard_font_name,
+        config_data().vbillboard_char_height,
+        config_data().vbillboard_color,
+        ARCHV_RESOURCE_GROUP);
+
+    text->setSpaceWidth(config_data().vbillboard_space_width);
 
     text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
     text->showOnTop(true);

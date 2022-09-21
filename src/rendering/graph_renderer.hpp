@@ -26,6 +26,11 @@ struct graph_config
     Ogre::String vertex_mesh;
     Ogre::Vector3 vertex_scale;
 
+    Ogre::String vbillboard_font_name;
+    Ogre::Real vbillboard_char_height;
+    Ogre::ColourValue vbillboard_color;
+    Ogre::Real vbillboard_space_width;
+
     Ogre::String edge_material;
 
     auto operator==(const graph_config&) const -> bool = default;

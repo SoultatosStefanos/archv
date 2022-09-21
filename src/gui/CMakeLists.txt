@@ -1,7 +1,15 @@
 set(FILES
-	menu_bar.cpp
-	menu_window.cpp
-	overlay_manager.cpp
+	background_configurator.cpp
+	config.cpp
+	configurator.cpp
+	dependencies_editor.cpp
+	editor.cpp
+	graph_configurator.cpp
+	gui_configurator.cpp
+	gui.cpp
+	layout_editor.cpp
+	plugins.cpp
+	resources.cpp
 )
 set(SUBDIRECTORIES)
 

@@ -26,7 +26,7 @@ auto app::setup_input() -> void
     m_gui_input_listener = std::make_unique< OgreBites::ImGuiInputListener >();
 
     m_shortcut_input_listener
-        = std::make_unique< shortcut_input_listener >(*m_menu_bar);
+        = std::make_unique< shortcut_input_listener >(m_gui->get_editor());
 
     addInputListener(this);
     addInputListener(m_cameraman.get());

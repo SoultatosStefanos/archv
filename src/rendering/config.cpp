@@ -86,17 +86,29 @@ namespace
     auto deserialize_graph(const Json::Value& val) -> graph_config
     {
         using string = std::string;
+        using real = double;
 
         static_assert(std::is_convertible_v< string, Ogre::String >);
 
         auto&& vertex_mesh = val["vertex-mesh"].as< string >();
         auto&& vertex_scale = deserialize_vector3(val["vertex-scale"]);
+
+        const auto& vboard_val = val["vertex-billboard"];
+        auto&& vboard_font_name = vboard_val["font-name"].as< string >();
+        auto vboard_char_height = vboard_val["char-height"].as< real >();
+        auto&& vboard_color = deserialize_rgb(vboard_val["color"]);
+        auto vboard_space_width = vboard_val["space-width"].as< real >();
+
         auto&& edge_material = val["edge-material"].as< string >();
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
         return { std::move(vertex_mesh),
                  std::move(vertex_scale),
+                 std::move(vboard_font_name),
+                 static_cast< float >(vboard_char_height),
+                 std::move(vboard_color),
+                 static_cast< float >(vboard_space_width),
                  std::move(edge_material) };
     }
 

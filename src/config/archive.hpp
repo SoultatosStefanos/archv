@@ -18,7 +18,6 @@ namespace config
  * Archive                                                 *
  ***********************************************************/
 
-// Will update all archives when destroyed.
 class archive final
 {
 public:

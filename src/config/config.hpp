@@ -18,4 +18,11 @@
 // The path of the rendering.json config file.
 #define ARCHV_RENDERING_CONFIG_PATH ARCHV_CONFIG_DIR "/rendering.json"
 
+// The path of the gui.json config file.
+#define ARCHV_GUI_CONFIG_PATH ARCHV_CONFIG_DIR "/gui.json"
+
+#ifndef ARCHV_RESOURCE_GROUP
+#define ARCHV_RESOURCE_GROUP "Archv"
+#endif
+
 #endif // CONFIG_CONFIG_HPP

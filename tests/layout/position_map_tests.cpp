@@ -25,8 +25,8 @@ using backend = layout::backend< graph, weight_map >;
 
 inline auto default_config()
 {
-    return lay::backend_config { .layout = lay::gursoy_atun_id,
-                                 .topology = lay::cube_id,
+    return lay::backend_config { .layout = std::string(lay::gursoy_atun_id),
+                                 .topology = std::string(lay::cube_id),
                                  .scale = 20 };
 }
 

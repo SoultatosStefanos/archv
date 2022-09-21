@@ -361,24 +361,74 @@
 
 # 06 / 09 / 2022
 
-	+ [ ] Id text billboards on each vertex
+	+ [x] Backends Cleanup
+
+		+ [x] Layout
+
+		+ [x] Dependencies
+
+	+ [n] Graph Data Access Layer
+
+	+ [x] Application Layer
+
+
+# 09 / 09 / 2022
+
+	+ [x] Id text billboards on each vertex
 
 		+ [x] Id overlays
 
-		+ [ ] Configurable
+		+ [x] Configurable
 
-	+ [ ] Vertex material
+	+ [n] Vertex material
 
-	+ [ ] Configurable via gui 
 
-	+ [ ] Backends Cleanup
+# 10 / 09 / 2022
 
-		+ [ ] Layout
+	+ [x] GUI to config style
 
-		+ [ ] Dependencies
 
-	+ [ ] Graph Data Access Layer
+# 11 / 09 / 2022
 
-	+ [ ] Application Layer
+	+ [ny] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
 
-	
+	+ [x] GUI Rendering Configurator
+
+	+ [x] GUI GUI Configurator
+
+	+ [x] GUI Dependencies Editor 
+
+	+ [x] GUI Layout Editor 
+
+	+ [x] GUI Config Facade / GUI as a UI Component
+
+	+ [x] GUI Graph Actions Cleanup
+
+	+ [ ] GUI File Browser
+
+
+# 17 / 09 / 2022 
+
+	+ [x] GUI Defaults
+
+	+ [x] GUI Plugins
+
+
+# 20 / 09 / 2022 
+
+	+ [x] GUI resources
+
+		+ [x] Layout plugins
+
+		+ [x] Configure Resources manually
+
+	+ [n] GUI Editor Hooks
+
+	+ [x] GUI Connections
+
+
+# 21 / 09 / 2022
+
+	+ [ ] Background Renderer Config
+
+	+ [ ] Graph Renderer Config

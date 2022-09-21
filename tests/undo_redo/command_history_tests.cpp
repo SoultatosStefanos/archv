@@ -23,8 +23,6 @@ public:
 
     MOCK_METHOD(void, undo, (), (override));
     MOCK_METHOD(void, redo, (), (override));
-
-    MOCK_METHOD(std::unique_ptr< command >, clone, (), (const, override));
 };
 
 class undo_redo : public Test

@@ -2,6 +2,7 @@
 
 #include "commands.hpp"
 
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -9,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <ranges>
 
 namespace application
 {
@@ -37,6 +39,8 @@ app::app(int argc, const char** argv) : base("ARCHV")
     m_rendering_config
         = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
 
+    m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
+
     assert(!paused());
 }
 
@@ -49,7 +53,10 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
     multithreading::poll_message();
-    gui::overlay_manager::get().draw_all();
+    if (paused())
+        m_gui->render();
+    // if (paused())
+    //     ImGui::ShowDemoWindow();
     return true;
 }
 
@@ -97,16 +104,11 @@ auto app::toggle_frame_stats() -> void
 auto app::pause() -> void
 {
     assert(!paused());
-    assert(m_menu_bar);
-    assert(m_menu_window);
 
     m_cameraman->manualStop();
     removeInputListener(m_cameraman.get());
 
     addInputListener(m_gui_input_listener.get());
-
-    gui::overlay_manager::get().submit(m_menu_bar.get());
-    gui::overlay_manager::get().submit(m_menu_window.get());
 
     m_paused = true;
 
@@ -120,15 +122,10 @@ auto app::resume() -> void
     assert(paused());
     assert(m_gui_input_listener);
     assert(m_cameraman);
-    assert(m_menu_bar);
-    assert(m_menu_window);
 
     removeInputListener(m_gui_input_listener.get());
 
     addInputListener(m_cameraman.get());
-
-    gui::overlay_manager::get().withdraw(m_menu_bar.get());
-    gui::overlay_manager::get().withdraw(m_menu_window.get());
 
     m_paused = false;
 
@@ -144,6 +141,8 @@ auto app::resume() -> void
 void app::setup()
 {
     base::setup();
+
+    load_gui_resources();
 
     setup_commands();
     setup_architecture();
@@ -161,6 +160,9 @@ void app::setup()
     connect_gui_with_layout();
     connect_gui_with_command_history();
     connect_rendering_with_layout();
+    connect_gui_background_configurator();
+    connect_gui_graph_configurator();
+    connect_gui_gui_configurator();
 }
 
 /***********************************************************
@@ -187,6 +189,9 @@ auto app::shutdown() -> void
  * Main loop                                               *
  ***********************************************************/
 
-auto app::go() -> void { getRoot()->startRendering(); }
+auto app::go() -> void
+{
+    getRoot()->startRendering();
+}
 
 } // namespace application

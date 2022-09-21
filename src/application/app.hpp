@@ -74,9 +74,25 @@ private:
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
+    auto setup_gui_overlay() -> void;
+    auto setup_gui_tray_manager() -> void;
+    auto load_gui_resources() -> void;
+    auto install_gui_plugins() -> void;
+    auto create_gui() -> void;
+    auto setup_gui_undo_redo() -> void;
+    auto setup_gui_gui_configurator() -> void;
+    auto setup_gui_background_configurator() -> void;
+    auto setup_gui_graph_configurator() -> void;
+    auto setup_gui_dependencies_editor() -> void;
+    auto setup_gui_layout_editor() -> void;
+    auto start_gui() -> void;
+
+    auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
-    auto connect_gui_with_command_history() -> void;
+    auto connect_gui_background_configurator() -> void;
+    auto connect_gui_graph_configurator() -> void;
+    auto connect_gui_gui_configurator() -> void;
 
     auto connect_rendering_with_layout() -> void;
 
@@ -105,6 +121,7 @@ private:
     dependencies::config_data m_dependencies_config;
     layout::config_data m_layout_config;
     rendering::config_data m_rendering_config;
+    gui::config_data m_gui_config;
 
     /***********************************************************
      * Architecture                                            *
@@ -131,8 +148,7 @@ private:
      * GUI                                                     *
      ***********************************************************/
 
-    std::unique_ptr< gui::menu_window > m_menu_window;
-    std::unique_ptr< gui::menu_bar > m_menu_bar;
+    std::unique_ptr< gui::gui > m_gui;
     std::unique_ptr< OgreBites::TrayManager > m_tray_manager;
 
     /***********************************************************
