@@ -84,6 +84,7 @@ private:
     auto setup_gui_gui_configurator() -> void;
     auto setup_gui_background_configurator() -> void;
     auto setup_gui_graph_configurator() -> void;
+    auto setup_gui_dependencies_editor() -> void;
     auto setup_gui_layout_editor() -> void;
     auto start_gui() -> void;
 

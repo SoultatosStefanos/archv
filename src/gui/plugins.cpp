@@ -7,14 +7,14 @@ namespace gui::plugins
 
 namespace
 {
-    dependency_map plugged_dependencies;
+    dependency_vector plugged_dependencies;
     layout_vector plugged_layouts;
     topology_vector plugged_topologies;
     scale_range plugged_scales { 0, 0 };
 
 } // namespace
 
-auto dependencies() -> const dependency_map&
+auto dependencies() -> const dependency_vector&
 {
     return plugged_dependencies;
 }
@@ -34,9 +34,9 @@ auto scales() -> const scale_range&
     return plugged_scales;
 }
 
-auto install_dependencies(dependency_map map) -> void
+auto install_dependencies(dependency_vector vec) -> void
 {
-    plugged_dependencies = std::move(map);
+    plugged_dependencies = std::move(vec);
 }
 
 auto install_layouts(layout_vector vec) -> void

@@ -27,10 +27,7 @@ auto app::connect_gui_with_dependencies() -> void
                                     << " to: " << dependency << " dependency";
 
             update_dependency_weight(
-                *m_commands,
-                *m_dependencies_backend,
-                std::string(dependency),
-                weight);
+                *m_commands, *m_dependencies_backend, dependency, weight);
         });
 
     editor.connect_to_restore(
@@ -40,10 +37,6 @@ auto app::connect_gui_with_dependencies() -> void
 
             restore_dependencies_defaults(*m_commands, *m_dependencies_backend);
         });
-
-    m_dependencies_backend->connect(
-        [this, &editor](const auto& dependency, auto weight)
-        { editor.set_dependency(dependency, weight); });
 
     BOOST_LOG_TRIVIAL(info) << "connected gui with dependencies management";
 }
@@ -60,8 +53,7 @@ auto app::connect_gui_with_layout() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected " << selection << " layout";
 
-            update_layout(
-                *m_commands, *m_layout_backend, std::string(selection));
+            update_layout(*m_commands, *m_layout_backend, selection);
         });
 
     editor.connect_to_topology(
@@ -69,8 +61,7 @@ auto app::connect_gui_with_layout() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected " << selection << " topology";
 
-            update_layout_topology(
-                *m_commands, *m_layout_backend, std::string(selection));
+            update_layout_topology(*m_commands, *m_layout_backend, selection);
         });
 
     editor.connect_to_scale(

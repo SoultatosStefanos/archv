@@ -28,7 +28,7 @@ public:
     auto operator()(edge_type e) const -> weight_type
     {
         const auto& repo = m_backend->get_weight_repo();
-        const auto& dependency = boost::get(m_edge_dependency, e);
+        const auto dependency = boost::get(m_edge_dependency, e);
         return repo.get_weight(dependency);
     }
 

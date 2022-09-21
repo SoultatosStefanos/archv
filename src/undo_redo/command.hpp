@@ -4,8 +4,6 @@
 #ifndef UNDO_REDO_COMMAND_HPP
 #define UNDO_REDO_COMMAND_HPP
 
-#include <memory>
-
 namespace undo_redo
 {
 
@@ -20,12 +18,9 @@ public:
     auto operator=(const command&) -> command& = default;
     auto operator=(command&&) -> command& = default;
 
-    virtual void execute() = 0;
-
-    virtual void undo() = 0;
-    virtual void redo() = 0;
-
-    virtual auto clone() const -> std::unique_ptr< command > = 0;
+    virtual auto execute() -> void = 0;
+    virtual auto undo() -> void = 0;
+    virtual auto redo() -> void = 0;
 };
 
 } // namespace undo_redo

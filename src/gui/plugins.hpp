@@ -21,7 +21,7 @@ using layout = std::string_view;
 using topology = std::string_view;
 using scale = double;
 
-using dependency_map = std::unordered_map< dependency, weight >;
+using dependency_vector = std::vector< dependency >;
 using layout_vector = std::vector< layout >;
 using topology_vector = std::vector< topology >;
 using scale_range = std::pair< scale, scale >;
@@ -30,7 +30,7 @@ using scale_range = std::pair< scale, scale >;
  * Observers                                               *
  ***********************************************************/
 
-auto dependencies() -> const dependency_map&;
+auto dependencies() -> const dependency_vector&;
 auto layouts() -> const layout_vector&;
 auto topologies() -> const topology_vector&;
 auto scales() -> const scale_range&;
@@ -39,7 +39,7 @@ auto scales() -> const scale_range&;
  * Installers                                              *
  ***********************************************************/
 
-auto install_dependencies(dependency_map map) -> void;
+auto install_dependencies(dependency_vector vec) -> void;
 auto install_layouts(layout_vector vec) -> void;
 auto install_topologies(topology_vector vec) -> void;
 auto install_scales(scale_range range) -> void;

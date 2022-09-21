@@ -21,15 +21,12 @@ class backend
 {
 public:
     using weight_repo_type = weight_repo;
+    using dependency_type = weight_repo::dependency_type;
     using weight_type = weight_repo::weight_type;
 
 private:
-    using dependency_type = weight_repo::dependency_type;
-
-    static_assert(std::is_convertible_v< std::string, dependency_type >);
-
     using signal_type
-        = boost::signals2::signal< void(const dependency_type&, weight_type) >;
+        = boost::signals2::signal< void(dependency_type, weight_type) >;
 
 public:
     using config_data_type = weight_repo_type::hash_table;
@@ -41,7 +38,7 @@ public:
     auto get_weight_repo() const -> const weight_repo_type& { return m_repo; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_weight(const std::string& dep, weight_type w) -> void;
+    auto update_weight(dependency_type dependency, weight_type w) -> void;
 
     auto connect(const slot_type& f) -> connection_type
     {
@@ -58,10 +55,10 @@ private:
  * Use Cases                                               *
  ***********************************************************/
 
-inline auto
-update_weight(backend& b, const std::string& d, backend::weight_type w)
+inline auto update_weight(
+    backend& b, backend::dependency_type dependency, backend::weight_type w)
 {
-    b.update_weight(d, w);
+    b.update_weight(dependency, w);
 }
 
 // O(n)

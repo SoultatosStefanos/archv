@@ -24,7 +24,7 @@ using mock_layout_slot = testing::NiceMock<
     testing::MockFunction< void(const backend::layout_type&) > >;
 
 using mock_topology_slot = testing::NiceMock<
-    testing::MockFunction< void(const layout::topology&) > >;
+    testing::MockFunction< void(const backend::topology_type&) > >;
 
 class given_a_layout_backend : public testing::Test
 {

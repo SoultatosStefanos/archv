@@ -59,6 +59,7 @@ auto app::setup_gui() -> void
     setup_gui_background_configurator();
     setup_gui_graph_configurator();
     setup_gui_gui_configurator();
+    setup_gui_dependencies_editor();
     setup_gui_layout_editor();
     start_gui();
 
@@ -141,10 +142,15 @@ auto app::install_gui_plugins() -> void
     gui::plugins::install_dependencies(
         [this]()
         {
-            auto dependencies = gui::plugins::dependency_map();
+            auto dependencies = gui::plugins::dependency_vector();
+            const auto& plugged
+                = std::ranges::views::keys(m_dependencies_config);
 
-            for (const auto& [d, w] : m_dependencies_config)
-                dependencies[d.c_str()] = w;
+            std::transform(
+                std::cbegin(plugged),
+                std::cend(plugged),
+                std::back_inserter(dependencies),
+                [](const auto& dep) { return dep.c_str(); });
 
             return dependencies;
         }());
@@ -152,7 +158,7 @@ auto app::install_gui_plugins() -> void
     gui::plugins::install_layouts(
         [this]()
         {
-            auto layouts = gui::plugins::layouts();
+            auto layouts = gui::plugins::layout_vector();
             const auto& plugged = m_layout_config.layouts;
 
             std::transform(
@@ -167,7 +173,7 @@ auto app::install_gui_plugins() -> void
     gui::plugins::install_topologies(
         { [this]()
           {
-              auto topologies = gui::plugins::topologies();
+              auto topologies = gui::plugins::topology_vector();
               const auto& plugged = m_layout_config.topologies;
 
               std::transform(
@@ -279,6 +285,7 @@ auto app::setup_gui_gui_configurator() -> void
 auto app::setup_gui_layout_editor() -> void
 {
     assert(m_gui);
+    assert(m_layout_backend);
 
     m_gui->get_editor().get_layout_editor().set_layout(
         [this]() { return layout::identify(m_layout_backend->get_layout()); });
@@ -291,6 +298,16 @@ auto app::setup_gui_layout_editor() -> void
         [this]() { return m_layout_backend->get_topology().scale(); });
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui layout editor";
+}
+
+auto app::setup_gui_dependencies_editor() -> void
+{
+    assert(m_gui);
+    assert(m_dependencies_backend);
+
+    m_gui->get_editor().get_dependencies_editor().set_weights(
+        [this](auto dep)
+        { return m_dependencies_backend->get_weight_repo().get_weight(dep); });
 }
 
 auto app::start_gui() -> void

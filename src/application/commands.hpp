@@ -18,8 +18,8 @@ namespace application
 auto update_dependency_weight(
     undo_redo::command_history& cmds,
     dependencies::backend& backend,
-    const std::string& dependency,
-    int weight) -> void;
+    dependencies::backend::dependency_type dependency,
+    dependencies::backend::weight_type weight) -> void;
 
 auto restore_dependencies_defaults(
     undo_redo::command_history& cmds, dependencies::backend& backend) -> void;
@@ -31,16 +31,17 @@ auto restore_dependencies_defaults(
 auto update_layout(
     undo_redo::command_history& cmds,
     layout_backend& backend,
-    const std::string& layout_id) -> void;
+    layout_backend::layout_id_type layout_id) -> void;
 
 auto update_layout_topology(
     undo_redo::command_history& cmds,
     layout_backend& backend,
-    const std::string& topology_id) -> void;
+    layout_backend::topology_id_type topology_id) -> void;
 
 auto update_layout_scale(
-    undo_redo::command_history& cmds, layout_backend& backend, double scale)
-    -> void;
+    undo_redo::command_history& cmds,
+    layout_backend& backend,
+    layout_backend::scale_type scale) -> void;
 
 auto restore_layout_defaults(
     undo_redo::command_history& cmds, layout_backend& backend) -> void;

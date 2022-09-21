@@ -9,7 +9,10 @@ namespace
 
 using namespace testing;
 
-using mock_slot = MockFunction< void(const std::string&, double) >;
+using mock_slot = MockFunction< void(
+    dependencies::backend::dependency_type,
+    dependencies::backend::weight_type) >;
+
 using nice_mock_slot = NiceMock< mock_slot >;
 
 inline auto initial_config() -> dependencies::backend::config_data_type

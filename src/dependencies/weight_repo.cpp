@@ -5,18 +5,23 @@
 namespace dependencies
 {
 
-weight_repo::weight_repo(hash_table table) : m_map { std::move(table) } { }
-
-auto weight_repo::get_weight(const dependency_type& type) const -> weight_type
+weight_repo::weight_repo(hash_table table) : m_map { std::move(table) }
 {
-    assert(m_map.contains(type));
-    return m_map.at(type);
 }
 
-auto weight_repo::set_weight(const dependency_type& type, weight_type w) -> void
+auto weight_repo::get_weight(dependency_type dependency) const -> weight_type
 {
-    m_map[type] = w;
-    assert(get_weight(type) == w);
+    const auto iter = m_map.find(dependency); // heterogeneous, no allocations
+    assert(iter != std::cend(m_map));
+    return (*iter).second;
+}
+
+auto weight_repo::set_weight(dependency_type dependency, weight_type w) -> void
+{
+    auto iter = m_map.find(dependency);
+    assert(iter != std::cend(m_map));
+    (*iter).second = w; // heterogeneous, no allocations
+    assert(get_weight(dependency) == w);
 }
 
 } // namespace dependencies

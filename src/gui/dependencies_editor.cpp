@@ -12,30 +12,9 @@ namespace gui
 
 dependencies_editor::dependencies_editor()
 {
-    prepare_weight_strings();
-    prepare_dependencies_render_map();
-}
-
-auto dependencies_editor::prepare_weight_strings() -> void
-{
-    const auto weights = std::ranges::views::values(plugins::dependencies());
-
-    std::transform(
-        std::begin(weights),
-        std::end(weights),
-        std::back_inserter(m_weight_strs),
-        [](auto w) { return std::to_string(w); });
-
-    assert(m_weight_strs.size() == plugins::dependencies().size());
-}
-
-auto dependencies_editor::prepare_dependencies_render_map() -> void
-{
     detail::to_char_view(
-        std::ranges::views::keys(plugins::dependencies()),
+        std::ranges::views::all(plugins::dependencies()),
         std::back_inserter(dependencies()));
-
-    assert(dependencies().size() == plugins::dependencies().size());
 }
 
 namespace
@@ -57,20 +36,20 @@ auto dependencies_editor::render() const -> void
 
 auto dependencies_editor::render_dependencies() const -> void
 {
-    for (auto i = 0; const auto* dependency : dependencies())
+    for (const auto* dependency : dependencies())
     {
-        auto& weight_str = m_weight_strs[i++];
+        auto w_str = std::to_string(weight(dependency));
 
         if (ImGui::InputText(
                 dependency,
-                &weight_str,
+                &w_str,
                 ImGuiInputTextFlags_CharsDecimal
                     | ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            if (weight_str == "")
-                weight_str = "0";
+            if (w_str == "")
+                w_str = "0";
 
-            emit_dependency(dependency, std::stoi(weight_str));
+            emit_dependency(dependency, std::stoi(w_str));
         }
     }
 }
@@ -81,13 +60,16 @@ auto dependencies_editor::render_restore_button() const -> void
         emit_restore();
 }
 
-auto dependencies_editor::set_dependency(dependency_type val, weight_type w)
-    -> void
+auto dependencies_editor::weight(dependency_type d) const -> weight_type
 {
-    const auto index = detail::find_assoc_index(plugins::dependencies(), val);
+    assert(m_weight);
+    return m_weight(d);
+}
 
-    auto& weight_str = m_weight_strs.at(index);
-    weight_str = std::to_string(w);
+auto dependencies_editor::set_weights(weight_accessor f) -> void
+{
+    assert(f);
+    m_weight = std::move(f);
 }
 
 auto dependencies_editor::connect_to_dependency(const dependency_slot& f)

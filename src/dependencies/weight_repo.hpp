@@ -4,23 +4,30 @@
 #ifndef DEPENDENCIES_WEIGHT_REPO_HPP
 #define DEPENDENCIES_WEIGHT_REPO_HPP
 
+#include "detail/weight_repo.hpp"
+
 #include <string>
-#include <unordered_map>
+#include <string_view>
 
 namespace dependencies
 {
 
+// Manages a table of strings, provides an interface of string views.
 class weight_repo
 {
 public:
-    using dependency_type = std::string;
+    using dependency_type = std::string_view;
     using weight_type = int;
-    using hash_table = std::unordered_map< dependency_type, weight_type >;
+
+    // Transparent unordered_map, supporting heterogeneous string lookup (C++20)
+    using hash_table = detail::unordered_string_map< weight_type >;
 
     explicit weight_repo(hash_table table = hash_table());
 
-    auto get_weight(const dependency_type& type) const -> weight_type;
-    auto set_weight(const dependency_type& type, weight_type score) -> void;
+    auto get_weight(dependency_type dependency) const -> weight_type;
+
+    // Precondition: the dependency must have been assigned on construction.
+    auto set_weight(dependency_type dependency, weight_type score) -> void;
 
     auto begin() -> auto { return std::begin(m_map); }
     auto begin() const -> auto { return std::begin(m_map); }

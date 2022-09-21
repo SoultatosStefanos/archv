@@ -15,12 +15,16 @@ namespace
 {
     struct update_dependency_cmd : undo_redo::command
     {
-        dependencies::backend& backend;
-        std::string dependency;
-        int new_weight, old_weight;
+        using backend_type = dependencies::backend;
+        using dependency_type = backend_type::dependency_type;
+        using weight_type = backend_type::weight_type;
 
-        update_dependency_cmd(dependencies::backend& b, std::string d, int w)
-        : backend { b }, dependency { std::move(d) }, new_weight { w }
+        backend_type& backend;
+        dependency_type dependency;
+        weight_type new_weight, old_weight;
+
+        update_dependency_cmd(backend_type& b, dependency_type d, weight_type w)
+        : backend { b }, dependency { d }, new_weight { w }
         {
         }
 
@@ -38,17 +42,15 @@ namespace
         }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< update_dependency_cmd >(*this);
-        }
     };
 
     struct restore_dependencies_defaults_cmd : undo_redo::command
     {
-        dependencies::backend& backend;
-        dependencies::weight_repo old_repo;
+        using backend_type = dependencies::backend;
+        using weight_repo_type = backend_type::weight_repo_type;
+
+        backend_type& backend;
+        weight_repo_type old_repo;
 
         restore_dependencies_defaults_cmd(dependencies::backend& b)
         : backend { b }
@@ -70,11 +72,6 @@ namespace
         }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< restore_dependencies_defaults_cmd >(*this);
-        }
     };
 
 } // namespace
@@ -82,8 +79,8 @@ namespace
 auto update_dependency_weight(
     undo_redo::command_history& cmds,
     dependencies::backend& backend,
-    const std::string& dependency,
-    int weight) -> void
+    dependencies::backend::dependency_type dependency,
+    dependencies::backend::weight_type weight) -> void
 {
     cmds.execute(
         std::make_unique< update_dependency_cmd >(backend, dependency, weight));
@@ -104,11 +101,13 @@ namespace
 {
     struct update_layout_cmd : undo_redo::command
     {
-        layout_backend& backend;
-        std::string new_id, old_id;
+        using layout_id_type = layout_backend::layout_id_type;
 
-        update_layout_cmd(layout_backend& b, std::string id)
-        : backend { b }, new_id { std::move(id) }
+        layout_backend& backend;
+        layout_id_type new_id, old_id;
+
+        update_layout_cmd(layout_backend& b, layout_id_type id)
+        : backend { b }, new_id { id }
         {
         }
 
@@ -123,20 +122,17 @@ namespace
         auto undo() -> void override { layout::update_layout(backend, old_id); }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< update_layout_cmd >(*this);
-        }
     };
 
     struct update_topology_cmd : undo_redo::command
     {
-        layout_backend& backend;
-        std::string new_id, old_id;
+        using topology_id_type = layout_backend::topology_id_type;
 
-        update_topology_cmd(layout_backend& b, std::string id)
-        : backend { b }, new_id { std::move(id) }
+        layout_backend& backend;
+        topology_id_type new_id, old_id;
+
+        update_topology_cmd(layout_backend& b, topology_id_type id)
+        : backend { b }, new_id { id }
         {
         }
 
@@ -154,19 +150,16 @@ namespace
         }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< update_topology_cmd >(*this);
-        }
     };
 
     struct update_layout_scale_cmd : undo_redo::command
     {
-        layout_backend& backend;
-        double old_scale, new_scale;
+        using scale_type = layout_backend::scale_type;
 
-        update_layout_scale_cmd(layout_backend& b, double s)
+        layout_backend& backend;
+        scale_type old_scale, new_scale;
+
+        update_layout_scale_cmd(layout_backend& b, scale_type s)
         : backend { b }, new_scale { s }
         {
         }
@@ -185,18 +178,18 @@ namespace
         }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< update_layout_scale_cmd >(*this);
-        }
     };
 
     struct restore_layout_defaults_cmd : undo_redo::command
     {
+        using layout_id_type = layout_backend::layout_id_type;
+        using topology_id_type = layout_backend::topology_id_type;
+        using scale_type = layout_backend::scale_type;
+
         layout_backend& backend;
-        std::string old_layout, old_topology;
-        double old_scale;
+        layout_id_type old_layout;
+        topology_id_type old_topology;
+        scale_type old_scale;
 
         restore_layout_defaults_cmd(layout_backend& b) : backend { b } { }
 
@@ -216,11 +209,6 @@ namespace
         }
 
         auto redo() -> void override { execute(); }
-
-        auto clone() const -> std::unique_ptr< undo_redo::command > override
-        {
-            return std::make_unique< restore_layout_defaults_cmd >(*this);
-        }
     };
 
 } // namespace
@@ -228,7 +216,7 @@ namespace
 auto update_layout(
     undo_redo::command_history& cmds,
     layout_backend& backend,
-    const std::string& layout_id) -> void
+    layout_backend::layout_id_type layout_id) -> void
 {
     cmds.execute(std::make_unique< update_layout_cmd >(backend, layout_id));
 }
@@ -236,14 +224,15 @@ auto update_layout(
 auto update_layout_topology(
     undo_redo::command_history& cmds,
     layout_backend& backend,
-    const std::string& topology_id) -> void
+    layout_backend::topology_id_type topology_id) -> void
 {
     cmds.execute(std::make_unique< update_topology_cmd >(backend, topology_id));
 }
 
 auto update_layout_scale(
-    undo_redo::command_history& cmds, layout_backend& backend, double scale)
-    -> void
+    undo_redo::command_history& cmds,
+    layout_backend& backend,
+    layout_backend::scale_type scale) -> void
 {
     cmds.execute(std::make_unique< update_layout_scale_cmd >(backend, scale));
 }

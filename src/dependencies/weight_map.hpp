@@ -34,7 +34,7 @@ inline auto make_weight_map(const backend& b, DependencyMap edge_dependency)
 
     static_assert(std::is_convertible_v<
                   typename boost::property_traits< DependencyMap >::value_type,
-                  std::string >);
+                  backend::dependency_type >);
 
     return weight_map< Graph, DependencyMap >(
         detail::weight_dispatcher< Graph, DependencyMap >(b, edge_dependency));
