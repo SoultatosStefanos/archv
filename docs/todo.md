@@ -429,6 +429,6 @@
 
 # 21 / 09 / 2022
 
-	+ [ ] Background Renderer Config
+	+ [x] Background Renderer Config
 
 	+ [ ] Graph Renderer Config

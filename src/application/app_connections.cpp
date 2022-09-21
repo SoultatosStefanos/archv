@@ -113,78 +113,111 @@ auto app::connect_gui_background_configurator() -> void
     auto& iface = m_gui->get_configurator().get_background_configurator();
 
     iface.connect_to_skybox_material(
-        [](auto material)
+        [this](auto material)
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background skybox material: " << material;
+
+            m_background_renderer->config_api().config_data().skybox_material
+                = std::string(material);
         });
 
     iface.connect_to_skybox_distance(
-        [](auto dist)
+        [this](auto dist)
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background skybox distance:  " << dist;
+
+            m_background_renderer->config_api().config_data().skybox_distance
+                = dist;
         });
 
     iface.connect_to_ambient_color(
-        [](const auto& col)
+        [this](const auto& col)
         {
             assert(col.size() == 4);
 
             BOOST_LOG_TRIVIAL(info)
                 << "selected background ambient color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
+
+            m_background_renderer->config_api().config_data().ambient_light
+                = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
     iface.connect_to_diffuse_color(
-        [](const auto& col)
+        [this](const auto& col)
         {
             assert(col.size() == 4);
 
             BOOST_LOG_TRIVIAL(info)
                 << "selected background diffuse color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
+
+            m_background_renderer->config_api().config_data().diffuse_light
+                = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
     iface.connect_to_specular_color(
-        [](const auto& col)
+        [this](const auto& col)
         {
             assert(col.size() == 4);
 
             BOOST_LOG_TRIVIAL(info)
                 << "selected background specular color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
+
+            m_background_renderer->config_api().config_data().specular_light
+                = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
     iface.connect_to_cam_far_clip_distance(
-        [](auto dist)
+        [this](auto dist)
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background camera far clip distance: " << dist;
+
+            m_background_renderer->config_api().config_data().far_clip_distance
+                = dist;
         });
 
     iface.connect_to_cam_near_clip_distance(
-        [](auto dist)
+        [this](auto dist)
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background camera near clip distance: " << dist;
+
+            m_background_renderer->config_api().config_data().near_clip_distance
+                = dist;
         });
 
     iface.connect_to_apply(
-        []()
-        { BOOST_LOG_TRIVIAL(info) << "selected background configs apply"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected background configs apply";
+            ui::apply_configs(*m_background_renderer);
+        });
 
     iface.connect_to_preview(
-        []()
-        { BOOST_LOG_TRIVIAL(info) << "selected background configs preview"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected background configs preview";
+            ui::begin_preview(*m_background_renderer);
+        });
 
     iface.connect_to_cancel(
-        []()
-        { BOOST_LOG_TRIVIAL(info) << "selected background configs cancel"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected background configs cancel";
+            ui::end_preview(*m_background_renderer);
+        });
 
     iface.connect_to_restore(
-        []()
-        { BOOST_LOG_TRIVIAL(info) << "selected background configs restore"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected background configs restore";
+            ui::restore_defaults(*m_background_renderer);
+        });
 }
 
 auto app::connect_gui_graph_configurator() -> void
