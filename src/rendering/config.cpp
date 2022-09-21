@@ -95,9 +95,9 @@ namespace
 
         const auto& vboard_val = val["vertex-billboard"];
         auto&& vboard_font_name = vboard_val["font-name"].as< string >();
-        auto&& vboard_char_height = vboard_val["char-height"].as< real >();
+        auto vboard_char_height = vboard_val["char-height"].as< real >();
         auto&& vboard_color = deserialize_rgb(vboard_val["color"]);
-        auto&& vboard_space_width = vboard_val["space-width"].as< real >();
+        auto vboard_space_width = vboard_val["space-width"].as< real >();
 
         auto&& edge_material = val["edge-material"].as< string >();
 
@@ -106,9 +106,9 @@ namespace
         return { std::move(vertex_mesh),
                  std::move(vertex_scale),
                  std::move(vboard_font_name),
-                 static_cast< float >(std::move(vboard_char_height)),
+                 static_cast< float >(vboard_char_height),
                  std::move(vboard_color),
-                 static_cast< float >(std::move(vboard_space_width)),
+                 static_cast< float >(vboard_space_width),
                  std::move(edge_material) };
     }
 

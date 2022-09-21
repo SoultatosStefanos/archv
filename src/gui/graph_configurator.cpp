@@ -207,7 +207,7 @@ auto graph_configurator::set_node_char_height(char_height_type height) -> void
 
 auto graph_configurator::set_node_font_color(rgba_type rgba) -> void
 {
-    m_node_font_col = std::move(rgba);
+    m_node_font_col = rgba;
 }
 
 auto graph_configurator::set_node_space_width(space_width_type width) -> void
