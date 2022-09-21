@@ -278,11 +278,17 @@ auto app::setup_gui_gui_configurator() -> void
 
 auto app::setup_gui_layout_editor() -> void
 {
-    auto& editor = m_gui->get_editor().get_layout_editor();
+    assert(m_gui);
 
-    editor.set_layout(layout::identify(m_layout_backend->get_layout()));
-    editor.set_topology(layout::identify(m_layout_backend->get_topology()));
-    editor.set_scale(m_layout_backend->get_topology().scale());
+    m_gui->get_editor().get_layout_editor().set_layout(
+        [this]() { return layout::identify(m_layout_backend->get_layout()); });
+
+    m_gui->get_editor().get_layout_editor().set_topology(
+        [this]()
+        { return layout::identify(m_layout_backend->get_topology()); });
+
+    m_gui->get_editor().get_layout_editor().set_scale(
+        [this]() { return m_layout_backend->get_topology().scale(); });
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui layout editor";
 }

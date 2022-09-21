@@ -38,8 +38,9 @@ public:
         inst = std::make_unique< backend >(
             g,
             weight_map(),
-            backend::config_data_type { .layout = initial_layout,
-                                        .topology = initial_topology,
+            backend::config_data_type { .layout = std::string(initial_layout),
+                                        .topology
+                                        = std::string(initial_topology),
                                         .scale = initial_scale });
     }
 

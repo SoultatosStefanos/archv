@@ -7,19 +7,21 @@
 #include "layout.hpp"
 #include "layout_visitor.hpp"
 
+#include <algorithm>
 #include <array>
 #include <concepts>
-#include <string>
 #include <string_view>
 
 namespace layout
 {
 
-constexpr auto gursoy_atun_id = "Gursoy Atun";
+using layout_id = std::string_view;
+
+constexpr layout_id gursoy_atun_id = "Gursoy Atun";
 
 constexpr auto layout_ids = std::array { gursoy_atun_id };
 
-constexpr auto is_layout_plugged_in(std::string_view id) -> bool
+constexpr auto is_layout_plugged_in(layout_id id) -> bool
 {
     constexpr auto& set = layout_ids;
     return std::find(std::begin(set), std::end(set), id) != std::end(set);
@@ -36,7 +38,7 @@ namespace detail
         using base = layout_visitor< Graph >;
         using gursoy_atun_type = typename base::gursoy_atun_type;
 
-        explicit layout_identifier(std::string& i) : m_i { i } { }
+        explicit layout_identifier(layout_id& i) : m_i { i } { }
         ~layout_identifier() override = default;
 
         auto visit(const gursoy_atun_type&) const -> void
@@ -45,18 +47,18 @@ namespace detail
         }
 
     private:
-        std::string& m_i;
+        layout_id& m_i;
     };
 
 } // namespace detail
 
 template < typename Layout >
 requires std::derived_from< Layout, layout< typename Layout::graph_type > >
-auto identify(const Layout& l) -> std::string
+auto identify(const Layout& l) -> layout_id
 {
     using graph_type = typename Layout::graph_type;
 
-    std::string res;
+    layout_id res;
     l.accept(detail::layout_identifier< graph_type >(res));
     assert(is_layout_plugged_in(res));
     return res;

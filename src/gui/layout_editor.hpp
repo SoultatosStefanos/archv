@@ -5,7 +5,9 @@
 #define GUI_LAYOUT_EDITOR_HPP
 
 #include <boost/signals2/signal.hpp>
+#include <functional>
 #include <string_view>
+#include <vector>
 
 namespace gui
 {
@@ -16,6 +18,10 @@ public:
     using layout_type = std::string_view;
     using topology_type = std::string_view;
     using scale_type = float;
+
+    using layout_accessor = std::function< layout_type() >;
+    using topology_accessor = std::function< topology_type() >;
+    using scale_accessor = std::function< scale_type() >;
 
 private:
     using layout_signal = boost::signals2::signal< void(layout_type) >;
@@ -38,9 +44,9 @@ public:
     auto topology() const -> topology_type;
     auto scale() const -> scale_type;
 
-    auto set_layout(layout_type val) -> void;
-    auto set_topology(topology_type val) -> void;
-    auto set_scale(scale_type val) -> void;
+    auto set_layout(layout_accessor f) -> void;
+    auto set_topology(topology_accessor f) -> void;
+    auto set_scale(scale_accessor f) -> void;
 
     auto connect_to_layout(const layout_slot& f) -> connection;
     auto connect_to_topology(const topology_slot& f) -> connection;
@@ -56,14 +62,12 @@ protected:
     auto topologies() const -> const render_vector& { return m_topologies; }
     auto topologies() -> render_vector& { return m_topologies; }
 
-    auto emit_layout() const -> void;
-    auto emit_topology() const -> void;
-    auto emit_scale() const -> void;
+    auto emit_layout(layout_type l) const -> void;
+    auto emit_topology(topology_type t) const -> void;
+    auto emit_scale(scale_type s) const -> void;
     auto emit_restore() const -> void;
 
 private:
-    using index_type = int;
-
     auto render_layout_editor() const -> void;
     auto render_topology_editor() const -> void;
     auto render_scale_editor() const -> void;
@@ -74,9 +78,9 @@ private:
     scale_signal m_scale_sig;
     restore_signal m_restore_sig;
 
-    mutable index_type m_layout { 0 };
-    mutable index_type m_topology { 0 };
-    mutable scale_type m_scale { 0 };
+    layout_accessor m_layout;
+    topology_accessor m_topology;
+    scale_accessor m_scale;
 
     // For rendering only.
     mutable render_vector m_layouts;

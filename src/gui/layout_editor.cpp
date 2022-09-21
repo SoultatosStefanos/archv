@@ -43,26 +43,31 @@ auto layout_editor::render() const -> void
 
 auto layout_editor::render_layout_editor() const -> void
 {
-    if (ImGui::Combo("Layout", &m_layout, layouts().data(), layouts().size()))
-        emit_layout();
+    const auto dif = detail::find_index(plugins::layouts(), layout());
+    auto index = static_cast< int >(dif);
+
+    if (ImGui::Combo("Layout", &index, layouts().data(), layouts().size()))
+        emit_layout(plugins::layouts().at(index));
 }
 
 auto layout_editor::render_topology_editor() const -> void
 {
+    const auto dif = detail::find_index(plugins::topologies(), topology());
+    auto index = static_cast< int >(dif);
+
     if (ImGui::Combo(
-            "Topology", &m_topology, topologies().data(), topologies().size()))
-        emit_topology();
+            "Topology", &index, topologies().data(), topologies().size()))
+        emit_topology(plugins::topologies().at(index));
 }
 
 auto layout_editor::render_scale_editor() const -> void
 {
     static const auto [low, high] = plugins::scales();
+    auto f = scale();
+
     if (ImGui::SliderFloat(
-            "Scale",
-            &m_scale,
-            static_cast< float >(low),
-            static_cast< float >(high)))
-        emit_scale();
+            "Scale", &f, static_cast< float >(low), static_cast< float >(high)))
+        emit_scale(f);
 }
 
 auto layout_editor::render_restore_button() const -> void
@@ -73,32 +78,38 @@ auto layout_editor::render_restore_button() const -> void
 
 auto layout_editor::layout() const -> layout_type
 {
-    return plugins::layouts().at(m_layout);
+    assert(m_layout);
+    return m_layout();
 }
 
 auto layout_editor::topology() const -> topology_type
 {
-    return plugins::topologies().at(m_topology);
+    assert(m_topology);
+    return m_topology();
 }
 
 auto layout_editor::scale() const -> scale_type
 {
-    return m_scale;
+    assert(m_scale);
+    return m_scale();
 }
 
-auto layout_editor::set_layout(layout_type val) -> void
+auto layout_editor::set_layout(layout_accessor f) -> void
 {
-    m_layout = detail::find_index(plugins::layouts(), val);
+    assert(f);
+    m_layout = std::move(f);
 }
 
-auto layout_editor::set_topology(topology_type val) -> void
+auto layout_editor::set_topology(topology_accessor f) -> void
 {
-    m_topology = detail::find_index(plugins::topologies(), val);
+    assert(f);
+    m_topology = std::move(f);
 }
 
-auto layout_editor::set_scale(scale_type val) -> void
+auto layout_editor::set_scale(scale_accessor f) -> void
 {
-    m_scale = val;
+    assert(f);
+    m_scale = std::move(f);
 }
 
 auto layout_editor::connect_to_layout(const layout_slot& f) -> connection
@@ -121,19 +132,19 @@ auto layout_editor::connect_to_restore(const restore_slot& f) -> connection
     return m_restore_sig.connect(f);
 }
 
-auto layout_editor::emit_layout() const -> void
+auto layout_editor::emit_layout(layout_type l) const -> void
 {
-    m_layout_sig(layout());
+    m_layout_sig(l);
 }
 
-auto layout_editor::emit_topology() const -> void
+auto layout_editor::emit_topology(topology_type t) const -> void
 {
-    m_topology_sig(topology());
+    m_topology_sig(t);
 }
 
-auto layout_editor::emit_scale() const -> void
+auto layout_editor::emit_scale(scale_type s) const -> void
 {
-    m_scale_sig(scale());
+    m_scale_sig(s);
 }
 
 auto layout_editor::emit_restore() const -> void

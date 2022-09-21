@@ -2,7 +2,6 @@
 
 #include "cube.hpp"
 #include "sphere.hpp"
-#include "topology_plugin.hpp"
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
@@ -11,7 +10,7 @@
 namespace layout
 {
 
-auto topology_factory::make_topology(const std::string& id, scale_type scale)
+auto topology_factory::make_topology(id_type id, scale_type scale)
     -> pointer
 {
     if (id == cube_id)

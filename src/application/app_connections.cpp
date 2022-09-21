@@ -90,17 +90,6 @@ auto app::connect_gui_with_layout() -> void
             restore_layout_defaults(*m_commands, *m_layout_backend);
         });
 
-    m_layout_backend->connect_to_layout(
-        [this, &editor](const auto& layout)
-        { editor.set_layout(layout::identify(layout)); });
-
-    m_layout_backend->connect_to_topology(
-        [this, &editor](const auto& topology)
-        {
-            editor.set_topology(layout::identify(topology));
-            editor.set_scale(topology.scale());
-        });
-
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
 }
 

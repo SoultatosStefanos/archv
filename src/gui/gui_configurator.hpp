@@ -89,8 +89,6 @@ protected:
     auto color_themes() -> render_vector& { return m_color_themes; }
 
 private:
-    using index_type = int;
-
     auto render_color_theme_selector() const -> void;
     auto render_frame_rounding_selector() const -> void;
     auto render_window_bordered_selector() const -> void;

@@ -17,6 +17,7 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <string_view>
 
 namespace layout
 {
@@ -69,15 +70,18 @@ class backend
         = boost::signals2::signal< void(const topology&) >;
 
 public:
+    using config_data_type = backend_config;
     using graph_type = Graph;
     using weight_map_type = WeightMap;
     using layout_type = layout< graph_type >;
     using topology_type = topology;
+    using layout_id_type = layout_id;
+    using topology_id_type = topology_id;
     using scale_type = topology_type::scale_type;
+
     using layout_slot_type = typename layout_signal_type::slot_type;
     using topology_slot_type = topology_signal_type::slot_type;
     using connection_type = boost::signals2::connection;
-    using config_data_type = backend_config;
 
     backend(
         const graph_type& g,
@@ -99,20 +103,20 @@ public:
     auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_layout(const std::string& layout_id) -> void
+    auto update_layout(layout_id_type id) -> void
     {
-        set_layout(layout_id);
+        set_layout(id);
 
         emit_layout();
     }
 
     auto update_layout(
-        const std::string& topology_id,
+        topology_id_type space_id,
         scale_type topology_scale,
-        const std::string& layout_id) -> void
+        layout_id_type algo_id) -> void
     {
-        set_topology(topology_id, topology_scale);
-        set_layout(layout_id);
+        set_topology(space_id, topology_scale);
+        set_layout(algo_id);
 
         emit_layout();
         emit_topology();
@@ -131,7 +135,7 @@ public:
 protected:
     using layout_factory_type = layout_factory< graph_type >;
 
-    auto set_layout(const std::string& id) -> void
+    auto set_layout(layout_id_type id) -> void
     {
         assert(m_topology);
         assert(
@@ -148,7 +152,7 @@ protected:
         assert(m_topology);
     }
 
-    auto set_topology(const std::string& id, scale_type scale) -> void
+    auto set_topology(topology_id_type id, scale_type scale) -> void
     {
         assert(
             std::find(
@@ -190,7 +194,9 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline auto update_layout(backend< Graph, WeightMap >& b, const std::string& id)
+inline auto update_layout(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::layout_id_type id)
 {
     b.update_layout(id);
 }
@@ -198,25 +204,26 @@ inline auto update_layout(backend< Graph, WeightMap >& b, const std::string& id)
 template < typename Graph, typename WeightMap >
 inline auto update_layout(
     backend< Graph, WeightMap >& b,
-    const std::string& layout_id,
-    const std::string& topology_id,
+    typename backend< Graph, WeightMap >::layout_id_type algo_id,
+    typename backend< Graph, WeightMap >::topology_id_type space_id,
     typename backend< Graph, WeightMap >::scale_type scale)
 {
-    b.update_layout(topology_id, scale, layout_id);
+    b.update_layout(space_id, scale, algo_id);
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_topology(
     backend< Graph, WeightMap >& b,
-    const std::string& id,
+    typename backend< Graph, WeightMap >::topology_id_type id,
     typename backend< Graph, WeightMap >::scale_type scale)
 {
     b.update_layout(id, scale, identify(b.get_layout()));
 }
 
 template < typename Graph, typename WeightMap >
-inline auto
-update_topology(backend< Graph, WeightMap >& b, const std::string& id)
+inline auto update_topology(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::topology_id_type id)
 {
     update_topology(b, id, b.get_topology().scale());
 }
