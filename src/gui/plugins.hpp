@@ -5,8 +5,7 @@
 #define GUI_PLUGINS_HPP
 
 #include <string_view>
-#include <unordered_map>
-#include <vector>
+#include <unordered_set>
 
 namespace gui::plugins
 {
@@ -21,27 +20,27 @@ using layout = std::string_view;
 using topology = std::string_view;
 using scale = double;
 
-using dependency_vector = std::vector< dependency >;
-using layout_vector = std::vector< layout >;
-using topology_vector = std::vector< topology >;
+using dependency_set = std::unordered_set< dependency >;
+using layout_set = std::unordered_set< layout >;
+using topology_set = std::unordered_set< topology >;
 using scale_range = std::pair< scale, scale >;
 
 /***********************************************************
  * Observers                                               *
  ***********************************************************/
 
-auto dependencies() -> const dependency_vector&;
-auto layouts() -> const layout_vector&;
-auto topologies() -> const topology_vector&;
+auto dependencies() -> const dependency_set&;
+auto layouts() -> const layout_set&;
+auto topologies() -> const topology_set&;
 auto scales() -> const scale_range&;
 
 /***********************************************************
  * Installers                                              *
  ***********************************************************/
 
-auto install_dependencies(dependency_vector vec) -> void;
-auto install_layouts(layout_vector vec) -> void;
-auto install_topologies(topology_vector vec) -> void;
+auto install_dependencies(dependency_set set) -> void;
+auto install_layouts(layout_set set) -> void;
+auto install_topologies(topology_set set) -> void;
 auto install_scales(scale_range range) -> void;
 
 } // namespace gui::plugins

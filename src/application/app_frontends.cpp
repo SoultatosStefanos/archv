@@ -142,47 +142,47 @@ auto app::install_gui_plugins() -> void
     gui::plugins::install_dependencies(
         [this]()
         {
-            auto dependencies = gui::plugins::dependency_vector();
+            auto res = gui::plugins::dependency_set();
             const auto& plugged
                 = std::ranges::views::keys(m_dependencies_config);
 
             std::transform(
                 std::cbegin(plugged),
                 std::cend(plugged),
-                std::back_inserter(dependencies),
+                std::inserter(res, std::begin(res)),
                 [](const auto& dep) { return dep.c_str(); });
 
-            return dependencies;
+            return res;
         }());
 
     gui::plugins::install_layouts(
         [this]()
         {
-            auto layouts = gui::plugins::layout_vector();
+            auto res = gui::plugins::layout_set();
             const auto& plugged = m_layout_config.layouts;
 
             std::transform(
                 std::cbegin(plugged),
                 std::cend(plugged),
-                std::back_inserter(layouts),
+                std::inserter(res, std::begin(res)),
                 [](const auto& lay) { return lay.c_str(); });
 
-            return layouts;
+            return res;
         }());
 
     gui::plugins::install_topologies(
         { [this]()
           {
-              auto topologies = gui::plugins::topology_vector();
+              auto res = gui::plugins::topology_set();
               const auto& plugged = m_layout_config.topologies;
 
               std::transform(
                   std::cbegin(plugged),
                   std::cend(plugged),
-                  std::back_inserter(topologies),
+                  std::inserter(res, std::begin(res)),
                   [](const auto& space) { return space.c_str(); });
 
-              return topologies;
+              return res;
           }() });
 
     gui::plugins::install_scales(m_layout_config.scales);
