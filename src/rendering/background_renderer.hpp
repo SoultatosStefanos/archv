@@ -93,7 +93,7 @@ public:
     auto light_node() const -> auto* { return m_light_node; }
     auto cam_node() const -> auto* { return m_cam_node; }
 
-    auto draw(const config_data_type& cfg) -> void;
+    auto draw(const config_data_type& cfg) const -> void;
 
 private:
     auto setup_scene() -> void;
@@ -104,9 +104,9 @@ private:
     auto shutdown_lighting() -> void;
     auto shutdown_scene() -> void;
 
-    auto draw_scene(const config_data_type& cfg) -> void;
-    auto draw_lighting(const config_data_type& cfg) -> void;
-    auto draw_camera(const config_data_type& cfg) -> void;
+    auto draw_scene(const config_data_type& cfg) const -> void;
+    auto draw_lighting(const config_data_type& cfg) const -> void;
+    auto draw_camera(const config_data_type& cfg) const -> void;
 
     config_data_type m_config, m_defaults;
     config_api_type m_config_api;

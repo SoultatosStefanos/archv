@@ -20,8 +20,11 @@ namespace rendering::detail
 {
 
 graph_renderer_impl::graph_renderer_impl(
-    Ogre::SceneManager* scene, const config_data_type& config)
-: m_scene { scene }, m_config { config }
+    Ogre::SceneManager* scene, config_data_type config)
+: m_scene { scene }
+, m_config { config }
+, m_defaults { config }
+, m_config_api { std::move(config) }
 {
     assert(m_scene);
 }
@@ -37,6 +40,21 @@ auto graph_renderer_impl::setup_vertex(
     auto* node = scene()->getRootSceneNode()->createChildSceneNode(v.id);
 
     node->setScale(config_data().vertex_scale);
+    node->setPosition(v.pos);
+    node->attachObject(entity);
+
+    setup_id_billboard(v);
+}
+
+auto graph_renderer_impl::setup_vertex(
+    const vertex_rendering_properties& v, const config_data_type& cfg) const
+    -> void
+{
+    auto* entity
+        = scene()->createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+
+    auto* node = scene()->getRootSceneNode()->createChildSceneNode(v.id);
+
     node->setPosition(v.pos);
     node->attachObject(entity);
 
@@ -147,6 +165,40 @@ auto graph_renderer_impl::shutdown_id_billboard(
 {
     const auto& name = v.id;
     m_vertices_billboards.erase(name);
+}
+
+auto graph_renderer_impl::draw_vertex(
+    const vertex_rendering_properties& v, const config_data_type& cfg) const
+    -> void
+{
+    shutdown_vertex(v);
+    setup_vertex(v, cfg);
+
+    auto* node = scene()->getSceneNode(v.id);
+    node->setScale(cfg.vertex_scale);
+
+    auto& billboard = m_vertices_billboards.at(v.id);
+    billboard->setFontName(cfg.vbillboard_font_name, ARCHV_RESOURCE_GROUP);
+    billboard->setColor(cfg.vbillboard_color);
+    billboard->setCharacterHeight(cfg.vbillboard_char_height);
+    billboard->setSpaceWidth(cfg.vbillboard_space_width);
+}
+
+auto graph_renderer_impl::draw_edge(
+    const edge_rendering_properties& e, const config_data_type& cfg) const
+    -> void
+{
+    using namespace Ogre;
+
+    const auto& id = make_edge_id(e);
+
+    auto* node = scene()->getSceneNode(id);
+    auto* obj = node->getAttachedObject(0);
+
+    assert(dynamic_cast< ManualObject* >(obj));
+    auto* m_obj = static_cast< ManualObject* >(obj);
+
+    m_obj->setMaterialName(0, cfg.edge_material, ARCHV_RESOURCE_GROUP);
 }
 
 } // namespace rendering::detail

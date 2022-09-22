@@ -431,4 +431,13 @@
 
 	+ [x] Background Renderer Config
 
-	+ [ ] Graph Renderer Config
+	+ [x] Graph Renderer Config
+
+
+# 22 / 08 / 2022
+
+	+ [ ] Graph Renderer Cleanup
+
+	+ [ ] Edge Arrows Rendering
+
+	+ [ ] Edge Dependencies Rendering

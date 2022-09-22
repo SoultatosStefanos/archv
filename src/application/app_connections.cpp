@@ -227,57 +227,102 @@ auto app::connect_gui_graph_configurator() -> void
     auto& iface = m_gui->get_configurator().get_graph_configurator();
 
     iface.connect_to_node_mesh(
-        [](auto mesh)
-        { BOOST_LOG_TRIVIAL(info) << "selected graph node mesh: " << mesh; });
+        [this](auto mesh)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph node mesh: " << mesh;
+
+            m_graph_renderer->config_api().config_data().vertex_mesh
+                = std::string(mesh);
+        });
 
     iface.connect_to_node_scale(
-        [](const auto& scale)
+        [this](const auto& scale)
         {
             assert(scale.size() == 3);
+
             BOOST_LOG_TRIVIAL(info) << "selected graph node scale: " << scale[0]
                                     << ", " << scale[1] << ", " << scale[2];
+
+            m_graph_renderer->config_api().config_data().vertex_scale
+                = Ogre::Vector3(scale[0], scale[1], scale[2]);
         });
 
     iface.connect_to_node_font(
-        [](auto font)
-        { BOOST_LOG_TRIVIAL(info) << "selected graph node font: " << font; });
+        [this](auto font)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph node font: " << font;
+
+            m_graph_renderer->config_api().config_data().vbillboard_font_name
+                = std::string(font);
+        });
 
     iface.connect_to_node_font_color(
-        [](const auto& col)
+        [this](const auto& col)
         {
             assert(col.size() == 4);
 
             BOOST_LOG_TRIVIAL(info)
                 << "selected graph node font color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
+
+            m_graph_renderer->config_api().config_data().vbillboard_color
+                = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
     iface.connect_to_node_char_height(
-        [](auto h) {
+        [this](auto h)
+        {
             BOOST_LOG_TRIVIAL(info) << "selected graph node char height: " << h;
+
+            m_graph_renderer->config_api().config_data().vbillboard_char_height
+                = h;
         });
 
     iface.connect_to_node_space_width(
-        [](auto w) {
+        [this](auto w)
+        {
             BOOST_LOG_TRIVIAL(info) << "selected graph node space width: " << w;
+
+            m_graph_renderer->config_api().config_data().vbillboard_space_width
+                = w;
         });
 
     iface.connect_to_edge_material(
-        [](auto mat) {
+        [this](auto mat)
+        {
             BOOST_LOG_TRIVIAL(info) << "selected graph edge material: " << mat;
+
+            m_graph_renderer->config_api().config_data().edge_material
+                = std::string(mat);
         });
 
     iface.connect_to_apply(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs apply"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph configs apply";
+            ui::apply_configs(*m_graph_renderer);
+        });
 
     iface.connect_to_preview(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs preview"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph configs preview";
+            ui::begin_preview(*m_graph_renderer);
+        });
 
     iface.connect_to_cancel(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs cancel"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph configs cancel";
+            ui::end_preview(*m_graph_renderer);
+        });
 
     iface.connect_to_restore(
-        []() { BOOST_LOG_TRIVIAL(info) << "selected graph configs restore"; });
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph configs restore";
+            ui::restore_defaults(*m_graph_renderer);
+        });
 }
 
 auto app::connect_gui_gui_configurator() -> void

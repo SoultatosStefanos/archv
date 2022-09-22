@@ -18,26 +18,6 @@ namespace rendering
 {
 
 /***********************************************************
- * Graph config data                                       *
- ***********************************************************/
-
-struct graph_config
-{
-    Ogre::String vertex_mesh;
-    Ogre::Vector3 vertex_scale;
-
-    Ogre::String vbillboard_font_name;
-    Ogre::Real vbillboard_char_height;
-    Ogre::ColourValue vbillboard_color;
-    Ogre::Real vbillboard_space_width;
-
-    Ogre::String edge_material;
-
-    auto operator==(const graph_config&) const -> bool = default;
-    auto operator!=(const graph_config&) const -> bool = default;
-};
-
-/***********************************************************
  * Graph renderer                                          *
  ***********************************************************/
 
@@ -80,6 +60,7 @@ public:
     using weight_map = WeightMap;
     using position_map = PositionMap;
     using config_data_type = graph_config;
+    using config_api_type = graph_config_api;
 
     graph_renderer(
         const graph_type& g,
@@ -93,8 +74,7 @@ public:
     , m_edge_weight { edge_weight }
     , m_vertex_pos { vertex_pos }
     , m_scene { scene }
-    , m_config { std::move(config) }
-    , m_impl { m_scene, m_config }
+    , m_impl { m_scene, config }
     {
         assert(m_scene);
         setup();
@@ -107,6 +87,25 @@ public:
 
     auto operator=(const graph_renderer&) -> graph_renderer& = delete;
     auto operator=(graph_renderer&&) -> graph_renderer& = delete;
+
+    auto default_data() const -> const config_data_type&
+    {
+        return m_impl.default_data();
+    }
+
+    auto config_data() const -> const config_data_type&
+    {
+        return m_impl.config_data();
+    }
+
+    auto config_data() -> config_data_type& { return m_impl.config_data(); }
+
+    auto config_api() const -> const config_api_type&
+    {
+        return m_impl.config_api();
+    }
+
+    auto config_api() -> config_api_type& { return m_impl.config_api(); }
 
     auto graph() const -> const auto& { return m_g; }
     auto vertex_id() const -> auto { return m_vertex_id; }
@@ -140,9 +139,11 @@ public:
         setup();
     }
 
-protected:
-    auto config_data() const -> const config_data_type& { return m_config; }
-    auto config_data() -> config_data_type& { return m_config; }
+    auto draw(const config_data_type& cfg) const -> void
+    {
+        draw_vertices(cfg);
+        draw_edges(cfg);
+    }
 
 private:
     using graph_type_traits = boost::graph_traits< graph_type >;
@@ -203,6 +204,18 @@ private:
             m_impl.update_edge(make_edge_properties(e));
     }
 
+    auto draw_vertices(const config_data_type& cfg) const -> void
+    {
+        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
+            m_impl.draw_vertex(make_vertex_properties(v), cfg);
+    }
+
+    auto draw_edges(const config_data_type& cfg) const -> void
+    {
+        for (auto e : boost::make_iterator_range(boost::edges(graph())))
+            m_impl.draw_edge(make_edge_properties(e), cfg);
+    }
+
     auto shutdown() const -> void
     {
         shutdown_vertices();
@@ -226,7 +239,6 @@ private:
     weight_map m_edge_weight;
     position_map m_vertex_pos;
     Ogre::SceneManager* m_scene { nullptr };
-    config_data_type m_config;
     detail::graph_renderer_impl m_impl;
 };
 

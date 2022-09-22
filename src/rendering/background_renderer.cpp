@@ -125,14 +125,14 @@ auto background_renderer::shutdown_scene() -> void
  * Configs                                                 *
  ***********************************************************/
 
-auto background_renderer::draw(const config_data_type& cfg) -> void
+auto background_renderer::draw(const config_data_type& cfg) const -> void
 {
     draw_scene(cfg);
     draw_lighting(cfg);
     draw_camera(cfg);
 }
 
-auto background_renderer::draw_scene(const config_data_type& cfg) -> void
+auto background_renderer::draw_scene(const config_data_type& cfg) const -> void
 {
     assert(scene());
 
@@ -145,7 +145,8 @@ auto background_renderer::draw_scene(const config_data_type& cfg) -> void
     assert(scene()->getAmbientLight() == cfg.ambient_light);
 }
 
-auto background_renderer::draw_lighting(const config_data_type& cfg) -> void
+auto background_renderer::draw_lighting(const config_data_type& cfg) const
+    -> void
 {
     assert(light());
 
@@ -156,7 +157,7 @@ auto background_renderer::draw_lighting(const config_data_type& cfg) -> void
     assert(light()->getSpecularColour() == cfg.specular_light);
 }
 
-auto background_renderer::draw_camera(const config_data_type& cfg) -> void
+auto background_renderer::draw_camera(const config_data_type& cfg) const -> void
 {
     assert(cam());
 
