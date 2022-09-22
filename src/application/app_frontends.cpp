@@ -30,6 +30,8 @@ auto app::setup_background_rendering() -> void
     m_background_renderer = std::make_unique< rendering::background_renderer >(
         *getRenderWindow(), m_rendering_config.background);
 
+    ui::start(*m_background_renderer);
+
     BOOST_LOG_TRIVIAL(info) << "setup background rendering";
 }
 

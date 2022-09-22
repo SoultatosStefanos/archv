@@ -32,8 +32,6 @@ background_renderer::background_renderer(
     assert(m_light_node);
     assert(m_cam_node);
     assert(m_cam);
-
-    draw(config_data());
 }
 
 background_renderer::~background_renderer()
