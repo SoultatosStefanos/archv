@@ -440,4 +440,9 @@
 
 	+ [x] Edge Arrows Rendering
 
-	+ [ ] Edge Dependencies Rendering
+
+# 23 / 08 / 2022
+
+	+ [ ] Configurable edge tips
+
+	+ [ ] Edge dependencies rendering
