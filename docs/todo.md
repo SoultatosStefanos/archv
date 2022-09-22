@@ -438,6 +438,6 @@
 
 	+ [x] Graph Renderer Cleanup
 
-	+ [ ] Edge Arrows Rendering
+	+ [x] Edge Arrows Rendering
 
 	+ [ ] Edge Dependencies Rendering

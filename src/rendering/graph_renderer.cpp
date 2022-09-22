@@ -17,6 +17,7 @@
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
+#include <cmath>
 
 namespace rendering::detail
 {
@@ -114,6 +115,15 @@ namespace
         return std::string(e.source.id + " -> " + e.target.id);
     }
 
+    inline auto orientation(
+        const Ogre::Vector3& from,
+        const Ogre::Vector3& to,
+        const Ogre::Vector3& axis)
+    {
+        const auto delta = to - from;
+        return axis.getRotationTo(delta);
+    }
+
 } // namespace
 
 void graph_renderer_impl::draw(
@@ -151,6 +161,19 @@ void graph_renderer_impl::draw(
         assert(!scene().hasSceneNode(id));
         auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
         node->attachObject(line);
+
+        // ----------- TIP ---------------------- //
+
+        const auto tip_id = id + " tip";
+
+        auto* tip = scene().createEntity(
+            tip_id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
+
+        assert(!scene().hasSceneNode(tip_id));
+        auto* tnode = scene().getRootSceneNode()->createChildSceneNode(tip_id);
+        tnode->attachObject(tip);
+
+        tnode->setScale(cfg.edge_tip_scale);
     }
 
     assert(has_edge());
@@ -206,6 +229,40 @@ void graph_renderer_impl::draw_layout(
     BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
 
+// NOTE:
+// https://math.stackexchange.com/questions/83404/finding-a-point-along-a-line-in-three-dimensions-given-two-points
+namespace
+{
+    // x = (1−u)x1 + ux2
+    // y = (1−u)y1 + uy2
+    // z = (1−u)z1 + uz2
+    inline auto point_across_line(
+        const Ogre::Vector3& from, const Ogre::Vector3& to, Ogre::Real u = 1)
+    {
+        const auto x = ((1 - u) * from.x) + (u * to.x);
+        const auto y = ((1 - u) * from.y) + (u * to.y);
+        const auto z = ((1 - u) * from.z) + (u * to.z);
+        return Ogre::Vector3(x, y, z);
+    }
+
+    inline auto parametric_equation(
+        const Ogre::Vector3& from, const Ogre::Vector3& to, Ogre::Real units)
+    {
+        const auto x1 = from.x;
+        const auto x2 = to.x;
+        const auto y1 = from.y;
+        const auto y2 = to.y;
+        const auto z1 = from.z;
+        const auto z2 = to.z;
+
+        const auto d = std::sqrt(
+            std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2) + std::pow(z2 - z1, 2));
+
+        return units / d;
+    }
+
+} // namespace
+
 auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
 {
     using namespace Ogre;
@@ -224,11 +281,38 @@ auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
     auto* src_node = scene().getSceneNode(e.source.id);
     auto* trgt_node = scene().getSceneNode(e.target.id);
 
+    // ----------- TIP ---------------------- //
+    const auto from = src_node->getPosition();
+    const auto to = trgt_node->getPosition();
+    const auto radius
+        = scene().getEntity(e.source.id)->getBoundingRadiusScaled();
+    const auto delta = from - to;
+    const auto afar = delta.length() - radius;
+
+    const auto u = parametric_equation(from, to, afar);
+    const auto pos = point_across_line(from, to, u);
+
+    // ----------- TIP ---------------------- //
+
     line->estimateVertexCount(2); // From src to trgt node.
     line->beginUpdate(0);
     line->position(src_node->getPosition());
-    line->position(trgt_node->getPosition());
+    line->position(pos);
     line->end();
+
+    // ----------- TIP ---------------------- //
+
+    auto* tnode = scene().getSceneNode(id + " tip");
+
+    const auto orient = orientation(
+        src_node->getPosition(), trgt_node->getPosition(), Vector3::UNIT_Y);
+    tnode->setOrientation(orient);
+
+    //  const auto mid = (trgt_node->getPosition() + src_node->getPosition()) /
+    //  2;
+    //  tnode->setPosition(mid);
+
+    tnode->setPosition(pos);
 
     BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << id;
 }

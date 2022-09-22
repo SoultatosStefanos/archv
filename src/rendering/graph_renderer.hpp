@@ -28,6 +28,8 @@ struct graph_config
     Ogre::Real vbillboard_space_width;
 
     Ogre::String edge_material;
+    Ogre::String edge_tip_mesh = "triangle.mesh";
+    Ogre::Vector3 edge_tip_scale = { 0.5, 0.5, 0.5 };
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
