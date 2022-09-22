@@ -436,7 +436,7 @@
 
 # 22 / 08 / 2022
 
-	+ [ ] Graph Renderer Cleanup
+	+ [x] Graph Renderer Cleanup
 
 	+ [ ] Edge Arrows Rendering
 

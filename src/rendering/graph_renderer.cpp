@@ -44,6 +44,12 @@ auto graph_renderer_impl::draw(
 
     draw_id_billboard(v, cfg);
 
+    assert(node->getScale() == cfg.vertex_scale);
+    assert(scene().hasEntity(v.id));
+    assert(scene().hasSceneNode(v.id));
+    assert(scene().getEntity(v.id)->getMesh()->getName() == cfg.vertex_mesh);
+    assert(scene().getSceneNode(v.id)->getAttachedObjects().size() == 2);
+
     BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << v.id;
 }
 
@@ -66,6 +72,11 @@ auto graph_renderer_impl::draw_id_billboard(
         text->setCharacterHeight(cfg.vbillboard_char_height);
         text->setColor(cfg.vbillboard_color);
         text->setSpaceWidth(cfg.vbillboard_space_width);
+
+        assert(text->getFontName() == cfg.vbillboard_font_name);
+        assert(text->getCharacterHeight() == cfg.vbillboard_char_height);
+        assert(text->getColor() == cfg.vbillboard_color);
+        assert(text->getSpaceWidth() == cfg.vbillboard_space_width);
     }
     else // on first draw
     {
@@ -82,6 +93,11 @@ auto graph_renderer_impl::draw_id_billboard(
         text->showOnTop(true);
 
         node->attachObject(text.get());
+
+        assert(text->getFontName() == cfg.vbillboard_font_name);
+        assert(text->getCharacterHeight() == cfg.vbillboard_char_height);
+        assert(text->getColor() == cfg.vbillboard_color);
+        assert(text->getSpaceWidth() == cfg.vbillboard_space_width);
 
         m_id_billboards[v.id] = std::move(text);
     }
@@ -112,7 +128,9 @@ void graph_renderer_impl::draw(
     if (has_edge()) [[likely]]
     {
         auto* line = scene().getManualObject(id);
-        line->setMaterialName(0, cfg.edge_material);
+
+        line->setMaterial(
+            0, MaterialManager::getSingleton().getByName(cfg.edge_material));
     }
     else // on first draw
     {
@@ -151,6 +169,9 @@ auto graph_renderer_impl::erase(const vertex_properties& v) -> void
         [[maybe_unused]] const auto num = m_id_billboards.erase(v.id);
         assert(num == 1);
 
+        assert(!scene().hasEntity(v.id));
+        assert(!scene().hasSceneNode(v.id));
+
         BOOST_LOG_TRIVIAL(debug) << "erased vertex: " << v.id;
     }
 }
@@ -165,6 +186,9 @@ auto graph_renderer_impl::erase(const edge_properties& e) -> void
         scene().destroySceneNode(id);
         scene().destroyManualObject(id);
 
+        assert(!scene().hasManualObject(id));
+        assert(!scene().hasSceneNode(id));
+
         BOOST_LOG_TRIVIAL(debug) << "erased edge: " << id;
     }
 }
@@ -176,6 +200,8 @@ void graph_renderer_impl::draw_layout(
     auto* node = scene().getSceneNode(v.id);
 
     node->setPosition(pos);
+
+    assert(node->getPosition() == pos);
 
     BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
