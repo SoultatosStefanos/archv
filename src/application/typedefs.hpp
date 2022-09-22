@@ -21,11 +21,8 @@ using position_map = layout::position_map< architecture::graph, weight_map >;
 
 using layout_backend = layout::backend< architecture::graph, weight_map >;
 
-using graph_renderer = rendering::graph_renderer<
-    architecture::graph,
-    architecture::id_map,
-    weight_map,
-    position_map >;
+using graph_renderer
+    = rendering::graph_renderer< architecture::graph, architecture::id_map >;
 
 } // namespace application
 

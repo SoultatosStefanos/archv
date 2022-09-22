@@ -21,7 +21,7 @@ auto app::setup_input() -> void
     assert(m_background_renderer);
 
     m_cameraman = std::make_unique< OgreBites::CameraMan >(
-        m_background_renderer->cam_node());
+        &m_background_renderer->cam_node());
 
     m_gui_input_listener = std::make_unique< OgreBites::ImGuiInputListener >();
 

@@ -40,10 +40,12 @@ auto app::setup_graph_rendering() -> void
     m_graph_renderer = std::make_unique< graph_renderer >(
         m_graph,
         make_id_map(),
-        make_weight_map(),
-        make_position_map(),
         m_background_renderer->scene(),
         m_rendering_config.graph);
+
+    ui::start(*m_graph_renderer);
+
+    m_graph_renderer->draw_layout(make_position_map());
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
@@ -74,7 +76,7 @@ auto app::setup_gui_overlay() -> void
     Ogre::OverlayManager::getSingleton().addOverlay(imgui); // takes ownership
 
     auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
-    m_background_renderer->scene()->addRenderQueueListener(ogre_overlay);
+    m_background_renderer->scene().addRenderQueueListener(ogre_overlay);
 }
 
 auto app::setup_gui_tray_manager() -> void
@@ -354,7 +356,7 @@ auto app::shutdown_gui() -> void
     m_gui.reset();
 
     auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
-    m_background_renderer->scene()->removeRenderQueueListener(ogre_overlay);
+    m_background_renderer->scene().removeRenderQueueListener(ogre_overlay);
 
     // named by Ogre
     Ogre::OverlayManager::getSingleton().destroy("ImGuiOverlay");

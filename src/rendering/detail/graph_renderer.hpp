@@ -6,55 +6,17 @@
 
 #include <OGRE/OgreSceneManager.h>
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 namespace Ogre
 {
-class MovableText; // fwd declare cause its not published in the main repo.
+class MovableText;
 } // namespace Ogre
 
 namespace rendering
 {
-/***********************************************************
- * Graph config data                                       *
- ***********************************************************/
-
-struct graph_config
-{
-    Ogre::String vertex_mesh;
-    Ogre::Vector3 vertex_scale;
-
-    Ogre::String vbillboard_font_name;
-    Ogre::Real vbillboard_char_height;
-    Ogre::ColourValue vbillboard_color;
-    Ogre::Real vbillboard_space_width;
-
-    Ogre::String edge_material;
-
-    auto operator==(const graph_config&) const -> bool = default;
-    auto operator!=(const graph_config&) const -> bool = default;
-};
-
-/***********************************************************
- * Graph config api                                        *
- ***********************************************************/
-
-class graph_config_api
-{
-public:
-    using config_data_type = graph_config;
-
-    explicit graph_config_api(config_data_type cfg)
-    : m_config { std::move(cfg) }
-    {
-    }
-
-    auto config_data() const -> const config_data_type& { return m_config; }
-    auto config_data() -> config_data_type& { return m_config; }
-
-private:
-    config_data_type m_config;
-};
+struct graph_config;
 } // namespace rendering
 
 namespace rendering::detail
@@ -64,20 +26,27 @@ namespace rendering::detail
  * Vertex Properties                                       *
  ***********************************************************/
 
-struct vertex_rendering_properties
+struct vertex_properties
 {
-    const Ogre::String& id;
-    const Ogre::Vector3 pos;
+    using id_type = std::string;
+
+    id_type id;
+
+    auto operator==(const vertex_properties&) const -> bool = default;
+    auto operator!=(const vertex_properties&) const -> bool = default;
 };
 
 /***********************************************************
  * Edge Properties                                         *
  ***********************************************************/
 
-struct edge_rendering_properties
+struct edge_properties
 {
-    vertex_rendering_properties source;
-    vertex_rendering_properties target;
+    vertex_properties source;
+    vertex_properties target;
+
+    auto operator==(const edge_properties&) const -> bool = default;
+    auto operator!=(const edge_properties&) const -> bool = default;
 };
 
 /***********************************************************
@@ -87,57 +56,40 @@ struct edge_rendering_properties
 class graph_renderer_impl
 {
 public:
+    using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
-    using config_api_type = graph_config_api;
 
-    graph_renderer_impl(Ogre::SceneManager* scene, config_data_type cfg);
+    using position_type = Ogre::Vector3;
 
+    explicit graph_renderer_impl(scene_type& scene);
     ~graph_renderer_impl();
 
-    auto default_data() const -> const config_data_type& { return m_defaults; }
+    auto scene() const -> const scene_type& { return m_scene; }
+    auto scene() -> scene_type& { return m_scene; }
 
-    auto config_data() const -> const config_data_type& { return m_config; }
-    auto config_data() -> config_data_type& { return m_config; }
+    void draw(const vertex_properties& v, const config_data_type& cfg);
+    void draw(const edge_properties& e, const config_data_type& cfg);
 
-    auto config_api() const -> const config_api_type& { return m_config_api; }
-    auto config_api() -> config_api_type& { return m_config_api; }
+    auto erase(const vertex_properties& v) -> void;
+    auto erase(const edge_properties& e) -> void;
 
-    auto setup_vertex(const vertex_rendering_properties& v) const -> void;
-    auto setup_vertex(
-        const vertex_rendering_properties& v, const config_data_type& cfg) const
-        -> void;
-    auto setup_edge(const edge_rendering_properties& e) const -> void;
+    void draw_layout(const vertex_properties& v, const position_type& p);
+    auto draw_layout(const edge_properties& e) -> void;
 
-    auto shutdown_vertex(const vertex_rendering_properties& v) const -> void;
-    auto shutdown_edge(const edge_rendering_properties& e) const -> void;
-
-    auto update_vertex(const vertex_rendering_properties& v) const -> void;
-    auto update_edge(const edge_rendering_properties& e) const -> void;
-
-    auto draw_vertex(
-        const vertex_rendering_properties& v, const config_data_type& cfg) const
-        -> void;
-
-    auto draw_edge(
-        const edge_rendering_properties& e, const config_data_type& cfg) const
-        -> void;
-
-protected:
-    auto scene() const -> auto* { return m_scene; }
+    // TODO Edge Dependency, Vertex Cluster, etc.
 
 private:
-    using id_billboards = std::
-        unordered_map< Ogre::String, std::unique_ptr< Ogre::MovableText > >;
+    using id_billboard = Ogre::MovableText;
+    using id_cache = std::unordered_map<
+        vertex_properties::id_type,
+        std::unique_ptr< id_billboard > >;
 
-    auto setup_id_billboard(const vertex_rendering_properties& v) const -> void;
-    auto shutdown_id_billboard(const vertex_rendering_properties& v) const
-        -> void;
+    void
+    draw_id_billboard(const vertex_properties& v, const config_data_type& cfg);
 
-    Ogre::SceneManager* m_scene { nullptr };
-    config_data_type m_config, m_defaults;
-    config_api_type m_config_api;
+    scene_type& m_scene;
 
-    mutable id_billboards m_vertices_billboards;
+    mutable id_cache m_id_billboards;
 };
 
 } // namespace rendering::detail

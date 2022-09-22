@@ -87,13 +87,22 @@ public:
     auto config_api() const -> const config_api_type& { return m_config_api; }
     auto config_api() -> config_api_type& { return m_config_api; }
 
-    auto scene() const -> auto* { return m_scene; }
-    auto light() const -> auto* { return m_light; }
-    auto cam() const -> auto* { return m_cam; }
-    auto light_node() const -> auto* { return m_light_node; }
-    auto cam_node() const -> auto* { return m_cam_node; }
+    auto scene() const -> const auto& { return *m_scene; }
+    auto scene() -> auto& { return *m_scene; }
 
-    auto draw(const config_data_type& cfg) const -> void;
+    auto light() const -> const auto& { return *m_light; }
+    auto light() -> auto& { return *m_light; }
+
+    auto cam() const -> const auto& { return *m_cam; }
+    auto cam() -> auto& { return *m_cam; }
+
+    auto light_node() const -> const auto& { return *m_light_node; }
+    auto light_node() -> auto& { return *m_light_node; }
+
+    auto cam_node() const -> const auto& { return *m_cam_node; }
+    auto cam_node() -> auto& { return *m_cam_node; }
+
+    auto draw(const config_data_type& cfg) -> void;
 
 private:
     auto setup_scene() -> void;
@@ -104,9 +113,9 @@ private:
     auto shutdown_lighting() -> void;
     auto shutdown_scene() -> void;
 
-    auto draw_scene(const config_data_type& cfg) const -> void;
-    auto draw_lighting(const config_data_type& cfg) const -> void;
-    auto draw_camera(const config_data_type& cfg) const -> void;
+    auto draw_scene(const config_data_type& cfg) -> void;
+    auto draw_lighting(const config_data_type& cfg) -> void;
+    auto draw_camera(const config_data_type& cfg) -> void;
 
     config_data_type m_config, m_defaults;
     config_api_type m_config_api;

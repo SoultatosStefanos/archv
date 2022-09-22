@@ -103,7 +103,7 @@ auto app::connect_rendering_with_layout() -> void
 
     m_layout_backend->connect_to_layout(
         [this](const auto&)
-        { m_graph_renderer->set_vertex_pos(make_position_map()); });
+        { m_graph_renderer->draw_layout(make_position_map()); });
 }
 
 auto app::connect_gui_background_configurator() -> void

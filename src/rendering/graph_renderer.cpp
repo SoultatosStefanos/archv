@@ -6,6 +6,8 @@
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreMesh.h>
+#include <OGRE/OgreResourceManager.h>
 #include <OGRE/Overlay/OgreFont.h>
 #include <OGRE/Overlay/OgreFontManager.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -19,186 +21,190 @@
 namespace rendering::detail
 {
 
-graph_renderer_impl::graph_renderer_impl(
-    Ogre::SceneManager* scene, config_data_type config)
-: m_scene { scene }
-, m_config { config }
-, m_defaults { config }
-, m_config_api { std::move(config) }
+graph_renderer_impl::graph_renderer_impl(scene_type& scene) : m_scene { scene }
 {
-    assert(m_scene);
 }
 
 graph_renderer_impl::~graph_renderer_impl() = default;
 
-auto graph_renderer_impl::setup_vertex(
-    const vertex_rendering_properties& v) const -> void
+auto graph_renderer_impl::draw(
+    const vertex_properties& v, const config_data_type& cfg) -> void
 {
-    auto* entity = scene()->createEntity(
-        v.id, config_data().vertex_mesh, ARCHV_RESOURCE_GROUP);
+    if (scene().hasEntity(v.id))
+        scene().destroyEntity(v.id);
 
-    auto* node = scene()->getRootSceneNode()->createChildSceneNode(v.id);
+    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
 
-    node->setScale(config_data().vertex_scale);
-    node->setPosition(v.pos);
-    node->attachObject(entity);
+    auto* node = scene().hasSceneNode(v.id)
+        ? scene().getSceneNode(v.id)
+        : scene().getRootSceneNode()->createChildSceneNode(v.id);
 
-    setup_id_billboard(v);
+    node->attachObject(e);
+    node->setScale(cfg.vertex_scale);
+
+    draw_id_billboard(v, cfg);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << v.id;
 }
 
-auto graph_renderer_impl::setup_vertex(
-    const vertex_rendering_properties& v, const config_data_type& cfg) const
-    -> void
+auto graph_renderer_impl::draw_id_billboard(
+    const vertex_properties& v, const config_data_type& cfg) -> void
 {
-    auto* entity
-        = scene()->createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+    using namespace Ogre;
 
-    auto* node = scene()->getRootSceneNode()->createChildSceneNode(v.id);
+    assert(scene().hasSceneNode(v.id));
+    auto* node = scene().getSceneNode(v.id);
 
-    node->setPosition(v.pos);
-    node->attachObject(entity);
+    const auto has_billboard
+        = [this, &v]() { return m_id_billboards.contains(v.id); };
 
-    setup_id_billboard(v);
+    if (has_billboard()) [[likely]]
+    {
+        auto* text = m_id_billboards.at(v.id).get();
+
+        text->setFontName(cfg.vbillboard_font_name, ARCHV_RESOURCE_GROUP);
+        text->setCharacterHeight(cfg.vbillboard_char_height);
+        text->setColor(cfg.vbillboard_color);
+        text->setSpaceWidth(cfg.vbillboard_space_width);
+    }
+    else // on first draw
+    {
+        auto text = std::make_unique< MovableText >(
+            v.id,
+            v.id,
+            cfg.vbillboard_font_name,
+            cfg.vbillboard_char_height,
+            cfg.vbillboard_color,
+            ARCHV_RESOURCE_GROUP);
+
+        text->setSpaceWidth(cfg.vbillboard_space_width);
+        text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
+        text->showOnTop(true);
+
+        node->attachObject(text.get());
+
+        m_id_billboards[v.id] = std::move(text);
+    }
+
+    assert(has_billboard());
+
+    BOOST_LOG_TRIVIAL(debug) << "drew vertex billboard: " << v.id;
 }
 
 namespace
 {
-    inline auto make_edge_id(const edge_rendering_properties& e)
+    inline auto make_edge_id(const edge_properties& e)
     {
-        return Ogre::String(e.source.id + " -> " + e.target.id);
+        return std::string(e.source.id + " -> " + e.target.id);
     }
 
 } // namespace
 
-auto graph_renderer_impl::setup_edge(const edge_rendering_properties& e) const
-    -> void
+void graph_renderer_impl::draw(
+    const edge_properties& e, const config_data_type& cfg)
 {
     using namespace Ogre;
 
     const auto& id = make_edge_id(e);
 
-    auto* line = scene()->createManualObject(id);
-    auto* node = scene()->getRootSceneNode()->createChildSceneNode(id);
+    const auto has_edge = [this, &id]() { return scene().hasManualObject(id); };
 
-    line->estimateVertexCount(2); // From src to trgt node.
+    if (has_edge()) [[likely]]
+    {
+        auto* line = scene().getManualObject(id);
+        line->setMaterialName(0, cfg.edge_material);
+    }
+    else // on first draw
+    {
+        auto* line = scene().createManualObject(id);
 
-    line->begin(
-        config_data().edge_material,
-        RenderOperation::OT_LINE_LIST,
-        ARCHV_RESOURCE_GROUP);
+        line->estimateVertexCount(2); // From src to trgt node.
 
-    line->position(e.source.pos);
-    line->position(e.target.pos);
-    line->end();
+        line->begin(
+            cfg.edge_material,
+            RenderOperation::OT_LINE_LIST,
+            ARCHV_RESOURCE_GROUP);
 
-    node->attachObject(line);
+        line->position(0, 0, 0); // Initially
+        line->position(0, 0, 0); // Initially
+
+        line->end();
+
+        assert(!scene().hasSceneNode(id));
+        auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
+        node->attachObject(line);
+    }
+
+    assert(has_edge());
+
+    BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
 }
 
-auto graph_renderer_impl::shutdown_vertex(
-    const vertex_rendering_properties& v) const -> void
+auto graph_renderer_impl::erase(const vertex_properties& v) -> void
 {
-    assert(scene()->hasSceneNode(v.id));
+    if (scene().hasSceneNode(v.id))
+    {
+        scene().getSceneNode(v.id)->detachAllObjects();
+        scene().destroySceneNode(v.id);
+        scene().destroyEntity(v.id);
 
-    scene()->getSceneNode(v.id)->detachAllObjects();
-    scene()->destroySceneNode(v.id);
-    scene()->destroyEntity(v.id);
+        [[maybe_unused]] const auto num = m_id_billboards.erase(v.id);
+        assert(num == 1);
 
-    shutdown_id_billboard(v);
+        BOOST_LOG_TRIVIAL(debug) << "erased vertex: " << v.id;
+    }
 }
 
-auto graph_renderer_impl::shutdown_edge(
-    const edge_rendering_properties& e) const -> void
+auto graph_renderer_impl::erase(const edge_properties& e) -> void
 {
     const auto& id = make_edge_id(e);
 
-    assert(scene()->hasSceneNode(id));
+    if (scene().hasSceneNode(id))
+    {
+        scene().getSceneNode(id)->detachAllObjects();
+        scene().destroySceneNode(id);
+        scene().destroyManualObject(id);
 
-    scene()->getSceneNode(id)->detachAllObjects();
-    scene()->destroySceneNode(id);
-    scene()->destroyManualObject(id);
+        BOOST_LOG_TRIVIAL(debug) << "erased edge: " << id;
+    }
 }
 
-auto graph_renderer_impl::update_vertex(
-    const vertex_rendering_properties& v) const -> void
+void graph_renderer_impl::draw_layout(
+    const vertex_properties& v, const position_type& pos)
 {
-    auto* node = scene()->getRootSceneNode()->getChild(v.id);
-    node->setPosition(v.pos);
+    assert(scene().hasSceneNode(v.id));
+    auto* node = scene().getSceneNode(v.id);
+
+    node->setPosition(pos);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
 
-auto graph_renderer_impl::update_edge(const edge_rendering_properties& e) const
-    -> void
-{
-    shutdown_edge(e);
-    setup_edge(e);
-}
-
-auto graph_renderer_impl::setup_id_billboard(
-    const vertex_rendering_properties& v) const -> void
-{
-    using namespace Ogre;
-
-    const auto& name = v.id;
-    const auto& caption = v.id;
-
-    auto text = std::make_unique< MovableText >(
-        name,
-        caption,
-        config_data().vbillboard_font_name,
-        config_data().vbillboard_char_height,
-        config_data().vbillboard_color,
-        ARCHV_RESOURCE_GROUP);
-
-    text->setSpaceWidth(config_data().vbillboard_space_width);
-
-    text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
-    text->showOnTop(true);
-
-    assert(scene()->hasSceneNode(v.id));
-
-    scene()->getSceneNode(v.id)->attachObject(text.get());
-
-    m_vertices_billboards[name] = std::move(text);
-}
-
-auto graph_renderer_impl::shutdown_id_billboard(
-    const vertex_rendering_properties& v) const -> void
-{
-    const auto& name = v.id;
-    m_vertices_billboards.erase(name);
-}
-
-auto graph_renderer_impl::draw_vertex(
-    const vertex_rendering_properties& v, const config_data_type& cfg) const
-    -> void
-{
-    shutdown_vertex(v);
-    setup_vertex(v, cfg);
-
-    auto* node = scene()->getSceneNode(v.id);
-    node->setScale(cfg.vertex_scale);
-
-    auto& billboard = m_vertices_billboards.at(v.id);
-    billboard->setFontName(cfg.vbillboard_font_name, ARCHV_RESOURCE_GROUP);
-    billboard->setColor(cfg.vbillboard_color);
-    billboard->setCharacterHeight(cfg.vbillboard_char_height);
-    billboard->setSpaceWidth(cfg.vbillboard_space_width);
-}
-
-auto graph_renderer_impl::draw_edge(
-    const edge_rendering_properties& e, const config_data_type& cfg) const
-    -> void
+auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
 {
     using namespace Ogre;
 
     const auto& id = make_edge_id(e);
 
-    auto* node = scene()->getSceneNode(id);
+    assert(scene().hasSceneNode(id));
+    auto* node = scene().getSceneNode(id);
     auto* obj = node->getAttachedObject(0);
 
     assert(dynamic_cast< ManualObject* >(obj));
-    auto* m_obj = static_cast< ManualObject* >(obj);
+    auto* line = static_cast< ManualObject* >(obj);
 
-    m_obj->setMaterialName(0, cfg.edge_material, ARCHV_RESOURCE_GROUP);
+    assert(scene().hasSceneNode(e.source.id));
+    assert(scene().hasSceneNode(e.target.id));
+    auto* src_node = scene().getSceneNode(e.source.id);
+    auto* trgt_node = scene().getSceneNode(e.target.id);
+
+    line->estimateVertexCount(2); // From src to trgt node.
+    line->beginUpdate(0);
+    line->position(src_node->getPosition());
+    line->position(trgt_node->getPosition());
+    line->end();
+
+    BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << id;
 }
 
 } // namespace rendering::detail
