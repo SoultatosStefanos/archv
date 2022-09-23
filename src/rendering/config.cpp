@@ -93,13 +93,15 @@ namespace
         auto&& vertex_mesh = val["vertex-mesh"].as< string >();
         auto&& vertex_scale = deserialize_vector3(val["vertex-scale"]);
 
-        const auto& vboard_val = val["vertex-billboard"];
+        const auto& vboard_val = val["vertex-id"];
         auto&& vboard_font_name = vboard_val["font-name"].as< string >();
         auto vboard_char_height = vboard_val["char-height"].as< real >();
         auto&& vboard_color = deserialize_rgb(vboard_val["color"]);
         auto vboard_space_width = vboard_val["space-width"].as< real >();
 
         auto&& edge_material = val["edge-material"].as< string >();
+        auto&& edge_tip_mesh = val["edge-tip-mesh"].as< string >();
+        auto&& edge_tip_scale = deserialize_vector3(val["edge-tip-scale"]);
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
@@ -109,7 +111,9 @@ namespace
                  static_cast< float >(vboard_char_height),
                  std::move(vboard_color),
                  static_cast< float >(vboard_space_width),
-                 std::move(edge_material) };
+                 std::move(edge_material),
+                 std::move(edge_tip_mesh),
+                 std::move(edge_tip_scale) };
     }
 
 } // namespace

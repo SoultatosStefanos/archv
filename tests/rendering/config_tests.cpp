@@ -30,7 +30,9 @@ auto make_sample_rendering_0()
                                   .vertex_id_char_height = 1.0,
                                   .vertex_id_color = ColourValue(1.0, 1.0, 1.0),
                                   .vertex_id_space_width = 1.0,
-                                  .edge_material = "mat"
+                                  .edge_material = "mat",
+                                  .edge_tip_mesh = "a",
+                                  .edge_tip_scale = Vector3(1, 1, 1)
 
     };
 

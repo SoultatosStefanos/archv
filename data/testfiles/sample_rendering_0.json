@@ -13,14 +13,16 @@
 	{
 		"vertex-mesh" : "mesh.mesh",
 		"vertex-scale" : [ 0.1, 0.2, 0.3 ],
-		"vertex-billboard" : 
+		"vertex-id" : 
 		{
 			"font-name" : "a",
 			"char-height" : 1.0,
 			"color" : [ 1.0, 1.0, 1.0 ],
 			"space-width" : 1.0
 		},
-		"edge-material" : "mat"
+		"edge-material" : "mat",
+		"edge-tip-mesh" : "a",
+		"edge-tip-scale" : [1, 1, 1]
 	}
 
 }
