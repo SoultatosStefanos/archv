@@ -17,7 +17,9 @@ namespace rendering
 
 background_renderer::background_renderer(
     Ogre::RenderWindow& window, config_data_type config)
-: m_config { std::move(config) }
+: m_config { config }
+, m_defaults { config }
+, m_config_api { std::move(config) }
 , m_root { Ogre::Root::getSingleton() }
 , m_window { window }
 {
@@ -25,7 +27,11 @@ background_renderer::background_renderer(
     setup_lighting();
     setup_camera();
 
-    setup_configs();
+    assert(m_scene);
+    assert(m_light);
+    assert(m_light_node);
+    assert(m_cam_node);
+    assert(m_cam);
 }
 
 background_renderer::~background_renderer()
@@ -46,50 +52,50 @@ auto background_renderer::setup_scene() -> void
 
     m_scene = m_root.createSceneManager();
 
-    assert(scene());
+    assert(m_scene);
 
-    ShaderGenerator::getSingleton().addSceneManager(scene());
+    ShaderGenerator::getSingleton().addSceneManager(m_scene);
 
-    scene()->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+    scene().setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 }
 
 auto background_renderer::setup_lighting() -> void
 {
     using namespace Ogre;
 
-    m_light = scene()->createLight();
+    m_light = scene().createLight();
 
-    assert(light());
+    assert(m_light);
 
-    light()->setType(Ogre::Light::LT_DIRECTIONAL);
+    light().setType(Ogre::Light::LT_DIRECTIONAL);
 
-    m_light_node = scene()->getRootSceneNode()->createChildSceneNode();
+    m_light_node = scene().getRootSceneNode()->createChildSceneNode();
 
-    assert(light_node());
+    assert(m_light_node);
 
-    light_node()->attachObject(light());
-    light_node()->setPosition(0, 0, 0);
-    light_node()->setDirection(Vector3(0, 0, 0));
+    light_node().attachObject(m_light);
+    light_node().setPosition(0, 0, 0);
+    light_node().setDirection(Vector3(0, 0, 0));
 }
 
 auto background_renderer::setup_camera() -> void
 {
     using namespace Ogre;
 
-    m_cam = scene()->createCamera("camera");
+    m_cam = scene().createCamera("camera");
 
-    assert(cam());
+    assert(m_cam);
 
-    cam()->setAutoAspectRatio(true);
+    cam().setAutoAspectRatio(true);
 
-    m_cam_node = scene()->getRootSceneNode()->createChildSceneNode();
+    m_cam_node = scene().getRootSceneNode()->createChildSceneNode();
 
-    assert(cam_node());
+    assert(m_cam_node);
 
-    cam_node()->attachObject(cam());
+    cam_node().attachObject(m_cam);
 
     m_window.removeAllViewports();
-    m_window.addViewport(cam());
+    m_window.addViewport(m_cam);
 }
 
 /***********************************************************
@@ -99,73 +105,70 @@ auto background_renderer::setup_camera() -> void
 auto background_renderer::shutdown_camera() -> void
 {
     m_window.removeViewport(0);
-    scene()->getRootSceneNode()->removeAndDestroyChild(cam_node());
-    scene()->destroyCamera(cam());
+    scene().getRootSceneNode()->removeAndDestroyChild(m_cam_node);
+    scene().destroyCamera(m_cam);
 
-    assert(scene()->getCameras().empty());
+    assert(scene().getCameras().empty());
 }
 
 auto background_renderer::shutdown_lighting() -> void
 {
-    scene()->getRootSceneNode()->removeAndDestroyChild(light_node());
-    scene()->destroyLight(light());
+    scene().getRootSceneNode()->removeAndDestroyChild(m_light_node);
+    scene().destroyLight(m_light);
 }
 
 auto background_renderer::shutdown_scene() -> void
 {
     using namespace Ogre::RTShader;
 
-    ShaderGenerator::getSingletonPtr()->removeSceneManager(scene());
-    m_root.destroySceneManager(scene());
+    ShaderGenerator::getSingletonPtr()->removeSceneManager(m_scene);
+    m_root.destroySceneManager(m_scene);
 }
 
 /***********************************************************
  * Configs                                                 *
  ***********************************************************/
 
-auto background_renderer::setup_configs() -> void
+auto background_renderer::draw(const config_data_type& cfg) -> void
 {
-    setup_scene_configs();
-    setup_lighting_configs();
-    setup_camera_configs();
+    draw_scene(cfg);
+    draw_lighting(cfg);
+    draw_camera(cfg);
 }
 
-auto background_renderer::setup_scene_configs() -> void
+auto background_renderer::draw_scene(const config_data_type& cfg) -> void
 {
-    assert(scene());
+    assert(m_scene);
 
-    scene()->setSkyBox(
-        true,
-        config_data().skybox_material,
-        config_data().skybox_distance,
-        ARCHV_RESOURCE_GROUP);
+    scene().setSkyBox(
+        true, cfg.skybox_material, cfg.skybox_distance, ARCHV_RESOURCE_GROUP);
 
-    scene()->setAmbientLight(config_data().ambient_light);
+    scene().setAmbientLight(cfg.ambient_light);
 
-    assert(scene()->isSkyBoxEnabled());
-    assert(scene()->getAmbientLight() == config_data().ambient_light);
+    assert(scene().isSkyBoxEnabled());
+    assert(scene().getAmbientLight() == cfg.ambient_light);
 }
 
-auto background_renderer::setup_lighting_configs() -> void
+auto background_renderer::draw_lighting(const config_data_type& cfg) -> void
 {
-    assert(light());
+    assert(m_light);
 
-    light()->setDiffuseColour(config_data().diffuse_light);
-    light()->setSpecularColour(config_data().specular_light);
+    light().setDiffuseColour(cfg.diffuse_light);
+    light().setSpecularColour(cfg.specular_light);
 
-    assert(light()->getDiffuseColour() == config_data().diffuse_light);
-    assert(light()->getSpecularColour() == config_data().specular_light);
+    assert(light().getDiffuseColour() == cfg.diffuse_light);
+    assert(light().getSpecularColour() == cfg.specular_light);
 }
 
-auto background_renderer::setup_camera_configs() -> void
+auto background_renderer::draw_camera(const config_data_type& cfg) -> void
 {
-    assert(cam());
+    assert(m_cam);
 
-    cam()->setNearClipDistance(config_data().near_clip_distance);
-    cam()->setFarClipDistance(config_data().far_clip_distance);
+    cam().setNearClipDistance(cfg.near_clip_distance);
+    cam().setFarClipDistance(cfg.far_clip_distance);
 
-    assert(cam()->getNearClipDistance() == config_data().near_clip_distance);
-    assert(cam()->getFarClipDistance() == config_data().far_clip_distance);
+    assert(cam().getNearClipDistance() == cfg.near_clip_distance);
+    assert(cam().getFarClipDistance() == cfg.far_clip_distance);
 }
 
 } // namespace rendering

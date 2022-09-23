@@ -429,6 +429,24 @@
 
 # 21 / 09 / 2022
 
-	+ [ ] Background Renderer Config
+	+ [x] Background Renderer Config
 
-	+ [ ] Graph Renderer Config
+	+ [x] Graph Renderer Config
+
+
+# 22 / 08 / 2022
+
+	+ [x] Graph Renderer Cleanup
+
+	+ [x] Edge Arrows Rendering
+
+
+# 23 / 08 / 2022
+
+	+ [x] Edge tips cleanup
+
+	+ [n] Configurable vertex material
+
+	+ [x] Configurable edge tips
+
+	+ [ ] Edge dependencies rendering

@@ -36,6 +36,27 @@ struct background_config
 };
 
 /***********************************************************
+ * Background config api                                   *
+ ***********************************************************/
+
+class background_config_api
+{
+public:
+    using config_data_type = background_config;
+
+    explicit background_config_api(config_data_type cfg)
+    : m_cfg { std::move(cfg) }
+    {
+    }
+
+    auto config_data() const -> const config_data_type& { return m_cfg; }
+    auto config_data() -> config_data_type& { return m_cfg; }
+
+private:
+    config_data_type m_cfg;
+};
+
+/***********************************************************
  * Background renderer                                     *
  ***********************************************************/
 
@@ -44,6 +65,7 @@ class background_renderer
 {
 public:
     using config_data_type = background_config;
+    using config_api_type = background_config_api;
 
     explicit background_renderer(
         Ogre::RenderWindow& window,
@@ -57,15 +79,30 @@ public:
     auto operator=(const background_renderer&) -> background_renderer& = delete;
     auto operator=(background_renderer&&) -> background_renderer& = delete;
 
-    auto scene() const -> auto* { return m_scene; }
-    auto light() const -> auto* { return m_light; }
-    auto cam() const -> auto* { return m_cam; }
-    auto light_node() const -> auto* { return m_light_node; }
-    auto cam_node() const -> auto* { return m_cam_node; }
+    auto default_data() const -> const config_data_type& { return m_defaults; }
 
-protected:
-    auto config_data() const -> const auto& { return m_config; }
-    auto config_data() -> auto& { return m_config; }
+    auto config_data() const -> const config_data_type& { return m_config; }
+    auto config_data() -> config_data_type& { return m_config; }
+
+    auto config_api() const -> const config_api_type& { return m_config_api; }
+    auto config_api() -> config_api_type& { return m_config_api; }
+
+    auto scene() const -> const auto& { return *m_scene; }
+    auto scene() -> auto& { return *m_scene; }
+
+    auto light() const -> const auto& { return *m_light; }
+    auto light() -> auto& { return *m_light; }
+
+    auto cam() const -> const auto& { return *m_cam; }
+    auto cam() -> auto& { return *m_cam; }
+
+    auto light_node() const -> const auto& { return *m_light_node; }
+    auto light_node() -> auto& { return *m_light_node; }
+
+    auto cam_node() const -> const auto& { return *m_cam_node; }
+    auto cam_node() -> auto& { return *m_cam_node; }
+
+    auto draw(const config_data_type& cfg) -> void;
 
 private:
     auto setup_scene() -> void;
@@ -76,12 +113,12 @@ private:
     auto shutdown_lighting() -> void;
     auto shutdown_scene() -> void;
 
-    auto setup_configs() -> void;
-    auto setup_scene_configs() -> void;
-    auto setup_lighting_configs() -> void;
-    auto setup_camera_configs() -> void;
+    auto draw_scene(const config_data_type& cfg) -> void;
+    auto draw_lighting(const config_data_type& cfg) -> void;
+    auto draw_camera(const config_data_type& cfg) -> void;
 
-    config_data_type m_config;
+    config_data_type m_config, m_defaults;
+    config_api_type m_config_api;
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;

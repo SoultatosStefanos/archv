@@ -6,47 +6,64 @@
 
 #include "detail/graph_renderer.hpp"
 
-#include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreSceneManager.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_concepts.hpp>
-#include <cassert>
-#include <string>
-#include <type_traits>
 
 namespace rendering
 {
 
 /***********************************************************
- * Graph config data                                       *
+ * Graph config                                            *
  ***********************************************************/
 
 struct graph_config
 {
     Ogre::String vertex_mesh;
     Ogre::Vector3 vertex_scale;
-
-    Ogre::String vbillboard_font_name;
-    Ogre::Real vbillboard_char_height;
-    Ogre::ColourValue vbillboard_color;
-    Ogre::Real vbillboard_space_width;
+    Ogre::String vertex_id_font_name;
+    Ogre::Real vertex_id_char_height;
+    Ogre::ColourValue vertex_id_color;
+    Ogre::Real vertex_id_space_width;
 
     Ogre::String edge_material;
+    Ogre::String edge_tip_mesh;
+    Ogre::Vector3 edge_tip_scale;
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
 };
 
 /***********************************************************
+ * Graph config api                                        *
+ ***********************************************************/
+
+class graph_config_api
+{
+public:
+    using config_data_type = graph_config;
+
+    explicit graph_config_api(config_data_type cfg)
+    : m_config { std::move(cfg) }
+    {
+    }
+
+    auto config_data() const -> const config_data_type& { return m_config; }
+    auto config_data() -> config_data_type& { return m_config; }
+
+private:
+    config_data_type m_config;
+};
+
+/***********************************************************
  * Graph renderer                                          *
  ***********************************************************/
 
-// Will prepare a scene at a render window upon initialization.
 template <
     typename Graph,
     typename VertexID,
-    typename WeightMap,
-    typename PositionMap >
+    typename PositionMap,
+    typename WeightMap >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -58,176 +75,147 @@ class graph_renderer
 
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept<
-            WeightMap,
-            typename boost::graph_traits< Graph >::edge_descriptor >));
-
-    BOOST_CONCEPT_ASSERT(
-        (boost::ReadablePropertyMapConcept<
             PositionMap,
             typename boost::graph_traits< Graph >::vertex_descriptor >));
 
-    static_assert(std::is_convertible_v<
-                  typename boost::property_traits< VertexID >::value_type,
-                  std::string >);
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept<
+            WeightMap,
+            typename boost::graph_traits< Graph >::edge_descriptor >));
 
-    static_assert(std::is_convertible_v<
-                  typename boost::property_traits< WeightMap >::value_type,
-                  double >);
+    using graph_traits = boost::graph_traits< Graph >;
 
 public:
     using graph_type = Graph;
-    using vertex_id_map = VertexID;
-    using weight_map = WeightMap;
-    using position_map = PositionMap;
+    using vertex_id_type = VertexID;
+    using position_map_type = PositionMap;
+    using weight_map_type = WeightMap;
+    using vertex_type = typename graph_traits::vertex_descriptor;
+    using edge_type = typename graph_traits::edge_descriptor;
+
+    using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
+    using config_api_type = graph_config_api;
 
     graph_renderer(
         const graph_type& g,
-        vertex_id_map vertex_id,
-        weight_map edge_weight,
-        position_map vertex_pos,
-        Ogre::SceneManager* scene,
-        config_data_type config = config_data_type())
+        vertex_id_type vertex_id,
+        position_map_type vertex_pos,
+        weight_map_type edge_weight,
+        scene_type& scene,
+        config_data_type cfg = config_data_type())
     : m_g { g }
     , m_vertex_id { vertex_id }
-    , m_edge_weight { edge_weight }
     , m_vertex_pos { vertex_pos }
+    , m_edge_weight { edge_weight }
     , m_scene { scene }
-    , m_config { std::move(config) }
-    , m_impl { m_scene, m_config }
+    , m_config { cfg }
+    , m_defaults { cfg }
+    , m_config_api { std::move(cfg) }
+    , m_impl { scene }
     {
-        assert(m_scene);
-        setup();
     }
 
-    ~graph_renderer() { shutdown(); }
+    ~graph_renderer() { clear(); }
 
-    graph_renderer(const graph_renderer&) = default;
-    graph_renderer(graph_renderer&&) = default;
+    graph_renderer(const graph_renderer&) = delete;
+    graph_renderer(graph_renderer&&) = delete;
 
     auto operator=(const graph_renderer&) -> graph_renderer& = delete;
     auto operator=(graph_renderer&&) -> graph_renderer& = delete;
 
-    auto graph() const -> const auto& { return m_g; }
-    auto vertex_id() const -> auto { return m_vertex_id; }
-    auto edge_weight() const -> auto { return m_edge_weight; }
-    auto vertex_pos() const -> auto { return m_vertex_pos; }
-    auto scene() const -> auto* { return m_scene; }
+    auto graph() const -> const graph_type& { return m_g; }
+    auto vertex_id() const -> vertex_id_type { return m_vertex_id; }
+    auto vertex_position() const -> position_map_type { return m_vertex_pos; }
+    auto edge_weight() const -> weight_map_type { return m_edge_weight; }
 
-    auto set_vertex_id(vertex_id_map vertex_id) -> void
-    {
-        shutdown();
-        m_vertex_id = vertex_id;
-        setup();
-    }
-
-    auto set_edge_weight(weight_map edge_weight) -> void
-    {
-        m_edge_weight = edge_weight;
-    }
-
-    auto set_vertex_pos(position_map vertex_pos) -> void
-    {
-        m_vertex_pos = vertex_pos;
-        update();
-    }
-
-    auto set_scene(Ogre::SceneManager* scene) -> void
-    {
-        assert(scene);
-        shutdown();
-        m_scene = scene;
-        setup();
-    }
-
-protected:
+    auto scene() const -> const scene_type& { return m_scene; }
+    auto scene() -> scene_type& { return m_scene; }
+    auto default_data() const -> const config_data_type& { return m_defaults; }
     auto config_data() const -> const config_data_type& { return m_config; }
     auto config_data() -> config_data_type& { return m_config; }
+    auto config_api() const -> const config_api_type& { return m_config_api; }
+    auto config_api() -> config_api_type& { return m_config_api; }
 
-private:
-    using graph_type_traits = boost::graph_traits< graph_type >;
-    using vertex_type = typename graph_type_traits::vertex_descriptor;
-    using edge_type = typename graph_type_traits::edge_descriptor;
-
-    using vertex_properties = detail::vertex_rendering_properties;
-    using edge_properties = detail::edge_rendering_properties;
-
-    auto make_vertex_properties(vertex_type v) const -> vertex_properties
+    inline auto draw(const config_data_type& cfg) -> void
     {
-        const auto& id = boost::get(vertex_id(), v);
-        const auto& pos = boost::get(vertex_pos(), v);
-        return { id, Ogre::Vector3(pos.x, pos.y, pos.z) };
+        visit_vertices([this, &cfg](const auto& v) { m_impl.draw(v, cfg); });
+        visit_edges([this, &cfg](const auto& e) { m_impl.draw(e, cfg); });
     }
 
-    auto make_edge_properties(edge_type e) const -> edge_properties
+    inline auto draw_layout() -> void
+    {
+        visit_vertices([this](const auto& v) { m_impl.draw_layout(v); });
+        visit_edges([this](const auto& e) { m_impl.draw_layout(e); });
+    }
+
+    inline auto clear() -> void
+    {
+        visit_edges([this](const auto& e) { m_impl.clear(e); });
+        visit_vertices([this](const auto& v) { m_impl.clear(v); });
+    }
+
+private:
+    using graph_renderer_impl = detail::graph_renderer_impl;
+    using vertex_properties = detail::vertex_properties;
+    using edge_properties = detail::edge_properties;
+
+    static_assert(std::is_convertible_v<
+                  typename boost::property_traits< vertex_id_type >::value_type,
+                  vertex_properties::id_type >);
+
+    static_assert(
+        std::is_convertible_v<
+            typename boost::property_traits< weight_map_type >::value_type,
+            edge_properties::weight_type >);
+
+    template < typename UnaryOperation >
+    requires std::invocable< UnaryOperation, const vertex_properties& >
+    auto visit_vertices(UnaryOperation f) const
+    {
+        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
+            f(make_vertex_properties(v));
+    }
+
+    template < typename UnaryOperation >
+    requires std::invocable< UnaryOperation, const edge_properties& >
+    auto visit_edges(UnaryOperation f) const
+    {
+        for (auto e : boost::make_iterator_range(boost::edges(graph())))
+            f(make_edge_properties(e));
+    }
+
+    inline auto make_vertex_properties(vertex_type v) const
+    {
+        auto&& id = boost::get(vertex_id(), v);
+
+        const auto& [x, y, z] = boost::get(vertex_position(), v);
+        auto&& pos = vertex_properties::position_type(x, y, z);
+
+        return vertex_properties { .id = std::move(id), .pos = std::move(pos) };
+    }
+
+    inline auto make_edge_properties(edge_type e) const
     {
         const auto source = boost::source(e, graph());
         const auto target = boost::target(e, graph());
-        return { make_vertex_properties(source),
-                 make_vertex_properties(target) };
-    }
+        auto weight = boost::get(edge_weight(), e);
 
-    auto setup() const -> void
-    {
-        setup_vertices();
-        setup_edges();
-    }
-
-    auto setup_vertices() const -> void
-    {
-        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
-            m_impl.setup_vertex(make_vertex_properties(v));
-    }
-
-    auto setup_edges() const -> void
-    {
-        for (auto e : boost::make_iterator_range(boost::edges(graph())))
-            m_impl.setup_edge(make_edge_properties(e));
-    }
-
-    auto update() const -> void
-    {
-        update_vertices();
-        update_edges();
-    }
-
-    auto update_vertices() const -> void
-    {
-        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
-            m_impl.update_vertex(make_vertex_properties(v));
-    }
-
-    auto update_edges() const -> void
-    {
-        for (auto e : boost::make_iterator_range(boost::edges(graph())))
-            m_impl.update_edge(make_edge_properties(e));
-    }
-
-    auto shutdown() const -> void
-    {
-        shutdown_vertices();
-        shutdown_edges();
-    }
-
-    auto shutdown_vertices() const -> void
-    {
-        for (auto v : boost::make_iterator_range(boost::vertices(graph())))
-            m_impl.shutdown_vertex(make_vertex_properties(v));
-    }
-
-    auto shutdown_edges() const -> void
-    {
-        for (auto e : boost::make_iterator_range(boost::edges(graph())))
-            m_impl.shutdown_edge(make_edge_properties(e));
+        return edge_properties { .source = make_vertex_properties(source),
+                                 .target = make_vertex_properties(target),
+                                 .weight = weight };
     }
 
     const graph_type& m_g;
-    vertex_id_map m_vertex_id;
-    weight_map m_edge_weight;
-    position_map m_vertex_pos;
-    Ogre::SceneManager* m_scene { nullptr };
-    config_data_type m_config;
-    detail::graph_renderer_impl m_impl;
+    vertex_id_type m_vertex_id;
+    position_map_type m_vertex_pos;
+    weight_map_type m_edge_weight;
+
+    scene_type& m_scene;
+    config_data_type m_config, m_defaults;
+    config_api_type m_config_api;
+
+    graph_renderer_impl m_impl;
 };
 
 } // namespace rendering
