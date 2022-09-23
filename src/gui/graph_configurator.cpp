@@ -71,6 +71,9 @@ auto graph_configurator::render_edges_configurator() const -> void
     spaced_text("Edges");
 
     render_edge_material_selector();
+
+    render_edge_tip_mesh_selector();
+    render_edge_tip_scale_selector();
 }
 
 auto graph_configurator::render_node_mesh_selector() const -> void
@@ -118,6 +121,22 @@ auto graph_configurator::render_edge_material_selector() const -> void
             materials().data(),
             materials().size()))
         emit_edge_material();
+}
+
+auto graph_configurator::render_edge_tip_mesh_selector() const -> void
+{
+    if (ImGui::Combo(
+            "Tip Mesh Name",
+            &m_edge_tip_mesh,
+            meshes().data(),
+            meshes().size()))
+        emit_edge_tip_mesh();
+}
+
+auto graph_configurator::render_edge_tip_scale_selector() const -> void
+{
+    if (ImGui::InputFloat3("Tip Scale", m_edge_tip_scale.data()))
+        emit_edge_tip_scale();
 }
 
 auto graph_configurator::render_config_buttons() const -> void
@@ -185,6 +204,16 @@ auto graph_configurator::edge_material() const -> name_type
     return resources::materials().at(m_edge_material);
 }
 
+auto graph_configurator::edge_tip_mesh() const -> name_type
+{
+    return resources::meshes().at(m_edge_tip_mesh);
+}
+
+auto graph_configurator::edge_tip_scale() const -> const scale_type&
+{
+    return m_edge_tip_scale;
+}
+
 auto graph_configurator::set_node_mesh(name_type mesh) -> void
 {
     m_node_mesh = detail::find_index(resources::meshes(), mesh);
@@ -218,6 +247,16 @@ auto graph_configurator::set_node_space_width(space_width_type width) -> void
 auto graph_configurator::set_edge_material(name_type material) -> void
 {
     m_edge_material = detail::find_index(resources::materials(), material);
+}
+
+auto graph_configurator::set_edge_tip_mesh(name_type mesh) -> void
+{
+    m_edge_tip_mesh = detail::find_index(resources::meshes(), mesh);
+}
+
+auto graph_configurator::set_edge_tip_scale(scale_type scale) -> void
+{
+    m_edge_tip_scale = scale;
 }
 
 auto graph_configurator::connect_to_node_mesh(const name_slot& f) -> connection
@@ -258,6 +297,18 @@ auto graph_configurator::connect_to_edge_material(const name_slot& f)
     -> connection
 {
     return m_edge_material_sig.connect(f);
+}
+
+auto graph_configurator::connect_to_edge_tip_mesh(const name_slot& f)
+    -> connection
+{
+    return m_edge_tip_mesh_sig.connect(f);
+}
+
+auto graph_configurator::connect_to_edge_tip_scale(const scale_slot& f)
+    -> connection
+{
+    return m_edge_tip_scale_sig.connect(f);
 }
 
 auto graph_configurator::connect_to_apply(const apply_slot& f) -> connection
@@ -313,6 +364,16 @@ auto graph_configurator::emit_node_space_width() const -> void
 auto graph_configurator::emit_edge_material() const -> void
 {
     m_edge_material_sig(edge_material());
+}
+
+auto graph_configurator::emit_edge_tip_mesh() const -> void
+{
+    m_edge_tip_mesh_sig(edge_tip_mesh());
+}
+
+auto graph_configurator::emit_edge_tip_scale() const -> void
+{
+    m_edge_tip_scale_sig(edge_tip_scale());
 }
 
 auto graph_configurator::emit_apply() const -> void

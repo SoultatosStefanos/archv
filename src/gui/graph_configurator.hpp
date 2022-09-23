@@ -60,6 +60,8 @@ public:
     auto node_font_color() const -> const rgba_type&;
     auto node_space_width() const -> space_width_type;
     auto edge_material() const -> name_type;
+    auto edge_tip_mesh() const -> name_type;
+    auto edge_tip_scale() const -> const scale_type&;
 
     auto set_node_mesh(name_type mesh) -> void;
     auto set_node_scale(scale_type scale) -> void;
@@ -68,6 +70,8 @@ public:
     auto set_node_font_color(rgba_type rgba) -> void;
     auto set_node_space_width(space_width_type width) -> void;
     auto set_edge_material(name_type material) -> void;
+    auto set_edge_tip_mesh(name_type mesh) -> void;
+    auto set_edge_tip_scale(scale_type scale) -> void;
 
     auto connect_to_node_mesh(const name_slot& f) -> connection;
     auto connect_to_node_scale(const scale_slot& f) -> connection;
@@ -76,6 +80,8 @@ public:
     auto connect_to_node_font_color(const rgba_slot& f) -> connection;
     auto connect_to_node_space_width(const space_width_slot& f) -> connection;
     auto connect_to_edge_material(const name_slot& f) -> connection;
+    auto connect_to_edge_tip_mesh(const name_slot& f) -> connection;
+    auto connect_to_edge_tip_scale(const scale_slot& f) -> connection;
     auto connect_to_apply(const apply_slot& f) -> connection;
     auto connect_to_preview(const preview_slot& f) -> connection;
     auto connect_to_cancel(const cancel_slot& f) -> connection;
@@ -100,6 +106,8 @@ protected:
     auto emit_node_font_color() const -> void;
     auto emit_node_space_width() const -> void;
     auto emit_edge_material() const -> void;
+    auto emit_edge_tip_mesh() const -> void;
+    auto emit_edge_tip_scale() const -> void;
     auto emit_apply() const -> void;
     auto emit_preview() const -> void;
     auto emit_cancel() const -> void;
@@ -120,13 +128,17 @@ private:
     auto render_node_font_color_selector() const -> void;
     auto render_node_space_width_selector() const -> void;
     auto render_edge_material_selector() const -> void;
+    auto render_edge_tip_mesh_selector() const -> void;
+    auto render_edge_tip_scale_selector() const -> void;
 
     name_signal m_node_mesh_sig;
     name_signal m_node_font_sig;
     name_signal m_edge_material_sig;
+    name_signal m_edge_tip_mesh_sig;
     char_height_signal m_node_char_height_sig;
     rgba_signal m_node_font_col_sig;
     scale_signal m_node_scale_sig;
+    scale_signal m_edge_tip_scale_sig;
     space_width_signal m_node_space_width_sig;
     apply_signal m_apply_sig;
     preview_signal m_preview_sig;
@@ -136,9 +148,11 @@ private:
     mutable index_type m_node_mesh { 0 };
     mutable index_type m_node_font { 0 };
     mutable index_type m_edge_material { 0 };
+    mutable index_type m_edge_tip_mesh { 0 };
     mutable char_height_type m_node_char_height { 0 };
     mutable rgba_type m_node_font_col { 0, 0, 0, 0 };
     mutable scale_type m_node_scale { 0, 0, 0 };
+    mutable scale_type m_edge_tip_scale { 0, 0, 0 };
     mutable space_width_type m_node_space_width { 0 };
 
     mutable render_vector m_meshes;
