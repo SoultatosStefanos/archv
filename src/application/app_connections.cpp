@@ -295,6 +295,18 @@ auto app::connect_gui_graph_configurator() -> void
                 = std::string(mat);
         });
 
+    iface.connect_to_edge_tip_mesh(
+        [this](auto mesh) {
+            BOOST_LOG_TRIVIAL(info) << "selected graph edge tip mesh: " << mesh;
+        });
+
+    iface.connect_to_edge_tip_scale(
+        [this](const auto& scale)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected edge tip scale: " << scale[0]
+                                    << ", " << scale[1] << ", " << scale[2];
+        });
+
     iface.connect_to_apply(
         [this]()
         {
