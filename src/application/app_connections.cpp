@@ -296,8 +296,12 @@ auto app::connect_gui_graph_configurator() -> void
         });
 
     iface.connect_to_edge_tip_mesh(
-        [this](auto mesh) {
+        [this](auto mesh)
+        {
             BOOST_LOG_TRIVIAL(info) << "selected graph edge tip mesh: " << mesh;
+
+            m_graph_renderer->config_api().config_data().edge_tip_mesh
+                = std::string(mesh);
         });
 
     iface.connect_to_edge_tip_scale(
@@ -305,6 +309,9 @@ auto app::connect_gui_graph_configurator() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected edge tip scale: " << scale[0]
                                     << ", " << scale[1] << ", " << scale[2];
+
+            m_graph_renderer->config_api().config_data().edge_tip_scale
+                = Ogre::Vector3(scale[0], scale[1], scale[2]);
         });
 
     iface.connect_to_apply(

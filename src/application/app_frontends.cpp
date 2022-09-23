@@ -292,6 +292,8 @@ auto app::setup_gui_graph_configurator() -> void
     graph_gui.set_node_char_height(cfg.vertex_id_char_height);
     graph_gui.set_node_space_width(cfg.vertex_id_space_width);
     graph_gui.set_edge_material(cfg.edge_material);
+    graph_gui.set_edge_tip_mesh(cfg.edge_tip_mesh);
+    graph_gui.set_edge_tip_scale(to_scale(cfg.edge_tip_scale));
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui graph values";
 }
