@@ -42,12 +42,12 @@ auto app::setup_graph_rendering() -> void
     m_graph_renderer = std::make_unique< graph_renderer >(
         m_graph,
         make_id_map(),
+        make_position_map(),
+        make_weight_map(),
         m_background_renderer->scene(),
         m_rendering_config.graph);
 
     ui::start(*m_graph_renderer);
-
-    m_graph_renderer->draw_layout(make_position_map());
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
@@ -287,10 +287,10 @@ auto app::setup_gui_graph_configurator() -> void
 
     graph_gui.set_node_mesh(cfg.vertex_mesh);
     graph_gui.set_node_scale(to_scale(cfg.vertex_scale));
-    graph_gui.set_node_font(cfg.vbillboard_font_name);
-    graph_gui.set_node_font_color(to_rgba(cfg.vbillboard_color));
-    graph_gui.set_node_char_height(cfg.vbillboard_char_height);
-    graph_gui.set_node_space_width(cfg.vbillboard_space_width);
+    graph_gui.set_node_font(cfg.vertex_id_font_name);
+    graph_gui.set_node_font_color(to_rgba(cfg.vertex_id_color));
+    graph_gui.set_node_char_height(cfg.vertex_id_char_height);
+    graph_gui.set_node_space_width(cfg.vertex_id_space_width);
     graph_gui.set_edge_material(cfg.edge_material);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui graph values";

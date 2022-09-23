@@ -101,9 +101,8 @@ auto app::connect_rendering_with_layout() -> void
     assert(m_graph_renderer);
     assert(m_layout_backend);
 
-    m_layout_backend->connect_to_layout(
-        [this](const auto&)
-        { m_graph_renderer->draw_layout(make_position_map()); });
+    m_layout_backend->connect_to_layout([this](const auto&)
+                                        { m_graph_renderer->draw_layout(); });
 }
 
 auto app::connect_gui_background_configurator() -> void
@@ -252,7 +251,7 @@ auto app::connect_gui_graph_configurator() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph node font: " << font;
 
-            m_graph_renderer->config_api().config_data().vbillboard_font_name
+            m_graph_renderer->config_api().config_data().vertex_id_font_name
                 = std::string(font);
         });
 
@@ -265,7 +264,7 @@ auto app::connect_gui_graph_configurator() -> void
                 << "selected graph node font color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
 
-            m_graph_renderer->config_api().config_data().vbillboard_color
+            m_graph_renderer->config_api().config_data().vertex_id_color
                 = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
@@ -274,7 +273,7 @@ auto app::connect_gui_graph_configurator() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph node char height: " << h;
 
-            m_graph_renderer->config_api().config_data().vbillboard_char_height
+            m_graph_renderer->config_api().config_data().vertex_id_char_height
                 = h;
         });
 
@@ -283,7 +282,7 @@ auto app::connect_gui_graph_configurator() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph node space width: " << w;
 
-            m_graph_renderer->config_api().config_data().vbillboard_space_width
+            m_graph_renderer->config_api().config_data().vertex_id_space_width
                 = w;
         });
 

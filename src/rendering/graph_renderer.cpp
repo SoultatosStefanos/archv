@@ -18,9 +18,12 @@
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
+#include <string_view>
 
 namespace rendering::detail
 {
+
+using namespace Ogre;
 
 graph_renderer_impl::graph_renderer_impl(scene_type& scene) : m_scene { scene }
 {
@@ -28,160 +31,100 @@ graph_renderer_impl::graph_renderer_impl(scene_type& scene) : m_scene { scene }
 
 graph_renderer_impl::~graph_renderer_impl() = default;
 
+/***********************************************************
+ * Vertices                                                *
+ ***********************************************************/
+
 auto graph_renderer_impl::draw(
     const vertex_properties& v, const config_data_type& cfg) -> void
 {
-    if (scene().hasEntity(v.id))
-        scene().destroyEntity(v.id);
+    if (scene().hasEntity(v.id)) [[likely]]
+    {
+        redraw(v, cfg);
+        return;
+    }
 
     auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
 
-    auto* node = scene().hasSceneNode(v.id)
-        ? scene().getSceneNode(v.id)
-        : scene().getRootSceneNode()->createChildSceneNode(v.id);
-
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(v.id);
     node->attachObject(e);
     node->setScale(cfg.vertex_scale);
+    node->setPosition(v.pos);
 
-    draw_id_billboard(v, cfg);
+    draw_id(v, cfg);
 
-    assert(node->getScale() == cfg.vertex_scale);
     assert(scene().hasEntity(v.id));
     assert(scene().hasSceneNode(v.id));
-    assert(scene().getEntity(v.id)->getMesh()->getName() == cfg.vertex_mesh);
-    assert(scene().getSceneNode(v.id)->getAttachedObjects().size() == 2);
+    assert(scene().hasEntity(v.id));
 
     BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << v.id;
 }
 
-auto graph_renderer_impl::draw_id_billboard(
+auto graph_renderer_impl::redraw(
     const vertex_properties& v, const config_data_type& cfg) -> void
 {
-    using namespace Ogre;
+    scene().destroyEntity(v.id);
+
+    assert(!scene().hasEntity(v.id));
+    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+
+    auto* node = scene().getSceneNode(v.id);
+    node->setScale(cfg.vertex_scale);
+    node->setPosition(v.pos);
+    node->attachObject(e);
+
+    redraw_id(v, cfg);
+
+    BOOST_LOG_TRIVIAL(debug) << "redrew vertex: " << v.id;
+}
+
+auto graph_renderer_impl::redraw_id(
+    const vertex_properties& v, const config_data_type& cfg) -> void
+{
+    auto* text = m_id_billboards.at(v.id).get();
+
+    text->setFontName(cfg.vertex_id_font_name, ARCHV_RESOURCE_GROUP);
+    text->setCharacterHeight(cfg.vertex_id_char_height);
+    text->setColor(cfg.vertex_id_color);
+    text->setSpaceWidth(cfg.vertex_id_space_width);
+
+    BOOST_LOG_TRIVIAL(debug) << "redrew vertex id: " << v.id;
+}
+
+auto graph_renderer_impl::draw_id(
+    const vertex_properties& v, const config_data_type& cfg) -> void
+{
+    auto text = std::make_unique< MovableText >(
+        v.id,
+        v.id,
+        cfg.vertex_id_font_name,
+        cfg.vertex_id_char_height,
+        cfg.vertex_id_color,
+        ARCHV_RESOURCE_GROUP);
+
+    text->setSpaceWidth(cfg.vertex_id_space_width);
+    text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
+    text->showOnTop(true);
 
     assert(scene().hasSceneNode(v.id));
     auto* node = scene().getSceneNode(v.id);
+    node->attachObject(text.get());
 
-    const auto has_billboard
-        = [this, &v]() { return m_id_billboards.contains(v.id); };
+    m_id_billboards[v.id] = std::move(text);
 
-    if (has_billboard()) [[likely]]
-    {
-        auto* text = m_id_billboards.at(v.id).get();
-
-        text->setFontName(cfg.vbillboard_font_name, ARCHV_RESOURCE_GROUP);
-        text->setCharacterHeight(cfg.vbillboard_char_height);
-        text->setColor(cfg.vbillboard_color);
-        text->setSpaceWidth(cfg.vbillboard_space_width);
-
-        assert(text->getFontName() == cfg.vbillboard_font_name);
-        assert(text->getCharacterHeight() == cfg.vbillboard_char_height);
-        assert(text->getColor() == cfg.vbillboard_color);
-        assert(text->getSpaceWidth() == cfg.vbillboard_space_width);
-    }
-    else // on first draw
-    {
-        auto text = std::make_unique< MovableText >(
-            v.id,
-            v.id,
-            cfg.vbillboard_font_name,
-            cfg.vbillboard_char_height,
-            cfg.vbillboard_color,
-            ARCHV_RESOURCE_GROUP);
-
-        text->setSpaceWidth(cfg.vbillboard_space_width);
-        text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
-        text->showOnTop(true);
-
-        node->attachObject(text.get());
-
-        assert(text->getFontName() == cfg.vbillboard_font_name);
-        assert(text->getCharacterHeight() == cfg.vbillboard_char_height);
-        assert(text->getColor() == cfg.vbillboard_color);
-        assert(text->getSpaceWidth() == cfg.vbillboard_space_width);
-
-        m_id_billboards[v.id] = std::move(text);
-    }
-
-    assert(has_billboard());
-
-    BOOST_LOG_TRIVIAL(debug) << "drew vertex billboard: " << v.id;
+    BOOST_LOG_TRIVIAL(debug) << "drew vertex id: " << v.id;
 }
 
-namespace
+auto graph_renderer_impl::draw_layout(const vertex_properties& v) -> void
 {
-    inline auto make_edge_id(const edge_properties& e)
-    {
-        return std::string(e.source.id + " -> " + e.target.id);
-    }
+    assert(scene().hasSceneNode(v.id));
+    auto* node = scene().getSceneNode(v.id);
+    node->setPosition(v.pos);
 
-    inline auto orientation(
-        const Ogre::Vector3& from,
-        const Ogre::Vector3& to,
-        const Ogre::Vector3& axis)
-    {
-        const auto delta = to - from;
-        return axis.getRotationTo(delta);
-    }
-
-} // namespace
-
-void graph_renderer_impl::draw(
-    const edge_properties& e, const config_data_type& cfg)
-{
-    using namespace Ogre;
-
-    const auto& id = make_edge_id(e);
-
-    const auto has_edge = [this, &id]() { return scene().hasManualObject(id); };
-
-    if (has_edge()) [[likely]]
-    {
-        auto* line = scene().getManualObject(id);
-
-        line->setMaterial(
-            0, MaterialManager::getSingleton().getByName(cfg.edge_material));
-    }
-    else // on first draw
-    {
-        auto* line = scene().createManualObject(id);
-
-        line->estimateVertexCount(2); // From src to trgt node.
-
-        line->begin(
-            cfg.edge_material,
-            RenderOperation::OT_LINE_LIST,
-            ARCHV_RESOURCE_GROUP);
-
-        line->position(0, 0, 0); // Initially
-        line->position(0, 0, 0); // Initially
-
-        line->end();
-
-        assert(!scene().hasSceneNode(id));
-        auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
-        node->attachObject(line);
-
-        // ----------- TIP ---------------------- //
-
-        const auto tip_id = id + " tip";
-
-        auto* tip = scene().createEntity(
-            tip_id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
-
-        assert(!scene().hasSceneNode(tip_id));
-        auto* tnode = scene().getRootSceneNode()->createChildSceneNode(tip_id);
-        tnode->attachObject(tip);
-
-        tnode->setScale(cfg.edge_tip_scale);
-    }
-
-    assert(has_edge());
-
-    BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
+    BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
 
-auto graph_renderer_impl::erase(const vertex_properties& v) -> void
+auto graph_renderer_impl::clear(const vertex_properties& v) -> void
 {
     if (scene().hasSceneNode(v.id))
     {
@@ -195,43 +138,31 @@ auto graph_renderer_impl::erase(const vertex_properties& v) -> void
         assert(!scene().hasEntity(v.id));
         assert(!scene().hasSceneNode(v.id));
 
-        BOOST_LOG_TRIVIAL(debug) << "erased vertex: " << v.id;
+        BOOST_LOG_TRIVIAL(debug) << "cleared vertex: " << v.id;
     }
 }
 
-auto graph_renderer_impl::erase(const edge_properties& e) -> void
-{
-    const auto& id = make_edge_id(e);
-
-    if (scene().hasSceneNode(id))
-    {
-        scene().getSceneNode(id)->detachAllObjects();
-        scene().destroySceneNode(id);
-        scene().destroyManualObject(id);
-
-        assert(!scene().hasManualObject(id));
-        assert(!scene().hasSceneNode(id));
-
-        BOOST_LOG_TRIVIAL(debug) << "erased edge: " << id;
-    }
-}
-
-void graph_renderer_impl::draw_layout(
-    const vertex_properties& v, const position_type& pos)
-{
-    assert(scene().hasSceneNode(v.id));
-    auto* node = scene().getSceneNode(v.id);
-
-    node->setPosition(pos);
-
-    assert(node->getPosition() == pos);
-
-    BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
-}
+/***********************************************************
+ * Edges                                                   *
+ ***********************************************************/
 
 namespace
 {
-    using namespace Ogre;
+    inline auto make_edge_id(const edge_properties& e)
+    {
+        return std::string(e.source.id + " -> " + e.target.id);
+    }
+
+    inline auto make_edge_tip_id(const std::string& edge_id)
+    {
+        return edge_id + " tip";
+    }
+
+    inline auto
+    rotate(const Vector3& from, const Vector3& to, const Vector3& axis)
+    {
+        return axis.getRotationTo(to - from);
+    }
 
     inline auto join(const Vector3& from, const Vector3& to, Real u = 1)
     {
@@ -259,53 +190,159 @@ namespace
         return across_line(from, to, d);
     }
 
+    inline auto
+    calculate_edge_end(const edge_properties& e, const SceneManager& scene)
+    {
+        assert(scene.hasEntity(e.target.id));
+        const auto* bound = scene.getEntity(e.target.id);
+        assert(bound);
+        const auto& from = e.source.pos;
+        const auto& to = e.target.pos;
+        return across_line_circumferentiallly(from, to, *bound);
+    }
+
 } // namespace
 
-auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
+void graph_renderer_impl::draw(
+    const edge_properties& e, const config_data_type& cfg)
 {
-    using namespace Ogre;
+    const auto id = make_edge_id(e);
 
-    const auto& id = make_edge_id(e);
+    if (scene().hasManualObject(id)) [[likely]]
+    {
+        redraw(e, cfg);
+        return;
+    }
+
+    auto* line = scene().createManualObject(id);
+
+    line->begin(
+        cfg.edge_material, RenderOperation::OT_LINE_LIST, ARCHV_RESOURCE_GROUP);
+
+    line->estimateVertexCount(2);
+
+    line->position(e.source.pos);
+    line->position(calculate_edge_end(e, scene()));
+
+    line->end();
+
+    assert(!scene().hasSceneNode(id));
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
+    node->attachObject(line);
+
+    draw_tip(e, cfg);
+
+    assert(scene().hasManualObject(make_edge_id(e)));
+
+    BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
+}
+
+auto graph_renderer_impl::redraw(
+    const edge_properties& e, const config_data_type& cfg) -> void
+{
+    const auto id = make_edge_id(e);
+
+    assert(scene().hasManualObject(id));
+    auto* line = scene().getManualObject(id);
+    line->setMaterialName(0, cfg.edge_material, ARCHV_RESOURCE_GROUP);
+
+    // Might have to recalculate cause of altered vertex meshes.
+    line->beginUpdate(0);
+    line->estimateVertexCount(2); // From src to trgt node.
+    line->position(e.source.pos);
+    line->position(calculate_edge_end(e, scene()));
+    line->end();
+
+    redraw_tip(e, cfg);
+
+    BOOST_LOG_TRIVIAL(debug) << "redrew edge: " << id;
+}
+
+auto graph_renderer_impl::redraw_tip(
+    const edge_properties& e, const config_data_type& cfg) -> void
+{
+    const auto id = make_edge_tip_id(make_edge_id(e));
+
+    assert(scene().hasEntity(id));
+    scene().destroyEntity(id);
+    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
 
     assert(scene().hasSceneNode(id));
     auto* node = scene().getSceneNode(id);
-    auto* obj = node->getAttachedObject(0);
+    node->setScale(cfg.edge_tip_scale);
+    // Might have to recalculate cause of altered vertex meshes.
+    node->setPosition(calculate_edge_end(e, scene()));
+    node->attachObject(t);
 
-    assert(dynamic_cast< ManualObject* >(obj));
-    auto* line = static_cast< ManualObject* >(obj);
+    BOOST_LOG_TRIVIAL(debug) << "redrew edge tip: " << id;
+}
 
-    assert(scene().hasSceneNode(e.source.id));
-    assert(scene().hasSceneNode(e.target.id));
-    auto* src_node = scene().getSceneNode(e.source.id);
-    auto* trgt_node = scene().getSceneNode(e.target.id);
+auto graph_renderer_impl::draw_tip(
+    const edge_properties& e, const config_data_type& cfg) -> void
+{
+    const auto id = make_edge_tip_id(make_edge_id(e));
 
-    // ----------- TIP ---------------------- //
-    const auto& from = src_node->getPosition();
-    const auto& to = trgt_node->getPosition();
+    assert(!scene().hasEntity(id));
+    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
 
-    assert(scene().hasEntity(e.target.id));
-    const auto* bound = scene().getEntity(e.target.id);
-    const auto end = across_line_circumferentiallly(from, to, *bound);
+    assert(!scene().hasSceneNode(id));
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
+    node->setScale(cfg.edge_tip_scale);
+    node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
+    node->setPosition(calculate_edge_end(e, scene()));
+    node->attachObject(t);
 
-    const auto& start = from;
+    BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
+}
 
-    // ----------- TIP ---------------------- //
+auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
+{
+    const auto eid = make_edge_id(e);
+    const auto tid = make_edge_tip_id(eid);
 
-    line->estimateVertexCount(2); // From src to trgt node.
+    const auto& from = e.source.pos;
+    const auto to = calculate_edge_end(e, scene());
+
+    assert(scene().hasManualObject(eid));
+    auto* line = scene().getManualObject(eid);
+
+    assert(scene().hasSceneNode(tid));
+    auto* tip = scene().getSceneNode(tid);
+
     line->beginUpdate(0);
-    line->position(start);
-    line->position(end);
+    line->estimateVertexCount(2); // From src to trgt node.
+    line->position(from);
+    line->position(to);
     line->end();
 
-    // ----------- TIP ---------------------- //
+    tip->setPosition(to);
+    tip->setOrientation(rotate(from, e.target.pos, Vector3::UNIT_Y));
 
-    auto* tnode = scene().getSceneNode(id + " tip");
+    BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << eid;
+}
 
-    const auto orient = orientation(from, to, Vector3::UNIT_Y);
-    tnode->setOrientation(orient);
-    tnode->setPosition(end);
+auto graph_renderer_impl::clear(const edge_properties& e) -> void
+{
+    const auto id = make_edge_id(e);
+    const auto tip_id = make_edge_tip_id(id);
 
-    BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << id;
+    if (scene().hasSceneNode(id))
+    {
+        scene().getSceneNode(id)->detachAllObjects();
+        scene().destroySceneNode(id);
+        scene().destroyManualObject(id);
+
+        scene().getSceneNode(tip_id)->detachAllObjects();
+        scene().destroySceneNode(tip_id);
+        scene().destroyEntity(tip_id);
+
+        assert(!scene().hasManualObject(id));
+        assert(!scene().hasEntity(tip_id));
+        assert(!scene().hasSceneNode(id));
+        assert(!scene().hasSceneNode(tip_id));
+
+        BOOST_LOG_TRIVIAL(debug) << "erased edge: " << id;
+    }
 }
 
 } // namespace rendering::detail

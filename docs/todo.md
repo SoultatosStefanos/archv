@@ -443,6 +443,8 @@
 
 # 23 / 08 / 2022
 
+	+ [ ] Edge tips cleanup
+
 	+ [ ] Configurable edge tips
 
 	+ [ ] Edge dependencies rendering
