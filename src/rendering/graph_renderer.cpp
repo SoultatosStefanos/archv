@@ -229,36 +229,34 @@ void graph_renderer_impl::draw_layout(
     BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
 
-// NOTE:
-// https://math.stackexchange.com/questions/83404/finding-a-point-along-a-line-in-three-dimensions-given-two-points
 namespace
 {
-    // x = (1−u)x1 + ux2
-    // y = (1−u)y1 + uy2
-    // z = (1−u)z1 + uz2
-    inline auto point_across_line(
-        const Ogre::Vector3& from, const Ogre::Vector3& to, Ogre::Real u = 1)
+    using namespace Ogre;
+
+    inline auto join(const Vector3& from, const Vector3& to, Real u = 1)
     {
-        const auto x = ((1 - u) * from.x) + (u * to.x);
-        const auto y = ((1 - u) * from.y) + (u * to.y);
-        const auto z = ((1 - u) * from.z) + (u * to.z);
-        return Ogre::Vector3(x, y, z);
+        return ((1 - u) * from) + (u * to);
     }
 
-    inline auto parametric_equation(
-        const Ogre::Vector3& from, const Ogre::Vector3& to, Ogre::Real units)
+    inline auto u(const Vector3& from, const Vector3& to, Real d)
     {
-        const auto x1 = from.x;
-        const auto x2 = to.x;
-        const auto y1 = from.y;
-        const auto y2 = to.y;
-        const auto z1 = from.z;
-        const auto z2 = to.z;
+        return d / (to - from).length();
+    }
 
-        const auto d = std::sqrt(
-            std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2) + std::pow(z2 - z1, 2));
+    // Returns a point along a line segment defined by two points at a distance.
+    inline auto across_line(const Vector3& from, const Vector3& to, Real d)
+    {
+        return join(from, to, u(from, to, d));
+    }
 
-        return units / d;
+    // Returns a point along a line segment defined by two points, at the
+    // circumference of an object.
+    inline auto across_line_circumferentiallly(
+        const Vector3& from, const Vector3& to, const MovableObject& by)
+    {
+        const auto r = by.getBoundingRadiusScaled();
+        const auto d = (from - to).length() - r;
+        return across_line(from, to, d);
     }
 
 } // namespace
@@ -282,37 +280,30 @@ auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
     auto* trgt_node = scene().getSceneNode(e.target.id);
 
     // ----------- TIP ---------------------- //
-    const auto from = src_node->getPosition();
-    const auto to = trgt_node->getPosition();
-    const auto radius
-        = scene().getEntity(e.source.id)->getBoundingRadiusScaled();
-    const auto delta = from - to;
-    const auto afar = delta.length() - radius;
+    const auto& from = src_node->getPosition();
+    const auto& to = trgt_node->getPosition();
 
-    const auto u = parametric_equation(from, to, afar);
-    const auto pos = point_across_line(from, to, u);
+    assert(scene().hasEntity(e.target.id));
+    const auto* bound = scene().getEntity(e.target.id);
+    const auto end = across_line_circumferentiallly(from, to, *bound);
+
+    const auto& start = from;
 
     // ----------- TIP ---------------------- //
 
     line->estimateVertexCount(2); // From src to trgt node.
     line->beginUpdate(0);
-    line->position(src_node->getPosition());
-    line->position(pos);
+    line->position(start);
+    line->position(end);
     line->end();
 
     // ----------- TIP ---------------------- //
 
     auto* tnode = scene().getSceneNode(id + " tip");
 
-    const auto orient = orientation(
-        src_node->getPosition(), trgt_node->getPosition(), Vector3::UNIT_Y);
+    const auto orient = orientation(from, to, Vector3::UNIT_Y);
     tnode->setOrientation(orient);
-
-    //  const auto mid = (trgt_node->getPosition() + src_node->getPosition()) /
-    //  2;
-    //  tnode->setPosition(mid);
-
-    tnode->setPosition(pos);
+    tnode->setPosition(end);
 
     BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << id;
 }
