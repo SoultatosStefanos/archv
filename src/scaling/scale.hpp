@@ -15,6 +15,11 @@ namespace scaling
 using scale_t = float;
 using scale_vector = std::array< scale_t, 3 >; // (x, y, z)
 
+constexpr auto make_scale(scale_t x, scale_t y, scale_t z)
+{
+    return scale_vector { x, y, z };
+}
+
 // (1, 1, 1)
 constexpr auto make_neutral_scale()
 {
@@ -44,6 +49,23 @@ constexpr auto scale(const factor& f, T n) -> scale_vector
                           u * factorize(y),
                           u * factorize(z) };
 }
+
+// Case and point..
+static_assert(
+    scale(
+        factor { .applied_dims = { true, false, false },
+                 .baseline = 10,
+                 .enabled = true },
+        100)
+    == make_scale(10, 1, 1));
+
+static_assert(
+    scale(
+        factor { .applied_dims = { true, false, false },
+                 .baseline = 10,
+                 .enabled = false },
+        100)
+    == make_neutral_scale());
 
 } // namespace scaling
 
