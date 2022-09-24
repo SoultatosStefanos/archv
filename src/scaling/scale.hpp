@@ -43,7 +43,7 @@ constexpr auto scale(const factor& f, T n) -> scale_vector
 
     const auto& [x, y, z] = f.applied_dims;
     const auto u = static_cast< scale_t >(n / f.baseline);
-    constexpr auto factorize = [u](bool v) -> scale_t { return v ? 1 : 1 / u; };
+    const auto factorize = [u](bool v) -> scale_t { return v ? 1 : 1 / u; };
 
     return scale_vector { u * factorize(x),
                           u * factorize(y),
