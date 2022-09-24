@@ -1,0 +1,29 @@
+{
+	"factors" : 
+	[
+		{
+			"fields" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ false, false, true ],
+				"baseline" : 6
+			}
+		},
+		{
+			"methods" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ true, false, true ],
+				"baseline" : 10
+			}
+		},
+		{
+			"nested" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ false, true, true ],
+				"baseline" : 2
+			}
+		}
+	]
+}

@@ -4,7 +4,7 @@
 #ifndef DEPENDENCIES_WEIGHT_REPO_HPP
 #define DEPENDENCIES_WEIGHT_REPO_HPP
 
-#include "detail/weight_repo.hpp"
+#include "misc/heterogeneous.hpp"
 
 #include <string>
 #include <string_view>
@@ -18,9 +18,7 @@ class weight_repo
 public:
     using dependency_type = std::string_view;
     using weight_type = int;
-
-    // Transparent unordered_map, supporting heterogeneous string lookup (C++20)
-    using hash_table = detail::unordered_string_map< weight_type >;
+    using hash_table = misc::unordered_string_map< weight_type >;
 
     explicit weight_repo(hash_table table = hash_table());
 

@@ -449,4 +449,11 @@
 
 	+ [x] Configurable edge tips
 
+
+# 24 / 08 / 2022
+
+	+ [ ] Vertex scaling depending on symbol metadata
+
 	+ [ ] Edge dependencies rendering
+
+		+ [ ] See https://wiki.ogre3d.org/-Particle
