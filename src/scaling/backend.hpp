@@ -6,16 +6,32 @@
 
 #include "factor_repo.hpp"
 
+#include <boost/exception/all.hpp>
 #include <boost/signals2/signal.hpp>
+#include <exception>
 
 namespace scaling
 {
 
 /***********************************************************
+ * Errors                                                  *
+ ***********************************************************/
+
+struct invalid_baseline : virtual std::exception, virtual boost::exception
+{
+};
+
+/***********************************************************
+ * Error Info                                              *
+ ***********************************************************/
+
+using baseline_info
+    = boost::error_info< struct tag_baseline, factor::baseline_type >;
+
+/***********************************************************
  * Backend                                                 *
  ***********************************************************/
 
-// TODO
 // User interactor of the dynamic vertex scaling subsystem.
 class backend
 {
@@ -36,9 +52,13 @@ public:
 
     auto get_factor_repo() const -> const factor_repo& { return m_repo; }
 
-    auto set_factor_dims(tag_type tag, dims_type dims) -> void;
-    auto set_factor_enabled(tag_type tag, bool enabled) -> void;
-    auto set_factor_baseline(tag_type tag, baseline_type baseline) -> void;
+    auto update_factor(
+        tag_type tag, dims_type dims, baseline_type baseline, bool enabled)
+        -> void;
+
+    auto update_factor_dims(tag_type tag, dims_type dims) -> void;
+    auto update_factor_enabled(tag_type tag, bool enabled) -> void;
+    auto update_factor_baseline(tag_type tag, baseline_type baseline) -> void;
 
     auto connect(const factor_slot& f) -> connection;
 
@@ -87,55 +107,56 @@ inline auto get_factor_baseline(const backend& b, backend::tag_type tag)
 inline auto apply_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { true, curr[1], curr[2] });
+    b.update_factor_dims(tag, { true, curr[1], curr[2] });
 }
 
 inline auto apply_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { curr[0], true, curr[2] });
+    b.update_factor_dims(tag, { curr[0], true, curr[2] });
 }
 
 inline auto apply_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { curr[0], curr[1], true });
+    b.update_factor_dims(tag, { curr[0], curr[1], true });
 }
 
 inline auto deny_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { false, curr[1], curr[2] });
+    b.update_factor_dims(tag, { false, curr[1], curr[2] });
 }
 
 inline auto deny_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { curr[0], false, curr[2] });
+    b.update_factor_dims(tag, { curr[0], false, curr[2] });
 }
 
 inline auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
 {
     const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.set_factor_dims(tag, { curr[0], curr[1], false });
+    b.update_factor_dims(tag, { curr[0], curr[1], false });
 }
 
 inline auto enable_factor(backend& b, backend::tag_type tag) -> void
 {
-    b.set_factor_enabled(tag, true);
+    b.update_factor_enabled(tag, true);
 }
 
 inline auto disable_factor(backend& b, backend::tag_type tag) -> void
 {
-    b.set_factor_enabled(tag, false);
+    b.update_factor_enabled(tag, false);
 }
 
-inline auto set_factor_baseline(
+inline auto update_factor_baseline(
     backend& b, backend::tag_type tag, backend::baseline_type baseline)
 {
-    b.set_factor_baseline(tag, baseline);
+    b.update_factor_baseline(tag, baseline);
 }
 
+// O(n)
 auto restore_defaults(backend& b) -> void;
 
 } // namespace scaling
