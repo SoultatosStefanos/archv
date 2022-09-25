@@ -5,6 +5,7 @@
 #define SCALING_ALL_HPP
 
 #include "backend.hpp"
+#include "config.hpp"
 #include "factor.hpp"
 #include "factor_repo.hpp"
 #include "scale.hpp"

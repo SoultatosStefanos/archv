@@ -1,5 +1,6 @@
 set(FILES
 	backend.cpp
+	config.cpp
 	factor_repo.cpp
 )
 set(SUBDIRECTORIES)
