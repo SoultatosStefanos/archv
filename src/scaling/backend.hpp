@@ -25,6 +25,7 @@ public:
     using config_data_type = factor_repo::hash_table;
     using tag_type = factor_repo::tag_type;
     using dims_type = factor::dims_type;
+    using baseline_type = factor::baseline_type;
 
     using factor_slot = factor_signal::slot_type;
     using connection = boost::signals2::connection;
@@ -37,6 +38,7 @@ public:
 
     auto set_factor_dims(tag_type tag, dims_type dims) -> void;
     auto set_factor_enabled(tag_type tag, bool enabled) -> void;
+    auto set_factor_baseline(tag_type tag, baseline_type baseline) -> void;
 
     auto connect(const factor_slot& f) -> connection;
 
@@ -53,21 +55,86 @@ private:
  * Usecases                                                *
  ***********************************************************/
 
-auto is_factor_applied_on_x(const backend& b, backend::tag_type tag) -> bool;
-auto is_factor_applied_on_y(const backend& b, backend::tag_type tag) -> bool;
-auto is_factor_applied_on_z(const backend& b, backend::tag_type tag) -> bool;
-auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool;
+inline auto is_factor_applied_on_x(const backend& b, backend::tag_type tag)
+    -> bool
+{
+    return b.get_factor_repo().get_factor(tag).applied_dims[0];
+}
 
-auto apply_factor_on_x_axis(backend& b, backend::tag_type tag) -> void;
-auto apply_factor_on_y_axis(backend& b, backend::tag_type tag) -> void;
-auto apply_factor_on_z_axis(backend& b, backend::tag_type tag) -> void;
+inline auto is_factor_applied_on_y(const backend& b, backend::tag_type tag)
+    -> bool
+{
+    return b.get_factor_repo().get_factor(tag).applied_dims[1];
+}
 
-auto deny_factor_on_x_axis(backend& b, backend::tag_type tag) -> void;
-auto deny_factor_on_y_axis(backend& b, backend::tag_type tag) -> void;
-auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void;
+inline auto is_factor_applied_on_z(const backend& b, backend::tag_type tag)
+    -> bool
+{
+    return b.get_factor_repo().get_factor(tag).applied_dims[2];
+}
 
-auto enable_factor(backend& b, backend::tag_type tag) -> void;
-auto disable_factor(backend& b, backend::tag_type tag) -> void;
+inline auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool
+{
+    return b.get_factor_repo().get_factor(tag).enabled;
+}
+
+inline auto get_factor_baseline(const backend& b, backend::tag_type tag)
+    -> factor::baseline_type
+{
+    return b.get_factor_repo().get_factor(tag).baseline;
+}
+
+inline auto apply_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { true, curr[1], curr[2] });
+}
+
+inline auto apply_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { curr[0], true, curr[2] });
+}
+
+inline auto apply_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { curr[0], curr[1], true });
+}
+
+inline auto deny_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { false, curr[1], curr[2] });
+}
+
+inline auto deny_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { curr[0], false, curr[2] });
+}
+
+inline auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
+    b.set_factor_dims(tag, { curr[0], curr[1], false });
+}
+
+inline auto enable_factor(backend& b, backend::tag_type tag) -> void
+{
+    b.set_factor_enabled(tag, true);
+}
+
+inline auto disable_factor(backend& b, backend::tag_type tag) -> void
+{
+    b.set_factor_enabled(tag, false);
+}
+
+inline auto set_factor_baseline(
+    backend& b, backend::tag_type tag, backend::baseline_type baseline)
+{
+    b.set_factor_baseline(tag, baseline);
+}
 
 auto restore_defaults(backend& b) -> void;
 
