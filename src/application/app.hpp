@@ -63,6 +63,7 @@ protected:
     auto make_dependency_map() const -> architecture::dependency_map;
     auto make_weight_map() const -> weight_map;
     auto make_position_map() const -> position_map;
+    auto make_scale_map() const -> scale_map;
 
 private:
     auto setup_architecture() -> void;
@@ -136,6 +137,7 @@ private:
 
     std::unique_ptr< dependencies::backend > m_dependencies_backend;
     std::unique_ptr< layout_backend > m_layout_backend;
+    std::unique_ptr< scaling::backend > m_scaling_backend;
 
     /***********************************************************
      * Rendering                                               *

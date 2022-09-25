@@ -41,6 +41,10 @@ auto app::make_position_map() const -> position_map
     return layout::make_position_map(*m_layout_backend);
 }
 
+auto app::make_scale_map() const -> scale_map
+{
+}
+
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
