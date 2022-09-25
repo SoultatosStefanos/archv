@@ -30,7 +30,7 @@ struct factor
  * Utilities                                               *
  ***********************************************************/
 
-inline auto
+constexpr auto
 make_nil_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { false, false, false },
@@ -38,49 +38,55 @@ make_nil_factor(factor::baseline_type baseline, bool enabled = false)
                     .enabled = enabled };
 }
 
-inline auto make_x_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_x_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { true, false, false },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto make_y_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_y_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { false, true, false },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto make_z_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_z_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { false, false, true },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto make_xy_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_xy_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { true, true, false },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto make_xz_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_xz_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { true, false, true },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto make_yz_factor(factor::baseline_type baseline, bool enabled = false)
+constexpr auto
+make_yz_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { false, true, true },
                     .baseline = baseline,
                     .enabled = enabled };
 }
 
-inline auto
+constexpr auto
 make_xyz_factor(factor::baseline_type baseline, bool enabled = false)
 {
     return factor { .applied_dims = { true, true, true },

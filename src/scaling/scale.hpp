@@ -7,6 +7,7 @@
 
 #include "factor.hpp"
 
+#include <cassert>
 #include <concepts>
 
 namespace scaling
@@ -26,7 +27,7 @@ constexpr auto make_neutral_scale()
     return scale_vector { 1, 1, 1 };
 }
 
-constexpr auto combline(const scale_vector& lhs, const scale_vector& rhs)
+constexpr auto combine(const scale_vector& lhs, const scale_vector& rhs)
 {
     return scale_vector { lhs[0] * rhs[0], lhs[1] * rhs[1], lhs[2] * rhs[2] };
 }
@@ -42,6 +43,7 @@ constexpr auto scale(const factor& f, T n) -> scale_vector
         return make_neutral_scale();
 
     const auto& [x, y, z] = f.applied_dims;
+    assert(f.baseline != 0);
     const auto u = static_cast< scale_t >(n / f.baseline);
     const auto factorize = [u](bool v) -> scale_t { return v ? 1 : 1 / u; };
 
@@ -49,23 +51,6 @@ constexpr auto scale(const factor& f, T n) -> scale_vector
                           u * factorize(y),
                           u * factorize(z) };
 }
-
-// Case and point..
-static_assert(
-    scale(
-        factor { .applied_dims = { true, false, false },
-                 .baseline = 10,
-                 .enabled = true },
-        100)
-    == make_scale(10, 1, 1));
-
-static_assert(
-    scale(
-        factor { .applied_dims = { true, false, false },
-                 .baseline = 10,
-                 .enabled = false },
-        100)
-    == make_neutral_scale());
 
 } // namespace scaling
 

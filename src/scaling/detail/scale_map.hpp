@@ -45,7 +45,7 @@ public:
 
                 static_assert(std::is_integral_v< decltype(num) >);
 
-                return combline(lhs, scale(factor, num));
+                return combine(lhs, scale(factor, num));
             });
     }
 
