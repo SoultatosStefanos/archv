@@ -11,6 +11,7 @@ class backend;
 struct factor;
 class factor_repo;
 struct scale_vector;
+struct config_data;
 
 } // namespace scaling
 

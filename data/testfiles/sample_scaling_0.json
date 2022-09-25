@@ -1,0 +1,21 @@
+{
+	"factors" : 
+	[
+		{
+			"something" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ false, false, true ],
+				"baseline" : 6
+			}
+		},
+		{
+			"other" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ true, false, true ],
+				"baseline" : 600
+			}
+		}
+	]
+}
