@@ -44,6 +44,7 @@ auto app::setup_graph_rendering() -> void
         make_id_map(),
         make_position_map(),
         make_weight_map(),
+        make_scale_map(),
         m_background_renderer->scene(),
         m_rendering_config.graph);
 

@@ -43,6 +43,9 @@ auto app::make_position_map() const -> position_map
 
 auto app::make_scale_map() const -> scale_map
 {
+    assert(m_scaling_backend);
+    return scaling::make_scale_map< architecture::graph >(
+        *m_scaling_backend, scaling_factors_counter(m_symbol_table, m_graph));
 }
 
 /***********************************************************
@@ -70,8 +73,6 @@ auto app::setup_commands() -> void
 
 auto app::setup_dependencies() -> void
 {
-    assert(m_commands);
-
     m_dependencies_backend
         = std::make_unique< dependencies::backend >(m_dependencies_config);
 
@@ -80,7 +81,6 @@ auto app::setup_dependencies() -> void
 
 auto app::setup_layout() -> void
 {
-    assert(m_commands);
     assert(m_dependencies_backend);
 
     m_layout_backend = std::make_unique< layout_backend >(
@@ -89,9 +89,23 @@ auto app::setup_layout() -> void
     BOOST_LOG_TRIVIAL(info) << "setup layout";
 }
 
+auto app::setup_scaling() -> void
+{
+    m_scaling_backend = std::make_unique< scaling::backend >(m_scaling_config);
+
+    BOOST_LOG_TRIVIAL(info) << "setup scaling";
+}
+
 /***********************************************************
  * Shutdown                                                *
  ***********************************************************/
+
+auto app::shutdown_scaling() -> void
+{
+    m_scaling_backend.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown scaling";
+}
 
 auto app::shutdown_layout() -> void
 {

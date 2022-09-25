@@ -25,6 +25,7 @@
 #include "layout/all.hpp"
 #include "multithreading/all.hpp"
 #include "rendering/all.hpp"
+#include "scaling/all.hpp"
 #include "undo_redo/all.hpp"
 
 /***********************************************************
@@ -70,6 +71,7 @@ private:
     auto setup_commands() -> void;
     auto setup_dependencies() -> void;
     auto setup_layout() -> void;
+    auto setup_scaling() -> void;
     auto setup_background_rendering() -> void;
     auto setup_graph_rendering() -> void;
     auto setup_gui() -> void;
@@ -101,6 +103,7 @@ private:
     auto shutdown_gui() -> void;
     auto shutdown_graph_rendering() -> void;
     auto shutdown_background_rendering() -> void;
+    auto shutdown_scaling() -> void;
     auto shutdown_layout() -> void;
     auto shutdown_dependencies() -> void;
     auto shutdown_commands() -> void;
@@ -123,6 +126,7 @@ private:
     layout::config_data m_layout_config;
     rendering::config_data m_rendering_config;
     gui::config_data m_gui_config;
+    scaling::config_data m_scaling_config;
 
     /***********************************************************
      * Architecture                                            *

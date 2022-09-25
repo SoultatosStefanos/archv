@@ -41,6 +41,9 @@ app::app(int argc, const char** argv) : base("ARCHV")
 
     m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
 
+    m_scaling_config
+        = scaling::deserialize(jsons.at(ARCHV_SCALING_CONFIG_PATH));
+
     assert(!paused());
 }
 
@@ -148,6 +151,7 @@ void app::setup()
     setup_architecture();
     setup_dependencies();
     setup_layout();
+    setup_scaling();
 
     setup_background_rendering();
     setup_graph_rendering();
@@ -177,6 +181,7 @@ auto app::shutdown() -> void
     shutdown_graph_rendering();
     shutdown_background_rendering();
 
+    shutdown_scaling();
     shutdown_layout();
     shutdown_dependencies();
     shutdown_commands();

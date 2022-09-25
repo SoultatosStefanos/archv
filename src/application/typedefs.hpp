@@ -31,22 +31,23 @@ struct scaling_factors_counter
     using tag_type = scaling::backend::tag_type;
 
     const architecture::symbol_table& st;
+    const architecture::graph& g;
 
     auto operator()(vertex_type v, tag_type tag) const -> unsigned
     {
-        const auto& id = boost::get(architecture::id_map(), v);
+        const auto& id = boost::get(boost::get(boost::vertex_bundle, g), v);
         const auto* sym = st.lookup(id);
         assert(sym);
 
-        if (tag == "Fields")
+        if (tag == "fields")
         {
             return sym->fields.size();
         }
-        else if (tag == "Methods")
+        else if (tag == "methods")
         {
             return sym->methods.size();
         }
-        else if (tag == "Nested")
+        else if (tag == "nested")
         {
             return sym->nested.size();
         }

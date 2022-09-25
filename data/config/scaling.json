@@ -4,23 +4,23 @@
 		{
 			"fields" : 
 			{
-				"enabled" : true,
-				"dimensions" : [ false, false, true ],
-				"baseline" : 6
+				"enabled" : false,
+				"dimensions" : [ true, true, true ],
+				"baseline" : 2
 			}
 		},
 		{
 			"methods" : 
 			{
 				"enabled" : true,
-				"dimensions" : [ true, false, true ],
-				"baseline" : 10
+				"dimensions" : [ true, true, true ],
+				"baseline" : 2
 			}
 		},
 		{
 			"nested" : 
 			{
-				"enabled" : true,
+				"enabled" : false,
 				"dimensions" : [ false, true, true ],
 				"baseline" : 2
 			}
