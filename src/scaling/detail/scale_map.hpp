@@ -32,10 +32,9 @@ public:
 
     auto operator()(vertex_type v) const -> scale_vector
     {
-        const auto& repo = *(m_backend->get_factor_repo());
         return std::accumulate(
-            std::cbegin(repo),
-            std::cend(repo),
+            std::cbegin(m_backend->get_factor_repo()),
+            std::cend(m_backend->get_factor_repo()),
             make_neutral_scale(),
             [this, v](const auto& lhs, const auto& rhs)
             {

@@ -27,7 +27,7 @@ template < typename Graph, typename FactorCounter >
 requires std::invocable<
     FactorCounter,
     typename boost::graph_traits< Graph >::vertex_descriptor,
-    factor_repo::tag_type >
+    factor_repo::hash_table::key_type >
 inline auto make_scale_map(const backend& b, FactorCounter func)
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
