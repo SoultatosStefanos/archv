@@ -30,9 +30,11 @@ struct vertex_properties
 {
     using id_type = std::string;
     using position_type = Ogre::Vector3;
+    using scale_type = Ogre::Vector3;
 
     id_type id;
     position_type pos;
+    scale_type scale; // from any metadata
 
     auto operator==(const vertex_properties&) const -> bool = default;
     auto operator!=(const vertex_properties&) const -> bool = default;

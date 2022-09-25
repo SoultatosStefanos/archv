@@ -63,7 +63,8 @@ template <
     typename Graph,
     typename VertexID,
     typename PositionMap,
-    typename WeightMap >
+    typename WeightMap,
+    typename ScaleMap >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -83,6 +84,11 @@ class graph_renderer
             WeightMap,
             typename boost::graph_traits< Graph >::edge_descriptor >));
 
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept<
+            ScaleMap,
+            typename boost::graph_traits< Graph >::vertex_descriptor >));
+
     using graph_traits = boost::graph_traits< Graph >;
 
 public:
@@ -90,6 +96,7 @@ public:
     using vertex_id_type = VertexID;
     using position_map_type = PositionMap;
     using weight_map_type = WeightMap;
+    using scale_map_type = ScaleMap;
     using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename graph_traits::edge_descriptor;
 
@@ -102,12 +109,14 @@ public:
         vertex_id_type vertex_id,
         position_map_type vertex_pos,
         weight_map_type edge_weight,
+        scale_map_type vertex_scale,
         scene_type& scene,
         config_data_type cfg = config_data_type())
     : m_g { g }
     , m_vertex_id { vertex_id }
     , m_vertex_pos { vertex_pos }
     , m_edge_weight { edge_weight }
+    , m_vertex_scale { vertex_scale }
     , m_scene { scene }
     , m_config { cfg }
     , m_defaults { cfg }
@@ -128,6 +137,7 @@ public:
     auto vertex_id() const -> vertex_id_type { return m_vertex_id; }
     auto vertex_position() const -> position_map_type { return m_vertex_pos; }
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
+    auto vertex_scale() const -> scale_map_type { return m_vertex_scale; }
 
     auto scene() const -> const scene_type& { return m_scene; }
     auto scene() -> scene_type& { return m_scene; }
@@ -148,6 +158,9 @@ public:
         visit_vertices([this](const auto& v) { m_impl.draw_layout(v); });
         visit_edges([this](const auto& e) { m_impl.draw_layout(e); });
     }
+
+    // TODO
+    // draw_scale
 
     inline auto clear() -> void
     {
@@ -192,7 +205,12 @@ private:
         const auto& [x, y, z] = boost::get(vertex_position(), v);
         auto&& pos = vertex_properties::position_type(x, y, z);
 
-        return vertex_properties { .id = std::move(id), .pos = std::move(pos) };
+        const auto& [xs, ys, zs] = boost::get(vertex_scale(), v);
+        auto&& scale = vertex_properties::scale_type(xs, ys, zs);
+
+        return vertex_properties { .id = std::move(id),
+                                   .pos = std::move(pos),
+                                   .scale = std::move(scale) };
     }
 
     inline auto make_edge_properties(edge_type e) const
@@ -210,6 +228,7 @@ private:
     vertex_id_type m_vertex_id;
     position_map_type m_vertex_pos;
     weight_map_type m_edge_weight;
+    scale_map_type m_vertex_scale;
 
     scene_type& m_scene;
     config_data_type m_config, m_defaults;

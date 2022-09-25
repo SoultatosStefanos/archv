@@ -48,7 +48,7 @@ auto graph_renderer_impl::draw(
 
     auto* node = scene().getRootSceneNode()->createChildSceneNode(v.id);
     node->attachObject(e);
-    node->setScale(cfg.vertex_scale);
+    node->setScale(cfg.vertex_scale * v.scale);
     node->setPosition(v.pos);
 
     draw_id(v, cfg);
@@ -69,7 +69,7 @@ auto graph_renderer_impl::redraw(
     auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
 
     auto* node = scene().getSceneNode(v.id);
-    node->setScale(cfg.vertex_scale);
+    node->setScale(cfg.vertex_scale * v.scale);
     node->setPosition(v.pos);
     node->attachObject(e);
 
