@@ -12,7 +12,6 @@
 namespace scaling
 {
 
-// TODO
 class factor_repo
 {
 public:

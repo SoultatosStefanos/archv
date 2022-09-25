@@ -1,4 +1,5 @@
 set(FILES
+	factor_repo_tests.cpp
 	scale_tests.cpp
 )
 set(SUBDIRECTORIES)

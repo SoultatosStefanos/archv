@@ -1,4 +1,6 @@
-set(FILES)
+set(FILES
+	factor_repo.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
