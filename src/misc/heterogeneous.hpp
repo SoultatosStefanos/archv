@@ -1,15 +1,15 @@
-// Contains a private module for the dependencies weight repo class.
+// Contains utilities for efficient heterogeneous containers. (C++20)
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_DETAIL_WEIGHT_REPO_HPP
-#define DEPENDENCIES_DETAIL_WEIGHT_REPO_HPP
+#ifndef MISC_HETEROGENEOUS_HPP
+#define MISC_HETEROGENEOUS_HPP
 
 #include <functional> // for std::equal_to<void>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
-namespace dependencies::detail
+namespace misc
 {
 
 // NOTE: See Example at:
@@ -25,6 +25,7 @@ struct string_hash
     auto operator()(const std::string& str) const { return hash_type()(str); }
 };
 
+// Transparent unordered_map, supporting heterogeneous string lookup (C++20)
 template <
     typename Value,
     typename Allocator
@@ -36,6 +37,6 @@ using unordered_string_map = std::unordered_map<
     std::equal_to<>,
     Allocator >;
 
-} // namespace dependencies::detail
+} // namespace misc
 
-#endif // DEPENDENCIES_DETAIL_WEIGHT_REPO_HPP
+#endif // MISC_HETEROGENEOUS_HPP

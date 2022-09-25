@@ -9,6 +9,7 @@ set(SUBDIRECTORIES
 	multithreading
 	progress
 	rendering
+	scaling
 	ui
 	undo_redo
 )
