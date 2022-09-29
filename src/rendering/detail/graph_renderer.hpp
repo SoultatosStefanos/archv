@@ -75,6 +75,10 @@ public:
     auto draw_layout(const vertex_properties& v) -> void;
     auto draw_layout(const edge_properties& e) -> void;
 
+    auto draw_scaling(const vertex_properties& v, const config_data_type& cfg)
+        -> void;
+    auto draw_scaling(const edge_properties& e) -> void;
+
     auto clear(const vertex_properties& v) -> void;
     auto clear(const edge_properties& e) -> void;
 
@@ -97,6 +101,8 @@ private:
 
     auto draw_tip(const edge_properties& e, const config_data_type& c) -> void;
     auto redraw_tip(const edge_properties& e, const config_data_type&) -> void;
+
+    auto recalculate_edge(const edge_properties& e) -> void;
 
     scene_type& m_scene;
 

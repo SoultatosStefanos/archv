@@ -159,8 +159,12 @@ public:
         visit_edges([this](const auto& e) { m_impl.draw_layout(e); });
     }
 
-    // TODO
-    // draw_scale
+    inline auto draw_scaling() -> void
+    {
+        visit_vertices([this](const auto& v)
+                       { m_impl.draw_scaling(v, config_data()); });
+        visit_edges([this](const auto& e) { m_impl.draw_scaling(e); });
+    }
 
     inline auto clear() -> void
     {

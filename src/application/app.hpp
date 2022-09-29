@@ -100,6 +100,7 @@ private:
     auto connect_gui_gui_configurator() -> void;
 
     auto connect_rendering_with_layout() -> void;
+    auto connect_rendering_with_scaling() -> void;
 
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;

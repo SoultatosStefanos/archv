@@ -124,6 +124,14 @@ auto graph_renderer_impl::draw_layout(const vertex_properties& v) -> void
     BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
 
+auto graph_renderer_impl::draw_scaling(
+    const vertex_properties& v, const config_data_type& cfg) -> void
+{
+    assert(scene().hasSceneNode(v.id));
+    auto* node = scene().getSceneNode(v.id);
+    node->setScale(cfg.vertex_scale * v.scale);
+}
+
 auto graph_renderer_impl::clear(const vertex_properties& v) -> void
 {
     if (scene().hasSceneNode(v.id))
@@ -295,7 +303,7 @@ auto graph_renderer_impl::draw_tip(
     BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
 }
 
-auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
+auto graph_renderer_impl::recalculate_edge(const edge_properties& e) -> void
 {
     const auto eid = make_edge_id(e);
     const auto tid = make_edge_tip_id(eid);
@@ -317,8 +325,20 @@ auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
 
     tip->setPosition(to);
     tip->setOrientation(rotate(from, e.target.pos, Vector3::UNIT_Y));
+}
 
-    BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << eid;
+auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
+{
+    recalculate_edge(e);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << make_edge_id(e);
+}
+
+auto graph_renderer_impl::draw_scaling(const edge_properties& e) -> void
+{
+    recalculate_edge(e);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew scaling for edge: " << make_edge_id(e);
 }
 
 auto graph_renderer_impl::clear(const edge_properties& e) -> void

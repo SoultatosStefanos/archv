@@ -171,6 +171,15 @@ auto app::connect_rendering_with_layout() -> void
                                         { m_graph_renderer->draw_layout(); });
 }
 
+auto app::connect_rendering_with_scaling() -> void
+{
+    assert(m_graph_renderer);
+    assert(m_scaling_backend);
+
+    m_scaling_backend->connect([this](const auto&)
+                               { m_graph_renderer->draw_scaling(); });
+}
+
 auto app::connect_gui_background_configurator() -> void
 {
     assert(m_gui);

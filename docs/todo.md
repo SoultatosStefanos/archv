@@ -450,9 +450,14 @@
 	+ [x] Configurable edge tips
 
 
-# 24 / 08 / 2022
+# 30 / 08 / 2022
 
-	+ [ ] Vertex scaling depending on symbol metadata
+	+ [x] Vertex scaling depending on symbol metadata
+
+	+ [x] Vertex scaling with gui editing
+
+
+# 31 / 08 / 2022 
 
 	+ [ ] Edge dependencies rendering
 
