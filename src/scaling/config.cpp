@@ -28,9 +28,15 @@ namespace
         auto&& dims = deserialize_dims(val["dimensions"]);
         auto baseline = val["baseline"].as< factor::baseline_type >();
 
+        const auto& ratio_val = val["ratio"];
+        auto min_ratio = ratio_val["min"].as< factor::ratio_type >();
+        auto max_ratio = ratio_val["max"].as< factor::ratio_type >();
+
         return factor { .applied_dims = std::move(dims),
                         .baseline = baseline,
-                        .enabled = enabled };
+                        .enabled = enabled,
+                        .min_ratio = min_ratio,
+                        .max_ratio = max_ratio };
     }
 
 } // namespace

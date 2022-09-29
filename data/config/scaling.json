@@ -6,7 +6,8 @@
 			{
 				"enabled" : true,
 				"dimensions" : [ true, true, true ],
-				"baseline" : 1
+				"baseline" : 1,
+				"ratio" : { "min" : 1, "max" : 10000000 }
 			}
 		},
 		{
@@ -14,7 +15,8 @@
 			{
 				"enabled" : false,
 				"dimensions" : [ true, true, true ],
-				"baseline" : 2
+				"baseline" : 1,
+				"ratio" : { "min" : 1, "max" : 10000000 }
 			}
 		},
 		{
@@ -22,7 +24,8 @@
 			{
 				"enabled" : false,
 				"dimensions" : [ false, true, true ],
-				"baseline" : 2
+				"baseline" : 1,
+				"ratio" : { "min" : 1, "max" : 10000000 }
 			}
 		}
 	]

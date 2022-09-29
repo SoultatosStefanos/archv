@@ -10,6 +10,29 @@ using namespace scaling;
 namespace
 {
 
+TEST(a_scaling_backend, cant_be_made_with_any_negative_baseline)
+{
+    ASSERT_THROW(
+        backend(backend::config_data_type { { "f", make_x_factor(-1) } }),
+        invalid_baseline);
+}
+
+TEST(a_scaling_backend, cant_be_made_with_any_negative_min_ratio)
+{
+    ASSERT_THROW(
+        backend(
+            backend::config_data_type { { "f", make_x_factor(1, true, -9) } }),
+        invalid_ratio);
+}
+
+TEST(a_scaling_backend, cant_be_made_with_any_negative_max_ratio)
+{
+    ASSERT_THROW(
+        backend(backend::config_data_type {
+            { "f", make_x_factor(1, true, 0, -3) } }),
+        invalid_ratio);
+}
+
 using mock_t = MockFunction< void(const factor&) >;
 using nice_mock_t = NiceMock< mock_t >;
 
@@ -18,8 +41,8 @@ class given_a_scaling_backend : public Test
 protected:
     void SetUp() override
     {
-        b = std::make_unique< backend >(
-            backend::config_data_type { { "f", make_x_factor(10, true) } });
+        b = std::make_unique< backend >(backend::config_data_type {
+            { "f", make_x_factor(10, true, 0, 10) } });
     }
 
     std::unique_ptr< backend > b;
@@ -43,6 +66,12 @@ TEST_F(given_a_scaling_backend, queries_on_factor_baseline_are_valid)
     ASSERT_EQ(get_factor_baseline(*b, "f"), 10);
 }
 
+TEST_F(given_a_scaling_backend, queries_on_factor_minmax_ratios_are_valid)
+{
+    ASSERT_EQ(get_factor_min_ratio(*b, "f"), 0);
+    ASSERT_EQ(get_factor_max_ratio(*b, "f"), 10);
+}
+
 TEST_F(given_a_scaling_backend, factor_applied_dims_can_be_set)
 {
     apply_factor_on_y_axis(*b, "f");
@@ -61,7 +90,7 @@ TEST_F(given_a_scaling_backend, setting_factor_applied_dims_notifies_observers)
 {
     b->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(make_xy_factor(10, true))).Times(1);
+    EXPECT_CALL(mock, Call(make_xy_factor(10, true, 0, 10))).Times(1);
 
     apply_factor_on_y_axis(*b, "f");
 }
@@ -89,7 +118,7 @@ TEST_F(
 {
     b->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(make_nil_factor(10, true))).Times(1);
+    EXPECT_CALL(mock, Call(make_nil_factor(10, true, 0, 10))).Times(1);
 
     deny_factor_on_x_axis(*b, "f");
 }
@@ -111,7 +140,7 @@ TEST_F(given_a_scaling_backend, setting_factor_enabled_notifies_observers)
 {
     b->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(make_x_factor(10, false))).Times(1);
+    EXPECT_CALL(mock, Call(make_x_factor(10, false, 0, 10))).Times(1);
 
     disable_factor(*b, "f");
 }
@@ -123,19 +152,64 @@ TEST_F(given_a_scaling_backend, factor_baseline_can_be_set)
     ASSERT_EQ(get_factor_baseline(*b, "f"), 300);
 }
 
+TEST_F(given_a_scaling_backend, factor_minmax_ratios_can_be_set)
+{
+    update_factor_min_ratio(*b, "f", 300);
+
+    ASSERT_EQ(get_factor_min_ratio(*b, "f"), 300);
+
+    update_factor_max_ratio(*b, "f", 500);
+
+    ASSERT_EQ(get_factor_max_ratio(*b, "f"), 500);
+}
+
 TEST_F(given_a_scaling_backend, setting_factor_baseline_notifies_observers)
 {
     b->connect(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(make_x_factor(300, true))).Times(1);
+    EXPECT_CALL(mock, Call(make_x_factor(300, true, 0, 10))).Times(1);
 
     update_factor_baseline(*b, "f", 300);
+}
+
+TEST_F(given_a_scaling_backend, setting_factor_ratios_notifies_observers)
+{
+    b->connect(mock.AsStdFunction());
+
+    EXPECT_CALL(mock, Call(make_x_factor(10, true, 10, 10))).Times(1);
+
+    update_factor_min_ratio(*b, "f", 10);
+
+    EXPECT_CALL(mock, Call(make_x_factor(10, true, 10, 100))).Times(1);
+
+    update_factor_max_ratio(*b, "f", 100);
 }
 
 TEST_F(
     given_a_scaling_backend, setting_factor_baseline_to_zero_results_to_error)
 {
     ASSERT_THROW(update_factor_baseline(*b, "f", 0), invalid_baseline);
+}
+
+TEST_F(
+    given_a_scaling_backend,
+    setting_factor_baseline_to_negative_results_to_error)
+{
+    ASSERT_THROW(update_factor_baseline(*b, "f", -10), invalid_baseline);
+}
+
+TEST_F(
+    given_a_scaling_backend,
+    setting_factor_min_ratio_to_negative_results_to_error)
+{
+    ASSERT_THROW(update_factor_min_ratio(*b, "f", -10), invalid_ratio);
+}
+
+TEST_F(
+    given_a_scaling_backend,
+    setting_factor_max_ratio_to_negative_results_to_error)
+{
+    ASSERT_THROW(update_factor_max_ratio(*b, "f", -10), invalid_ratio);
 }
 
 TEST_F(given_a_scaling_backend, factors_can_be_restored_to_defaults)
@@ -148,7 +222,8 @@ TEST_F(given_a_scaling_backend, factors_can_be_restored_to_defaults)
 
     restore_defaults(*b);
 
-    ASSERT_EQ(b->get_factor_repo().get_factor("f"), make_x_factor(10, true));
+    ASSERT_EQ(
+        b->get_factor_repo().get_factor("f"), make_x_factor(10, true, 0, 10));
 }
 
 TEST_F(given_a_scaling_backend, restoring_to_defaults_notifies_observers)
@@ -160,7 +235,7 @@ TEST_F(given_a_scaling_backend, restoring_to_defaults_notifies_observers)
     apply_factor_on_z_axis(*b, "f");
     deny_factor_on_z_axis(*b, "f");
 
-    EXPECT_CALL(mock, Call(make_x_factor(10, true))).Times(1);
+    EXPECT_CALL(mock, Call(make_x_factor(10, true, 0, 10))).Times(1);
 
     restore_defaults(*b);
 }

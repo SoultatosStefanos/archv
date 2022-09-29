@@ -67,4 +67,10 @@ TEST(scale_tests, scale_function_with_enabled_xyz_factor)
     ASSERT_EQ(make_scale(2, 2, 2), scale(make_xyz_factor(5, true), 10));
 }
 
+TEST(scale_tests, scale_function_clamps_within_minmax_factor_ratios)
+{
+    ASSERT_EQ(make_scale(1, 1, 1), scale(make_xyz_factor(1, true, 1), 0));
+    ASSERT_EQ(make_scale(2, 2, 2), scale(make_xyz_factor(1, true, 0, 2), 1000));
+}
+
 } // namespace

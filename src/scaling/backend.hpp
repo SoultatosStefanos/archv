@@ -17,7 +17,15 @@ namespace scaling
  * Errors                                                  *
  ***********************************************************/
 
-struct invalid_baseline : virtual std::exception, virtual boost::exception
+struct backend_error : virtual std::exception, virtual boost::exception
+{
+};
+
+struct invalid_baseline : virtual backend_error
+{
+};
+
+struct invalid_ratio : virtual backend_error
 {
 };
 
@@ -27,6 +35,8 @@ struct invalid_baseline : virtual std::exception, virtual boost::exception
 
 using baseline_info
     = boost::error_info< struct tag_baseline, factor::baseline_type >;
+
+using ratio_info = boost::error_info< struct tag_ratio, factor::ratio_type >;
 
 /***********************************************************
  * Backend                                                 *
@@ -42,6 +52,7 @@ public:
     using tag_type = factor_repo::tag_type;
     using dims_type = factor::dims_type;
     using baseline_type = factor::baseline_type;
+    using ratio_type = factor::ratio_type;
 
     using factor_slot = factor_signal::slot_type;
     using connection = boost::signals2::connection;
@@ -53,12 +64,12 @@ public:
     auto get_factor_repo() const -> const factor_repo& { return m_repo; }
 
     auto update_factor(
-        tag_type tag, dims_type dims, baseline_type baseline, bool enabled)
-        -> void;
-
-    auto update_factor_dims(tag_type tag, dims_type dims) -> void;
-    auto update_factor_enabled(tag_type tag, bool enabled) -> void;
-    auto update_factor_baseline(tag_type tag, baseline_type baseline) -> void;
+        tag_type tag,
+        dims_type dims,
+        baseline_type baseline,
+        bool enabled,
+        ratio_type min_ratio,
+        ratio_type max_ratio) -> void;
 
     auto connect(const factor_slot& f) -> connection;
 
@@ -75,88 +86,37 @@ private:
  * Usecases                                                *
  ***********************************************************/
 
-inline auto is_factor_applied_on_x(const backend& b, backend::tag_type tag)
-    -> bool
-{
-    return b.get_factor_repo().get_factor(tag).applied_dims[0];
-}
+auto is_factor_applied_on_x(const backend& b, backend::tag_type tag) -> bool;
+auto is_factor_applied_on_y(const backend& b, backend::tag_type tag) -> bool;
+auto is_factor_applied_on_z(const backend& b, backend::tag_type tag) -> bool;
+auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool;
 
-inline auto is_factor_applied_on_y(const backend& b, backend::tag_type tag)
-    -> bool
-{
-    return b.get_factor_repo().get_factor(tag).applied_dims[1];
-}
+auto get_factor_baseline(const backend& b, backend::tag_type tag)
+    -> backend::baseline_type;
+auto get_factor_min_ratio(const backend& b, backend::tag_type tag)
+    -> backend::baseline_type;
+auto get_factor_max_ratio(const backend& b, backend::tag_type tag)
+    -> backend::baseline_type;
 
-inline auto is_factor_applied_on_z(const backend& b, backend::tag_type tag)
-    -> bool
-{
-    return b.get_factor_repo().get_factor(tag).applied_dims[2];
-}
+auto apply_factor_on_x_axis(backend& b, backend::tag_type tag) -> void;
+auto apply_factor_on_y_axis(backend& b, backend::tag_type tag) -> void;
+auto apply_factor_on_z_axis(backend& b, backend::tag_type tag) -> void;
+auto deny_factor_on_x_axis(backend& b, backend::tag_type tag) -> void;
+auto deny_factor_on_y_axis(backend& b, backend::tag_type tag) -> void;
+auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void;
 
-inline auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool
-{
-    return b.get_factor_repo().get_factor(tag).enabled;
-}
+auto enable_factor(backend& b, backend::tag_type tag) -> void;
+auto disable_factor(backend& b, backend::tag_type tag) -> void;
 
-inline auto get_factor_baseline(const backend& b, backend::tag_type tag)
-    -> factor::baseline_type
-{
-    return b.get_factor_repo().get_factor(tag).baseline;
-}
+auto update_factor_baseline(
+    backend& b, backend::tag_type tag, backend::baseline_type baseline) -> void;
 
-inline auto apply_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { true, curr[1], curr[2] });
-}
+auto update_factor_min_ratio(
+    backend& b, backend::tag_type tag, backend::ratio_type ratio) -> void;
 
-inline auto apply_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { curr[0], true, curr[2] });
-}
+auto update_factor_max_ratio(
+    backend& b, backend::tag_type tag, backend::ratio_type ratio) -> void;
 
-inline auto apply_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { curr[0], curr[1], true });
-}
-
-inline auto deny_factor_on_x_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { false, curr[1], curr[2] });
-}
-
-inline auto deny_factor_on_y_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { curr[0], false, curr[2] });
-}
-
-inline auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void
-{
-    const auto& curr = b.get_factor_repo().get_factor(tag).applied_dims;
-    b.update_factor_dims(tag, { curr[0], curr[1], false });
-}
-
-inline auto enable_factor(backend& b, backend::tag_type tag) -> void
-{
-    b.update_factor_enabled(tag, true);
-}
-
-inline auto disable_factor(backend& b, backend::tag_type tag) -> void
-{
-    b.update_factor_enabled(tag, false);
-}
-
-inline auto update_factor_baseline(
-    backend& b, backend::tag_type tag, backend::baseline_type baseline)
-{
-    b.update_factor_baseline(tag, baseline);
-}
-
-// O(n)
 auto restore_defaults(backend& b) -> void;
 
 } // namespace scaling
