@@ -38,6 +38,7 @@ auto scaling_editor::render_factor(tag_type tag) const -> void
     if (ImGui::TreeNode(tag.data()))
     {
         render_dims_editor(tag);
+        render_baseline_editor(tag);
         render_enabled_editor(tag);
         render_ratios_editor(tag);
         ImGui::Spacing();
@@ -66,6 +67,14 @@ auto scaling_editor::render_dims_editor(tag_type tag) const -> void
 
     if (ImGui::Checkbox("z", &z))
         emit_factor_dims(tag, { x, y, z });
+}
+
+auto scaling_editor::render_baseline_editor(tag_type tag) const -> void
+{
+    auto f = baseline(tag);
+    if (ImGui::InputFloat(
+            "Baseline", &f, 1, 0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_factor_baseline(tag, f);
 }
 
 auto scaling_editor::render_enabled_editor(tag_type tag) const -> void

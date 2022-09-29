@@ -87,6 +87,7 @@ private:
     auto render_factors() const -> void;
     auto render_factor(tag_type tag) const -> void;
     auto render_dims_editor(tag_type tag) const -> void;
+    auto render_baseline_editor(tag_type tag) const -> void;
     auto render_enabled_editor(tag_type tag) const -> void;
     auto render_ratios_editor(tag_type tag) const -> void;
     auto render_restore_button() const -> void;
