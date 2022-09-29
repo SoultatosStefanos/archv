@@ -459,6 +459,8 @@
 
 # 31 / 08 / 2022 
 
+	+ [ ] Metadata vertex popup
+
 	+ [ ] Edge dependencies rendering
 
 		+ [ ] See https://wiki.ogre3d.org/-Particle
