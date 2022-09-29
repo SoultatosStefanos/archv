@@ -164,6 +164,7 @@ void app::setup()
     connect_gui_with_layout();
     connect_gui_with_command_history();
     connect_rendering_with_layout();
+    connect_gui_with_scaling();
     connect_gui_background_configurator();
     connect_gui_graph_configurator();
     connect_gui_gui_configurator();

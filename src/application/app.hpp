@@ -88,11 +88,13 @@ private:
     auto setup_gui_graph_configurator() -> void;
     auto setup_gui_dependencies_editor() -> void;
     auto setup_gui_layout_editor() -> void;
+    auto setup_gui_scaling_editor() -> void;
     auto start_gui() -> void;
 
     auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;
     auto connect_gui_with_layout() -> void;
+    auto connect_gui_with_scaling() -> void;
     auto connect_gui_background_configurator() -> void;
     auto connect_gui_graph_configurator() -> void;
     auto connect_gui_gui_configurator() -> void;

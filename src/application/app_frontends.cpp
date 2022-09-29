@@ -65,6 +65,7 @@ auto app::setup_gui() -> void
     setup_gui_gui_configurator();
     setup_gui_dependencies_editor();
     setup_gui_layout_editor();
+    setup_gui_scaling_editor();
     start_gui();
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
@@ -224,6 +225,21 @@ auto app::install_gui_plugins() -> void
 
     gui::plugins::install_scales(m_layout_config.scales);
 
+    gui::plugins::install_factors(
+        [this]()
+        {
+            auto res = gui::plugins::factor_set();
+            const auto& plugged = std::ranges::views::keys(m_scaling_config);
+
+            std::transform(
+                std::cbegin(plugged),
+                std::cend(plugged),
+                std::inserter(res, std::begin(res)),
+                [](const auto& factor) { return factor.c_str(); });
+
+            return res;
+        }());
+
     BOOST_LOG_TRIVIAL(debug) << "installed gui pluggins";
 }
 
@@ -341,6 +357,36 @@ auto app::setup_gui_dependencies_editor() -> void
     m_gui->get_editor().get_dependencies_editor().set_weights(
         [this](auto dep)
         { return m_dependencies_backend->get_weight_repo().get_weight(dep); });
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui dependencies editor";
+}
+
+auto app::setup_gui_scaling_editor() -> void
+{
+    assert(m_gui);
+    assert(m_scaling_backend);
+
+    m_gui->get_editor().get_scaling_editor().set_dims(
+        [this](auto tag)
+        { return scaling::get_factor_dims(*m_scaling_backend, tag); });
+
+    m_gui->get_editor().get_scaling_editor().set_baseline(
+        [this](auto tag)
+        { return scaling::get_factor_baseline(*m_scaling_backend, tag); });
+
+    m_gui->get_editor().get_scaling_editor().set_enabled(
+        [this](auto tag)
+        { return scaling::is_factor_enabled(*m_scaling_backend, tag); });
+
+    m_gui->get_editor().get_scaling_editor().set_min_ratio(
+        [this](auto tag)
+        { return scaling::get_factor_min_ratio(*m_scaling_backend, tag); });
+
+    m_gui->get_editor().get_scaling_editor().set_max_ratio(
+        [this](auto tag)
+        { return scaling::get_factor_max_ratio(*m_scaling_backend, tag); });
+
+    BOOST_LOG_TRIVIAL(debug) << "setup gui scaling editor";
 }
 
 auto app::start_gui() -> void

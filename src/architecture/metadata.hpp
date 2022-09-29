@@ -24,9 +24,9 @@ struct metadata_counter
     using tag_type = std::string_view;
     using count_type = unsigned;
 
-    static constexpr auto fields_tag { "fields" };
-    static constexpr auto methods_tag { "methods" };
-    static constexpr auto nested_tag { "nested" };
+    static constexpr auto fields_tag { "Fields" };
+    static constexpr auto methods_tag { "Methods" };
+    static constexpr auto nested_tag { "Nested" };
 
     const symbol_table& st;
     const graph& g;

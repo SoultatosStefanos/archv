@@ -20,6 +20,7 @@ scaling_editor::scaling_editor()
 auto scaling_editor::render() const -> void
 {
     render_factors();
+    ImGui::Spacing();
     render_restore_button();
 }
 
@@ -34,30 +35,36 @@ auto scaling_editor::render_factors() const -> void
 
 auto scaling_editor::render_factor(tag_type tag) const -> void
 {
-    ImGui::Spacing();
-    ImGui::Text(tag.data());
-    ImGui::Spacing();
-
-    render_dims_editor(tag);
-    render_enabled_editor(tag);
-    render_ratios_editor(tag);
+    if (ImGui::TreeNode(tag.data()))
+    {
+        render_dims_editor(tag);
+        render_enabled_editor(tag);
+        render_ratios_editor(tag);
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::TreePop();
+    }
 }
 
 auto scaling_editor::render_dims_editor(tag_type tag) const -> void
 {
+    ImGui::Spacing();
+    ImGui::Text("Axes\t");
+    ImGui::SameLine();
+
     auto [x, y, z] = dims(tag);
 
-    if (ImGui::Checkbox("X", &x))
+    if (ImGui::Checkbox("x", &x))
         emit_factor_dims(tag, { x, y, z });
 
     ImGui::SameLine();
 
-    if (ImGui::Checkbox("Y", &y))
+    if (ImGui::Checkbox("y", &y))
         emit_factor_dims(tag, { x, y, z });
 
     ImGui::SameLine();
 
-    if (ImGui::Checkbox("Z", &z))
+    if (ImGui::Checkbox("z", &z))
         emit_factor_dims(tag, { x, y, z });
 }
 
@@ -73,10 +80,22 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
     auto min = min_ratio(tag);
     auto max = max_ratio(tag);
 
-    if (ImGui::InputFloat("Min Ratio", &min))
+    if (ImGui::InputFloat(
+            "Min Ratio",
+            &min,
+            1,
+            0,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
         emit_factor_min_ratio(tag, min);
 
-    if (ImGui::InputFloat("Max Ratio", &max))
+    if (ImGui::InputFloat(
+            "Max Ratio",
+            &max,
+            1,
+            0,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
         emit_factor_min_ratio(tag, max);
 }
 

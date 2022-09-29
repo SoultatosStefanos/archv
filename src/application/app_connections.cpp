@@ -84,6 +84,54 @@ auto app::connect_gui_with_layout() -> void
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
 }
 
+// TODO
+auto app::connect_gui_with_scaling() -> void
+{
+    assert(m_gui);
+    assert(m_scaling_backend);
+
+    auto& editor = m_gui->get_editor().get_scaling_editor();
+
+    editor.connect_to_baseline(
+        [](auto tag, auto baseline)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected scaling factor: " << tag
+                                    << ", " << baseline << " baseline";
+        });
+
+    editor.connect_to_dims(
+        [](auto tag, const auto& dims)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected scaling factor: " << tag << ", " << dims[0] << ", "
+                << dims[1] << ", " << dims[2] << " applied dimensions";
+        });
+
+    editor.connect_to_enabled(
+        [](auto tag, auto enabled)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected scaling factor: " << tag
+                                    << ", " << enabled << " enabled";
+        });
+
+    editor.connect_to_min_ratio(
+        [](auto tag, auto ratio)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected scaling factor: " << tag
+                                    << ", " << ratio << " min ratio";
+        });
+
+    editor.connect_to_max_ratio(
+        [](auto tag, auto ratio)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected scaling factor: " << tag
+                                    << ", " << ratio << " max ratio";
+        });
+
+    editor.connect_to_restore(
+        []() { BOOST_LOG_TRIVIAL(info) << "selected scaling restore"; });
+}
+
 auto app::connect_gui_with_command_history() -> void
 {
     assert(m_gui);

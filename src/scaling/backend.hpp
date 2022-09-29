@@ -91,6 +91,8 @@ auto is_factor_applied_on_y(const backend& b, backend::tag_type tag) -> bool;
 auto is_factor_applied_on_z(const backend& b, backend::tag_type tag) -> bool;
 auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool;
 
+auto get_factor_dims(const backend& b, backend::tag_type tag)
+    -> const backend::dims_type&;
 auto get_factor_baseline(const backend& b, backend::tag_type tag)
     -> backend::baseline_type;
 auto get_factor_min_ratio(const backend& b, backend::tag_type tag)

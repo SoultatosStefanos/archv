@@ -87,6 +87,12 @@ auto is_factor_enabled(const backend& b, backend::tag_type tag) -> bool
     return b.get_factor_repo().get_factor(tag).enabled;
 }
 
+auto get_factor_dims(const backend& b, backend::tag_type tag)
+    -> const backend::dims_type&
+{
+    return b.get_factor_repo().get_factor(tag).applied_dims;
+}
+
 auto get_factor_baseline(const backend& b, backend::tag_type tag)
     -> factor::baseline_type
 {
