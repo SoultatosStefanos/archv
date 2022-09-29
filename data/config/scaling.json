@@ -6,8 +6,8 @@
 			{
 				"enabled" : true,
 				"dimensions" : [ true, true, true ],
-				"baseline" : 1,
-				"ratio" : { "min" : 1, "max" : 10000000 }
+				"baseline" : 3,
+				"ratio" : { "min" : 1, "max" : 2 }
 			}
 		},
 		{
@@ -15,17 +15,17 @@
 			{
 				"enabled" : false,
 				"dimensions" : [ true, true, true ],
-				"baseline" : 1,
-				"ratio" : { "min" : 1, "max" : 10000000 }
+				"baseline" : 5,
+				"ratio" : { "min" : 1, "max" : 2 }
 			}
 		},
 		{
 			"Nested" : 
 			{
 				"enabled" : false,
-				"dimensions" : [ false, true, true ],
-				"baseline" : 1,
-				"ratio" : { "min" : 1, "max" : 10000000 }
+				"dimensions" : [ true, true, true ],
+				"baseline" : 0.2,
+				"ratio" : { "min" : 1, "max" : 1 }
 			}
 		}
 	]
