@@ -1,5 +1,6 @@
 set(FILES
 	config_tests.cpp
+	metadata_tests.cpp
 	symbol_table_tests.cpp
 )
 set(SUBDIRECTORIES)

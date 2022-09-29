@@ -4,9 +4,7 @@
 #ifndef APPLICATION_TYPEDEFS_HPP
 #define APPLICATION_TYPEDEFS_HPP
 
-#include "architecture/graph.hpp"
-#include "architecture/symbol_table.hpp"
-#include "architecture/symbols.hpp"
+#include "architecture/all.hpp"
 #include "dependencies/backend.hpp"
 #include "dependencies/weight_map.hpp"
 #include "layout/backend.hpp"
@@ -24,43 +22,8 @@ using position_map = layout::position_map< architecture::graph, weight_map >;
 
 using layout_backend = layout::backend< architecture::graph, weight_map >;
 
-// TODO Tidy, put somewhere else
-struct scaling_factors_counter
-{
-    using vertex_type = architecture::graph::vertex_descriptor;
-    using tag_type = scaling::backend::tag_type;
-
-    const architecture::symbol_table& st;
-    const architecture::graph& g;
-
-    auto operator()(vertex_type v, tag_type tag) const -> unsigned
-    {
-        const auto& id = boost::get(boost::get(boost::vertex_bundle, g), v);
-        const auto* sym = st.lookup(id);
-        assert(sym);
-
-        if (tag == "fields")
-        {
-            return sym->fields.size();
-        }
-        else if (tag == "methods")
-        {
-            return sym->methods.size();
-        }
-        else if (tag == "nested")
-        {
-            return sym->nested.size();
-        }
-        else
-        {
-            assert(false);
-            return 0;
-        }
-    }
-};
-
 using scale_map
-    = scaling::scale_map< architecture::graph, scaling_factors_counter >;
+    = scaling::scale_map< architecture::graph, architecture::metadata_counter >;
 
 using graph_renderer = rendering::graph_renderer<
     architecture::graph,

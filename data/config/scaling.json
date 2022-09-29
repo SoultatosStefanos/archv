@@ -4,15 +4,15 @@
 		{
 			"fields" : 
 			{
-				"enabled" : false,
+				"enabled" : true,
 				"dimensions" : [ true, true, true ],
-				"baseline" : 2
+				"baseline" : 1
 			}
 		},
 		{
 			"methods" : 
 			{
-				"enabled" : true,
+				"enabled" : false,
 				"dimensions" : [ true, true, true ],
 				"baseline" : 2
 			}

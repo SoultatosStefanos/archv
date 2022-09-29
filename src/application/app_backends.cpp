@@ -44,8 +44,10 @@ auto app::make_position_map() const -> position_map
 auto app::make_scale_map() const -> scale_map
 {
     assert(m_scaling_backend);
+
     return scaling::make_scale_map< architecture::graph >(
-        *m_scaling_backend, scaling_factors_counter(m_symbol_table, m_graph));
+        *m_scaling_backend,
+        architecture::metadata_counter(m_symbol_table, m_graph));
 }
 
 /***********************************************************

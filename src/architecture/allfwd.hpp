@@ -17,6 +17,8 @@ struct structure;
 
 class tuple;
 
+struct metadata_counter;
+
 } // namespace architecture
 
 #endif // ARCHITECTURE_ALLFWD_HPP
