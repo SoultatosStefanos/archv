@@ -4,8 +4,8 @@
 #ifndef GUI_ALL_HPP
 #define GUI_ALL_HPP
 
-#include "config.hpp"
 #include "background_configurator.hpp"
+#include "config.hpp"
 #include "configurator.hpp"
 #include "dependencies_editor.hpp"
 #include "editor.hpp"
@@ -15,5 +15,6 @@
 #include "layout_editor.hpp"
 #include "plugins.hpp"
 #include "resources.hpp"
+#include "scaling_editor.hpp"
 
 #endif // GUI_ALL_HPP

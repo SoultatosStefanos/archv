@@ -10,6 +10,7 @@ set(FILES
 	layout_editor.cpp
 	plugins.cpp
 	resources.cpp
+	scaling_editor.cpp
 )
 set(SUBDIRECTORIES)
 

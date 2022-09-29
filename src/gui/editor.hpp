@@ -6,6 +6,7 @@
 
 #include "dependencies_editor.hpp"
 #include "layout_editor.hpp"
+#include "scaling_editor.hpp"
 
 #include <boost/signals2/signal.hpp>
 #include <cassert>
@@ -34,6 +35,9 @@ public:
 
     auto get_layout_editor() const -> const auto& { return m_layout_edit; }
     auto get_layout_editor() -> auto& { return m_layout_edit; }
+
+    auto get_scaling_editor() const -> const auto& { return m_scaling_edit; }
+    auto get_scaling_editor() -> auto& { return m_scaling_edit; }
 
     auto set_undo_enabled(undo_enabled_pred pred) -> void
     {
@@ -68,8 +72,10 @@ private:
     auto render_undo_redo() const -> void;
     auto render_dependencies_editor_item() const -> void;
     auto render_layout_editor_item() const -> void;
+    auto render_scaling_editor_item() const -> void;
     auto render_dependencies_editor() const -> void;
     auto render_layout_editor() const -> void;
+    auto render_scaling_editor() const -> void;
 
     undo_enabled_pred m_undo_enabled;
     redo_enabled_pred m_redo_enabled;
@@ -79,9 +85,11 @@ private:
 
     dependencies_editor m_deps_edit;
     layout_editor m_layout_edit;
+    scaling_editor m_scaling_edit;
 
     mutable bool m_dependencies_open { false };
     mutable bool m_layout_open { false };
+    mutable bool m_scaling_open { false };
 };
 
 } // namespace gui

@@ -15,7 +15,7 @@ class graph_configurator;
 class gui_configurator;
 class gui;
 class layout_editor;
-
+class scaling_editor;
 
 } // namespace gui
 

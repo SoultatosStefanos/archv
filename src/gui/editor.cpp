@@ -16,6 +16,7 @@ auto editor::render() const -> void
 
         render_dependencies_editor_item();
         render_layout_editor_item();
+        render_scaling_editor_item();
 
         ImGui::EndMenu();
     }
@@ -25,6 +26,9 @@ auto editor::render() const -> void
 
     if (m_layout_open)
         render_layout_editor();
+
+    if (m_scaling_open)
+        render_scaling_editor();
 }
 
 auto editor::render_undo_redo() const -> void
@@ -51,6 +55,12 @@ auto editor::render_layout_editor_item() const -> void
         m_layout_open = m_layout_open ? false : true;
 }
 
+auto editor::render_scaling_editor_item() const -> void
+{
+    if (ImGui::MenuItem("Scaling", "", m_scaling_open, true))
+        m_scaling_open = m_scaling_open ? false : true;
+}
+
 auto editor::render_dependencies_editor() const -> void
 {
     ImGui::Begin("Dependencies Edit", &m_dependencies_open);
@@ -62,6 +72,13 @@ auto editor::render_layout_editor() const -> void
 {
     ImGui::Begin("Layout Edit", &m_layout_open);
     get_layout_editor().render();
+    ImGui::End();
+}
+
+auto editor::render_scaling_editor() const -> void
+{
+    ImGui::Begin("Scaling Edit", &m_scaling_open);
+    get_scaling_editor().render();
     ImGui::End();
 }
 
