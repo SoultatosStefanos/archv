@@ -243,4 +243,268 @@ auto restore_layout_defaults(
     cmds.execute(std::make_unique< restore_layout_defaults_cmd >(backend));
 }
 
+/***********************************************************
+ * Scaling                                                 *
+ ***********************************************************/
+
+// TODO
+
+namespace
+{
+    struct update_scaling_factor_dims_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using tag_type = backend_type::tag_type;
+        using dims_type = backend_type::dims_type;
+
+        backend_type& backend;
+        tag_type tag;
+        dims_type new_dims;
+        dims_type old_dims;
+
+        update_scaling_factor_dims_cmd(
+            backend_type& b, tag_type t, dims_type dims)
+        : backend { b }, tag { t }, new_dims { std::move(dims) }
+        {
+        }
+
+        ~update_scaling_factor_dims_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_dims = scaling::get_factor_dims(backend, tag);
+            scaling::update_factor_dims(backend, tag, new_dims);
+        }
+
+        auto undo() -> void override
+        {
+            scaling::update_factor_dims(backend, tag, old_dims);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_scaling_factor_baseline_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using tag_type = backend_type::tag_type;
+        using baseline_type = backend_type::baseline_type;
+
+        backend_type& backend;
+        tag_type tag;
+        baseline_type new_baseline;
+        baseline_type old_baseline;
+
+        update_scaling_factor_baseline_cmd(
+            backend_type& b, tag_type t, baseline_type baseline)
+        : backend { b }, tag { t }, new_baseline { baseline }
+        {
+        }
+
+        ~update_scaling_factor_baseline_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_baseline = scaling::get_factor_baseline(backend, tag);
+            scaling::update_factor_baseline(backend, tag, new_baseline);
+        }
+
+        auto undo() -> void override
+        {
+            scaling::update_factor_baseline(backend, tag, old_baseline);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_scaling_factor_enablement_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using tag_type = backend_type::tag_type;
+
+        backend_type& backend;
+        tag_type tag;
+        bool new_enabled;
+        bool old_enabled;
+
+        update_scaling_factor_enablement_cmd(
+            backend_type& b, tag_type t, bool enabled)
+        : backend { b }, tag { t }, new_enabled { enabled }
+        {
+        }
+
+        ~update_scaling_factor_enablement_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_enabled = scaling::is_factor_enabled(backend, tag);
+            scaling::update_factor_enablement(backend, tag, new_enabled);
+        }
+
+        auto undo() -> void override
+        {
+            scaling::update_factor_enablement(backend, tag, old_enabled);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_scaling_factor_min_ratio_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using tag_type = backend_type::tag_type;
+        using ratio_type = backend_type::ratio_type;
+
+        backend_type& backend;
+        tag_type tag;
+        ratio_type new_ratio;
+        ratio_type old_ratio;
+
+        update_scaling_factor_min_ratio_cmd(
+            backend_type& b, tag_type t, ratio_type ratio)
+        : backend { b }, tag { t }, new_ratio { ratio }
+        {
+        }
+
+        ~update_scaling_factor_min_ratio_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_ratio = scaling::get_factor_min_ratio(backend, tag);
+            scaling::update_factor_min_ratio(backend, tag, new_ratio);
+        }
+
+        auto undo() -> void override
+        {
+            scaling::update_factor_min_ratio(backend, tag, old_ratio);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_scaling_factor_max_ratio_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using tag_type = backend_type::tag_type;
+        using ratio_type = backend_type::ratio_type;
+
+        backend_type& backend;
+        tag_type tag;
+        ratio_type new_ratio;
+        ratio_type old_ratio;
+
+        update_scaling_factor_max_ratio_cmd(
+            backend_type& b, tag_type t, ratio_type ratio)
+        : backend { b }, tag { t }, new_ratio { ratio }
+        {
+        }
+
+        ~update_scaling_factor_max_ratio_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_ratio = scaling::get_factor_max_ratio(backend, tag);
+            scaling::update_factor_max_ratio(backend, tag, new_ratio);
+        }
+
+        auto undo() -> void override
+        {
+            scaling::update_factor_max_ratio(backend, tag, old_ratio);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct restore_scaling_defaults_cmd : undo_redo::command
+    {
+        using backend_type = scaling::backend;
+        using repo_type = scaling::factor_repo;
+
+        backend_type& backend;
+        repo_type old_repo;
+
+        restore_scaling_defaults_cmd(backend_type& b) : backend { b } { }
+
+        ~restore_scaling_defaults_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_repo = backend.get_factor_repo();
+            scaling::restore_defaults(backend);
+        }
+
+        auto undo() -> void override
+        {
+            for (const auto& [tag, factor] : old_repo)
+                scaling::update_factor(
+                    backend,
+                    tag,
+                    factor.applied_dims,
+                    factor.baseline,
+                    factor.enabled,
+                    factor.min_ratio,
+                    factor.max_ratio);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+} // namespace
+
+auto update_scaling_factor_dims(
+    undo_redo::command_history& cmds,
+    scaling::backend& b,
+    scaling::backend::tag_type tag,
+    scaling::backend::dims_type dims) -> void
+{
+    cmds.execute(
+        std::make_unique< update_scaling_factor_dims_cmd >(b, tag, dims));
+}
+
+auto update_scaling_factor_baseline(
+    undo_redo::command_history& cmds,
+    scaling::backend& b,
+    scaling::backend::tag_type tag,
+    scaling::backend::baseline_type baseline) -> void
+{
+    cmds.execute(std::make_unique< update_scaling_factor_baseline_cmd >(
+        b, tag, baseline));
+}
+
+auto update_scaling_factor_enablement(
+    undo_redo::command_history& cmds,
+    scaling::backend& b,
+    scaling::backend::tag_type tag,
+    bool enabled) -> void
+{
+    cmds.execute(std::make_unique< update_scaling_factor_enablement_cmd >(
+        b, tag, enabled));
+}
+
+auto update_scaling_factor_min_ratio(
+    undo_redo::command_history& cmds,
+    scaling::backend& b,
+    scaling::backend::tag_type tag,
+    scaling::backend::ratio_type ratio) -> void
+{
+    cmds.execute(
+        std::make_unique< update_scaling_factor_min_ratio_cmd >(b, tag, ratio));
+}
+
+auto update_scaling_factor_max_ratio(
+    undo_redo::command_history& cmds,
+    scaling::backend& b,
+    scaling::backend::tag_type tag,
+    scaling::backend::ratio_type ratio) -> void
+{
+    cmds.execute(
+        std::make_unique< update_scaling_factor_max_ratio_cmd >(b, tag, ratio));
+}
+
+auto restore_scaling_defaults(
+    undo_redo::command_history& cmds, scaling::backend& b) -> void
+{
+    cmds.execute(std::make_unique< restore_scaling_defaults_cmd >(b));
+}
+
 } // namespace application

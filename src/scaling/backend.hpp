@@ -110,8 +110,27 @@ auto deny_factor_on_z_axis(backend& b, backend::tag_type tag) -> void;
 auto enable_factor(backend& b, backend::tag_type tag) -> void;
 auto disable_factor(backend& b, backend::tag_type tag) -> void;
 
+inline auto update_factor(
+    backend& b,
+    backend::tag_type tag,
+    backend::dims_type dims,
+    backend::baseline_type baseline,
+    bool enabled,
+    backend::ratio_type min_ratio,
+    backend::ratio_type max_ratio) -> void
+{
+    b.update_factor(
+        tag, std::move(dims), baseline, enabled, min_ratio, max_ratio);
+}
+
+auto update_factor_dims(
+    backend& b, backend::tag_type tag, backend::dims_type dims) -> void;
+
 auto update_factor_baseline(
     backend& b, backend::tag_type tag, backend::baseline_type baseline) -> void;
+
+auto update_factor_enablement(backend& b, backend::tag_type tag, bool enabled)
+    -> void;
 
 auto update_factor_min_ratio(
     backend& b, backend::tag_type tag, backend::ratio_type ratio) -> void;

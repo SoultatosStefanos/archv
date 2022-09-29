@@ -96,7 +96,7 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
             0,
             "%.3f",
             ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_factor_min_ratio(tag, max);
+        emit_factor_max_ratio(tag, max);
 }
 
 auto scaling_editor::render_restore_button() const -> void

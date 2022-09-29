@@ -207,6 +207,19 @@ auto disable_factor(backend& b, backend::tag_type tag) -> void
         curr.max_ratio);
 }
 
+auto update_factor_dims(
+    backend& b, backend::tag_type tag, backend::dims_type dims) -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag);
+    b.update_factor(
+        tag,
+        std::move(dims),
+        curr.baseline,
+        curr.enabled,
+        curr.min_ratio,
+        curr.max_ratio);
+}
+
 auto update_factor_baseline(
     backend& b, backend::tag_type tag, backend::baseline_type baseline) -> void
 {
@@ -216,6 +229,19 @@ auto update_factor_baseline(
         { curr.applied_dims[0], curr.applied_dims[1], curr.applied_dims[2] },
         baseline,
         curr.enabled,
+        curr.min_ratio,
+        curr.max_ratio);
+}
+
+auto update_factor_enablement(backend& b, backend::tag_type tag, bool enabled)
+    -> void
+{
+    const auto& curr = b.get_factor_repo().get_factor(tag);
+    b.update_factor(
+        tag,
+        { curr.applied_dims[0], curr.applied_dims[1], curr.applied_dims[2] },
+        curr.baseline,
+        enabled,
         curr.min_ratio,
         curr.max_ratio);
 }
