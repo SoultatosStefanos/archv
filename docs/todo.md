@@ -456,9 +456,6 @@
 
 	+ [x] Vertex scaling with gui editing
 
-
-# 31 / 08 / 2022 
-
 	+ [ ] Metadata vertex popup
 
 	+ [ ] Edge dependencies rendering
