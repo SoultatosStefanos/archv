@@ -74,7 +74,8 @@ auto scaling_editor::render_baseline_editor(tag_type tag) const -> void
     auto f = baseline(tag);
     if (ImGui::InputFloat(
             "Baseline", &f, 1, 0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_factor_baseline(tag, f);
+        if (f >= 0)
+            emit_factor_baseline(tag, f);
 }
 
 auto scaling_editor::render_enabled_editor(tag_type tag) const -> void
@@ -96,7 +97,8 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
             0,
             "%.3f",
             ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_factor_min_ratio(tag, min);
+        if (min >= 0)
+            emit_factor_min_ratio(tag, min);
 
     if (ImGui::InputFloat(
             "Max Ratio",
@@ -105,7 +107,8 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
             0,
             "%.3f",
             ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_factor_max_ratio(tag, max);
+        if (max >= 0)
+            emit_factor_max_ratio(tag, max);
 }
 
 auto scaling_editor::render_restore_button() const -> void
