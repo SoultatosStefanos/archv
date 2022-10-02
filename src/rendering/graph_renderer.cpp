@@ -1,6 +1,5 @@
 #include "detail/graph_renderer.hpp"
 
-#include "config/config.hpp"
 #include "detail/movable_text.hpp"
 #include "graph_renderer.hpp"
 
@@ -25,7 +24,9 @@ namespace rendering::detail
 
 using namespace Ogre;
 
-graph_renderer_impl::graph_renderer_impl(scene_type& scene) : m_scene { scene }
+graph_renderer_impl::graph_renderer_impl(
+    scene_type& scene, std::string_view resource_group)
+: m_scene { scene }, m_resource_group { resource_group }
 {
 }
 
@@ -47,7 +48,7 @@ auto graph_renderer_impl::draw(
         return;
     }
 
-    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, resource_group());
 
     auto* node = scene().getRootSceneNode()->createChildSceneNode(v.id);
     node->attachObject(e);
@@ -72,7 +73,7 @@ auto graph_renderer_impl::draw_id(
         cfg.vertex_id_font_name,
         cfg.vertex_id_char_height,
         cfg.vertex_id_color,
-        ARCHV_RESOURCE_GROUP);
+        resource_group());
 
     text->setSpaceWidth(cfg.vertex_id_space_width);
     text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
@@ -93,7 +94,7 @@ auto graph_renderer_impl::redraw(
     scene().destroyEntity(v.id);
 
     assert(!scene().hasEntity(v.id));
-    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, resource_group());
 
     auto* node = scene().getSceneNode(v.id);
     node->setScale(cfg.vertex_scale * v.scale);
@@ -111,7 +112,7 @@ auto graph_renderer_impl::redraw_id(
     auto* text = m_id_billboards.at(v.id).get();
     assert(text);
 
-    text->setFontName(cfg.vertex_id_font_name, ARCHV_RESOURCE_GROUP);
+    text->setFontName(cfg.vertex_id_font_name, resource_group());
     text->setCharacterHeight(cfg.vertex_id_char_height);
     text->setColor(cfg.vertex_id_color);
     text->setSpaceWidth(cfg.vertex_id_space_width);
@@ -135,6 +136,8 @@ auto graph_renderer_impl::draw_scaling(
     assert(scene().hasSceneNode(v.id));
     auto* node = scene().getSceneNode(v.id);
     node->setScale(cfg.vertex_scale * v.scale);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew scaling for vertex: " << v.id;
 }
 
 auto graph_renderer_impl::clear(const vertex_properties& v) -> void
@@ -233,7 +236,7 @@ void graph_renderer_impl::draw(
     auto* line = scene().createManualObject(id);
 
     line->begin(
-        cfg.edge_material, RenderOperation::OT_LINE_LIST, ARCHV_RESOURCE_GROUP);
+        cfg.edge_material, RenderOperation::OT_LINE_LIST, resource_group());
 
     line->estimateVertexCount(2);
 
@@ -259,7 +262,7 @@ auto graph_renderer_impl::draw_tip(
     const auto id = make_edge_tip_id(make_edge_id(e));
 
     assert(!scene().hasEntity(id));
-    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
+    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, resource_group());
 
     assert(!scene().hasSceneNode(id));
     auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
@@ -278,7 +281,7 @@ auto graph_renderer_impl::redraw(
 
     assert(scene().hasManualObject(id));
     auto* line = scene().getManualObject(id);
-    line->setMaterialName(0, cfg.edge_material, ARCHV_RESOURCE_GROUP);
+    line->setMaterialName(0, cfg.edge_material, resource_group());
 
     // Might have to recalculate cause of altered vertex meshes.
     line->beginUpdate(0);
@@ -299,7 +302,7 @@ auto graph_renderer_impl::redraw_tip(
 
     assert(scene().hasEntity(id));
     scene().destroyEntity(id);
-    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
+    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, resource_group());
 
     assert(scene().hasSceneNode(id));
     auto* node = scene().getSceneNode(id);

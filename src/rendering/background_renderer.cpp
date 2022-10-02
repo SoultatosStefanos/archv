@@ -1,7 +1,5 @@
 #include "background_renderer.hpp"
 
-#include "config/config.hpp"
-
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
@@ -16,10 +14,13 @@ namespace rendering
  ***********************************************************/
 
 background_renderer::background_renderer(
-    Ogre::RenderWindow& window, config_data_type config)
+    Ogre::RenderWindow& window,
+    config_data_type config,
+    std::string_view resource_group)
 : m_config { config }
 , m_defaults { config }
 , m_config_api { std::move(config) }
+, m_resource_group { resource_group }
 , m_root { Ogre::Root::getSingleton() }
 , m_window { window }
 {
@@ -141,7 +142,7 @@ auto background_renderer::draw_scene(const config_data_type& cfg) -> void
     assert(m_scene);
 
     scene().setSkyBox(
-        true, cfg.skybox_material, cfg.skybox_distance, ARCHV_RESOURCE_GROUP);
+        true, cfg.skybox_material, cfg.skybox_distance, resource_group());
 
     scene().setAmbientLight(cfg.ambient_light);
 

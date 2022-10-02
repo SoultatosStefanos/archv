@@ -6,9 +6,11 @@
 
 #include "detail/graph_renderer.hpp"
 
+#include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_concepts.hpp>
+#include <string_view>
 
 namespace rendering
 {
@@ -111,7 +113,8 @@ public:
         weight_map_type edge_weight,
         scale_map_type vertex_scale,
         scene_type& scene,
-        config_data_type cfg = config_data_type())
+        config_data_type cfg = config_data_type(),
+        std::string_view resource_group = Ogre::RGN_DEFAULT)
     : m_g { g }
     , m_vertex_id { vertex_id }
     , m_vertex_pos { vertex_pos }
@@ -121,7 +124,7 @@ public:
     , m_config { cfg }
     , m_defaults { cfg }
     , m_config_api { std::move(cfg) }
-    , m_impl { scene }
+    , m_impl { scene, resource_group }
     {
     }
 
@@ -146,11 +149,13 @@ public:
     auto config_data() -> config_data_type& { return m_config; }
     auto config_api() const -> const config_api_type& { return m_config_api; }
     auto config_api() -> config_api_type& { return m_config_api; }
+    auto resource_group() const -> auto* { return m_impl.resource_group(); }
 
     inline auto draw(const config_data_type& cfg) -> void
     {
         visit_vertices([this, &cfg](const auto& v)
                        { m_impl.draw(make_vertex_properties(v), cfg); });
+
         visit_edges([this, &cfg](const auto& e)
                     { m_impl.draw(make_edge_properties(e), cfg); });
     }
@@ -160,6 +165,7 @@ public:
         visit_vertices(
             [this](const auto& v)
             { m_impl.draw_layout(make_vertex_properties(v), config_data()); });
+
         visit_edges(
             [this](const auto& e)
             { m_impl.draw_layout(make_edge_properties(e), config_data()); });
@@ -170,6 +176,7 @@ public:
         visit_vertices(
             [this](const auto& v)
             { m_impl.draw_scaling(make_vertex_properties(v), config_data()); });
+
         visit_edges(
             [this](const auto& e)
             { m_impl.draw_scaling(make_edge_properties(e), config_data()); });
@@ -179,6 +186,7 @@ public:
     {
         visit_edges([this](const auto& e)
                     { m_impl.clear(make_edge_properties(e)); });
+
         visit_vertices([this](const auto& v)
                        { m_impl.clear(make_vertex_properties(v)); });
     }

@@ -7,6 +7,7 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
@@ -69,7 +70,8 @@ public:
 
     explicit background_renderer(
         Ogre::RenderWindow& window,
-        config_data_type config = config_data_type());
+        config_data_type config = config_data_type(),
+        std::string_view resource_group = Ogre::RGN_DEFAULT);
 
     ~background_renderer();
 
@@ -86,6 +88,8 @@ public:
 
     auto config_api() const -> const config_api_type& { return m_config_api; }
     auto config_api() -> config_api_type& { return m_config_api; }
+
+    auto resource_group() const -> auto* { return m_resource_group.data(); }
 
     auto scene() const -> const auto& { return *m_scene; }
     auto scene() -> auto& { return *m_scene; }
@@ -119,6 +123,8 @@ private:
 
     config_data_type m_config, m_defaults;
     config_api_type m_config_api;
+
+    std::string_view m_resource_group;
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;

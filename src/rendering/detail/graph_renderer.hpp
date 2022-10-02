@@ -4,6 +4,7 @@
 #ifndef RENDERING_DETAIL_GRAPH_RENDERER_HPP
 #define RENDERING_DETAIL_GRAPH_RENDERER_HPP
 
+#include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <memory>
 #include <string>
@@ -66,8 +67,11 @@ public:
     using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
 
-    explicit graph_renderer_impl(scene_type& scene);
+    explicit graph_renderer_impl(
+        scene_type& scene, std::string_view resource_group = Ogre::RGN_DEFAULT);
     ~graph_renderer_impl();
+
+    auto resource_group() const -> auto* { return m_resource_group.data(); }
 
     auto draw(const vertex_properties&, const config_data_type&) -> void;
     auto draw(const edge_properties&, const config_data_type&) -> void;
@@ -102,6 +106,8 @@ private:
     scene_type& m_scene;
 
     mutable id_cache m_id_billboards; // for cleanup
+
+    std::string_view m_resource_group;
 };
 
 } // namespace rendering::detail

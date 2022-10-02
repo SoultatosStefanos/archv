@@ -28,7 +28,9 @@ auto app::setup_background_rendering() -> void
     assert(getRenderWindow());
 
     m_background_renderer = std::make_unique< rendering::background_renderer >(
-        *getRenderWindow(), m_rendering_config.background);
+        *getRenderWindow(),
+        m_rendering_config.background,
+        ARCHV_RESOURCE_GROUP);
 
     ui::start(*m_background_renderer);
 
@@ -46,7 +48,8 @@ auto app::setup_graph_rendering() -> void
         make_weight_map(),
         make_scale_map(),
         m_background_renderer->scene(),
-        m_rendering_config.graph);
+        m_rendering_config.graph,
+        ARCHV_RESOURCE_GROUP);
 
     ui::start(*m_graph_renderer);
 
