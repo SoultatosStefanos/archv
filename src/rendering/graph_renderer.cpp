@@ -35,6 +35,9 @@ graph_renderer_impl::~graph_renderer_impl() = default;
  * Vertices                                                *
  ***********************************************************/
 
+// NOTE:
+// For each vertex: 1 SceneNode, 1 Entity (Model), 1 MovableText (ID Caption)
+
 auto graph_renderer_impl::draw(
     const vertex_properties& v, const config_data_type& cfg) -> void
 {
@@ -58,37 +61,6 @@ auto graph_renderer_impl::draw(
     assert(scene().hasEntity(v.id));
 
     BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << v.id;
-}
-
-auto graph_renderer_impl::redraw(
-    const vertex_properties& v, const config_data_type& cfg) -> void
-{
-    scene().destroyEntity(v.id);
-
-    assert(!scene().hasEntity(v.id));
-    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
-
-    auto* node = scene().getSceneNode(v.id);
-    node->setScale(cfg.vertex_scale * v.scale);
-    node->setPosition(v.pos);
-    node->attachObject(e);
-
-    redraw_id(v, cfg);
-
-    BOOST_LOG_TRIVIAL(debug) << "redrew vertex: " << v.id;
-}
-
-auto graph_renderer_impl::redraw_id(
-    const vertex_properties& v, const config_data_type& cfg) -> void
-{
-    auto* text = m_id_billboards.at(v.id).get();
-
-    text->setFontName(cfg.vertex_id_font_name, ARCHV_RESOURCE_GROUP);
-    text->setCharacterHeight(cfg.vertex_id_char_height);
-    text->setColor(cfg.vertex_id_color);
-    text->setSpaceWidth(cfg.vertex_id_space_width);
-
-    BOOST_LOG_TRIVIAL(debug) << "redrew vertex id: " << v.id;
 }
 
 auto graph_renderer_impl::draw_id(
@@ -115,7 +87,40 @@ auto graph_renderer_impl::draw_id(
     BOOST_LOG_TRIVIAL(debug) << "drew vertex id: " << v.id;
 }
 
-auto graph_renderer_impl::draw_layout(const vertex_properties& v) -> void
+auto graph_renderer_impl::redraw(
+    const vertex_properties& v, const config_data_type& cfg) -> void
+{
+    scene().destroyEntity(v.id);
+
+    assert(!scene().hasEntity(v.id));
+    auto* e = scene().createEntity(v.id, cfg.vertex_mesh, ARCHV_RESOURCE_GROUP);
+
+    auto* node = scene().getSceneNode(v.id);
+    node->setScale(cfg.vertex_scale * v.scale);
+    node->setPosition(v.pos);
+    node->attachObject(e);
+
+    redraw_id(v, cfg);
+
+    BOOST_LOG_TRIVIAL(debug) << "redrew vertex: " << v.id;
+}
+
+auto graph_renderer_impl::redraw_id(
+    const vertex_properties& v, const config_data_type& cfg) -> void
+{
+    auto* text = m_id_billboards.at(v.id).get();
+    assert(text);
+
+    text->setFontName(cfg.vertex_id_font_name, ARCHV_RESOURCE_GROUP);
+    text->setCharacterHeight(cfg.vertex_id_char_height);
+    text->setColor(cfg.vertex_id_color);
+    text->setSpaceWidth(cfg.vertex_id_space_width);
+
+    BOOST_LOG_TRIVIAL(debug) << "redrew vertex id: " << v.id;
+}
+
+auto graph_renderer_impl::draw_layout(
+    const vertex_properties& v, const config_data_type&) -> void
 {
     assert(scene().hasSceneNode(v.id));
     auto* node = scene().getSceneNode(v.id);
@@ -153,6 +158,9 @@ auto graph_renderer_impl::clear(const vertex_properties& v) -> void
 /***********************************************************
  * Edges                                                   *
  ***********************************************************/
+
+// NOTE:
+// For each edge: 2 SceneNodes, 1 ManualObject (Line), 1 Entity (Tip Model)
 
 namespace
 {
@@ -245,6 +253,24 @@ void graph_renderer_impl::draw(
     BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
 }
 
+auto graph_renderer_impl::draw_tip(
+    const edge_properties& e, const config_data_type& cfg) -> void
+{
+    const auto id = make_edge_tip_id(make_edge_id(e));
+
+    assert(!scene().hasEntity(id));
+    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
+
+    assert(!scene().hasSceneNode(id));
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
+    node->setScale(cfg.edge_tip_scale);
+    node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
+    node->setPosition(calculate_edge_end(e, scene()));
+    node->attachObject(t);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
+}
+
 auto graph_renderer_impl::redraw(
     const edge_properties& e, const config_data_type& cfg) -> void
 {
@@ -280,64 +306,23 @@ auto graph_renderer_impl::redraw_tip(
     node->setScale(cfg.edge_tip_scale);
     // Might have to recalculate cause of altered vertex meshes.
     node->setPosition(calculate_edge_end(e, scene()));
+    node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
     node->attachObject(t);
 
     BOOST_LOG_TRIVIAL(debug) << "redrew edge tip: " << id;
 }
 
-auto graph_renderer_impl::draw_tip(
+auto graph_renderer_impl::draw_layout(
     const edge_properties& e, const config_data_type& cfg) -> void
 {
-    const auto id = make_edge_tip_id(make_edge_id(e));
-
-    assert(!scene().hasEntity(id));
-    auto* t = scene().createEntity(id, cfg.edge_tip_mesh, ARCHV_RESOURCE_GROUP);
-
-    assert(!scene().hasSceneNode(id));
-    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
-    node->setScale(cfg.edge_tip_scale);
-    node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
-    node->setPosition(calculate_edge_end(e, scene()));
-    node->attachObject(t);
-
-    BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
-}
-
-auto graph_renderer_impl::recalculate_edge(const edge_properties& e) -> void
-{
-    const auto eid = make_edge_id(e);
-    const auto tid = make_edge_tip_id(eid);
-
-    const auto& from = e.source.pos;
-    const auto to = calculate_edge_end(e, scene());
-
-    assert(scene().hasManualObject(eid));
-    auto* line = scene().getManualObject(eid);
-
-    assert(scene().hasSceneNode(tid));
-    auto* tip = scene().getSceneNode(tid);
-
-    line->beginUpdate(0);
-    line->estimateVertexCount(2); // From src to trgt node.
-    line->position(from);
-    line->position(to);
-    line->end();
-
-    tip->setPosition(to);
-    tip->setOrientation(rotate(from, e.target.pos, Vector3::UNIT_Y));
-}
-
-auto graph_renderer_impl::draw_layout(const edge_properties& e) -> void
-{
-    recalculate_edge(e);
-
+    redraw(e, cfg);
     BOOST_LOG_TRIVIAL(debug) << "drew layout for edge: " << make_edge_id(e);
 }
 
-auto graph_renderer_impl::draw_scaling(const edge_properties& e) -> void
+auto graph_renderer_impl::draw_scaling(
+    const edge_properties& e, const config_data_type& cfg) -> void
 {
-    recalculate_edge(e);
-
+    redraw(e, cfg);
     BOOST_LOG_TRIVIAL(debug) << "drew scaling for edge: " << make_edge_id(e);
 }
 

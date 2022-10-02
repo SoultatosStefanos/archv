@@ -455,8 +455,11 @@
 	+ [x] Vertex scaling depending on symbol metadata
 
 	+ [x] Vertex scaling with gui editing
+	
 
-	+ [ ] Metadata vertex popup
+# 01 / 09 / 2022
+
+	+ [n] Overlays https://wiki.ogre3d.org/-Overlay
 
 	+ [ ] Edge dependencies rendering
 

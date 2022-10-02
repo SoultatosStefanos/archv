@@ -69,15 +69,14 @@ public:
     explicit graph_renderer_impl(scene_type& scene);
     ~graph_renderer_impl();
 
-    auto draw(const vertex_properties& v, const config_data_type& cfg) -> void;
-    auto draw(const edge_properties& e, const config_data_type& cfg) -> void;
+    auto draw(const vertex_properties&, const config_data_type&) -> void;
+    auto draw(const edge_properties&, const config_data_type&) -> void;
 
-    auto draw_layout(const vertex_properties& v) -> void;
-    auto draw_layout(const edge_properties& e) -> void;
+    auto draw_layout(const vertex_properties&, const config_data_type&) -> void;
+    auto draw_layout(const edge_properties&, const config_data_type&) -> void;
 
-    auto draw_scaling(const vertex_properties& v, const config_data_type& cfg)
-        -> void;
-    auto draw_scaling(const edge_properties& e) -> void;
+    void draw_scaling(const vertex_properties&, const config_data_type&);
+    auto draw_scaling(const edge_properties&, const config_data_type&) -> void;
 
     auto clear(const vertex_properties& v) -> void;
     auto clear(const edge_properties& e) -> void;
@@ -92,17 +91,13 @@ private:
         vertex_properties::id_type,
         std::unique_ptr< id_billboard > >;
 
-    auto redraw(const vertex_properties& v, const config_data_type& c) -> void;
-
     auto draw_id(const vertex_properties& v, const config_data_type& c) -> void;
+    auto redraw(const vertex_properties& v, const config_data_type& c) -> void;
     auto redraw_id(const vertex_properties&, const config_data_type&) -> void;
 
-    auto redraw(const edge_properties& e, const config_data_type& c) -> void;
-
     auto draw_tip(const edge_properties& e, const config_data_type& c) -> void;
+    auto redraw(const edge_properties& e, const config_data_type& c) -> void;
     auto redraw_tip(const edge_properties& e, const config_data_type&) -> void;
-
-    auto recalculate_edge(const edge_properties& e) -> void;
 
     scene_type& m_scene;
 

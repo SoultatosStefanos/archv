@@ -149,27 +149,38 @@ public:
 
     inline auto draw(const config_data_type& cfg) -> void
     {
-        visit_vertices([this, &cfg](const auto& v) { m_impl.draw(v, cfg); });
-        visit_edges([this, &cfg](const auto& e) { m_impl.draw(e, cfg); });
+        visit_vertices([this, &cfg](const auto& v)
+                       { m_impl.draw(make_vertex_properties(v), cfg); });
+        visit_edges([this, &cfg](const auto& e)
+                    { m_impl.draw(make_edge_properties(e), cfg); });
     }
 
     inline auto draw_layout() -> void
     {
-        visit_vertices([this](const auto& v) { m_impl.draw_layout(v); });
-        visit_edges([this](const auto& e) { m_impl.draw_layout(e); });
+        visit_vertices(
+            [this](const auto& v)
+            { m_impl.draw_layout(make_vertex_properties(v), config_data()); });
+        visit_edges(
+            [this](const auto& e)
+            { m_impl.draw_layout(make_edge_properties(e), config_data()); });
     }
 
     inline auto draw_scaling() -> void
     {
-        visit_vertices([this](const auto& v)
-                       { m_impl.draw_scaling(v, config_data()); });
-        visit_edges([this](const auto& e) { m_impl.draw_scaling(e); });
+        visit_vertices(
+            [this](const auto& v)
+            { m_impl.draw_scaling(make_vertex_properties(v), config_data()); });
+        visit_edges(
+            [this](const auto& e)
+            { m_impl.draw_scaling(make_edge_properties(e), config_data()); });
     }
 
     inline auto clear() -> void
     {
-        visit_edges([this](const auto& e) { m_impl.clear(e); });
-        visit_vertices([this](const auto& v) { m_impl.clear(v); });
+        visit_edges([this](const auto& e)
+                    { m_impl.clear(make_edge_properties(e)); });
+        visit_vertices([this](const auto& v)
+                       { m_impl.clear(make_vertex_properties(v)); });
     }
 
 private:
@@ -187,19 +198,19 @@ private:
             edge_properties::weight_type >);
 
     template < typename UnaryOperation >
-    requires std::invocable< UnaryOperation, const vertex_properties& >
+    requires std::invocable< UnaryOperation, vertex_type >
     auto visit_vertices(UnaryOperation f) const
     {
         for (auto v : boost::make_iterator_range(boost::vertices(graph())))
-            f(make_vertex_properties(v));
+            f(v);
     }
 
     template < typename UnaryOperation >
-    requires std::invocable< UnaryOperation, const edge_properties& >
+    requires std::invocable< UnaryOperation, edge_type >
     auto visit_edges(UnaryOperation f) const
     {
         for (auto e : boost::make_iterator_range(boost::edges(graph())))
-            f(make_edge_properties(e));
+            f(e);
     }
 
     inline auto make_vertex_properties(vertex_type v) const
