@@ -1,20 +1,16 @@
-#include "config/archive.hpp"
+#include "../utility/config.hpp"
 #include "dependencies/config.hpp"
-#include "misc/source.hpp"
 
+#include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace dependencies;
+using namespace utility;
 using namespace testing;
 
 namespace
 {
-
-inline auto read_json_root(std::string_view path)
-{
-    return config::archive::get().at(misc::resolve_source_path(path).c_str());
-}
 
 auto make_sample_dependencies_0()
 {

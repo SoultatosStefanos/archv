@@ -1,20 +1,16 @@
-#include "config/archive.hpp"
-#include "misc/source.hpp"
+#include "../utility/config.hpp"
 #include "rendering/config.hpp"
 
+#include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace rendering;
 using namespace testing;
+using namespace utility;
 
 namespace
 {
-
-inline auto read_json_root(std::string_view path)
-{
-    return config::archive::get().at(misc::resolve_source_path(path).c_str());
-}
 
 auto make_sample_rendering_0()
 {

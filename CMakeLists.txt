@@ -28,8 +28,8 @@ endforeach()
 # provide config path
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="/home/stef/Documents/Projects/archv/data/config")
 
-# make the src/ directory visible for include directives, as well as the tests/ (for testing utilites)
-target_include_directories(${PROJECT_LIB} PUBLIC src tests)
+# make the src/ directory visible for include directives
+target_include_directories(${PROJECT_LIB} PUBLIC src)
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)

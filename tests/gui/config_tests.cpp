@@ -1,20 +1,16 @@
-#include "config/archive.hpp"
+#include "../utility/config.hpp"
 #include "gui/all.hpp"
-#include "misc/source.hpp"
 
+#include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace gui;
 using namespace testing;
+using namespace utility;
 
 namespace
 {
-
-inline auto read_json_root(std::string_view path)
-{
-    return config::archive::get().at(misc::resolve_source_path(path).c_str());
-}
 
 TEST(gui_deserialization, sample_gui_invalid)
 {

@@ -1,23 +1,20 @@
-#include "config/archive.hpp"
+
+#include "../utility/config.hpp"
 #include "layout/backend.hpp"
 #include "layout/config.hpp"
 #include "layout/layout_plugin.hpp"
 #include "layout/topology_plugin.hpp"
-#include "misc/source.hpp"
 
+#include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace layout;
 using namespace testing;
+using namespace utility;
 
 namespace
 {
-
-inline auto read_json_root(std::string_view path)
-{
-    return config::archive::get().at(misc::resolve_source_path(path).c_str());
-}
 
 TEST(layout_deserialization, sample_layout_invalid)
 {
