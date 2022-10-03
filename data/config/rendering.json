@@ -16,9 +16,9 @@
 		"vertex-id" : 
 		{
 			"font-name" : "Roboto-Medium",
-			"char-height" : 25.0,
+			"char-height" : 4.0,
 			"color" : [ 0.2, 0.2, 0.2 ],
-			"space-width" : 1.0
+			"space-width" : 0
 		},
 		"edge-material" : "Dark",
 		"edge-tip-mesh" : "triangle.mesh",

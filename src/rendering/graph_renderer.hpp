@@ -32,6 +32,13 @@ struct graph_config
     Ogre::String edge_tip_mesh;
     Ogre::Vector3 edge_tip_scale;
 
+#if (0) // FIXME
+    Ogre::String edge_type_font_name { "Roboto-Medium" };
+    Ogre::Real edge_type_char_height { 4.0 };
+    Ogre::ColourValue edge_type_color { 0.2, 0.2, 0.2 };
+    Ogre::Real edge_type_space_width { 1.0 };
+#endif
+
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
 };

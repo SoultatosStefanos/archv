@@ -36,8 +36,18 @@ graph_renderer_impl::~graph_renderer_impl() = default;
  * Vertices                                                *
  ***********************************************************/
 
+namespace
+{
+
+    inline auto make_vertex_text_id(const vertex_properties& v)
+    {
+        return v.id + " text";
+    }
+
+} // namespace
+
 // NOTE:
-// For each vertex: 1 SceneNode, 1 Entity (Model), 1 MovableText (ID Caption)
+// For each vertex: 2 SceneNodes, 1 Entity (Model), 1 MovableText (ID Caption)
 
 auto graph_renderer_impl::draw(
     const vertex_properties& v, const config_data_type& cfg) -> void
@@ -67,23 +77,27 @@ auto graph_renderer_impl::draw(
 auto graph_renderer_impl::draw_id(
     const vertex_properties& v, const config_data_type& cfg) -> void
 {
+    const auto id = make_vertex_text_id(v);
+    const auto& caption = v.id;
+
     auto text = std::make_unique< MovableText >(
-        v.id,
-        v.id,
+        id,
+        caption,
         cfg.vertex_id_font_name,
         cfg.vertex_id_char_height,
         cfg.vertex_id_color,
         resource_group());
 
     text->setSpaceWidth(cfg.vertex_id_space_width);
-    text->setTextAlignment(MovableText::H_CENTER, MovableText::V_ABOVE);
+    text->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
     text->showOnTop(true);
 
-    assert(scene().hasSceneNode(v.id));
-    auto* node = scene().getSceneNode(v.id);
+    assert(!scene().hasSceneNode(id));
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
     node->attachObject(text.get());
+    node->setPosition(v.pos);
 
-    m_id_billboards[v.id] = std::move(text);
+    m_id_billboards[id] = std::move(text);
 
     BOOST_LOG_TRIVIAL(debug) << "drew vertex id: " << v.id;
 }
@@ -109,13 +123,21 @@ auto graph_renderer_impl::redraw(
 auto graph_renderer_impl::redraw_id(
     const vertex_properties& v, const config_data_type& cfg) -> void
 {
-    auto* text = m_id_billboards.at(v.id).get();
+    const auto id = make_vertex_text_id(v);
+
+    auto* text = m_id_billboards.at(id).get();
     assert(text);
 
     text->setFontName(cfg.vertex_id_font_name, resource_group());
     text->setCharacterHeight(cfg.vertex_id_char_height);
     text->setColor(cfg.vertex_id_color);
     text->setSpaceWidth(cfg.vertex_id_space_width);
+
+    assert(scene().hasSceneNode(id));
+    auto* node = scene().getSceneNode(id);
+    assert(node);
+
+    node->setPosition(v.pos);
 
     BOOST_LOG_TRIVIAL(debug) << "redrew vertex id: " << v.id;
 }
@@ -126,6 +148,10 @@ auto graph_renderer_impl::draw_layout(
     assert(scene().hasSceneNode(v.id));
     auto* node = scene().getSceneNode(v.id);
     node->setPosition(v.pos);
+
+    const auto vertex_text_id = make_vertex_text_id(v);
+    assert(scene().hasSceneNode(vertex_text_id));
+    scene().getSceneNode(vertex_text_id)->setPosition(v.pos);
 
     BOOST_LOG_TRIVIAL(debug) << "drew layout for vertex: " << v.id;
 }
@@ -148,7 +174,10 @@ auto graph_renderer_impl::clear(const vertex_properties& v) -> void
         scene().destroySceneNode(v.id);
         scene().destroyEntity(v.id);
 
-        [[maybe_unused]] const auto num = m_id_billboards.erase(v.id);
+        const auto vertex_text_id = make_vertex_text_id(v);
+        scene().getSceneNode(vertex_text_id)->detachAllObjects();
+        scene().destroySceneNode(vertex_text_id);
+        [[maybe_unused]] const auto num = m_id_billboards.erase(vertex_text_id);
         assert(num == 1);
 
         assert(!scene().hasEntity(v.id));
@@ -252,6 +281,30 @@ void graph_renderer_impl::draw(
     draw_tip(e, cfg);
 
     assert(scene().hasManualObject(make_edge_id(e)));
+
+#if (0) // FIXME
+    {
+        static auto texts = std::vector< std::unique_ptr< MovableText > >();
+
+        const auto txt_id = make_edge_id(e) + "txt";
+        auto txt = std::make_unique< MovableText >(
+            txt_id,
+            "Inheritance, Method Argument",
+            cfg.edge_type_font_name,
+            cfg.edge_type_char_height,
+            cfg.edge_type_color,
+            resource_group());
+        txt->showOnTop(true);
+
+        assert(!scene().hasSceneNode(txt_id));
+
+        auto* node = scene().getRootSceneNode()->createChildSceneNode(txt_id);
+        node->attachObject(txt.get());
+        node->setPosition(e.source.pos.midPoint(e.target.pos));
+
+        texts.push_back(std::move(txt));
+    }
+#endif
 
     BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
 }

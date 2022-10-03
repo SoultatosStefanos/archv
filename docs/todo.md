@@ -468,6 +468,14 @@
 
 # 03 / 09 / 2022
 
-	+ [ ] Parallel edges
+	+ [n] Parallel edges
 
-	+ [ ] Edge ids
+	+ [x] Misc cleanup
+
+	+ [x] Vertex id overlay on seperate nodes (don't scale with vertex).
+
+	+ [ ] File browser
+
+	+ [ ] Multiple dependencies
+
+	+ [ ] Edge types rendering
