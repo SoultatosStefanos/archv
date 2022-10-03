@@ -55,6 +55,8 @@ auto gui::render() const -> void
 {
     if (ImGui::BeginMainMenuBar())
     {
+        get_file_browser().render();
+
         render_file_menu();
         get_editor().render();
         get_configurator().render();
@@ -69,7 +71,8 @@ auto gui::render_file_menu() const -> void
 {
     if (ImGui::BeginMenu("File"))
     {
-        ImGui::MenuItem("Open", "Ctrl+O");
+        if (ImGui::MenuItem("Open", "Ctrl+O"))
+            m_file_browser.open();
 
         if (ImGui::BeginMenu("Open Recent"))
         {

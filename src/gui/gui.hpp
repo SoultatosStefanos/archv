@@ -6,6 +6,7 @@
 
 #include "configurator.hpp"
 #include "editor.hpp"
+#include "file_browser.hpp"
 
 #include <string>
 
@@ -67,6 +68,9 @@ public:
     auto config_api() const -> const config_api_type& { return m_api; }
     auto config_api() -> config_api_type& { return m_api; }
 
+    auto get_file_browser() const -> const auto& { return m_file_browser; }
+    auto get_file_browser() -> auto& { return m_file_browser; }
+
     auto get_editor() const -> const auto& { return m_editor; }
     auto get_editor() -> auto& { return m_editor; }
 
@@ -84,6 +88,7 @@ private:
     config_data_type m_cfg, m_defaults;
     config_api_type m_api;
 
+    mutable file_browser m_file_browser;
     editor m_editor;
     configurator m_configurator;
 };

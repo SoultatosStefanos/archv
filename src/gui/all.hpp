@@ -9,6 +9,7 @@
 #include "configurator.hpp"
 #include "dependencies_editor.hpp"
 #include "editor.hpp"
+#include "file_browser.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"
 #include "gui_configurator.hpp"

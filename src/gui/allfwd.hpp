@@ -16,6 +16,7 @@ class gui_configurator;
 class gui;
 class layout_editor;
 class scaling_editor;
+class file_browser;
 
 } // namespace gui
 

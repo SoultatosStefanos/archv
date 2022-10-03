@@ -4,6 +4,7 @@ set(FILES
 	configurator.cpp
 	dependencies_editor.cpp
 	editor.cpp
+	file_browser.cpp
 	graph_configurator.cpp
 	gui_configurator.cpp
 	gui.cpp

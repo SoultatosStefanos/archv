@@ -474,7 +474,7 @@
 
 	+ [x] Vertex id overlay on seperate nodes (don't scale with vertex).
 
-	+ [ ] File browser
+	+ [x] File browser
 
 	+ [ ] Multiple dependencies
 
