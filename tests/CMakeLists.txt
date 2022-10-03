@@ -21,7 +21,6 @@ set(SUBDIRECTORIES
   scaling
   ui
   undo_redo
-  utility
 )
 
 foreach(VAR ${SUBDIRECTORIES})

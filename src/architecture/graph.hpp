@@ -38,6 +38,11 @@ using id_map
 using dependency_map
     = decltype(boost::get(boost::edge_bundle, std::declval< graph >()));
 
-} // namespace metadata
+// Parallel edges are allowed.
+static_assert(std::is_same_v<
+              typename boost::parallel_edge_traits< boost::vecS >::type,
+              boost::allow_parallel_edge_tag >);
+
+} // namespace architecture
 
 #endif // ARCHITECTURE_GRAPH_HPP

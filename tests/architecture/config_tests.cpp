@@ -1,17 +1,22 @@
 #include "architecture/config.hpp"
 #include "architecture/symbol_table.hpp"
-#include "utility/all.hpp"
+#include "config/archive.hpp"
+#include "misc/source.hpp"
 
 #include <boost/graph/isomorphism.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 using namespace testing;
-using namespace utility;
 using namespace architecture;
 
 namespace
 {
+
+inline auto read_json_root(std::string_view path)
+{
+    return config::archive::get().at(misc::resolve_source_path(path).c_str());
+}
 
 // See sample_graph_0.json
 TEST(arch_generation, sample_graph_0)

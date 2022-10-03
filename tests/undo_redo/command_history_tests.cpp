@@ -1,6 +1,6 @@
+#include "misc/random.hpp"
 #include "undo_redo/command.hpp"
 #include "undo_redo/command_history.hpp"
-#include "utility/random.hpp"
 
 #include <algorithm>
 #include <gmock/gmock.h>
@@ -11,7 +11,7 @@ namespace
 {
 
 using namespace testing;
-using namespace utility;
+using namespace misc;
 using namespace undo_redo;
 
 class mock_command : public command

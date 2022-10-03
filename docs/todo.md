@@ -464,3 +464,10 @@
 	+ [ ] Edge dependencies rendering
 
 		+ [ ] See https://wiki.ogre3d.org/-Particle
+
+
+# 03 / 09 / 2022
+
+	+ [ ] Parallel edges
+
+	+ [ ] Edge ids

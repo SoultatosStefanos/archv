@@ -239,15 +239,16 @@ namespace
             const auto& from = v["from"].as< vertex_property >();
             const auto& to = v["to"].as< vertex_property >();
 
-            const auto& types_val = v["types"];
-            const auto& type = std::cbegin(types_val).name();
-
-            BOOST_LOG_TRIVIAL(debug) << "read dependency from: " << from
-                                     << " to: " << to << " with type: " << type;
-
             assert(props.contains(from));
             assert(props.contains(to));
-            boost::add_edge(props[from], props[to], type, g);
+
+            for_each_object(
+                v["types"],
+                [&from, &to, &g, &props](const auto& type, const auto&)
+                { boost::add_edge(props[from], props[to], type, g); });
+
+            BOOST_LOG_TRIVIAL(debug)
+                << "read dependency from: " << from << " to: " << to;
         }
     }
 

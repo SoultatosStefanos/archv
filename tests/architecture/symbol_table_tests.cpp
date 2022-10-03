@@ -1,5 +1,4 @@
 #include "architecture/symbol_table.hpp"
-#include "utility/all.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -7,7 +6,6 @@
 
 using namespace testing;
 using namespace architecture;
-using namespace utility;
 
 namespace
 {

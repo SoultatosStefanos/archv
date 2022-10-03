@@ -6,6 +6,7 @@ set(SUBDIRECTORIES
 	dependencies
 	gui
 	layout
+	misc
 	multithreading
 	progress
 	rendering
