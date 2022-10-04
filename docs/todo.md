@@ -476,6 +476,16 @@
 
 	+ [x] File browser
 
-	+ [ ] Multiple dependencies
+
+# 04 / 09 / 2022
+
+	+ [x] Multiple dependencies
+
+	+ [ ] Edge types rendering
+
+
+# 05 / 09 / 2022
+
+	+ [ ] Fix graph redraw and edge tips
 
 	+ [ ] Edge types rendering

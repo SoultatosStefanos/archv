@@ -99,9 +99,15 @@ private:
     auto redraw(const vertex_properties& v, const config_data_type& c) -> void;
     auto redraw_id(const vertex_properties&, const config_data_type&) -> void;
 
-    auto draw_tip(const edge_properties& e, const config_data_type& c) -> void;
+    auto draw_tip(
+        const edge_properties& e,
+        const config_data_type& c,
+        const Ogre::Vector3& pos) -> void;
     auto redraw(const edge_properties& e, const config_data_type& c) -> void;
-    auto redraw_tip(const edge_properties& e, const config_data_type&) -> void;
+    auto redraw_tip(
+        const edge_properties& e,
+        const config_data_type&,
+        const Ogre::Vector3& pos) -> void;
 
     scene_type& m_scene;
 

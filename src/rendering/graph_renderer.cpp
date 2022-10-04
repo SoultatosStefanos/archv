@@ -2,6 +2,7 @@
 
 #include "detail/movable_text.hpp"
 #include "graph_renderer.hpp"
+#include "misc/random.hpp"
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -14,10 +15,10 @@
 #include <OGRE/Overlay/OgreOverlayElement.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
+#include <OgreProcedural/Procedural.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
-#include <string_view>
 
 namespace rendering::detail
 {
@@ -59,6 +60,7 @@ auto graph_renderer_impl::draw(
     }
 
     auto* e = scene().createEntity(v.id, cfg.vertex_mesh, resource_group());
+    e->setRenderQueueGroup(RENDER_QUEUE_MAIN); // get explicit
 
     auto* node = scene().getRootSceneNode()->createChildSceneNode(v.id);
     node->attachObject(e);
@@ -91,6 +93,7 @@ auto graph_renderer_impl::draw_id(
     text->setSpaceWidth(cfg.vertex_id_space_width);
     text->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
     text->showOnTop(true);
+    text->setRenderQueueGroup(RENDER_QUEUE_6);
 
     assert(!scene().hasSceneNode(id));
     auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
@@ -254,7 +257,8 @@ namespace
 void graph_renderer_impl::draw(
     const edge_properties& e, const config_data_type& cfg)
 {
-    const auto id = make_edge_id(e);
+    // FIXME Make from id and dependency type.
+    const auto id = make_edge_id(e) + std::to_string(misc::urandom< int >());
 
     if (scene().hasManualObject(id)) [[likely]]
     {
@@ -262,25 +266,53 @@ void graph_renderer_impl::draw(
         return;
     }
 
-    auto* line = scene().createManualObject(id);
+    // Generate a random Bezier curve from source to target.
+    // We generate random curves in order to handle (semi) gracefully parallel
+    // edges.
+    const auto& begin = e.source.pos;
+    const auto end = calculate_edge_end(e, scene());
+    const auto dist = misc::urandom< Real >(-20, 20);
+    const auto inter1 = across_line(begin, begin.perpendicular(), dist);
+    const auto inter2 = across_line(end, end.perpendicular(), dist);
 
-    line->begin(
-        cfg.edge_material, RenderOperation::OT_LINE_LIST, resource_group());
+    auto curve = Procedural::BezierCurve3()
+                     .addPoint(begin)
+                     .addPoint(inter1)
+                     .addPoint(inter2)
+                     .addPoint(end);
+    auto path = curve.realizePath();
+    auto curve_mesh = path.realizeMesh(id);
 
-    line->estimateVertexCount(2);
-
-    line->position(e.source.pos);
-    line->position(calculate_edge_end(e, scene()));
-
-    line->end();
+    assert(!scene().hasEntity(id));
+    auto* entity = scene().createEntity(id, id);
+    entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+    entity->setMaterialName(cfg.edge_material, resource_group());
 
     assert(!scene().hasSceneNode(id));
     auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
-    node->attachObject(line);
+    node->attachObject(entity);
 
-    draw_tip(e, cfg);
+    // FIXME Tip
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    const auto tip_id = make_edge_tip_id(id);
 
-    assert(scene().hasManualObject(make_edge_id(e)));
+    assert(!scene().hasEntity(tip_id));
+    auto* t = scene().createEntity(tip_id, cfg.edge_tip_mesh, resource_group());
+    t->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+
+    assert(!scene().hasSceneNode(tip_id));
+    auto* tip_node = scene().getRootSceneNode()->createChildSceneNode(tip_id);
+    tip_node->setScale(cfg.edge_tip_scale);
+    tip_node->setOrientation(rotate(
+        path.getPoints().at(path.getPoints().size() - 2),
+        path.getPoints().back(),
+        Vector3::UNIT_Y));
+    tip_node->setPosition(path.getPoints().back());
+    tip_node->attachObject(t);
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
 
 #if (0) // FIXME
     {
@@ -289,7 +321,7 @@ void graph_renderer_impl::draw(
         const auto txt_id = make_edge_id(e) + "txt";
         auto txt = std::make_unique< MovableText >(
             txt_id,
-            "Inheritance, Method Argument",
+            "Inheritance (20)",
             cfg.edge_type_font_name,
             cfg.edge_type_char_height,
             cfg.edge_type_color,
@@ -306,27 +338,35 @@ void graph_renderer_impl::draw(
     }
 #endif
 
+    assert(scene().hasEntity(id));
+    assert(scene().hasSceneNode(id));
+
     BOOST_LOG_TRIVIAL(debug) << "drew edge: " << id;
 }
 
+// TODO
 auto graph_renderer_impl::draw_tip(
-    const edge_properties& e, const config_data_type& cfg) -> void
+    const edge_properties& e,
+    const config_data_type& cfg,
+    const Ogre::Vector3& pos) -> void
 {
     const auto id = make_edge_tip_id(make_edge_id(e));
 
     assert(!scene().hasEntity(id));
     auto* t = scene().createEntity(id, cfg.edge_tip_mesh, resource_group());
+    t->setRenderQueueGroup(RENDER_QUEUE_MAIN);
 
     assert(!scene().hasSceneNode(id));
     auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
     node->setScale(cfg.edge_tip_scale);
     node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
-    node->setPosition(calculate_edge_end(e, scene()));
+    node->setPosition(pos);
     node->attachObject(t);
 
     BOOST_LOG_TRIVIAL(debug) << "drew edge tip: " << id;
 }
 
+// TODO
 auto graph_renderer_impl::redraw(
     const edge_properties& e, const config_data_type& cfg) -> void
 {
@@ -334,22 +374,27 @@ auto graph_renderer_impl::redraw(
 
     assert(scene().hasManualObject(id));
     auto* line = scene().getManualObject(id);
+    const auto pos = calculate_edge_end(e, scene());
+
     line->setMaterialName(0, cfg.edge_material, resource_group());
 
     // Might have to recalculate cause of altered vertex meshes.
     line->beginUpdate(0);
     line->estimateVertexCount(2); // From src to trgt node.
     line->position(e.source.pos);
-    line->position(calculate_edge_end(e, scene()));
+    line->position(pos);
     line->end();
 
-    redraw_tip(e, cfg);
+    redraw_tip(e, cfg, pos);
 
     BOOST_LOG_TRIVIAL(debug) << "redrew edge: " << id;
 }
 
+// TODO
 auto graph_renderer_impl::redraw_tip(
-    const edge_properties& e, const config_data_type& cfg) -> void
+    const edge_properties& e,
+    const config_data_type& cfg,
+    const Ogre::Vector3& pos) -> void
 {
     const auto id = make_edge_tip_id(make_edge_id(e));
 
@@ -361,7 +406,7 @@ auto graph_renderer_impl::redraw_tip(
     auto* node = scene().getSceneNode(id);
     node->setScale(cfg.edge_tip_scale);
     // Might have to recalculate cause of altered vertex meshes.
-    node->setPosition(calculate_edge_end(e, scene()));
+    node->setPosition(pos);
     node->setOrientation(rotate(e.source.pos, e.target.pos, Vector3::UNIT_Y));
     node->attachObject(t);
 

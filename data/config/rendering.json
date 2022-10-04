@@ -1,7 +1,7 @@
 {
 	"background" : 
 	{
-		"skybox-material" : "Studio",
+		"skybox-material" : "Studio/Bright",
 		"skybox-distance" : 5000,
 		"ambient-light" : [ 0.2, 0.2, 0.2 ],
 		"diffuse-light" : [ 1, 1, 1 ],
@@ -16,11 +16,11 @@
 		"vertex-id" : 
 		{
 			"font-name" : "Roboto-Medium",
-			"char-height" : 4.0,
+			"char-height" : 3.25,
 			"color" : [ 0.2, 0.2, 0.2 ],
 			"space-width" : 0
 		},
-		"edge-material" : "Dark",
+		"edge-material" : "Mono/Gray",
 		"edge-tip-mesh" : "triangle.mesh",
 		"edge-tip-scale" : [ 0.5, 0.5, 0.5 ]
 	}

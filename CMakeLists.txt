@@ -37,12 +37,17 @@ find_package(OGRE REQUIRED COMPONENTS Bites Overlay CONFIG)
 find_package(OpenGL REQUIRED)
 find_package(FreeType REQUIRED)
 
+set(OgreProcedural_DIR "/usr/local/lib/OgreProcedural/cmake")
+list(APPEND CMAKE_MODULE_PATH "/usr/local/lib/OgreProcedural/cmake")
+find_package(OgreProcedural REQUIRED)
+
 # define 3rd party targets
 set(BOOST_LIBRARIES ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 set(JSONCPP_LIBRARIES libjsoncpp.so)
 set(IMGUI_LIBRARIES libimgui.a)
 set(STB_LIBRARIES libstb.so)
 set(SDL2_LIBRARIES libSDL2.so)
+set(OGRE_PROCEDURAL_LIBRARIES ${OgreProcedural_LIBRARIES})
 
 # merge 3rd party targets
 set(THIRD_PARTY_LIBRARIES
@@ -54,16 +59,23 @@ set(THIRD_PARTY_LIBRARIES
   ${OPENGL_LIBRARIES}
   ${FREETYPE_LIBRARIES}
   ${STB_LIBRARIES}
+  ${OGRE_PROCEDURAL_LIBRARIES}
 )
-
-# define 3rd include directories
-set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
-
-# include 3rd party directories globally
-include_directories(${IMGUI_INCLUDE_DIR})
 
 # link 3rd party libraries
 target_link_libraries(${PROJECT_LIB} PUBLIC ${THIRD_PARTY_LIBRARIES})
+
+set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
+set(OGRE_PROCEDURAL_INCLUDE_DIR ${OgreProcedural_INCLUDE_DIRS})
+
+# define 3rd include directories
+set(THIRD_PARTY_INCLUDE_DIRS
+  ${IMGUI_INCLUDE_DIR}
+  ${OGRE_PROCEDURAL_INCLUDE_DIR}
+)
+
+# include 3rd party directories globally
+include_directories(${THIRD_PARTY_INCLUDE_DIRS})
 
 # setup driver target
 set(APP_FILES src/application/main.cpp)

@@ -1,4 +1,4 @@
-material Dark
+material Mono/Gray
 {
 	technique
 	{
@@ -9,12 +9,12 @@ material Dark
 
 			texture_unit
 			{
-				colour_op_ex source1 src_manual src_current 0.3 0.3 0.3
+				colour_op_ex source1 src_manual src_current 0.45 0.45 0.45
 			}
 		}
 	}
 }
-material White
+material Mono/White
 {
 	technique
 	{
