@@ -164,6 +164,12 @@ namespace
     }
 
     // Bezier curve, 4 control points.
+    //
+    // (inter2) *---* (end)
+    //          |
+    //          |<--- (dist, randomly generated)
+    //          |
+    // (inter1) *---* (begin)
     inline auto
     calculate_edge_path(const edge_properties& e, const SceneManager& scene)
     {
@@ -228,8 +234,8 @@ auto graph_renderer_impl::setup_edge(
         m_vertices[source], m_vertices[target], std::move(dependency));
 
     const auto path = calculate_edge_path(e, scene());
-    [[maybe_unused]] const auto curve_mesh = path.realizeMesh(id);
-    assert(curve_mesh);
+    [[maybe_unused]] const auto mesh = path.realizeMesh(id);
+    assert(mesh);
 
     assert(!scene().hasEntity(id));
     auto* entity = scene().createEntity(id, id);
@@ -238,9 +244,9 @@ auto graph_renderer_impl::setup_edge(
     entity->setMaterialName(config_data().edge_material, resource_group());
 
     assert(!scene().hasSceneNode(id));
-    auto* e_node = scene().getRootSceneNode()->createChildSceneNode(id);
-    assert(e_node);
-    e_node->attachObject(entity);
+    auto* node = scene().getRootSceneNode()->createChildSceneNode(id);
+    assert(node);
+    node->attachObject(entity);
 
     // `````````````` Edge Tip ````````````````````````
 
@@ -310,6 +316,7 @@ auto graph_renderer_impl::shutdown_vertex(const id_type& id) -> void
     scene().destroyEntity(id);
 
     [[maybe_unused]] const auto v_num = m_vertices.erase(id);
+    assert(v_num == 1);
 
     // `````````````` Vertex Text ```````````````````
 
@@ -319,12 +326,11 @@ auto graph_renderer_impl::shutdown_vertex(const id_type& id) -> void
     scene().destroySceneNode(txt_id);
 
     [[maybe_unused]] const auto v_txt_num = m_vertex_texts.erase(txt_id);
+    assert(v_txt_num == 1);
 
     assert(!scene().hasEntity(id));
     assert(!scene().hasSceneNode(id));
     assert(!scene().hasSceneNode(txt_id));
-    assert(v_num == 1);
-    assert(v_txt_num == 1);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown vertex: " << id;
 }
@@ -507,42 +513,45 @@ auto graph_renderer_impl::hide_edge_scaling(
 }
 
 auto graph_renderer_impl::draw_vertex(
-    const id_type& v_id, const config_data_type& cfg) -> void
+    const id_type& id, const config_data_type& cfg) -> void
 {
     assert(m_cfg);
     m_cfg = &cfg;
 
     // `````````````` Vertex Model `````````````````````
 
-    assert(scene().hasSceneNode(v_id));
-    auto* v_node = scene().getSceneNode(v_id);
-    assert(v_node);
-    v_node->detachObject(v_id);
+    assert(scene().hasSceneNode(id));
+    assert(scene().hasEntity(id));
+    auto* node = scene().getSceneNode(id);
+    assert(node);
+    node->detachObject(id);
+    scene().destroyEntity(id);
 
-    assert(scene().hasEntity(v_id));
-    scene().destroyEntity(v_id);
-    assert(!scene().hasEntity(v_id));
-    auto* v_entity = scene().createEntity(
-        v_id, config_data().vertex_mesh, resource_group());
+    auto* entity
+        = scene().createEntity(id, config_data().vertex_mesh, resource_group());
+    assert(entity);
+    node->attachObject(entity);
 
     const auto& base_scale = config_data().vertex_scale;
     static const auto neutral_scale = Vector3(1, 1, 1);
-    assert(m_vertices.contains(v_id));
-    const auto& dyn_scale = m_vertices[v_id].scale;
+    assert(m_vertices.contains(id));
+    const auto& dyn_scale = m_vertices[id].scale;
     const auto& applied_dyn_scale = dyn_scale ? *dyn_scale : neutral_scale;
-    v_node->setScale(base_scale * applied_dyn_scale);
+    node->setScale(base_scale * applied_dyn_scale);
 
     // `````````````` Vertex Text `````````````````````
 
-    const auto v_txt_id = vertex_txt_id(v_id);
+    const auto txt_id = vertex_txt_id(id);
 
-    assert(m_vertex_texts.contains(v_txt_id));
-    auto* txt = m_vertex_texts[v_txt_id].get();
+    assert(m_vertex_texts.contains(txt_id));
+    auto* txt = m_vertex_texts[txt_id].get();
     assert(txt);
     txt->setFontName(config_data().vertex_id_font_name, resource_group());
     txt->setCharacterHeight(config_data().vertex_id_char_height);
     txt->setColor(config_data().vertex_id_color);
     txt->setSpaceWidth(config_data().vertex_id_space_width);
+
+    BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << id;
 }
 
 auto graph_renderer_impl::draw_edge(

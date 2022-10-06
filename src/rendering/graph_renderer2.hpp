@@ -32,12 +32,11 @@ struct graph_config
     Ogre::String edge_tip_mesh;
     Ogre::Vector3 edge_tip_scale;
 
-#if (1) // FIXME
+    // TODO get from json
     Ogre::String edge_type_font_name { "Roboto-Medium" };
     Ogre::Real edge_type_char_height { 4.0 };
     Ogre::ColourValue edge_type_color { 0.2, 0.2, 0.2 };
     Ogre::Real edge_type_space_width { 1.0 };
-#endif
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
@@ -100,7 +99,7 @@ public:
     using config_api_type = graph_config_api;
 
     template < typename PositionMap >
-    inline graph_renderer(
+    graph_renderer(
         const graph_type& g,
         vertex_id_type vertex_id,
         PositionMap vertex_pos,
@@ -108,8 +107,14 @@ public:
         scene_type& scene,
         config_data_type cfg,
         std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : graph_renderer(
-        g, vertex_id, edge_dependency, scene, std::move(cfg), resource_group)
+    : m_g { g }
+    , m_vertex_id { vertex_id }
+    , m_edge_dependency { edge_dependency }
+    , m_scene { scene }
+    , m_cfg { cfg }
+    , m_defaults { cfg }
+    , m_cfg_api { std::move(cfg) }
+    , m_impl { scene(), config_data(), resource_group }
     {
         BOOST_CONCEPT_ASSERT(
             (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -126,53 +131,6 @@ public:
             [this](auto e)
             {
                 m_impl.setup_edge(
-                    boost::get(vertex_id(), boost::source(e, graph())),
-                    boost::get(vertex_id(), boost::target(e, graph())),
-                    boost::get(edge_dependency(), e));
-            });
-    }
-
-    // Constructor overload, applies vertex scaling on one iteration.
-    template < typename PositionMap, typename ScaleMap >
-    inline graph_renderer(
-        const graph_type& g,
-        vertex_id_type vertex_id,
-        PositionMap vertex_pos,
-        ScaleMap vertex_scale,
-        dependency_map_type edge_dependency,
-        scene_type& scene,
-        config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : graph_renderer(
-        g, vertex_id, edge_dependency, scene, std::move(cfg), resource_group)
-    {
-        BOOST_CONCEPT_ASSERT(
-            (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
-
-        BOOST_CONCEPT_ASSERT(
-            (boost::ReadablePropertyMapConcept< ScaleMap, vertex_type >));
-
-        visit_vertices(
-            [this, vertex_pos, vertex_scale](auto v)
-            {
-                m_impl.setup_vertex(
-                    boost::get(vertex_id(), v),
-                    to_vector3(boost::get(vertex_pos, v)));
-
-                m_impl.render_vertex_scaling(
-                    boost::get(vertex_id(), v),
-                    to_vector3(boost::get(vertex_scale, v)))
-            });
-
-        visit_edges(
-            [this](auto e)
-            {
-                m_impl.setup_edge(
-                    boost::get(vertex_id(), boost::source(e, graph())),
-                    boost::get(vertex_id(), boost::target(e, graph())),
-                    boost::get(edge_dependency(), e));
-
-                m_impl.render_edge_scaling(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -320,29 +278,11 @@ protected:
 private:
     using impl_type = detail::graph_renderer_impl;
 
-    graph_renderer(
-        const graph_type& g,
-        vertex_id_type vertex_id,
-        dependency_map_type edge_dependency,
-        scene_type& scene,
-        config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : m_g { g }
-    , m_vertex_id { vertex_id }
-    , m_edge_dependency { edge_dependency }
-    , m_scene { scene }
-    , m_cfg { cfg }
-    , m_defaults { cfg }
-    , m_cfg_api { std::move(cfg) }
-    , m_impl { scene(), config_data(), resource_group }
-    {
-    }
-
     template < typename Tuple >
     inline static auto to_vector3(const Tuple& t)
     {
-        const auto& [x, y, z] = t;
-        return Ogre::Vector3(x, y, z);
+        return Ogre::Vector3(
+            std::get< 0 >(t), std::get< 1 >(t), std::get< 2 >(t));
     }
 
     const graph_type& m_g;
