@@ -89,7 +89,6 @@ private:
     auto setup_gui_dependencies_editor() -> void;
     auto setup_gui_layout_editor() -> void;
     auto setup_gui_scaling_editor() -> void;
-    auto start_gui() -> void;
 
     auto connect_gui_with_command_history() -> void;
     auto connect_gui_with_dependencies() -> void;

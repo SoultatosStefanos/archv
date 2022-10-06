@@ -32,8 +32,6 @@ auto app::setup_background_rendering() -> void
         m_rendering_config.background,
         ARCHV_RESOURCE_GROUP);
 
-    ui::start(*m_background_renderer);
-
     BOOST_LOG_TRIVIAL(info) << "setup background rendering";
 }
 
@@ -45,13 +43,12 @@ auto app::setup_graph_rendering() -> void
         m_graph,
         make_id_map(),
         make_position_map(),
-        make_weight_map(),
-        make_scale_map(),
+        make_dependency_map(),
         m_background_renderer->scene(),
         m_rendering_config.graph,
         ARCHV_RESOURCE_GROUP);
 
-    ui::start(*m_graph_renderer);
+    m_graph_renderer->render_scaling(make_scale_map());
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
@@ -69,7 +66,6 @@ auto app::setup_gui() -> void
     setup_gui_dependencies_editor();
     setup_gui_layout_editor();
     setup_gui_scaling_editor();
-    start_gui();
 
     BOOST_LOG_TRIVIAL(info) << "setup gui";
 }
@@ -390,12 +386,6 @@ auto app::setup_gui_scaling_editor() -> void
         { return scaling::get_factor_max_ratio(*m_scaling_backend, tag); });
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui scaling editor";
-}
-
-auto app::start_gui() -> void
-{
-    assert(m_gui);
-    ui::start(*m_gui);
 }
 
 /***********************************************************

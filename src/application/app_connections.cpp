@@ -167,8 +167,9 @@ auto app::connect_rendering_with_layout() -> void
     assert(m_graph_renderer);
     assert(m_layout_backend);
 
-    m_layout_backend->connect_to_layout([this](const auto&)
-                                        { m_graph_renderer->draw_layout(); });
+    m_layout_backend->connect_to_layout(
+        [this](const auto&)
+        { m_graph_renderer->render_layout(make_position_map()); });
 }
 
 auto app::connect_rendering_with_scaling() -> void
@@ -176,8 +177,9 @@ auto app::connect_rendering_with_scaling() -> void
     assert(m_graph_renderer);
     assert(m_scaling_backend);
 
-    m_scaling_backend->connect([this](const auto&)
-                               { m_graph_renderer->draw_scaling(); });
+    m_scaling_backend->connect(
+        [this](const auto&)
+        { m_graph_renderer->render_scaling(make_scale_map()); });
 }
 
 auto app::connect_gui_background_configurator() -> void

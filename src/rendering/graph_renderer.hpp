@@ -1,4 +1,4 @@
-// Contains a class responsible for rendering any boost::graph via Ogre.
+// Contains a class responsible for rendering any architecture graph via Ogre.
 // Soultatos Stefanos 2022
 
 #ifndef RENDERING_GRAPH_RENDERER_HPP
@@ -9,7 +9,7 @@
 #include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_concepts.hpp>
+#include <concepts>
 #include <string_view>
 
 namespace rendering
@@ -32,12 +32,11 @@ struct graph_config
     Ogre::String edge_tip_mesh;
     Ogre::Vector3 edge_tip_scale;
 
-#if (0) // FIXME
+    // TODO get from json
     Ogre::String edge_type_font_name { "Roboto-Medium" };
-    Ogre::Real edge_type_char_height { 4.0 };
+    Ogre::Real edge_type_char_height { 3.25 };
     Ogre::ColourValue edge_type_color { 0.2, 0.2, 0.2 };
-    Ogre::Real edge_type_space_width { 1.0 };
-#endif
+    Ogre::Real edge_type_space_width { 0 };
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
@@ -68,12 +67,10 @@ private:
  * Graph renderer                                          *
  ***********************************************************/
 
-template <
-    typename Graph,
-    typename VertexID,
-    typename PositionMap,
-    typename WeightMap,
-    typename ScaleMap >
+// Generic directed graph renderer.
+// Will prepare a scene at a render window upon initialization.
+// NOTE: Parallel edges are allowed.
+template < typename Graph, typename VertexID, typename DependencyMap >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -85,133 +82,183 @@ class graph_renderer
 
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept<
-            PositionMap,
-            typename boost::graph_traits< Graph >::vertex_descriptor >));
-
-    BOOST_CONCEPT_ASSERT(
-        (boost::ReadablePropertyMapConcept<
-            WeightMap,
+            DependencyMap,
             typename boost::graph_traits< Graph >::edge_descriptor >));
-
-    BOOST_CONCEPT_ASSERT(
-        (boost::ReadablePropertyMapConcept<
-            ScaleMap,
-            typename boost::graph_traits< Graph >::vertex_descriptor >));
 
     using graph_traits = boost::graph_traits< Graph >;
 
 public:
     using graph_type = Graph;
-    using vertex_id_type = VertexID;
-    using position_map_type = PositionMap;
-    using weight_map_type = WeightMap;
-    using scale_map_type = ScaleMap;
     using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename graph_traits::edge_descriptor;
+    using vertex_id_type = VertexID;
+    using dependency_map_type = DependencyMap;
 
     using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
     using config_api_type = graph_config_api;
 
+    template < typename PositionMap >
     graph_renderer(
         const graph_type& g,
         vertex_id_type vertex_id,
-        position_map_type vertex_pos,
-        weight_map_type edge_weight,
-        scale_map_type vertex_scale,
+        PositionMap vertex_pos,
+        dependency_map_type edge_dependency,
         scene_type& scene,
-        config_data_type cfg = config_data_type(),
+        config_data_type cfg,
         std::string_view resource_group = Ogre::RGN_DEFAULT)
     : m_g { g }
     , m_vertex_id { vertex_id }
-    , m_vertex_pos { vertex_pos }
-    , m_edge_weight { edge_weight }
-    , m_vertex_scale { vertex_scale }
+    , m_edge_dependency { edge_dependency }
     , m_scene { scene }
-    , m_config { cfg }
+    , m_cfg { cfg }
     , m_defaults { cfg }
-    , m_config_api { std::move(cfg) }
-    , m_impl { scene, resource_group }
+    , m_cfg_api { std::move(cfg) }
+    , m_impl { scene, config_data(), resource_group }
     {
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
+
+        visit_vertices(
+            [this, vertex_pos](auto v)
+            {
+                m_impl.setup_vertex(
+                    boost::get(this->vertex_id(), v),
+                    to_vector3(boost::get(vertex_pos, v)));
+            });
+
+        visit_edges(
+            [this](auto e)
+            {
+                m_impl.setup_edge(
+                    boost::get(this->vertex_id(), boost::source(e, graph())),
+                    boost::get(this->vertex_id(), boost::target(e, graph())),
+                    boost::get(this->edge_dependency(), e));
+            });
     }
 
-    ~graph_renderer() { clear(); }
-
-    graph_renderer(const graph_renderer&) = delete;
+    graph_renderer(const graph_renderer&) = default;
     graph_renderer(graph_renderer&&) = delete;
 
-    auto operator=(const graph_renderer&) -> graph_renderer& = delete;
+    ~graph_renderer()
+    {
+        visit_edges(
+            [this](auto e)
+            {
+                m_impl.shutdown_edge(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
+            });
+
+        visit_vertices([this](auto v)
+                       { m_impl.shutdown_vertex(boost::get(vertex_id(), v)); });
+    }
+
+    auto operator=(const graph_renderer&) -> graph_renderer& = default;
     auto operator=(graph_renderer&&) -> graph_renderer& = delete;
 
-    auto graph() const -> const graph_type& { return m_g; }
-    auto vertex_id() const -> vertex_id_type { return m_vertex_id; }
-    auto vertex_position() const -> position_map_type { return m_vertex_pos; }
-    auto edge_weight() const -> weight_map_type { return m_edge_weight; }
-    auto vertex_scale() const -> scale_map_type { return m_vertex_scale; }
+    auto graph() const -> const auto& { return m_g; }
+    auto vertex_id() const -> auto { return m_vertex_id; }
+    auto edge_dependency() const -> auto { return m_edge_dependency; }
 
     auto scene() const -> const scene_type& { return m_scene; }
     auto scene() -> scene_type& { return m_scene; }
+
     auto default_data() const -> const config_data_type& { return m_defaults; }
-    auto config_data() const -> const config_data_type& { return m_config; }
-    auto config_data() -> config_data_type& { return m_config; }
-    auto config_api() const -> const config_api_type& { return m_config_api; }
-    auto config_api() -> config_api_type& { return m_config_api; }
+
+    auto config_data() const -> const config_data_type& { return m_cfg; }
+    auto config_data() -> config_data_type& { return m_cfg; }
+
+    auto config_api() const -> const config_api_type& { return m_cfg_api; }
+    auto config_api() -> config_api_type& { return m_cfg_api; }
+
     auto resource_group() const -> auto* { return m_impl.resource_group(); }
+
+    template < typename PositionMap >
+    inline auto render_layout(PositionMap vertex_pos) -> void
+    {
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
+
+        visit_vertices(
+            [this, vertex_pos](auto v)
+            {
+                m_impl.render_vertex_pos(
+                    boost::get(vertex_id(), v),
+                    to_vector3(boost::get(vertex_pos, v)));
+            });
+
+        visit_edges(
+            [this](auto e)
+            {
+                m_impl.render_edge_pos(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
+            });
+    }
+
+    template < typename ScaleMap >
+    inline auto render_scaling(ScaleMap vertex_scale) -> void
+    {
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadablePropertyMapConcept< ScaleMap, vertex_type >));
+
+        visit_vertices(
+            [this, vertex_scale](auto v)
+            {
+                m_impl.render_vertex_scaling(
+                    boost::get(vertex_id(), v),
+                    to_vector3(boost::get(vertex_scale, v)));
+            });
+
+        visit_edges(
+            [this](auto e)
+            {
+                m_impl.render_edge_scaling(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
+            });
+    }
+
+    inline auto hide_scaling() -> void
+    {
+        visit_vertices(
+            [this](auto v)
+            { m_impl.hide_vertex_scaling(boost::get(vertex_id(), v)); });
+
+        visit_edges(
+            [this](auto e)
+            {
+                m_impl.hide_edge_scaling(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
+            });
+    }
 
     inline auto draw(const config_data_type& cfg) -> void
     {
-        visit_vertices([this, &cfg](const auto& v)
-                       { m_impl.draw(make_vertex_properties(v), cfg); });
-
-        visit_edges([this, &cfg](const auto& e)
-                    { m_impl.draw(make_edge_properties(e), cfg); });
-    }
-
-    inline auto draw_layout() -> void
-    {
         visit_vertices(
-            [this](const auto& v)
-            { m_impl.draw_layout(make_vertex_properties(v), config_data()); });
+            [this, &cfg](auto v)
+            { m_impl.draw_vertex(boost::get(vertex_id(), v), cfg); });
 
         visit_edges(
-            [this](const auto& e)
-            { m_impl.draw_layout(make_edge_properties(e), config_data()); });
+            [this, &cfg](auto e)
+            {
+                m_impl.draw_edge(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e),
+                    cfg);
+            });
     }
 
-    inline auto draw_scaling() -> void
-    {
-        visit_vertices(
-            [this](const auto& v)
-            { m_impl.draw_scaling(make_vertex_properties(v), config_data()); });
+    auto draw(config_data_type&&) -> void = delete; // disallow temporaries
 
-        visit_edges(
-            [this](const auto& e)
-            { m_impl.draw_scaling(make_edge_properties(e), config_data()); });
-    }
-
-    inline auto clear() -> void
-    {
-        visit_edges([this](const auto& e)
-                    { m_impl.clear(make_edge_properties(e)); });
-
-        visit_vertices([this](const auto& v)
-                       { m_impl.clear(make_vertex_properties(v)); });
-    }
-
-private:
-    using graph_renderer_impl = detail::graph_renderer_impl;
-    using vertex_properties = detail::vertex_properties;
-    using edge_properties = detail::edge_properties;
-
-    static_assert(std::is_convertible_v<
-                  typename boost::property_traits< vertex_id_type >::value_type,
-                  vertex_properties::id_type >);
-
-    static_assert(
-        std::is_convertible_v<
-            typename boost::property_traits< weight_map_type >::value_type,
-            edge_properties::weight_type >);
-
+protected:
     template < typename UnaryOperation >
     requires std::invocable< UnaryOperation, vertex_type >
     auto visit_vertices(UnaryOperation f) const
@@ -228,43 +275,25 @@ private:
             f(e);
     }
 
-    inline auto make_vertex_properties(vertex_type v) const
+private:
+    using impl_type = detail::graph_renderer_impl;
+
+    template < typename Tuple >
+    inline static auto to_vector3(const Tuple& t)
     {
-        auto&& id = boost::get(vertex_id(), v);
-
-        const auto& [x, y, z] = boost::get(vertex_position(), v);
-        auto&& pos = vertex_properties::position_type(x, y, z);
-
-        const auto& [xs, ys, zs] = boost::get(vertex_scale(), v);
-        auto&& scale = vertex_properties::scale_type(xs, ys, zs);
-
-        return vertex_properties { .id = std::move(id),
-                                   .pos = std::move(pos),
-                                   .scale = std::move(scale) };
-    }
-
-    inline auto make_edge_properties(edge_type e) const
-    {
-        const auto source = boost::source(e, graph());
-        const auto target = boost::target(e, graph());
-        auto weight = boost::get(edge_weight(), e);
-
-        return edge_properties { .source = make_vertex_properties(source),
-                                 .target = make_vertex_properties(target),
-                                 .weight = weight };
+        const auto& [x, y, z] = t;
+        return Ogre::Vector3(x, y, z);
     }
 
     const graph_type& m_g;
     vertex_id_type m_vertex_id;
-    position_map_type m_vertex_pos;
-    weight_map_type m_edge_weight;
-    scale_map_type m_vertex_scale;
+    dependency_map_type m_edge_dependency;
 
     scene_type& m_scene;
-    config_data_type m_config, m_defaults;
-    config_api_type m_config_api;
+    config_data_type m_cfg, m_defaults;
+    config_api_type m_cfg_api;
 
-    graph_renderer_impl m_impl;
+    impl_type m_impl;
 };
 
 } // namespace rendering

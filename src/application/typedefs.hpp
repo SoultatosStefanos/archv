@@ -28,9 +28,7 @@ using scale_map
 using graph_renderer = rendering::graph_renderer<
     architecture::graph,
     architecture::id_map,
-    position_map,
-    weight_map,
-    scale_map >;
+    architecture::dependency_map >;
 
 } // namespace application
 

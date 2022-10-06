@@ -19,6 +19,7 @@ namespace gui
 gui::gui(config_data_type cfg)
 : m_cfg { cfg }, m_defaults { cfg }, m_api { std::move(cfg) }
 {
+    draw(config_data());
 }
 
 namespace

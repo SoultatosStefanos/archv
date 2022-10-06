@@ -486,6 +486,13 @@
 
 # 05 / 09 / 2022
 
-	+ [ ] Fix graph redraw and edge tips
+	+ [x] Fix graph redraw and edge tips
 
-	+ [ ] Edge types rendering
+	+ [x] Edge types rendering
+
+
+# 06 / 09 / 2022
+
+	+ [ ] Handle dependency type rendering on parallels
+
+	+ [ ] Edge weight rendering

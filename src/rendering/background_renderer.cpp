@@ -27,6 +27,7 @@ background_renderer::background_renderer(
     setup_scene();
     setup_lighting();
     setup_camera();
+    draw(config_data());
 
     assert(m_scene);
     assert(m_light);
