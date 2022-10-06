@@ -36,21 +36,19 @@ graph_renderer_impl::~graph_renderer_impl() = default;
 
 namespace
 {
-    inline auto vertex_txt_id(const vertex_properties& v)
+    inline auto vertex_txt_id(const graph_renderer_impl::id_type& id)
     {
-        return v.id + " txt";
+        return id + " txt";
     }
 } // namespace
 
 // NOTE:
 // Allocated: 2 SceneNodes, 1 Entity, 1 MovableText
-auto graph_renderer_impl::setup(vertex_properties v) -> void
+auto graph_renderer_impl::setup_vertex(id_type v_id, position_type pos) -> void
 {
     assert(m_cfg);
 
     // ``````````````` Vertex Model ````````````````````
-
-    const auto& v_id = v.id;
 
     auto* v_entity = scene().createEntity(
         v_id, config_data().vertex_mesh, resource_group());
@@ -60,12 +58,12 @@ auto graph_renderer_impl::setup(vertex_properties v) -> void
     auto* v_node = scene().getRootSceneNode()->createChildSceneNode(v_id);
     assert(v_node);
     v_node->setScale(config_data().vertex_scale);
-    v_node->setPosition(v.pos);
+    v_node->setPosition(pos);
     v_node->attachObject(v_entity);
 
     // ``````````````````` Vertex Text ```````````````
 
-    const auto v_txt_id = vertex_txt_id(v);
+    const auto v_txt_id = vertex_txt_id(v_id);
 
     auto v_txt = std::make_unique< MovableText >(
         v_txt_id,
@@ -84,33 +82,42 @@ auto graph_renderer_impl::setup(vertex_properties v) -> void
     auto* txt_node = scene().getRootSceneNode()->createChildSceneNode(v_txt_id);
     assert(txt_node);
     txt_node->attachObject(v_txt.get());
-    txt_node->setPosition(v.pos);
+    txt_node->setPosition(pos);
 
     assert(scene().hasEntity(v_id));
     assert(scene().hasSceneNode(v_id));
     assert(scene().hasSceneNode(v_txt_id));
 
-    m_vertices[v_id] = std::move(v);
-    m_vertex_texts[v_txt_id] = std::move(v_txt);
-
     BOOST_LOG_TRIVIAL(debug) << "drew vertex: " << v_id;
+
+    m_vertices[v_id] = vertex_properties(std::move(v_id), std::move(pos));
+    m_vertex_texts[v_txt_id] = std::move(v_txt);
 }
 
 namespace
 {
-    inline auto edge_id(const edge_properties& e)
+    inline auto edge_id(
+        const graph_renderer_impl::id_type& source,
+        const graph_renderer_impl::id_type& target,
+        const graph_renderer_impl::dependency_type& dependency)
     {
-        return e.source.id + " -> " + e.target.id + " " + e.dependency;
+        return source + " -> " + target + " " + dependency;
     }
 
-    inline auto edge_tip_id(const edge_properties& e)
+    inline auto edge_tip_id(
+        const graph_renderer_impl::id_type& source,
+        const graph_renderer_impl::id_type& target,
+        const graph_renderer_impl::dependency_type& dependency)
     {
-        return edge_id(e) + " tip";
+        return edge_id(source, target, dependency) + " tip";
     }
 
-    inline auto edge_txt_id(const edge_properties& e)
+    inline auto edge_txt_id(
+        const graph_renderer_impl::id_type& source,
+        const graph_renderer_impl::id_type& target,
+        const graph_renderer_impl::dependency_type& dependency)
     {
-        return edge_id(e) + " txt";
+        return edge_id(source, target, dependency) + " txt";
     }
 
     inline auto
@@ -160,11 +167,17 @@ namespace
 
 // NOTE:
 // Allocated: 3 SceneNodes, 1 Mesh, 2 Entities, 1 MovableText
-auto graph_renderer_impl::setup(edge_properties e) -> void
+auto graph_renderer_impl::setup_edge(
+    const id_type& source, const id_type& target, dependency_type dependency)
+    -> void
 {
     // `````````````` Edge Curve ````````````````````````
 
-    const auto e_id = edge_id(e);
+    const auto e_id = edge_id(source, target, dependency);
+    assert(m_vertices.contains(source));
+    assert(m_vertices.contains(target));
+    auto&& e = edge_properties(
+        m_vertices[source], m_vertices[target], std::move(dependency));
 
     // Generate a random Bezier curve from source to target.
     // We generate random curves in order to handle parallel edges.
@@ -198,7 +211,7 @@ auto graph_renderer_impl::setup(edge_properties e) -> void
 
     // `````````````` Edge Tip ````````````````````````
 
-    const auto tip_id = edge_tip_id(e);
+    const auto tip_id = edge_tip_id(source, target, e.dependency);
 
     assert(!scene().hasEntity(tip_id));
     auto* tip = scene().createEntity(
@@ -221,7 +234,7 @@ auto graph_renderer_impl::setup(edge_properties e) -> void
 
     // `````````````` Edge Text ````````````````````````
 
-    const auto e_txt_id = edge_txt_id(e);
+    const auto e_txt_id = edge_txt_id(source, target, e.dependency);
 
     auto e_txt = std::make_unique< MovableText >(
         e_txt_id,
@@ -254,11 +267,9 @@ auto graph_renderer_impl::setup(edge_properties e) -> void
     BOOST_LOG_TRIVIAL(debug) << "drew edge: " << e_id;
 }
 
-auto graph_renderer_impl::shutdown(const vertex_properties& v) -> void
+auto graph_renderer_impl::shutdown_vertex(const id_type& v_id) -> void
 {
     // `````````````` Vertex Model ```````````````````
-
-    const auto& v_id = v.id;
 
     scene().getSceneNode(v_id)->detachAllObjects();
     scene().destroySceneNode(v_id);
@@ -268,7 +279,7 @@ auto graph_renderer_impl::shutdown(const vertex_properties& v) -> void
 
     // `````````````` Vertex Text ```````````````````
 
-    const auto v_txt_id = vertex_txt_id(v);
+    const auto v_txt_id = vertex_txt_id(v_id);
     scene().getSceneNode(v_txt_id)->detachAllObjects();
     scene().destroySceneNode(v_txt_id);
 
@@ -280,14 +291,17 @@ auto graph_renderer_impl::shutdown(const vertex_properties& v) -> void
     assert(v_num == 1);
     assert(v_txt_num == 1);
 
-    BOOST_LOG_TRIVIAL(debug) << "cleared vertex: " << v.id;
+    BOOST_LOG_TRIVIAL(debug) << "cleared vertex: " << v_id;
 }
 
-auto graph_renderer_impl::shutdown(const edge_properties& e) -> void
+auto graph_renderer_impl::shutdown_edge(
+    const id_type& source,
+    const id_type& target,
+    const dependency_type& dependency) -> void
 {
     // `````````````` Edge Curve ```````````````````
 
-    const auto e_id = edge_id(e);
+    const auto e_id = edge_id(source, target, dependency);
 
     scene().getSceneNode(e_id)->detachAllObjects();
     scene().destroySceneNode(e_id);
@@ -298,7 +312,7 @@ auto graph_renderer_impl::shutdown(const edge_properties& e) -> void
 
     // `````````````` Edge Tip ```````````````````
 
-    const auto e_tip_id = edge_tip_id(e);
+    const auto e_tip_id = edge_tip_id(source, target, dependency);
 
     scene().getSceneNode(e_tip_id)->detachAllObjects();
     scene().destroySceneNode(e_tip_id);
@@ -306,7 +320,7 @@ auto graph_renderer_impl::shutdown(const edge_properties& e) -> void
 
     // `````````````` Edge Text ```````````````````
 
-    const auto e_txt_id = edge_txt_id(e);
+    const auto e_txt_id = edge_txt_id(source, target, dependency);
 
     scene().getSceneNode(e_txt_id)->detachAllObjects();
     scene().destroySceneNode(e_txt_id);
@@ -324,105 +338,96 @@ auto graph_renderer_impl::shutdown(const edge_properties& e) -> void
     BOOST_LOG_TRIVIAL(debug) << "cleared edge: " << e_id;
 }
 
-auto graph_renderer_impl::render_pos(const vertex_properties& v) -> void
+auto graph_renderer_impl::render_vertex_pos(
+    const id_type& v_id, position_type pos) -> void
 {
     // `````````````` Vertex Model `````````````
-
-    const auto& v_id = v.id;
 
     assert(scene().hasSceneNode(v_id));
     auto* v_node = scene().getSceneNode(v_id);
     assert(v_node);
-    v_node->setPosition(v.pos);
+    v_node->setPosition(pos);
 
     // `````````````` Vertex Text `````````````
 
-    const auto v_txt_id = vertex_txt_id(v);
+    const auto v_txt_id = vertex_txt_id(v_id);
     assert(scene().hasSceneNode(v_txt_id));
     auto* txt_node = scene().getSceneNode(v_txt_id);
     assert(txt_node);
-    txt_node->setPosition(v.pos);
+    txt_node->setPosition(pos);
 
     assert(m_vertices.contains(v_id));
-    m_vertices[v_id].pos = v.pos;
+    m_vertices[v_id].pos = std::move(pos);
 
     BOOST_LOG_TRIVIAL(debug) << "rendered position of vertex: " << v_id;
 }
 
-auto graph_renderer_impl::render_pos(const edge_properties& e) -> void
-{
-    shutdown(e);
-    setup(e);
-
-    BOOST_LOG_TRIVIAL(debug) << "rendered position of edge: " << edge_id(e);
-}
-
 // TODO
-auto graph_renderer_impl::render_weight(const edge_properties&) -> void
+auto graph_renderer_impl::render_edge_pos(
+    const id_type& source,
+    const id_type& target,
+    const dependency_type& dependency) -> void
 {
+
+    BOOST_LOG_TRIVIAL(debug)
+        << "rendered position of edge: " << edge_id(source, target, dependency);
 }
 
-auto graph_renderer_impl::render_scaling(const vertex_properties& v) -> void
+auto graph_renderer_impl::render_vertex_scaling(
+    const id_type& v_id, scale_type scale) -> void
 {
-    assert(v.scale.has_value());
-
-    const auto& v_id = v.id;
-
     assert(scene().hasSceneNode(v_id));
     auto* v_node = scene().getSceneNode(v_id);
     assert(v_node);
-    v_node->setScale(config_data().vertex_scale * *(v.scale));
+    v_node->setScale(config_data().vertex_scale * scale);
 
     assert(m_vertices.contains(v_id));
-    m_vertices[v_id].scale = v.scale;
+    m_vertices[v_id].scale = std::move(scale);
 
     BOOST_LOG_TRIVIAL(debug) << "rendered scale of vertex: " << v_id;
 }
 
-auto graph_renderer_impl::render_scaling(const edge_properties& e) -> void
-{
-    shutdown(e);
-    setup(e);
-
-    BOOST_LOG_TRIVIAL(debug) << "rendered scaling of edge: " << edge_id(e);
-}
-
 // TODO
-auto graph_renderer_impl::hide_weight(const edge_properties& e) -> void
+auto graph_renderer_impl::render_edge_scaling(
+    const id_type& source,
+    const id_type& target,
+    const dependency_type& dependency) -> void
 {
+
+    BOOST_LOG_TRIVIAL(debug)
+        << "rendered scaling of edge: " << edge_id(source, target, dependency);
 }
 
-auto graph_renderer_impl::hide_scaling(const vertex_properties& v) -> void
+auto graph_renderer_impl::hide_vertex_scaling(const id_type& v_id) -> void
 {
-    const auto& v_id = v.id;
-
     assert(scene().hasSceneNode(v_id));
     auto* v_node = scene().getSceneNode(v_id);
     assert(v_node);
     v_node->setScale(config_data().vertex_scale);
 
     assert(m_vertices.contains(v_id));
-    m_vertices[v_id].scale = std::optional< vertex_properties::scale_type >();
+    m_vertices[v_id].scale = std::nullopt;
 
     BOOST_LOG_TRIVIAL(debug) << "hid scale of vertex: " << v_id;
 }
 
-auto graph_renderer_impl::hide_scaling(const edge_properties& e) -> void
+// TODO
+auto graph_renderer_impl::hide_edge_scaling(
+    const id_type& source,
+    const id_type& target,
+    const dependency_type& dependency) -> void
 {
-    shutdown(e);
-    setup(e);
 
-    BOOST_LOG_TRIVIAL(debug) << "hid scaling of edge: " << edge_id(e);
+    BOOST_LOG_TRIVIAL(debug)
+        << "hid scaling of edge: " << edge_id(source, target, dependency);
 }
 
-auto graph_renderer_impl::draw(
-    const vertex_properties& v, const config_data_type& cfg) -> void
+auto graph_renderer_impl::draw_vertex(
+    const id_type& v_id, const config_data_type& cfg) -> void
 {
     m_cfg = &cfg;
 
     // `````````````` Vertex Model `````````````````````
-
-    const auto& v_id = v.id;
 
     assert(scene().hasSceneNode(v_id));
     auto* v_node = scene().getSceneNode(v_id);
@@ -444,7 +449,7 @@ auto graph_renderer_impl::draw(
 
     // `````````````` Vertex Text `````````````````````
 
-    const auto v_txt_id = vertex_txt_id(v);
+    const auto v_txt_id = vertex_txt_id(v_id);
 
     assert(m_vertex_texts.contains(v_txt_id));
     auto* txt = m_vertex_texts[v_txt_id].get();
@@ -455,8 +460,12 @@ auto graph_renderer_impl::draw(
     txt->setSpaceWidth(config_data().vertex_id_space_width);
 }
 
-auto graph_renderer_impl::draw(
-    const edge_properties& e, const config_data_type& cfg) -> void
+// TODO
+auto graph_renderer_impl::draw_edge(
+    const id_type& source,
+    const id_type& target,
+    const dependency_type& dependency,
+    const config_data_type& cfg) -> void
 {
     m_cfg = &cfg;
 

@@ -35,7 +35,6 @@ struct vertex_properties
 
     id_type id;
     position_type pos;
-
     std::optional< scale_type > scale;
 
     auto operator==(const vertex_properties&) const -> bool = default;
@@ -51,9 +50,9 @@ struct edge_properties
     using dependency_type = std::string;
     using weight_type = int;
 
-    dependency_type dependency;
     vertex_properties source;
     vertex_properties target;
+    dependency_type dependency;
 
     std::optional< weight_type > weight;
 
@@ -70,6 +69,13 @@ class graph_renderer_impl
 public:
     using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
+
+    using id_type = vertex_properties::id_type;
+    using position_type = vertex_properties::position_type;
+    using scale_type = vertex_properties::scale_type;
+
+    using dependency_type = edge_properties::dependency_type;
+    using weight_type = edge_properties::weight_type;
 
     explicit graph_renderer_impl(
         scene_type& scene,
@@ -92,27 +98,50 @@ public:
 
     auto resource_group() const -> auto* { return m_resource_group.data(); }
 
-    auto setup(vertex_properties v) -> void;
-    auto setup(edge_properties e) -> void;
+    auto setup_vertex(id_type v, position_type pos) -> void;
+    auto setup_edge(
+        const id_type& source,
+        const id_type& target,
+        dependency_type dependency) -> void;
 
-    auto shutdown(const vertex_properties& v) -> void;
-    auto shutdown(const edge_properties& e) -> void;
+    auto shutdown_vertex(const id_type& v) -> void;
+    auto shutdown_edge(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency) -> void;
 
-    auto render_pos(const vertex_properties& v) -> void;
-    auto render_pos(const edge_properties& e) -> void;
-    auto render_weight(const edge_properties& e) -> void;
-    auto render_scaling(const vertex_properties& v) -> void;
-    auto render_scaling(const edge_properties& e) -> void;
+    auto render_vertex_pos(const id_type& v, position_type pos) -> void;
+    auto render_edge_pos(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency) -> void;
 
-    auto hide_weight(const edge_properties& e) -> void;
-    auto hide_scaling(const vertex_properties& v) -> void;
-    auto hide_scaling(const edge_properties& e) -> void;
+    auto render_vertex_scaling(const id_type& v, scale_type scale) -> void;
+    auto render_edge_scaling(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency) -> void;
 
-    auto draw(const vertex_properties& v, const config_data_type& cfg) -> void;
-    auto draw(const edge_properties& e, const config_data_type& cfg) -> void;
+    auto hide_vertex_scaling(const id_type& v) -> void;
+    auto hide_edge_scaling(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency) -> void;
 
-    auto draw(const vertex_properties&, config_data_type&&) -> void = delete;
-    auto draw(const edge_properties&, config_data_type&&) -> void = delete;
+    auto draw_vertex(const id_type& v, const config_data_type& cfg) -> void;
+    auto draw_vertex(const id_type& v, config_data_type&& cfg) -> void = delete;
+
+    auto draw_edge(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency,
+        const config_data_type& cfg) -> void;
+    auto draw_edge(
+        const id_type& source,
+        const id_type& target,
+        const dependency_type& dependency,
+        config_data_type&& cfg) -> void
+        = delete;
 
 private:
     using vertex_map
