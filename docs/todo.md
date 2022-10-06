@@ -496,3 +496,7 @@
 	+ [ ] Handle dependency type rendering on parallels
 
 	+ [ ] Edge weight rendering
+
+	+ [ ] Edge text configuration
+
+	+ [ ] Edge tip mesh

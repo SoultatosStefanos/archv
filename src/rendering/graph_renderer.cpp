@@ -64,10 +64,11 @@ auto graph_renderer_impl::setup_vertex(id_type id, position_type pos) -> void
     // ``````````````````` Vertex Text ```````````````
 
     const auto txt_id = vertex_txt_id(id);
+    const auto& caption = id;
 
     auto txt = std::make_unique< MovableText >(
         txt_id,
-        txt_id,
+        caption,
         config_data().vertex_id_font_name,
         config_data().vertex_id_char_height,
         config_data().vertex_id_color,
