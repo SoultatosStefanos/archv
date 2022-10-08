@@ -79,6 +79,21 @@ namespace Ogre {
 		void						setLocalTranslation( Vector3 trans );
 		void						showOnTop(bool show=true);
 
+		// from MovableObject
+		void						getWorldTransforms(Matrix4 *xform) const;
+		Real						getBoundingRadius(void) const {return mRadius;};
+		Real						getSquaredViewDepth(const Camera *cam) const {return 0;};
+		const   Quaternion			&getWorldOrientation(void) const;
+		const   Vector3				&getWorldPosition(void) const;
+		const   AxisAlignedBox		&getBoundingBox(void) const {return mAABB;};
+		const   String				&getName(void) const {return mName;};
+		const   String				&getMovableType(void) const {static Ogre::String movType = "MovableText"; return movType;};
+		
+		// from renderable
+		void						getRenderOperation(RenderOperation &op);
+		const   MaterialPtr			&getMaterial(void) const {assert(!mpMaterial.isNull());return mpMaterial;};
+		const   LightList			&getLights(void) const {return mLList;};
+
 		// Get settings
 		const   String				&getFontName()	const {return mFontName;}
 		const   String				&getCaption()	const {return mCaption;}
@@ -98,23 +113,8 @@ namespace Ogre {
 		void						_setupGeometry();
 		void						_updateColors();
 
-		// from MovableObject
-		void						getWorldTransforms(Matrix4 *xform) const;
-		Real						getBoundingRadius(void) const {return mRadius;};
-		Real						getSquaredViewDepth(const Camera *cam) const {return 0;};
-		const   Quaternion			&getWorldOrientation(void) const;
-		const   Vector3				&getWorldPosition(void) const;
-		const   AxisAlignedBox		&getBoundingBox(void) const {return mAABB;};
-		const   String				&getName(void) const {return mName;};
-		const   String				&getMovableType(void) const {static Ogre::String movType = "MovableText"; return movType;};
-
 		void						_notifyCurrentCamera(Camera *cam);
 		void						_updateRenderQueue(RenderQueue* queue);
-
-		// from renderable
-		void						getRenderOperation(RenderOperation &op);
-		const   MaterialPtr			&getMaterial(void) const {assert(!mpMaterial.isNull());return mpMaterial;};
-		const   LightList			&getLights(void) const {return mLList;};
 	};
 
 } //end namespace Ogre
