@@ -43,12 +43,11 @@ auto app::setup_graph_rendering() -> void
         m_graph,
         make_id_map(),
         make_position_map(),
+        make_scale_map(),
         make_dependency_map(),
         m_background_renderer->scene(),
         m_rendering_config.graph,
         ARCHV_RESOURCE_GROUP);
-
-    m_graph_renderer->render_scaling(make_scale_map());
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }

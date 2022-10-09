@@ -1,7 +1,7 @@
 {
 	"background" : 
 	{
-		"skybox-material" : "Studio/Bright",
+		"skybox-material" : "Gradient/Studio",
 		"skybox-distance" : 5000,
 		"ambient-light" : [ 0.2, 0.2, 0.2 ],
 		"diffuse-light" : [ 1, 1, 1 ],
