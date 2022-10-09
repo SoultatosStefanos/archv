@@ -34,7 +34,7 @@ struct vertex_properties;
  ***********************************************************/
 
 // Exposes an api for rendering/updating architecture graph vertices.
-// NOTE: Will prepare a set on construction.
+// NOTE: Will prepare a scene on construction.
 class vertex_renderer
 {
 public:

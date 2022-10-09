@@ -293,7 +293,7 @@ auto edge_renderer::setup_text(const edge_type& e, const path_type& path)
 auto edge_renderer::shutdown(
     const vertex_id_type& source,
     const vertex_id_type& target,
-    dependency_type dependency) -> void
+    const dependency_type& dependency) -> void
 {
     const auto name = make_edge_name(source, target, dependency);
     shutdown_text(edge(name));
@@ -345,7 +345,7 @@ auto edge_renderer::shutdown_model(const edge_type& e) -> void
 auto edge_renderer::render_position(
     const vertex_id_type& source,
     const vertex_id_type& target,
-    dependency_type dependency) -> void
+    const dependency_type& dependency) -> void
 {
     const auto name = make_edge_name(source, target, dependency);
     const auto path = calculate_edge_path(edge(name), m_scene);
@@ -407,7 +407,7 @@ auto edge_renderer::render_text_pos(const edge_type& e, const path_type& path)
 auto edge_renderer::draw(
     const vertex_id_type& source,
     const vertex_id_type& target,
-    dependency_type dependency,
+    const dependency_type& dependency,
     const config_data_type& cfg) -> void
 {
     m_cfg = &cfg;

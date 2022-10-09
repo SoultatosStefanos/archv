@@ -53,7 +53,7 @@ struct edge_vertices_compare
  ***********************************************************/
 
 // Exposes an api for rendering/updating architecture graph edges.
-// NOTE: Will prepare a set on construction.
+// NOTE: Will prepare a scene on construction.
 class edge_renderer
 {
 public:
@@ -85,23 +85,23 @@ public:
     auto shutdown(
         const vertex_id_type& source,
         const vertex_id_type& target,
-        dependency_type dependency) -> void;
+        const dependency_type& dependency) -> void;
 
     auto render_position(
         const vertex_id_type& source,
         const vertex_id_type& target,
-        dependency_type dependency) -> void;
+        const dependency_type& dependency) -> void;
 
     auto draw(
         const vertex_id_type& source,
         const vertex_id_type& target,
-        dependency_type dependency,
+        const dependency_type& dependency,
         const config_data_type& cfg) -> void;
 
     auto draw(
         const vertex_id_type&,
         const vertex_id_type&,
-        dependency_type,
+        const dependency_type&,
         config_data_type&&) -> void
         = delete;
 
