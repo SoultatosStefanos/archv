@@ -22,7 +22,14 @@
 		},
 		"edge-material" : "mat",
 		"edge-tip-mesh" : "a",
-		"edge-tip-scale" : [1, 1, 1]
+		"edge-tip-scale" : [1, 1, 1],
+		"edge-type" :
+		{
+			"font-name" : "e",
+			"char-height" : 1.0,
+			"color" : [ 1.0, 1.0, 1.0 ],
+			"space-width" : 1.0
+		}
 	}
 
 }

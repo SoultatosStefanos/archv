@@ -33,11 +33,10 @@ struct graph_config
     Ogre::String edge_tip_mesh;
     Ogre::Vector3 edge_tip_scale;
 
-    // TODO get from json
-    Ogre::String edge_type_font_name { "Roboto-Medium" };
-    Ogre::Real edge_type_char_height { 3.25 };
-    Ogre::ColourValue edge_type_color { 0.2, 0.2, 0.2 };
-    Ogre::Real edge_type_space_width { 0 };
+    Ogre::String edge_type_font_name;
+    Ogre::Real edge_type_char_height;
+    Ogre::ColourValue edge_type_color;
+    Ogre::Real edge_type_space_width;
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;

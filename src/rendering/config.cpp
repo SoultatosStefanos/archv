@@ -103,6 +103,12 @@ namespace
         auto&& edge_tip_mesh = val["edge-tip-mesh"].as< string >();
         auto&& edge_tip_scale = deserialize_vector3(val["edge-tip-scale"]);
 
+        const auto& edgetype_val = val["edge-type"];
+        auto&& edgetype_font_name = edgetype_val["font-name"].as< string >();
+        auto edgetype_char_height = edgetype_val["char-height"].as< real >();
+        auto&& edgetype_color = deserialize_rgb(edgetype_val["color"]);
+        auto edgetype_space_width = edgetype_val["space-width"].as< real >();
+
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
         return { std::move(vertex_mesh),
@@ -113,7 +119,11 @@ namespace
                  static_cast< float >(vboard_space_width),
                  std::move(edge_material),
                  std::move(edge_tip_mesh),
-                 edge_tip_scale };
+                 edge_tip_scale,
+                 std::move(edgetype_font_name),
+                 static_cast< float >(edgetype_char_height),
+                 edgetype_color,
+                 static_cast< float >(edgetype_space_width) };
     }
 
 } // namespace
