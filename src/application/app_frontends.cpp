@@ -298,7 +298,7 @@ auto app::setup_gui_graph_configurator() -> void
     assert(m_gui);
 
     auto& graph_gui = m_gui->get_configurator().get_graph_configurator();
-    const auto& cfg = m_rendering_config.graph; // FIXME
+    const auto& cfg = m_rendering_config.graph;
 
     graph_gui.set_node_mesh(cfg.vertex_mesh);
     graph_gui.set_node_scale(to_scale(cfg.vertex_scale));
@@ -309,6 +309,10 @@ auto app::setup_gui_graph_configurator() -> void
     graph_gui.set_edge_material(cfg.edge_material);
     graph_gui.set_edge_tip_mesh(cfg.edge_tip_mesh);
     graph_gui.set_edge_tip_scale(to_scale(cfg.edge_tip_scale));
+    graph_gui.set_edge_font(cfg.edge_type_font_name);
+    graph_gui.set_edge_font_color(to_rgba(cfg.edge_type_color));
+    graph_gui.set_edge_char_height(cfg.edge_type_char_height);
+    graph_gui.set_edge_space_width(cfg.edge_type_space_width);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui graph values";
 }

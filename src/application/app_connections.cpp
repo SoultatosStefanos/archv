@@ -391,6 +391,46 @@ auto app::connect_gui_graph_configurator() -> void
                 = Ogre::Vector3(scale[0], scale[1], scale[2]);
         });
 
+    iface.connect_to_edge_font(
+        [this](auto font)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph edge font: " << font;
+
+            m_graph_renderer->config_api().config_data().edge_type_font_name
+                = std::string(font);
+        });
+
+    iface.connect_to_edge_font_color(
+        [this](const auto& col)
+        {
+            assert(col.size() == 4);
+
+            BOOST_LOG_TRIVIAL(info)
+                << "selected graph edge font color: " << col[0] << ", "
+                << col[1] << ", " << col[2] << ", " << col[3];
+
+            m_graph_renderer->config_api().config_data().edge_type_color
+                = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
+        });
+
+    iface.connect_to_edge_char_height(
+        [this](auto h)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph edge char height: " << h;
+
+            m_graph_renderer->config_api().config_data().edge_type_char_height
+                = h;
+        });
+
+    iface.connect_to_edge_space_width(
+        [this](auto w)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected graph edge space width: " << w;
+
+            m_graph_renderer->config_api().config_data().edge_type_space_width
+                = w;
+        });
+
     iface.connect_to_apply(
         [this]()
         {

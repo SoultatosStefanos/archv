@@ -497,6 +497,6 @@
 
 	+ [ ] Edge weight rendering
 
-	+ [ ] Edge text configuration
+	+ [x] Edge text configuration
 
 	+ [ ] Edge tip mesh
