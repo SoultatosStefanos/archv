@@ -404,22 +404,6 @@ auto edge_renderer::render_text_pos(const edge_type& e, const path_type& path)
     txt_node->setPosition(calculate_edge_text_position(path));
 }
 
-auto edge_renderer::render_scale(
-    const vertex_id_type& source,
-    const vertex_id_type& target,
-    dependency_type dependency) -> void
-{
-    render_position(source, target, dependency);
-}
-
-auto edge_renderer::hide_scale(
-    const vertex_id_type& source,
-    const vertex_id_type& target,
-    dependency_type dependency) -> void
-{
-    render_position(source, target, dependency);
-}
-
 auto edge_renderer::draw(
     const vertex_id_type& source,
     const vertex_id_type& target,

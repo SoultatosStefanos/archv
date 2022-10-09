@@ -92,16 +92,6 @@ public:
         const vertex_id_type& target,
         dependency_type dependency) -> void;
 
-    auto render_scale(
-        const vertex_id_type& source,
-        const vertex_id_type& target,
-        dependency_type dependency) -> void;
-
-    auto hide_scale(
-        const vertex_id_type& source,
-        const vertex_id_type& target,
-        dependency_type dependency) -> void;
-
     auto draw(
         const vertex_id_type& source,
         const vertex_id_type& target,

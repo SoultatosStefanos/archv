@@ -254,7 +254,7 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_edge_renderer.render_scale(
+                m_edge_renderer.render_position(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -270,7 +270,7 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_edge_renderer.hide_scale(
+                m_edge_renderer.render_position(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
