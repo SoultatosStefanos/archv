@@ -21,8 +21,8 @@
 			"space-width" : 0
 		},
 		"edge-material" : "Mono/Gray",
-		"edge-tip-mesh" : "triangle.mesh",
-		"edge-tip-scale" : [ 0.5, 0.5, 0.5 ],
+		"edge-tip-mesh" : "triangle3d.mesh",
+		"edge-tip-scale" : [ 0.5, 0.5, 1 ],
 		"edge-type" :
 		{
 			"font-name" : "Roboto-Medium",

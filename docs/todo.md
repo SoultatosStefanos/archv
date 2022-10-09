@@ -499,4 +499,4 @@
 
 	+ [x] Edge text configuration
 
-	+ [ ] Edge tip mesh
+	+ [x] Edge tip mesh
