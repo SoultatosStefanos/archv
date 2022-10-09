@@ -1,5 +1,7 @@
 set(FILES
+	edge_renderer.cpp
 	movable_text.cpp
+	vertex_renderer.cpp
 )
 set(SUBDIRECTORIES)
 

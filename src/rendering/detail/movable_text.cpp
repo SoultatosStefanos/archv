@@ -20,23 +20,24 @@ using namespace Ogre;
 #define COLOUR_BINDING     1
  
 MovableText::MovableText(const String &name, const String &caption, const String &fontName, Real charHeight, const ColourValue &color, const String& groupName)
-: mpCam(NULL)
-, mpWin(NULL)
-, mpFont(NULL)
-, mName(name)
+: 
+  MovableObject(name)
+, mType("MovableText")
 , mCaption(caption)
 , mFontName(fontName)
-, mCharHeight(charHeight)
+, mHorizontalAlignment(H_LEFT)
+, mVerticalAlignment(V_BELOW)
 , mColor(color)
-, mType("MovableText")
-, mTimeUntilNextToggle(0)
+, mCharHeight(charHeight)
 , mSpaceWidth(0)
 , mUpdateColors(true)
 , mOnTop(false)
-, mHorizontalAlignment(H_LEFT)
-, mVerticalAlignment(V_BELOW)
+, mTimeUntilNextToggle(0)
 , mGlobalTranslation(0.0)
 , mLocalTranslation(0.0)
+, mpCam(NULL)
+, mpWin(NULL)
+, mpFont(NULL)
 {
     assert(name != "" && "Trying to create MovableText without name");
  
@@ -58,16 +59,16 @@ MovableText::~MovableText()
  
 void MovableText::setFontName(const String &fontName, const String& groupName)
 {
-    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName, groupName))) 
+    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(getName(), groupName))) 
     { 
-        Ogre::MaterialManager::getSingleton().remove(mName, groupName);
+        Ogre::MaterialManager::getSingleton().remove(getName(), groupName);
     }
  
-    if (mFontName != fontName || mpMaterial.isNull() || !mpFont)
+    if (mFontName != fontName || !mpMaterial || !mpFont)
     {
         mFontName = fontName;
 
-        mpFont = (Font *)FontManager::getSingleton().getByName(mFontName, groupName).getPointer();
+        mpFont = (Font *)FontManager::getSingleton().getByName(mFontName, groupName).get();
         if (!mpFont)
             throw Exception(Exception::ERR_ITEM_NOT_FOUND, "Could not find font " + fontName, "MovableText::setFontName");
  
@@ -78,7 +79,7 @@ void MovableText::setFontName(const String &fontName, const String& groupName)
         //     mpMaterial.setNull();
         // }
  
-        mpMaterial = mpFont->getMaterial()->clone(mName, groupName);
+        mpMaterial = mpFont->getMaterial()->clone(getName(), groupName);
         if (!mpMaterial->isLoaded())
             mpMaterial->load();
  
@@ -152,7 +153,7 @@ void MovableText::setLocalTranslation( Vector3 trans )
  
 void MovableText::showOnTop(bool show)
 {
-    if( mOnTop != show && !mpMaterial.isNull() )
+    if( mOnTop != show && mpMaterial )
     {
         mOnTop = show;
         mpMaterial->setDepthBias(1.0,1.0);
@@ -164,7 +165,7 @@ void MovableText::showOnTop(bool show)
 void MovableText::_setupGeometry()
 {
     assert(mpFont);
-    assert(!mpMaterial.isNull());
+    assert(mpMaterial);
  
     unsigned int vertexCount = static_cast<unsigned int>(mCaption.size() * 6);
  
@@ -217,7 +218,7 @@ void MovableText::_setupGeometry()
         HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY);
     bind->setBinding(COLOUR_BINDING, cbuf);
  
-    size_t charlen = mCaption.size();
+    [[maybe_unused]] size_t charlen = mCaption.size();
     float *pPCBuff = static_cast<float*>(ptbuf->lock(HardwareBuffer::HBL_DISCARD));
  
     float largestWidth = 0;
@@ -462,11 +463,10 @@ void MovableText::_setupGeometry()
 void MovableText::_updateColors(void)
 {
     assert(mpFont);
-    assert(!mpMaterial.isNull());
+    assert(mpMaterial);
  
     // Convert to system-specific
-    RGBA color;
-    Root::getSingleton().convertColourValue(mColor, &color);
+    RGBA color = mColor.getAsBYTE();
     HardwareVertexBufferSharedPtr vbuf = mRenderOp.vertexData->vertexBufferBinding->getBuffer(COLOUR_BINDING);
     RGBA *pDest = static_cast<RGBA*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
     for (int i = 0; i < (int)mRenderOp.vertexData->vertexCount; ++i)
@@ -482,8 +482,7 @@ const Quaternion& MovableText::getWorldOrientation(void) const
 }
  
 // Add to build on Shoggoth:
-void MovableText::visitRenderables(Ogre::Renderable::Visitor* visitor, 
-        bool debugRenderables)
+void MovableText::visitRenderables(Ogre::Renderable::Visitor*, bool)
 {
 }
  

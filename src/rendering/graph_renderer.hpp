@@ -4,7 +4,8 @@
 #ifndef RENDERING_GRAPH_RENDERER_HPP
 #define RENDERING_GRAPH_RENDERER_HPP
 
-#include "detail/graph_renderer.hpp"
+#include "detail/edge_renderer.hpp"
+#include "detail/vertex_renderer.hpp"
 
 #include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreSceneManager.h>
@@ -114,7 +115,9 @@ public:
     , m_cfg { cfg }
     , m_defaults { cfg }
     , m_cfg_api { std::move(cfg) }
-    , m_impl { scene, config_data(), resource_group }
+    , m_resource_group { resource_group }
+    , m_vertex_renderer { scene, config_data(), resource_group }
+    , m_edge_renderer { scene, config_data(), resource_group }
     {
         BOOST_CONCEPT_ASSERT(
             (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -122,7 +125,7 @@ public:
         visit_vertices(
             [this, vertex_pos](auto v)
             {
-                m_impl.setup_vertex(
+                m_vertex_renderer.setup(
                     boost::get(this->vertex_id(), v),
                     to_vector3(boost::get(vertex_pos, v)));
             });
@@ -130,7 +133,7 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_impl.setup_edge(
+                m_edge_renderer.setup(
                     boost::get(this->vertex_id(), boost::source(e, graph())),
                     boost::get(this->vertex_id(), boost::target(e, graph())),
                     boost::get(this->edge_dependency(), e));
@@ -145,14 +148,15 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_impl.shutdown_edge(
+                m_edge_renderer.shutdown(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
             });
 
-        visit_vertices([this](auto v)
-                       { m_impl.shutdown_vertex(boost::get(vertex_id(), v)); });
+        visit_vertices(
+            [this](auto v)
+            { m_vertex_renderer.shutdown(boost::get(vertex_id(), v)); });
     }
 
     auto operator=(const graph_renderer&) -> graph_renderer& = default;
@@ -173,7 +177,7 @@ public:
     auto config_api() const -> const config_api_type& { return m_cfg_api; }
     auto config_api() -> config_api_type& { return m_cfg_api; }
 
-    auto resource_group() const -> auto* { return m_impl.resource_group(); }
+    auto resource_group() const -> auto* { return m_resource_group.data(); }
 
     template < typename PositionMap >
     inline auto render_layout(PositionMap vertex_pos) -> void
@@ -184,7 +188,7 @@ public:
         visit_vertices(
             [this, vertex_pos](auto v)
             {
-                m_impl.render_vertex_pos(
+                m_vertex_renderer.render_position(
                     boost::get(vertex_id(), v),
                     to_vector3(boost::get(vertex_pos, v)));
             });
@@ -192,7 +196,7 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_impl.render_edge_pos(
+                m_edge_renderer.render_position(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -208,7 +212,7 @@ public:
         visit_vertices(
             [this, vertex_scale](auto v)
             {
-                m_impl.render_vertex_scaling(
+                m_vertex_renderer.render_scale(
                     boost::get(vertex_id(), v),
                     to_vector3(boost::get(vertex_scale, v)));
             });
@@ -216,7 +220,7 @@ public:
         visit_edges(
             [this](auto e)
             {
-                m_impl.render_edge_scaling(
+                m_edge_renderer.render_scale(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -227,12 +231,12 @@ public:
     {
         visit_vertices(
             [this](auto v)
-            { m_impl.hide_vertex_scaling(boost::get(vertex_id(), v)); });
+            { m_vertex_renderer.hide_scale(boost::get(vertex_id(), v)); });
 
         visit_edges(
             [this](auto e)
             {
-                m_impl.hide_edge_scaling(
+                m_edge_renderer.hide_scale(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -243,12 +247,12 @@ public:
     {
         visit_vertices(
             [this, &cfg](auto v)
-            { m_impl.draw_vertex(boost::get(vertex_id(), v), cfg); });
+            { m_vertex_renderer.draw(boost::get(vertex_id(), v), cfg); });
 
         visit_edges(
             [this, &cfg](auto e)
             {
-                m_impl.draw_edge(
+                m_edge_renderer.draw(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e),
@@ -276,8 +280,6 @@ protected:
     }
 
 private:
-    using impl_type = detail::graph_renderer_impl;
-
     template < typename Tuple >
     inline static auto to_vector3(const Tuple& t)
     {
@@ -292,8 +294,10 @@ private:
     scene_type& m_scene;
     config_data_type m_cfg, m_defaults;
     config_api_type m_cfg_api;
+    std::string_view m_resource_group;
 
-    impl_type m_impl;
+    detail::vertex_renderer m_vertex_renderer;
+    detail::edge_renderer m_edge_renderer;
 };
 
 } // namespace rendering

@@ -491,9 +491,9 @@
 	+ [x] Edge types rendering
 
 
-# 06 / 09 / 2022
+# 09 / 09 / 2022
 
-	+ [ ] Handle dependency type rendering on parallels
+	+ [x] Handle dependency type rendering on parallels
 
 	+ [ ] Edge weight rendering
 
