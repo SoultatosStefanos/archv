@@ -264,7 +264,7 @@ namespace
 
         update_scaling_factor_dims_cmd(
             backend_type& b, tag_type t, dims_type dims)
-        : backend { b }, tag { t }, new_dims { std::move(dims) }
+        : backend { b }, tag { t }, new_dims { dims }
         {
         }
 

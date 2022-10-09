@@ -48,7 +48,7 @@ auto backend::update_factor(
     verify_ratio(max_ratio);
 
     auto& f = m_repo.get_factor(tag);
-    f.applied_dims = std::move(dims);
+    f.applied_dims = dims;
     f.baseline = baseline;
     f.enabled = enabled;
     f.min_ratio = min_ratio;
@@ -212,12 +212,7 @@ auto update_factor_dims(
 {
     const auto& curr = b.get_factor_repo().get_factor(tag);
     b.update_factor(
-        tag,
-        std::move(dims),
-        curr.baseline,
-        curr.enabled,
-        curr.min_ratio,
-        curr.max_ratio);
+        tag, dims, curr.baseline, curr.enabled, curr.min_ratio, curr.max_ratio);
 }
 
 auto update_factor_baseline(

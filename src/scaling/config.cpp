@@ -32,7 +32,7 @@ namespace
         auto min_ratio = ratio_val["min"].as< factor::ratio_type >();
         auto max_ratio = ratio_val["max"].as< factor::ratio_type >();
 
-        return factor { .applied_dims = std::move(dims),
+        return factor { .applied_dims = dims,
                         .baseline = baseline,
                         .enabled = enabled,
                         .min_ratio = min_ratio,
@@ -55,7 +55,7 @@ auto deserialize(const Json::Value& root) -> config_data
         const auto& factor_val = *pair;
         auto&& factor = deserialize_factor(factor_val);
 
-        res.insert(std::make_pair(std::move(tag), std::move(factor)));
+        res.insert(std::make_pair(std::move(tag), factor));
 
         BOOST_LOG_TRIVIAL(debug) << "read scaling factor: " << tag;
     }

@@ -55,14 +55,14 @@ namespace
     {
         auto&& txt_name = make_vertex_txt_name(id);
         return std::make_unique< vertex_properties >(
-            std::move(id), std::move(pos), std::move(txt_name));
+            std::move(id), pos, std::move(txt_name));
     }
 
 } // namespace
 
 auto vertex_renderer::setup(const id_type& id, position_type pos) -> void
 {
-    m_vertices[id] = make_vertex_properties(id, std::move(pos));
+    m_vertices[id] = make_vertex_properties(id, pos);
     setup_model(vertex(id));
     setup_text(vertex(id));
 
@@ -154,7 +154,7 @@ auto vertex_renderer::render_position(const id_type& id, position_type pos)
     assert(m_scene.hasSceneNode(vertex(id).txt_name));
     m_scene.getSceneNode(id)->setPosition(pos);
     m_scene.getSceneNode(vertex(id).txt_name)->setPosition(pos);
-    vertex(id).pos = std::move(pos);
+    vertex(id).pos = pos;
 
     BOOST_LOG_TRIVIAL(debug) << "updated position of vertex: " << id;
 }
@@ -163,7 +163,7 @@ auto vertex_renderer::render_scale(const id_type& id, scale_type scale) -> void
 {
     assert(m_scene.hasSceneNode(id));
     m_scene.getSceneNode(id)->setScale(m_cfg->vertex_scale * scale);
-    vertex(id).scale = std::move(scale);
+    vertex(id).scale = scale;
 
     BOOST_LOG_TRIVIAL(debug) << "updated scale of vertex: " << id;
 }

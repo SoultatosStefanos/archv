@@ -190,7 +190,7 @@ namespace
 auto edge_renderer::setup(
     const vertex_id_type& source,
     const vertex_id_type& target,
-    dependency_type dependency) -> void
+    const dependency_type& dependency) -> void
 {
     const auto name = make_edge_name(source, target, dependency);
     auto&& e = make_edge_properties(name, source, target, dependency);

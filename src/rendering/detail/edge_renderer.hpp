@@ -80,7 +80,7 @@ public:
     auto setup(
         const vertex_id_type& source,
         const vertex_id_type& target,
-        dependency_type dependency) -> void;
+        const dependency_type& dependency) -> void;
 
     auto shutdown(
         const vertex_id_type& source,

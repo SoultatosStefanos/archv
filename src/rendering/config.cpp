@@ -64,9 +64,9 @@ namespace
 
         return { std::move(skybox_material),
                  static_cast< Ogre::Real >(skybox_dist),
-                 std::move(ambient_light),
-                 std::move(diffuse_light),
-                 std::move(specular_light),
+                 ambient_light,
+                 diffuse_light,
+                 specular_light,
                  static_cast< Ogre::Real >(near_clip_dist),
                  static_cast< Ogre::Real >(far_clip_dist) };
     }
@@ -106,14 +106,14 @@ namespace
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
         return { std::move(vertex_mesh),
-                 std::move(vertex_scale),
+                 vertex_scale,
                  std::move(vboard_font_name),
                  static_cast< float >(vboard_char_height),
-                 std::move(vboard_color),
+                 vboard_color,
                  static_cast< float >(vboard_space_width),
                  std::move(edge_material),
                  std::move(edge_tip_mesh),
-                 std::move(edge_tip_scale) };
+                 edge_tip_scale };
     }
 
 } // namespace
