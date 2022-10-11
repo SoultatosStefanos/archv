@@ -404,6 +404,64 @@ auto edge_renderer::render_text_pos(const edge_type& e, const path_type& path)
     txt_node->setPosition(calculate_edge_text_position(path));
 }
 
+// NOTE: Performs only mutations, no allocations take place.
+auto edge_renderer::render_weight(
+    const vertex_id_type& source,
+    const vertex_id_type& target,
+    const dependency_type& dependency,
+    weight_type weight) -> void
+{
+    const auto name = make_edge_name(source, target, dependency);
+    auto& e = edge(name);
+
+    const auto produce_weighted_caption = [weight](const auto& caption)
+    { return caption + '\n' + "(" + std::to_string(weight) + ")"; };
+
+    if (is_parallel(e) && !is_first_parallel(e))
+    {
+        BOOST_LOG_TRIVIAL(trace) << 1;
+        auto& txt = edge_txt(first_parallel(e).txt_name);
+        const auto caption = make_parallels_string(e);
+        txt.setCaption(produce_weighted_caption(caption));
+    }
+    else
+    {
+        BOOST_LOG_TRIVIAL(trace) << 1;
+        auto& txt = edge_txt(e.txt_name);
+        txt.setCaption(produce_weighted_caption(dependency));
+    }
+
+    e.weight = weight;
+
+    BOOST_LOG_TRIVIAL(debug) << "rendered weight for edge: " << name;
+}
+
+// NOTE: Performs only mutations, no allocations take place.
+auto edge_renderer::hide_weight(
+    const vertex_id_type& source,
+    const vertex_id_type& target,
+    const dependency_type& dependency) -> void
+{
+    const auto name = make_edge_name(source, target, dependency);
+    auto& e = edge(name);
+
+    if (is_parallel(e) && !is_first_parallel(e))
+    {
+        auto& txt = edge_txt(first_parallel(e).txt_name);
+        const auto caption = make_parallels_string(e);
+        txt.setCaption(caption);
+    }
+    else
+    {
+        auto& txt = edge_txt(e.txt_name);
+        txt.setCaption(dependency);
+    }
+
+    e.weight = std::nullopt;
+
+    BOOST_LOG_TRIVIAL(debug) << "hid weight for edge: " << name;
+}
+
 auto edge_renderer::draw(
     const vertex_id_type& source,
     const vertex_id_type& target,
@@ -522,6 +580,21 @@ auto edge_renderer::first_parallel(const edge_type& e) const -> const edge_type&
     const auto& [first, last] = m_parallels.equal_range(&e);
     assert(*first);
     return **first;
+}
+
+auto edge_renderer::make_parallels_string(const edge_type& e) const
+    -> std::string
+{
+    assert(is_parallel(e));
+    std::string string;
+    for (const auto* parallel :
+         boost::make_iterator_range(m_parallels.equal_range(&e)))
+    {
+        assert(parallel);
+        const auto& dependency = parallel->dependency;
+        string += string.empty() ? dependency : ", " + dependency;
+    }
+    return string;
 }
 
 } // namespace rendering::detail

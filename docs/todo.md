@@ -434,14 +434,14 @@
 	+ [x] Graph Renderer Config
 
 
-# 22 / 08 / 2022
+# 22 / 09 / 2022
 
 	+ [x] Graph Renderer Cleanup
 
 	+ [x] Edge Arrows Rendering
 
 
-# 23 / 08 / 2022
+# 23 / 09 / 2022
 
 	+ [x] Edge tips cleanup
 
@@ -450,14 +450,14 @@
 	+ [x] Configurable edge tips
 
 
-# 30 / 08 / 2022
+# 30 / 09 / 2022
 
 	+ [x] Vertex scaling depending on symbol metadata
 
 	+ [x] Vertex scaling with gui editing
 	
 
-# 01 / 09 / 2022
+# 01 / 10 / 2022
 
 	+ [n] Overlays https://wiki.ogre3d.org/-Overlay
 
@@ -466,7 +466,7 @@
 		+ [ ] See https://wiki.ogre3d.org/-Particle
 
 
-# 03 / 09 / 2022
+# 03 / 10 / 2022
 
 	+ [n] Parallel edges
 
@@ -477,26 +477,29 @@
 	+ [x] File browser
 
 
-# 04 / 09 / 2022
+# 04 / 10 / 2022
 
 	+ [x] Multiple dependencies
 
 	+ [ ] Edge types rendering
 
 
-# 05 / 09 / 2022
+# 05 / 10 / 2022
 
 	+ [x] Fix graph redraw and edge tips
 
 	+ [x] Edge types rendering
 
 
-# 09 / 09 / 2022
+# 09 / 10 / 2022
 
 	+ [x] Handle dependency type rendering on parallels
-
-	+ [ ] Edge weight rendering
 
 	+ [x] Edge text configuration
 
 	+ [x] Edge tip mesh
+
+
+# 11 / 10 / 2022
+
+	+ [ ] Edge weight rendering

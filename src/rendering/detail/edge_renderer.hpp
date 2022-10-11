@@ -92,6 +92,17 @@ public:
         const vertex_id_type& target,
         const dependency_type& dependency) -> void;
 
+    auto render_weight(
+        const vertex_id_type& source,
+        const vertex_id_type& target,
+        const dependency_type& dependency,
+        weight_type weight) -> void;
+
+    auto hide_weight(
+        const vertex_id_type& source,
+        const vertex_id_type& target,
+        const dependency_type& dependency) -> void;
+
     auto draw(
         const vertex_id_type& source,
         const vertex_id_type& target,
@@ -113,6 +124,7 @@ private:
     using text_ptr = std::unique_ptr< Ogre::MovableText >;
     using edge_map = std::unordered_map< name_type, edge_ptr >;
     using edge_text_map = std::unordered_map< name_type, text_ptr >;
+    using dependencies = std::vector< dependency_type >;
 
     using path_type = Procedural::Path;
 
@@ -128,6 +140,7 @@ private:
     auto is_parallel(const edge_type& e) const -> bool;
     auto is_first_parallel(const edge_type& e) const -> bool;
     auto first_parallel(const edge_type& e) const -> const edge_type&;
+    auto make_parallels_string(const edge_type& e) const -> std::string;
 
     auto setup_model(const edge_type& e, const path_type& path) -> void;
     auto setup_tip(const edge_type& e, const path_type& path) -> void;

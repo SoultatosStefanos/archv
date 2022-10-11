@@ -49,6 +49,9 @@ auto app::setup_graph_rendering() -> void
         m_rendering_config.graph,
         ARCHV_RESOURCE_GROUP);
 
+    m_graph_renderer->render_weights();
+    m_graph_renderer->hide_weights();
+
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }
 
