@@ -507,4 +507,5 @@
 
 # 12 / 10 / 2022
 
-	+ [ ] Effects
+	+ [ ] Effects (https://wiki.ogre3d.org/-Particle)
+
