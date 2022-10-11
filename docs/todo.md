@@ -503,3 +503,8 @@
 # 11 / 10 / 2022
 
 	+ [x] Edge weight rendering
+
+
+# 12 / 10 / 2022
+
+	+ [ ] Effects
