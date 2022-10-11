@@ -419,14 +419,12 @@ auto edge_renderer::render_weight(
 
     if (is_parallel(e) && !is_first_parallel(e))
     {
-        BOOST_LOG_TRIVIAL(trace) << 1;
         auto& txt = edge_txt(first_parallel(e).txt_name);
         const auto caption = make_parallels_string(e);
         txt.setCaption(produce_weighted_caption(caption));
     }
     else
     {
-        BOOST_LOG_TRIVIAL(trace) << 1;
         auto& txt = edge_txt(e.txt_name);
         txt.setCaption(produce_weighted_caption(dependency));
     }

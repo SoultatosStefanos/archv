@@ -108,8 +108,16 @@ public:
         scene_type& scene,
         config_data_type cfg,
         std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : graph_renderer(
-        g, vertex_id, edge_dependency, scene, std::move(cfg), resource_group)
+    : m_g { g }
+    , m_vertex_id { vertex_id }
+    , m_edge_dependency { edge_dependency }
+    , m_scene { scene }
+    , m_cfg { cfg }
+    , m_defaults { cfg }
+    , m_cfg_api { std::move(cfg) }
+    , m_resource_group { resource_group }
+    , m_vertex_renderer { scene, config_data(), resource_group }
+    , m_edge_renderer { scene, config_data(), resource_group }
     {
         BOOST_CONCEPT_ASSERT(
             (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -120,47 +128,6 @@ public:
                 m_vertex_renderer.setup(
                     boost::get(this->vertex_id(), v),
                     to_vector3(boost::get(vertex_pos, v)));
-            });
-
-        visit_edges(
-            [this](auto e)
-            {
-                m_edge_renderer.setup(
-                    boost::get(this->vertex_id(), boost::source(e, graph())),
-                    boost::get(this->vertex_id(), boost::target(e, graph())),
-                    boost::get(this->edge_dependency(), e));
-            });
-    }
-
-    // Renders the graph with its layout and scaling.
-    template < typename PositionMap, typename ScaleMap >
-    graph_renderer(
-        const graph_type& g,
-        vertex_id_type vertex_id,
-        PositionMap vertex_pos,
-        ScaleMap vertex_scale,
-        dependency_map_type edge_dependency,
-        scene_type& scene,
-        config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : graph_renderer(
-        g, vertex_id, edge_dependency, scene, std::move(cfg), resource_group)
-    {
-        BOOST_CONCEPT_ASSERT(
-            (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
-        BOOST_CONCEPT_ASSERT(
-            (boost::ReadablePropertyMapConcept< ScaleMap, vertex_type >));
-
-        visit_vertices(
-            [this, vertex_pos, vertex_scale](auto v)
-            {
-                m_vertex_renderer.setup(
-                    boost::get(this->vertex_id(), v),
-                    to_vector3(boost::get(vertex_pos, v)));
-
-                m_vertex_renderer.render_scale(
-                    boost::get(this->vertex_id(), v),
-                    to_vector3(boost::get(vertex_scale, v)));
             });
 
         visit_edges(
@@ -339,26 +306,6 @@ protected:
     }
 
 private:
-    graph_renderer(
-        const graph_type& g,
-        vertex_id_type vertex_id,
-        dependency_map_type edge_dependency,
-        scene_type& scene,
-        config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT)
-    : m_g { g }
-    , m_vertex_id { vertex_id }
-    , m_edge_dependency { edge_dependency }
-    , m_scene { scene }
-    , m_cfg { cfg }
-    , m_defaults { cfg }
-    , m_cfg_api { std::move(cfg) }
-    , m_resource_group { resource_group }
-    , m_vertex_renderer { scene, config_data(), resource_group }
-    , m_edge_renderer { scene, config_data(), resource_group }
-    {
-    }
-
     template < typename Tuple >
     inline static auto to_vector3(const Tuple& t)
     {
