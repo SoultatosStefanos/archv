@@ -131,6 +131,8 @@ private:
     using parallels_set
         = std::multiset< const edge_type*, edge_vertices_compare >;
 
+    using parallels_caption = std::pair< std::string, weight_type >;
+
     auto edge(const name_type& name) const -> const edge_type&;
     auto edge(const name_type& name) -> edge_type&;
 
@@ -140,7 +142,9 @@ private:
     auto is_parallel(const edge_type& e) const -> bool;
     auto is_first_parallel(const edge_type& e) const -> bool;
     auto first_parallel(const edge_type& e) const -> const edge_type&;
-    auto make_parallels_string(const edge_type& e) const -> std::string;
+    auto make_parallels_caption(const edge_type& e) const -> std::string;
+    auto make_parallels_weighted_caption(const edge_type& e) const
+        -> parallels_caption;
 
     auto setup_model(const edge_type& e, const path_type& path) -> void;
     auto setup_tip(const edge_type& e, const path_type& path) -> void;

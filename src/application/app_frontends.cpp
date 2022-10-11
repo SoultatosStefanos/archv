@@ -51,7 +51,7 @@ auto app::setup_graph_rendering() -> void
         ARCHV_RESOURCE_GROUP);
 
     m_graph_renderer->render_scaling(make_scale_map());
-    m_graph_renderer->render_weights();
+    m_graph_renderer->render_weights(make_weight_map());
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }

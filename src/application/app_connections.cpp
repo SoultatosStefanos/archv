@@ -182,6 +182,16 @@ auto app::connect_rendering_with_scaling() -> void
         { m_graph_renderer->render_scaling(make_scale_map()); });
 }
 
+auto app::connect_rendering_with_dependencies() -> void
+{
+    assert(m_graph_renderer);
+    assert(m_dependencies_backend);
+
+    m_dependencies_backend->connect(
+        [this](const auto&, auto)
+        { m_graph_renderer->render_weights(make_weight_map()); });
+}
+
 auto app::connect_gui_background_configurator() -> void
 {
     assert(m_gui);

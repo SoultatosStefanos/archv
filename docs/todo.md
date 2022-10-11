@@ -502,4 +502,4 @@
 
 # 11 / 10 / 2022
 
-	+ [ ] Edge weight rendering
+	+ [x] Edge weight rendering

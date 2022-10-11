@@ -227,17 +227,20 @@ public:
             });
     }
 
-    // FIXME
-    inline auto render_weights() -> void
+    template < typename WeightMap >
+    inline auto render_weights(WeightMap edge_weight) -> void
     {
+        BOOST_CONCEPT_ASSERT(
+            (boost::ReadablePropertyMapConcept< WeightMap, edge_type >));
+
         visit_edges(
-            [this](auto e)
+            [this, edge_weight](auto e)
             {
                 m_edge_renderer.render_weight(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e),
-                    10);
+                    boost::get(edge_weight, e));
             });
     }
 

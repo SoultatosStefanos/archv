@@ -404,6 +404,15 @@ auto edge_renderer::render_text_pos(const edge_type& e, const path_type& path)
     txt_node->setPosition(calculate_edge_text_position(path));
 }
 
+namespace
+{
+    inline auto produce_weighted_caption(
+        const std::string& caption, edge_renderer::weight_type weight)
+    {
+        return caption + '\n' + "(" + std::to_string(weight) + ")";
+    }
+} // namespace
+
 // NOTE: Performs only mutations, no allocations take place.
 auto edge_renderer::render_weight(
     const vertex_id_type& source,
@@ -414,22 +423,19 @@ auto edge_renderer::render_weight(
     const auto name = make_edge_name(source, target, dependency);
     auto& e = edge(name);
 
-    const auto produce_weighted_caption = [weight](const auto& caption)
-    { return caption + '\n' + "(" + std::to_string(weight) + ")"; };
+    e.weight = weight;
 
     if (is_parallel(e) && !is_first_parallel(e))
     {
         auto& txt = edge_txt(first_parallel(e).txt_name);
-        const auto caption = make_parallels_string(e);
-        txt.setCaption(produce_weighted_caption(caption));
+        const auto [caption, w] = make_parallels_weighted_caption(e);
+        txt.setCaption(produce_weighted_caption(caption, w));
     }
     else
     {
         auto& txt = edge_txt(e.txt_name);
-        txt.setCaption(produce_weighted_caption(dependency));
+        txt.setCaption(produce_weighted_caption(dependency, weight));
     }
-
-    e.weight = weight;
 
     BOOST_LOG_TRIVIAL(debug) << "rendered weight for edge: " << name;
 }
@@ -446,7 +452,7 @@ auto edge_renderer::hide_weight(
     if (is_parallel(e) && !is_first_parallel(e))
     {
         auto& txt = edge_txt(first_parallel(e).txt_name);
-        const auto caption = make_parallels_string(e);
+        const auto caption = make_parallels_caption(e);
         txt.setCaption(caption);
     }
     else
@@ -580,7 +586,7 @@ auto edge_renderer::first_parallel(const edge_type& e) const -> const edge_type&
     return **first;
 }
 
-auto edge_renderer::make_parallels_string(const edge_type& e) const
+auto edge_renderer::make_parallels_caption(const edge_type& e) const
     -> std::string
 {
     assert(is_parallel(e));
@@ -593,6 +599,25 @@ auto edge_renderer::make_parallels_string(const edge_type& e) const
         string += string.empty() ? dependency : ", " + dependency;
     }
     return string;
+}
+
+auto edge_renderer::make_parallels_weighted_caption(const edge_type& e) const
+    -> parallels_caption
+{
+    assert(is_parallel(e));
+    std::string string;
+    weight_type weight { 0 };
+    for (const auto* parallel :
+         boost::make_iterator_range(m_parallels.equal_range(&e)))
+    {
+        assert(parallel);
+        const auto& dependency = parallel->dependency;
+        string += string.empty() ? dependency : ", " + dependency;
+        if (parallel->weight.has_value())
+            weight += parallel->weight.value();
+    }
+
+    return { std::move(string), weight };
 }
 
 } // namespace rendering::detail
