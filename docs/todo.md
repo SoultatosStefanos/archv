@@ -507,5 +507,15 @@
 
 # 12 / 10 / 2022
 
-	+ [ ] Effects (https://wiki.ogre3d.org/-Particle)
+	+ [x] See effects (https://wiki.ogre3d.org/-Particle)
 
+	+ [x] Proof of concept in-degree rendering with particles
+
+
+# 13 / 10 / 2022
+
+	+ [ ] See Particle Universe editor https://wiki.ogre3d.org/tiki-index.php?page=Particle%20Universe%20plugin
+
+	+ [ ] Install Particle Universe editor
+
+	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
