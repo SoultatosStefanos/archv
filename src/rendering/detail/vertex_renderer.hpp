@@ -44,6 +44,8 @@ public:
     using id_type = std::string;
     using position_type = Ogre::Vector3;
     using scale_type = Ogre::Vector3;
+    using degree_type = int;
+    using degree_threshold_type = int;
 
     vertex_renderer(
         scene_type& scene,
@@ -64,7 +66,14 @@ public:
     auto render_position(const id_type& id, position_type pos) -> void;
 
     auto render_scale(const id_type& id, scale_type scale) -> void;
+
     auto hide_scale(const id_type& id) -> void;
+
+    auto render_in_degree(
+        const id_type& id,
+        degree_type degree,
+        degree_threshold_type low,
+        degree_threshold_type high) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;

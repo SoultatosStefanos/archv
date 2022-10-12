@@ -23,6 +23,7 @@ struct vertex_properties
     position_type pos;
 
     name_type txt_name;
+    name_type in_degree_particle_name;
 
     std::optional< scale_type > scale = std::nullopt;
 
@@ -50,12 +51,20 @@ namespace
         return id + " txt";
     }
 
+    inline auto
+    make_vertex_indegree_particle_name(const vertex_renderer::id_type& id)
+    {
+        return id + " indegree particle system";
+    }
+
     inline auto make_vertex_properties(
         vertex_renderer::id_type id, vertex_renderer::position_type pos)
     {
-        auto&& txt_name = make_vertex_txt_name(id);
         return std::make_unique< vertex_properties >(
-            std::move(id), pos, std::move(txt_name));
+            std::move(id),
+            pos,
+            make_vertex_txt_name(id),
+            make_vertex_indegree_particle_name(id));
     }
 
 } // namespace
@@ -175,6 +184,32 @@ auto vertex_renderer::hide_scale(const id_type& id) -> void
     vertex(id).scale = std::nullopt;
 
     BOOST_LOG_TRIVIAL(debug) << "hid scale of vertex: " << id;
+}
+
+// TODO
+auto vertex_renderer::render_in_degree(
+    const id_type& id,
+    degree_type degree,
+    degree_threshold_type,
+    degree_threshold_type) -> void
+{
+    if (degree < 2) // FIXME
+        return;
+
+    auto* sys = m_scene.createParticleSystem(id, "Weights/PurpleFountain");
+    assert(sys);
+
+    const auto& v = vertex(id);
+
+    assert(m_scene.hasSceneNode(v.id) && id == v.id);
+    assert(!m_scene.hasSceneNode(v.in_degree_particle_name));
+    auto* node = m_scene.getRootSceneNode()->createChildSceneNode(
+        v.in_degree_particle_name);
+    node->attachObject(sys);
+    node->setPosition(m_scene.getSceneNode(id)->getPosition());
+    node->setScale(m_scene.getSceneNode(id)->getScale());
+
+    BOOST_LOG_TRIVIAL(debug) << "rendered in degree of vertex: " << id;
 }
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)

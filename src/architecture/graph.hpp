@@ -24,7 +24,7 @@ using dependency_type = std::string;
 using graph = boost::adjacency_list<
     boost::vecS,
     boost::vecS,
-    boost::directedS,
+    boost::bidirectionalS,
     structure::id_type,
     dependency_type >;
 

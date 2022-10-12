@@ -94,6 +94,9 @@ public:
     using vertex_id_type = VertexID;
     using dependency_map_type = DependencyMap;
 
+    using degree_threshold_type
+        = detail::vertex_renderer::degree_threshold_type;
+
     using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
     using config_api_type = graph_config_api;
@@ -241,6 +244,23 @@ public:
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e),
                     boost::get(edge_weight, e));
+            });
+    }
+
+    inline auto
+    render_in_degrees(degree_threshold_type low, degree_threshold_type high)
+        -> void
+    {
+        BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
+
+        visit_vertices(
+            [this, low, high](auto v)
+            {
+                m_vertex_renderer.render_in_degree(
+                    boost::get(vertex_id(), v),
+                    boost::in_degree(v, graph()),
+                    low,
+                    high);
             });
     }
 
