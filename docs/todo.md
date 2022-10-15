@@ -514,8 +514,33 @@
 
 # 13 / 10 / 2022
 
-	+ [ ] See Particle Universe editor https://wiki.ogre3d.org/tiki-index.php?page=Particle%20Universe%20plugin
+	+ [n] See Particle Universe editor https://wiki.ogre3d.org/tiki-index.php?page=Particle%20Universe%20plugin
 
-	+ [ ] Install Particle Universe editor
+	+ [n] Install Particle Universe editor
+
+
+# 15 / 10 / 2022
+
+	+ [x] Easily configurable renderer with degree particle systems
 
 	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
+	Note: Hollow Ellipsoid Emitter (3d ring)
+
+		+ [ ] In-degree systems (Direction inward)
+
+			+ [ ] Heavy
+
+			+ [ ] Medium
+
+			+ [ ] Light
+			
+		+ [ ] Out-degree systems (Direction outward)
+
+			+ [ ] Heavy
+
+			+ [ ] Medium
+
+			+ [ ] Light
+			
+
+

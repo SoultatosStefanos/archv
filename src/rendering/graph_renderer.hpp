@@ -20,6 +20,20 @@ namespace rendering
  * Graph config                                            *
  ***********************************************************/
 
+struct vertex_degree_effects
+{
+    using threshold_type = int;
+
+    // light-medium-heavy
+    static constexpr auto num_ranks = 3;
+
+    std::array< threshold_type, num_ranks > thresholds;
+    std::array< Ogre::String, num_ranks > particle_systems;
+
+    auto operator==(const vertex_degree_effects&) const -> bool = default;
+    auto operator!=(const vertex_degree_effects&) const -> bool = default;
+};
+
 struct graph_config
 {
     Ogre::String vertex_mesh;
@@ -37,6 +51,9 @@ struct graph_config
     Ogre::Real edge_type_char_height;
     Ogre::ColourValue edge_type_color;
     Ogre::Real edge_type_space_width;
+
+    vertex_degree_effects in_degree_effects;
+    vertex_degree_effects out_degree_effects;
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;
@@ -93,9 +110,6 @@ public:
     using edge_type = typename graph_traits::edge_descriptor;
     using vertex_id_type = VertexID;
     using dependency_map_type = DependencyMap;
-
-    using degree_threshold_type
-        = detail::vertex_renderer::degree_threshold_type;
 
     using scene_type = Ogre::SceneManager;
     using config_data_type = graph_config;
@@ -247,20 +261,15 @@ public:
             });
     }
 
-    inline auto
-    render_in_degrees(degree_threshold_type low, degree_threshold_type high)
-        -> void
+    inline auto render_in_degree_effects() -> void
     {
         BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
 
         visit_vertices(
-            [this, low, high](auto v)
+            [this](auto v)
             {
-                m_vertex_renderer.render_in_degree(
-                    boost::get(vertex_id(), v),
-                    boost::in_degree(v, graph()),
-                    low,
-                    high);
+                m_vertex_renderer.render_in_degree_effects(
+                    boost::get(vertex_id(), v), boost::in_degree(v, graph()));
             });
     }
 

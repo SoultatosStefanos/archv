@@ -83,6 +83,31 @@ namespace
         return Ogre::Vector3(xs, ys, zs);
     }
 
+    template < typename T >
+    inline auto deserialize_degree_ranks(const Json::Value& val)
+        -> std::array< T, vertex_degree_effects::num_ranks >
+    {
+        auto&& [light, medium, heavy] = deserialize_triad< T >(val);
+
+        return { std::move(light), std::move(medium), std::move(heavy) };
+    }
+
+    inline auto deserialize_degree_effects(const Json::Value& val)
+        -> vertex_degree_effects
+    {
+        using threshold_type = vertex_degree_effects::threshold_type;
+
+        auto&& thresholds
+            = deserialize_degree_ranks< threshold_type >(val["thresholds"]);
+        auto&& particle_systems
+            = deserialize_degree_ranks< Ogre::String >(val["particle-systems"]);
+
+        BOOST_LOG_TRIVIAL(debug) << "deserialized degree effects";
+
+        return vertex_degree_effects { .thresholds = thresholds,
+                                       .particle_systems = particle_systems };
+    }
+
     auto deserialize_graph(const Json::Value& val) -> graph_config
     {
         using string = std::string;
@@ -109,6 +134,12 @@ namespace
         auto&& edgetype_color = deserialize_rgb(edgetype_val["color"]);
         auto edgetype_space_width = edgetype_val["space-width"].as< real >();
 
+        const auto& degree_effects_val = val["degree-effects"];
+        auto&& in_degree_effects
+            = deserialize_degree_effects(degree_effects_val["in-degree"]);
+        auto&& out_degree_effects
+            = deserialize_degree_effects(degree_effects_val["out-degree"]);
+
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
         return { std::move(vertex_mesh),
@@ -123,7 +154,9 @@ namespace
                  std::move(edgetype_font_name),
                  static_cast< float >(edgetype_char_height),
                  edgetype_color,
-                 static_cast< float >(edgetype_space_width) };
+                 static_cast< float >(edgetype_space_width),
+                 std::move(in_degree_effects),
+                 std::move(out_degree_effects) };
     }
 
 } // namespace

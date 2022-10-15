@@ -187,16 +187,15 @@ auto vertex_renderer::hide_scale(const id_type& id) -> void
 }
 
 // TODO
-auto vertex_renderer::render_in_degree(
-    const id_type& id,
-    degree_type degree,
-    degree_threshold_type,
-    degree_threshold_type) -> void
+auto vertex_renderer::render_in_degree_effects(
+    const id_type& id, degree_type degree) -> void
 {
     if (degree < 2) // FIXME
         return;
 
-    auto* sys = m_scene.createParticleSystem(id, "Weights/PurpleFountain");
+    const auto& in_degree_effects = m_cfg->in_degree_effects;
+    const auto& [light, medium, heavy] = in_degree_effects.particle_systems;
+    auto* sys = m_scene.createParticleSystem(id, light);
     assert(sys);
 
     const auto& v = vertex(id);
