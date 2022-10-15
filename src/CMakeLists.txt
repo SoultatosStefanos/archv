@@ -3,6 +3,7 @@ set(SUBDIRECTORIES
 	application
 	architecture
 	config
+	degrees
 	dependencies
 	gui
 	layout
