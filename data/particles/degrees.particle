@@ -1,7 +1,7 @@
 // A sparkly purple fountain
 particle_system Degrees/PurpleFountain
 {
-    material Weights/Flare2
+    material Degrees/Flare2
     particle_width 20
     particle_height 20
     cull_each false

@@ -21,6 +21,7 @@ class MovableText;
 
 namespace rendering
 {
+struct vertex_degree_effects;
 struct graph_config;
 } // namespace rendering
 
@@ -69,6 +70,7 @@ public:
     auto hide_scale(const id_type& id) -> void;
 
     auto render_in_degree_effects(const id_type& id, degree_type d) -> void;
+    auto render_out_degree_effects(const id_type& id, degree_type d) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;
@@ -80,6 +82,8 @@ private:
     using text_ptr = std::unique_ptr< Ogre::MovableText >;
     using vertex_map = std::unordered_map< id_type, vertex_ptr >;
     using vertex_text_map = std::unordered_map< id_type, text_ptr >;
+
+    using name_type = std::string;
 
     auto vertex(const id_type& id) const -> const vertex_type&;
     auto vertex(const id_type& id) -> vertex_type&;
@@ -96,6 +100,12 @@ private:
     auto draw_model(const vertex_type& v) -> void;
     auto draw_scale(const vertex_type& v) -> void;
     auto draw_text(const vertex_type& v) -> void;
+
+    auto render_degree_effects(
+        const id_type& id,
+        degree_type degree,
+        const vertex_degree_effects& effects,
+        const name_type& degree_name) -> void;
 
     scene_type& m_scene;
     const config_data_type* m_cfg { nullptr };

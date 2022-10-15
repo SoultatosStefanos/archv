@@ -34,12 +34,12 @@
 		{
 			"in-degree" :
 			{
-				"thresholds" : [ 2, 5, 10 ],
-				"particle-systems" : [ "Degrees/Aureola", "Degrees/Aureola", "Degrees/Aureola" ]
+				"thresholds" : [ 2, 23, 100 ],
+				"particle-systems" : [ "Degrees/PurpleFountain", "Degrees/Aureola", "Degrees/Aureola" ]
 			},
 			"out-degree" :
 			{
-				"thresholds" : [ 2, 5, 10 ],
+				"thresholds" : [ 20, 50, 100 ],
 				"particle-systems" : [ "Degrees/Aureola", "Degrees/Aureola", "Degrees/Aureola" ]
 			}
 		}

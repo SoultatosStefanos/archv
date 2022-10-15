@@ -273,6 +273,16 @@ public:
             });
     }
 
+    inline auto render_out_degree_effects() -> void
+    {
+        visit_vertices(
+            [this](auto v)
+            {
+                m_vertex_renderer.render_out_degree_effects(
+                    boost::get(vertex_id(), v), boost::out_degree(v, graph()));
+            });
+    }
+
     inline auto hide_scaling() -> void
     {
         visit_vertices(
