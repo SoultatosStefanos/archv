@@ -1,4 +1,5 @@
 set(FILES
+	backend_tests.cpp
 	effect_evaluation_tests.cpp
 )
 set(SUBDIRECTORIES)

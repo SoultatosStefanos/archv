@@ -12,6 +12,8 @@ struct ranked;
 
 struct effect_evaluation_data;
 
+class backend;
+
 } // namespace degrees
 
 #endif // DEGREES_ALLFWD_HPP
