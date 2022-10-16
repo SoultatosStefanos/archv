@@ -5,6 +5,7 @@
 #define DEGREES_ALL_HPP
 
 #include "backend.hpp"
+#include "config.hpp"
 #include "effect_evaluation.hpp"
 
 #endif // DEGREES_ALL_HPP

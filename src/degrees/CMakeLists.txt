@@ -1,5 +1,6 @@
 set(FILES
 	backend.cpp
+	config.cpp
 	effect_evaluation.cpp
 )
 set(SUBDIRECTORIES)

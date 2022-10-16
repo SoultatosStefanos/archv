@@ -14,6 +14,8 @@ struct effect_evaluation_data;
 
 class backend;
 
+class config_data;
+
 } // namespace degrees
 
 #endif // DEGREES_ALLFWD_HPP
