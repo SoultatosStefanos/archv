@@ -21,7 +21,6 @@ class MovableText;
 
 namespace rendering
 {
-struct vertex_degree_effects;
 struct graph_config;
 } // namespace rendering
 
@@ -69,8 +68,10 @@ public:
 
     auto hide_scale(const id_type& id) -> void;
 
+#if (0) // FIXME
     auto render_in_degree_effects(const id_type& id, degree_type d) -> void;
     auto render_out_degree_effects(const id_type& id, degree_type d) -> void;
+#endif
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;
@@ -100,12 +101,6 @@ private:
     auto draw_model(const vertex_type& v) -> void;
     auto draw_scale(const vertex_type& v) -> void;
     auto draw_text(const vertex_type& v) -> void;
-
-    auto render_degree_effects(
-        const id_type& id,
-        degree_type degree,
-        const vertex_degree_effects& effects,
-        const name_type& degree_name) -> void;
 
     scene_type& m_scene;
     const config_data_type* m_cfg { nullptr };

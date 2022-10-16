@@ -29,19 +29,6 @@
 			"char-height" : 3.25,
 			"color" : [ 0.2, 0.2, 0.2 ],
 			"space-width" : 0
-		},
-		"degree-effects" :
-		{
-			"in-degree" :
-			{
-				"thresholds" : [ 2, 23, 100 ],
-				"particle-systems" : [ "Degrees/PurpleFountain", "Degrees/Aureola", "Degrees/Aureola" ]
-			},
-			"out-degree" :
-			{
-				"thresholds" : [ 20, 50, 100 ],
-				"particle-systems" : [ "Degrees/Aureola", "Degrees/Aureola", "Degrees/Aureola" ]
-			}
 		}
 	}
 }

@@ -52,8 +52,11 @@ auto app::setup_graph_rendering() -> void
 
     m_graph_renderer->render_scaling(make_scale_map());
     m_graph_renderer->render_weights(make_weight_map());
+
+#if (0) // FIXME
     m_graph_renderer->render_in_degree_effects();
     m_graph_renderer->render_out_degree_effects();
+#endif
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }

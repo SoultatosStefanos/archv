@@ -1,0 +1,32 @@
+{
+	"in-degree" :
+	{
+		"thresholds" : 
+		{ 
+			"light" : 2,
+			"medium" : 5,
+			"heavy": 10 
+		},
+		"particle-systems" : 
+		{
+			"light" : "aa",
+			"medium" : "bb",
+			"heavy" : "cc" 
+		}
+	},
+	"out-degree" :
+	{
+		"thresholds" : 
+		{ 
+			"light" : 1,
+			"medium" : 2,
+			"heavy": 3 
+		},
+		"particle-systems" : 
+		{
+			"light" : "aaa",
+			"medium" : "bbb",
+			"heavy" : "ccc" 
+		}
+	}
+}

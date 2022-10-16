@@ -194,6 +194,8 @@ auto vertex_renderer::hide_scale(const id_type& id) -> void
     BOOST_LOG_TRIVIAL(debug) << "hid scale of vertex: " << id;
 }
 
+#if (0) // FIXME
+
 auto vertex_renderer::render_in_degree_effects(
     const id_type& id, degree_type degree) -> void
 {
@@ -256,6 +258,8 @@ auto vertex_renderer::render_degree_effects(
     node->setPosition(m_scene.getSceneNode(id)->getPosition());
     node->setScale(m_scene.getSceneNode(id)->getScale());
 }
+
+#endif
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)
     -> void
