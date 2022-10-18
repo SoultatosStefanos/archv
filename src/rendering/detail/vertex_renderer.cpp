@@ -23,10 +23,10 @@ struct vertex_properties
     position_type pos;
 
     name_type txt_name;
-    name_type in_degree_particle_name;
-    name_type out_degree_particle_name;
 
     std::optional< scale_type > scale = std::nullopt;
+    std::optional< name_type > in_degree_effect = std::nullopt;
+    std::optional< name_type > out_degree_effect = std::nullopt;
 
     auto operator==(const vertex_properties&) const -> bool = default;
     auto operator!=(const vertex_properties&) const -> bool = default;
@@ -53,13 +53,13 @@ namespace
     }
 
     inline auto
-    make_vertex_indegree_particle_name(const vertex_renderer::id_type& id)
+    make_vertex_indegree_effect_name(const vertex_renderer::id_type& id)
     {
         return id + " indegree particle system";
     }
 
     inline auto
-    make_vertex_outdegree_particle_name(const vertex_renderer::id_type& id)
+    make_vertex_outdegree_effect_name(const vertex_renderer::id_type& id)
     {
         return id + " outdegree particle system";
     }
@@ -68,11 +68,7 @@ namespace
         vertex_renderer::id_type id, vertex_renderer::position_type pos)
     {
         return std::make_unique< vertex_properties >(
-            std::move(id),
-            pos,
-            make_vertex_txt_name(id),
-            make_vertex_indegree_particle_name(id),
-            make_vertex_outdegree_particle_name(id));
+            std::move(id), pos, make_vertex_txt_name(id));
     }
 
 } // namespace
@@ -137,8 +133,19 @@ auto vertex_renderer::setup_text(const vertex_type& v) -> void
 
 auto vertex_renderer::shutdown(const id_type& id) -> void
 {
-    shutdown_text(vertex(id));
-    shutdown_model(vertex(id));
+    const auto v = vertex(id);
+
+    shutdown_text(v);
+    shutdown_model(v);
+
+    const bool has_in_degree_effect_rendered = v.in_degree_effect.has_value();
+    const bool has_out_degree_effect_rendered = v.out_degree_effect.has_value();
+
+    if (has_in_degree_effect_rendered)
+        shutdown_in_degree_particle_system(v.id);
+
+    if (has_out_degree_effect_rendered)
+        shutdown_out_degree_particle_system(v.id);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown vertex: " << id;
 }
@@ -164,102 +171,199 @@ auto vertex_renderer::shutdown_model(const vertex_type& v) -> void
     assert(!m_scene.hasEntity(v.id));
 }
 
+namespace
+{
+    inline auto update_pos_if_effect(
+        const std::optional< vertex_renderer::name_type >& effect,
+        const vertex_renderer::position_type& pos,
+        vertex_renderer::scene_type& scene)
+    {
+        if (effect)
+        {
+            assert(scene.hasSceneNode(effect.value()));
+            scene.getSceneNode(effect.value())->setPosition(pos);
+        }
+    }
+
+    inline auto update_scale_if_effect(
+        const std::optional< vertex_renderer::name_type >& effect,
+        const vertex_renderer::scale_type& scale,
+        vertex_renderer::scene_type& scene)
+    {
+        if (effect)
+        {
+            assert(scene.hasSceneNode(effect.value()));
+            scene.getSceneNode(effect.value())->setScale(scale);
+        }
+    }
+} // namespace
+
 auto vertex_renderer::render_position(const id_type& id, position_type pos)
     -> void
 {
+    auto& v = vertex(id);
+
     assert(m_scene.hasSceneNode(id));
-    assert(m_scene.hasSceneNode(vertex(id).txt_name));
     m_scene.getSceneNode(id)->setPosition(pos);
-    m_scene.getSceneNode(vertex(id).txt_name)->setPosition(pos);
-    vertex(id).pos = pos;
+
+    assert(m_scene.hasSceneNode(v.txt_name));
+    m_scene.getSceneNode(v.txt_name)->setPosition(pos);
+
+    update_pos_if_effect(v.in_degree_effect, pos, m_scene);
+    update_pos_if_effect(v.out_degree_effect, pos, m_scene);
+
+    v.pos = pos;
 
     BOOST_LOG_TRIVIAL(debug) << "updated position of vertex: " << id;
 }
 
 auto vertex_renderer::render_scale(const id_type& id, scale_type scale) -> void
 {
+    auto& v = vertex(id);
+    const auto new_scale = m_cfg->vertex_scale * scale;
+
     assert(m_scene.hasSceneNode(id));
-    m_scene.getSceneNode(id)->setScale(m_cfg->vertex_scale * scale);
-    vertex(id).scale = scale;
+    m_scene.getSceneNode(id)->setScale(new_scale);
+
+    update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+    update_scale_if_effect(v.out_degree_effect, new_scale, m_scene);
+
+    v.scale = scale;
 
     BOOST_LOG_TRIVIAL(debug) << "updated scale of vertex: " << id;
 }
 
 auto vertex_renderer::hide_scale(const id_type& id) -> void
 {
+    auto& v = vertex(id);
+    const auto new_scale = m_cfg->vertex_scale;
+
     assert(m_scene.hasSceneNode(id));
-    m_scene.getSceneNode(id)->setScale(m_cfg->vertex_scale);
-    vertex(id).scale = std::nullopt;
+    m_scene.getSceneNode(id)->setScale(new_scale);
+
+    update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+    update_scale_if_effect(v.out_degree_effect, new_scale, m_scene);
+
+    v.scale = std::nullopt;
 
     BOOST_LOG_TRIVIAL(debug) << "hid scale of vertex: " << id;
 }
 
-#if (0) // FIXME
-
-auto vertex_renderer::render_in_degree_effects(
-    const id_type& id, degree_type degree) -> void
+auto vertex_renderer::render_in_degree_particle_system(
+    const id_type& id, const std::optional< name_type >& particle_system)
+    -> void
 {
-    assert(m_cfg);
+    render_degree_particle_system(
+        id,
+        particle_system,
+        vertex(id).in_degree_effect,
+        make_vertex_indegree_effect_name(id));
 
-    const auto& in_degree_effects = m_cfg->in_degree_effects;
-    render_degree_effects(
-        id, degree, in_degree_effects, vertex(id).in_degree_particle_name);
-
-    BOOST_LOG_TRIVIAL(debug) << "rendered in degree of vertex: " << id;
+    BOOST_LOG_TRIVIAL(debug) << "rendered in degree effect for vertex: " << id;
 }
 
-auto vertex_renderer::render_out_degree_effects(
-    const id_type& id, degree_type degree) -> void
+auto vertex_renderer::render_out_degree_particle_system(
+    const id_type& id, const std::optional< name_type >& particle_system)
+    -> void
 {
-    assert(m_cfg);
+    render_degree_particle_system(
+        id,
+        particle_system,
+        vertex(id).out_degree_effect,
+        make_vertex_outdegree_effect_name(id));
 
-    const auto& out_degree_effects = m_cfg->out_degree_effects;
-    render_degree_effects(
-        id, degree, out_degree_effects, vertex(id).out_degree_particle_name);
-
-    BOOST_LOG_TRIVIAL(debug) << "rendered out degree of vertex: " << id;
+    BOOST_LOG_TRIVIAL(debug) << "rendered out degree effect for vertex: " << id;
 }
 
-namespace
-{
-    inline auto dispatch_particle_system(
-        const vertex_degree_effects& effects,
-        vertex_renderer::degree_type degree)
-    {
-        const auto& [light, medium, heavy] = effects.thresholds;
-        const auto& particle_systems = effects.particle_systems;
-        assert(particle_systems.size() == 3);
-
-        if (degree >= light && degree < medium)
-            return particle_systems[0];
-        else if (degree >= medium && degree < heavy)
-            return particle_systems[1];
-        else
-            return particle_systems[2];
-    }
-} // namespace
-
-auto vertex_renderer::render_degree_effects(
+auto vertex_renderer::render_degree_particle_system(
     const id_type& id,
-    degree_type degree,
-    const vertex_degree_effects& effects,
-    const name_type& degree_name) -> void
+    const std::optional< name_type >& particle_system,
+    std::optional< name_type >& curr_effect,
+    name_type&& new_effect_name) -> void
 {
-    const auto& system_name = dispatch_particle_system(effects, degree);
-    auto* system = m_scene.createParticleSystem(degree_name, system_name);
+    const bool has_rendered_effect = curr_effect.has_value();
+    const bool must_render_effect = particle_system.has_value();
+
+    // a bit more convenient & future proof
+    const auto curr_effect_name = [&]() { return curr_effect.value(); };
+    const auto system_name = [&]() { return particle_system.value(); };
+
+    if (!must_render_effect)
+    {
+        if (has_rendered_effect)
+        {
+            shutdown_degree_particle_system(curr_effect);
+        }
+        return;
+    }
+
+    if (has_rendered_effect)
+    {
+        if (curr_effect_name() == new_effect_name) // nothing to do
+        {
+            return;
+        }
+        else
+        {
+            shutdown_degree_particle_system(curr_effect);
+        }
+    }
+
+    assert(must_render_effect);
+    assert(m_scene.hasSceneNode(id));
+    assert(!m_scene.hasSceneNode(new_effect_name));
+    assert(!m_scene.hasParticleSystem(new_effect_name));
+
+    auto* system = m_scene.createParticleSystem(new_effect_name, system_name());
     assert(system);
 
-    const auto& v = vertex(id);
-
-    assert(m_scene.hasSceneNode(v.id) && id == v.id);
-    assert(!m_scene.hasSceneNode(degree_name));
-    auto* node = m_scene.getRootSceneNode()->createChildSceneNode(degree_name);
+    auto* root = m_scene.getRootSceneNode();
+    auto* node = root->createChildSceneNode(new_effect_name);
+    assert(node);
     node->attachObject(system);
     node->setPosition(m_scene.getSceneNode(id)->getPosition());
     node->setScale(m_scene.getSceneNode(id)->getScale());
+
+    assert(m_scene.hasSceneNode(new_effect_name));
+    assert(m_scene.hasParticleSystem(new_effect_name));
+
+    curr_effect = std::move(new_effect_name);
 }
 
-#endif
+auto vertex_renderer::shutdown_in_degree_particle_system(const id_type& id)
+    -> void
+{
+    shutdown_degree_particle_system(vertex(id).in_degree_effect);
+
+    BOOST_LOG_TRIVIAL(debug) << "shutdown in degree effect for vertex: " << id;
+}
+
+auto vertex_renderer::shutdown_out_degree_particle_system(const id_type& id)
+    -> void
+{
+    shutdown_degree_particle_system(vertex(id).out_degree_effect);
+
+    BOOST_LOG_TRIVIAL(debug) << "shutdown out degree effect for vertex: " << id;
+}
+
+auto vertex_renderer::shutdown_degree_particle_system(
+    std::optional< name_type >& curr_effect) -> void
+{
+    assert(curr_effect.has_value());
+    assert(m_scene.hasSceneNode(curr_effect.value()));
+    assert(m_scene.hasParticleSystem(curr_effect.value()));
+
+    auto* node = m_scene.getSceneNode(curr_effect.value());
+    assert(node);
+    node->detachObject(curr_effect.value());
+    m_scene.destroyParticleSystem(curr_effect.value());
+    m_scene.destroySceneNode(curr_effect.value());
+
+    assert(!m_scene.hasSceneNode(curr_effect.value()));
+    assert(!m_scene.hasParticleSystem(curr_effect.value()));
+
+    curr_effect = std::nullopt;
+}
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)
     -> void
@@ -295,10 +399,22 @@ auto vertex_renderer::draw_scale(const vertex_type& v) -> void
     const auto& base_scale = m_cfg->vertex_scale;
     const auto& dyn_scale = v.scale;
 
-    if (dyn_scale.has_value())
-        m_scene.getSceneNode(v.id)->setScale(base_scale * dyn_scale.value());
+    const bool is_dynamically_scaled = dyn_scale.has_value();
+
+    if (is_dynamically_scaled)
+    {
+        const auto new_scale = base_scale * dyn_scale.value();
+        m_scene.getSceneNode(v.id)->setScale(new_scale);
+        update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+        update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+    }
     else
-        m_scene.getSceneNode(v.id)->setScale(base_scale);
+    {
+        const auto& new_scale = base_scale;
+        m_scene.getSceneNode(v.id)->setScale(new_scale);
+        update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+        update_scale_if_effect(v.in_degree_effect, new_scale, m_scene);
+    }
 }
 
 auto vertex_renderer::draw_text(const vertex_type& v) -> void

@@ -91,6 +91,7 @@ public:
     using graph_type = Graph;
     using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename graph_traits::edge_descriptor;
+    using degree_type = typename graph_traits::degree_size_type;
     using vertex_id_type = VertexID;
     using dependency_map_type = DependencyMap;
 
@@ -244,21 +245,41 @@ public:
             });
     }
 
-#if (0) // FIXME
-
-    inline auto render_in_degree_effects() -> void
+    template < typename ParticleSystemFunc >
+    requires std::invocable< ParticleSystemFunc, degree_type >
+    inline auto render_in_degree_particle_systems(ParticleSystemFunc f) -> void
     {
         BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
 
+        static_assert(std::is_same_v<
+                      decltype(f(boost::in_degree(vertex_type(), graph()))),
+                      std::optional< detail::vertex_renderer::name_type > >);
+
         visit_vertices(
-            [this](auto v)
+            [this, particle_sytem = std::move(f)](auto v)
             {
-                m_vertex_renderer.render_in_degree_effects(
-                    boost::get(vertex_id(), v), boost::in_degree(v, graph()));
+                m_vertex_renderer.render_in_degree_particle_system(
+                    boost::get(vertex_id(), v),
+                    particle_sytem(boost::in_degree(v, graph())));
             });
     }
 
-#endif
+    template < typename ParticleSystemFunc >
+    requires std::invocable< ParticleSystemFunc, degree_type >
+    inline auto render_out_degree_particle_systems(ParticleSystemFunc f) -> void
+    {
+        static_assert(std::is_same_v<
+                      decltype(f(boost::out_degree(vertex_type(), graph()))),
+                      std::optional< detail::vertex_renderer::name_type > >);
+
+        visit_vertices(
+            [this, particle_sytem = std::move(f)](auto v)
+            {
+                m_vertex_renderer.render_out_degree_particle_system(
+                    boost::get(vertex_id(), v),
+                    particle_sytem(boost::out_degree(v, graph())));
+            });
+    }
 
     inline auto hide_scaling() -> void
     {

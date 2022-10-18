@@ -7,6 +7,7 @@
 #include <OGRE/OgreResourceGroupManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <memory>
+#include <optional>
 #include <unordered_map>
 
 /***********************************************************
@@ -46,6 +47,8 @@ public:
     using scale_type = Ogre::Vector3;
     using degree_type = int;
 
+    using name_type = std::string;
+
     vertex_renderer(
         scene_type& scene,
         const config_data_type& cfg,
@@ -68,10 +71,13 @@ public:
 
     auto hide_scale(const id_type& id) -> void;
 
-#if (0) // FIXME
-    auto render_in_degree_effects(const id_type& id, degree_type d) -> void;
-    auto render_out_degree_effects(const id_type& id, degree_type d) -> void;
-#endif
+    auto render_in_degree_particle_system(
+        const id_type& id, const std::optional< name_type >& particle_system)
+        -> void;
+
+    auto render_out_degree_particle_system(
+        const id_type&, const std::optional< name_type >& particle_system)
+        -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;
@@ -84,8 +90,6 @@ private:
     using vertex_map = std::unordered_map< id_type, vertex_ptr >;
     using vertex_text_map = std::unordered_map< id_type, text_ptr >;
 
-    using name_type = std::string;
-
     auto vertex(const id_type& id) const -> const vertex_type&;
     auto vertex(const id_type& id) -> vertex_type&;
 
@@ -97,6 +101,20 @@ private:
 
     auto shutdown_text(const vertex_type& v) -> void;
     auto shutdown_model(const vertex_type& v) -> void;
+
+    // effect name is specific to the vertex, in order to be rendered with this
+    // as an "id".
+    auto render_degree_particle_system(
+        const id_type& id,
+        const std::optional< name_type >& particle_system,
+        std::optional< name_type >& curr_effect,
+        name_type&& new_effect) -> void;
+
+    auto shutdown_in_degree_particle_system(const id_type& id) -> void;
+    auto shutdown_out_degree_particle_system(const id_type& id) -> void;
+    auto
+    shutdown_degree_particle_system(std::optional< name_type >& curr_effect)
+        -> void;
 
     auto draw_model(const vertex_type& v) -> void;
     auto draw_scale(const vertex_type& v) -> void;
