@@ -9,13 +9,24 @@ using namespace testing;
 namespace
 {
 
+TEST(a_degrees_effect_evaluation, given_false_applied_returns_empty_option)
+{
+    constexpr auto thresholds = make_ranked(1, 2, 3);
+    const auto effects = make_ranked< std::string >("a", "n", "y");
+    const auto evaluation_data
+        = effect_evaluation_data(thresholds, effects, false);
+
+    ASSERT_EQ(evaluate(2, evaluation_data), null_effect);
+}
+
 TEST(
     a_degrees_effect_evaluation,
     given_degree_below_light_threshold_returns_empty_option)
 {
     constexpr auto thresholds = make_ranked(1, 2, 3);
     const auto effects = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data = effect_evaluation_data(thresholds, effects);
+    const auto evaluation_data
+        = effect_evaluation_data(thresholds, effects, true);
 
     ASSERT_EQ(evaluate(0, evaluation_data), null_effect);
 }
@@ -26,7 +37,8 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 4);
     const auto effects = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data = effect_evaluation_data(thresholds, effects);
+    const auto evaluation_data
+        = effect_evaluation_data(thresholds, effects, true);
 
     ASSERT_EQ(evaluate(1, evaluation_data), effects.light);
     ASSERT_EQ(evaluate(2, evaluation_data), effects.light);
@@ -38,7 +50,8 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);
     const auto effects = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data = effect_evaluation_data(thresholds, effects);
+    const auto evaluation_data
+        = effect_evaluation_data(thresholds, effects, true);
 
     ASSERT_EQ(evaluate(3, evaluation_data), effects.medium);
     ASSERT_EQ(evaluate(5, evaluation_data), effects.medium);
@@ -50,7 +63,8 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);
     const auto effects = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data = effect_evaluation_data(thresholds, effects);
+    const auto evaluation_data
+        = effect_evaluation_data(thresholds, effects, true);
 
     ASSERT_EQ(evaluate(7, evaluation_data), effects.heavy);
     ASSERT_EQ(

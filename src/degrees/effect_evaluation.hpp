@@ -42,9 +42,11 @@ struct effect_evaluation_data
     using effect_type = std::string;
     using thresholds_type = ranked< threshold_type >;
     using effects_type = ranked< effect_type >;
+    using applied_type = bool;
 
     thresholds_type thresholds;
     effects_type effects;
+    applied_type applied;
 
     auto operator==(const effect_evaluation_data&) const -> bool = default;
     auto operator!=(const effect_evaluation_data&) const -> bool = default;

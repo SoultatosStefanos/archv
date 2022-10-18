@@ -12,7 +12,8 @@
 			"light" : "aa",
 			"medium" : "bb",
 			"heavy" : "cc" 
-		}
+		},
+		"applied" : true
 	},
 	"out-degree" :
 	{
@@ -27,6 +28,7 @@
 			"light" : "aaa",
 			"medium" : "bbb",
 			"heavy" : "ccc" 
-		}
+		},
+		"applied" : true
 	}
 }

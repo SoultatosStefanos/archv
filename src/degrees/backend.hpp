@@ -68,6 +68,16 @@ inline auto get_out_degree_effect_evaluation_data(const backend& b)
     return b.out_degree_data();
 }
 
+inline auto is_in_degree_evaluation_applied(const backend& b)
+{
+    return get_in_degree_effect_evaluation_data(b).applied;
+}
+
+inline auto is_out_degree_evaluation_applied(const backend& b)
+{
+    return get_out_degree_effect_evaluation_data(b).applied;
+}
+
 inline auto get_in_degree_evaluation_thresholds(const backend& b)
 {
     return get_in_degree_effect_evaluation_data(b).thresholds;
@@ -177,7 +187,8 @@ inline auto update_in_degree_evaluation_light_threshold(
             threshold,
             get_in_degree_evaluation_medium_threshold(b),
             get_in_degree_evaluation_heavy_threshold(b)),
-        get_in_degree_evaluation_effects(b)));
+        get_in_degree_evaluation_effects(b),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_light_threshold(
@@ -188,7 +199,8 @@ inline auto update_out_degree_evaluation_light_threshold(
             threshold,
             get_out_degree_evaluation_medium_threshold(b),
             get_out_degree_evaluation_heavy_threshold(b)),
-        get_out_degree_evaluation_effects(b)));
+        get_out_degree_evaluation_effects(b),
+        is_out_degree_evaluation_applied(b)));
 }
 
 inline auto update_in_degree_evaluation_medium_threshold(
@@ -199,7 +211,8 @@ inline auto update_in_degree_evaluation_medium_threshold(
             get_in_degree_evaluation_light_threshold(b),
             threshold,
             get_in_degree_evaluation_heavy_threshold(b)),
-        get_in_degree_evaluation_effects(b)));
+        get_in_degree_evaluation_effects(b),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_medium_threshold(
@@ -210,7 +223,8 @@ inline auto update_out_degree_evaluation_medium_threshold(
             get_out_degree_evaluation_light_threshold(b),
             threshold,
             get_out_degree_evaluation_heavy_threshold(b)),
-        get_out_degree_evaluation_effects(b)));
+        get_out_degree_evaluation_effects(b),
+        is_out_degree_evaluation_applied(b)));
 }
 
 inline auto update_in_degree_evaluation_heavy_threshold(
@@ -221,7 +235,8 @@ inline auto update_in_degree_evaluation_heavy_threshold(
             get_in_degree_evaluation_light_threshold(b),
             get_in_degree_evaluation_medium_threshold(b),
             threshold),
-        get_in_degree_evaluation_effects(b)));
+        get_in_degree_evaluation_effects(b),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_heavy_threshold(
@@ -232,7 +247,8 @@ inline auto update_out_degree_evaluation_heavy_threshold(
             get_out_degree_evaluation_light_threshold(b),
             get_out_degree_evaluation_medium_threshold(b),
             threshold),
-        get_out_degree_evaluation_effects(b)));
+        get_out_degree_evaluation_effects(b),
+        is_out_degree_evaluation_applied(b)));
 }
 
 inline auto update_in_degree_evaluation_light_effect(
@@ -243,7 +259,8 @@ inline auto update_in_degree_evaluation_light_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             std::move(effect),
             get_in_degree_evaluation_medium_effect(b),
-            get_in_degree_evaluation_heavy_effect(b))));
+            get_in_degree_evaluation_heavy_effect(b)),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_light_effect(
@@ -254,7 +271,8 @@ inline auto update_out_degree_evaluation_light_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             std::move(effect),
             get_out_degree_evaluation_medium_effect(b),
-            get_out_degree_evaluation_heavy_effect(b))));
+            get_out_degree_evaluation_heavy_effect(b)),
+        is_out_degree_evaluation_applied(b)));
 }
 
 inline auto update_in_degree_evaluation_medium_effect(
@@ -265,7 +283,8 @@ inline auto update_in_degree_evaluation_medium_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             get_in_degree_evaluation_light_effect(b),
             std::move(effect),
-            get_in_degree_evaluation_heavy_effect(b))));
+            get_in_degree_evaluation_heavy_effect(b)),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_medium_effect(
@@ -276,7 +295,8 @@ inline auto update_out_degree_evaluation_medium_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             get_out_degree_evaluation_light_effect(b),
             std::move(effect),
-            get_out_degree_evaluation_heavy_effect(b))));
+            get_out_degree_evaluation_heavy_effect(b)),
+        is_out_degree_evaluation_applied(b)));
 }
 
 inline auto update_in_degree_evaluation_heavy_effect(
@@ -287,7 +307,8 @@ inline auto update_in_degree_evaluation_heavy_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             get_in_degree_evaluation_light_effect(b),
             get_in_degree_evaluation_medium_effect(b),
-            std::move(effect))));
+            std::move(effect)),
+        is_in_degree_evaluation_applied(b)));
 }
 
 inline auto update_out_degree_evaluation_heavy_effect(
@@ -298,7 +319,26 @@ inline auto update_out_degree_evaluation_heavy_effect(
         make_ranked< effect_evaluation_data::effect_type >(
             get_out_degree_evaluation_light_effect(b),
             get_out_degree_evaluation_medium_effect(b),
-            std::move(effect))));
+            std::move(effect)),
+        is_out_degree_evaluation_applied(b)));
+}
+
+inline auto update_in_degree_evaluation_applied(
+    backend& b, effect_evaluation_data::applied_type applied)
+{
+    b.update_in_degree_evaluation(effect_evaluation_data(
+        get_in_degree_evaluation_thresholds(b),
+        get_in_degree_evaluation_effects(b),
+        applied));
+}
+
+inline auto update_out_degree_evaluation_applied(
+    backend& b, effect_evaluation_data::applied_type applied)
+{
+    b.update_out_degree_evaluation(effect_evaluation_data(
+        get_out_degree_evaluation_thresholds(b),
+        get_out_degree_evaluation_effects(b),
+        applied));
 }
 
 inline auto restore_in_degree_evaluation(backend& b)

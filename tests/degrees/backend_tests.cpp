@@ -14,10 +14,13 @@ inline auto initial_data()
 {
     return std::make_pair(
         effect_evaluation_data(
-            make_ranked(1, 3, 5), make_ranked< std::string >("a", "b", "c")),
+            make_ranked(1, 3, 5),
+            make_ranked< std::string >("a", "b", "c"),
+            true),
         effect_evaluation_data(
             make_ranked(2, 4, 6),
-            make_ranked< std::string >("aa", "bb", "cc")));
+            make_ranked< std::string >("aa", "bb", "cc"),
+            true));
 }
 
 class given_a_degrees_backend : public Test
@@ -116,7 +119,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(3, 3, 5),
-                                            { "a", "b", "c" } };
+                                            { "a", "b", "c" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -141,7 +145,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(3, 4, 6),
-                                            { "aa", "bb", "cc" } };
+                                            { "aa", "bb", "cc" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -166,7 +171,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "b", "c" } };
+                                            { "a", "b", "c" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -191,7 +197,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(2, 3, 6),
-                                            { "aa", "bb", "cc" } };
+                                            { "aa", "bb", "cc" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -216,7 +223,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(1, 3, 3),
-                                            { "a", "b", "c" } };
+                                            { "a", "b", "c" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -241,7 +249,8 @@ TEST_F(
     constexpr auto new_threshold = 3;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(2, 4, 3),
-                                            { "aa", "bb", "cc" } };
+                                            { "aa", "bb", "cc" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -266,7 +275,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "bob", "b", "c" } };
+                                            { "bob", "b", "c" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -291,7 +301,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "bob", "bb", "cc" } };
+                                            { "bob", "bb", "cc" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -316,7 +327,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "bob", "c" } };
+                                            { "a", "bob", "c" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -341,7 +353,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "aa", "bob", "cc" } };
+                                            { "aa", "bob", "cc" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -366,7 +379,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "b", "bob" } };
+                                            { "a", "b", "bob" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -391,7 +405,8 @@ TEST_F(
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
     const effect_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "aa", "bb", "bob" } };
+                                            { "aa", "bb", "bob" },
+                                            true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -407,6 +422,52 @@ TEST_F(
     update_out_degree_evaluation_heavy_effect(*b, new_effect);
 
     ASSERT_EQ(get_out_degree_evaluation_heavy_effect(*b), new_effect);
+}
+
+TEST_F(
+    given_a_degrees_backend,
+    after_updating_the_in_degree_applied_prop_observers_are_notified)
+{
+    b->connect_to_in_degree_evaluation(mock.AsStdFunction());
+    const effect_evaluation_data new_data { make_ranked(1, 3, 5),
+                                            { "a", "b", "c" },
+                                            false };
+
+    EXPECT_CALL(mock, Call(new_data)).Times(1);
+
+    update_in_degree_evaluation_applied(*b, false);
+}
+
+TEST_F(
+    given_a_degrees_backend,
+    after_updating_the_in_degree_applied_prop_access_it_yields_new_effect)
+{
+    update_in_degree_evaluation_applied(*b, false);
+
+    ASSERT_FALSE(is_in_degree_evaluation_applied(*b));
+}
+
+TEST_F(
+    given_a_degrees_backend,
+    after_updating_the_out_degree_applied_prop_observers_are_notified)
+{
+    b->connect_to_out_degree_evaluation(mock.AsStdFunction());
+    const effect_evaluation_data new_data { make_ranked(2, 4, 6),
+                                            { "aa", "bb", "cc" },
+                                            false };
+
+    EXPECT_CALL(mock, Call(new_data)).Times(1);
+
+    update_out_degree_evaluation_applied(*b, false);
+}
+
+TEST_F(
+    given_a_degrees_backend,
+    after_updating_the_out_degree_applied_prop_access_it_yields_new_effect)
+{
+    update_out_degree_evaluation_applied(*b, false);
+
+    ASSERT_FALSE(is_out_degree_evaluation_applied(*b));
 }
 
 TEST_F(

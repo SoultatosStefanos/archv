@@ -22,12 +22,15 @@ namespace
     {
         using threshold_type = effect_evaluation_data::threshold_type;
         using effect_type = effect_evaluation_data::effect_type;
+        using applied_type = effect_evaluation_data::applied_type;
 
         auto&& [light_threshold, medium_threshold, heavy_threshold]
             = deserialize_degree_ranks< threshold_type >(val["thresholds"]);
 
         auto&& [light_effect, medium_effect, heavy_effect]
             = deserialize_degree_ranks< effect_type >(val["particle-systems"]);
+
+        const auto applied = val["applied"].as< applied_type >();
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized degree effects";
 
@@ -36,7 +39,8 @@ namespace
             make_ranked(
                 std::move(light_effect),
                 std::move(medium_effect),
-                std::move(heavy_effect)));
+                std::move(heavy_effect)),
+            applied);
     }
 
 } // namespace

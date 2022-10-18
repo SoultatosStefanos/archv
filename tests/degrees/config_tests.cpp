@@ -14,8 +14,8 @@ namespace
 inline auto make_sample_degrees_0()
 {
     return std::make_pair(
-        effect_evaluation_data({ 2, 5, 10 }, { "aa", "bb", "cc" }),
-        effect_evaluation_data({ 1, 2, 3 }, { "aaa", "bbb", "ccc" }));
+        effect_evaluation_data({ 2, 5, 10 }, { "aa", "bb", "cc" }, true),
+        effect_evaluation_data({ 1, 2, 3 }, { "aaa", "bbb", "ccc" }, true));
 }
 
 TEST(degrees_deserialization, sample_degrees_0)

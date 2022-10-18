@@ -12,7 +12,7 @@ auto evaluate(degree_t degree, const effect_evaluation_data& data) -> effect_t
     assert(data.thresholds.medium > data.thresholds.light);
     assert(data.thresholds.heavy > data.thresholds.medium);
 
-    if (degree < data.thresholds.light)
+    if (degree < data.thresholds.light or !data.applied)
         return null_effect;
     else if (degree >= data.thresholds.light && degree < data.thresholds.medium)
         return data.effects.light;
