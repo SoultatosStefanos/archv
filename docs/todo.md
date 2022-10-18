@@ -523,6 +523,11 @@
 
 	+ [x] Easily configurable renderer with degree particle systems
 
+
+# 18 / 10 / 2022
+
+	+ [x] Degrees particle system management backend
+
 	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
 	Note: Hollow Ellipsoid Emitter (3d ring)
 
@@ -541,6 +546,8 @@
 			+ [ ] Medium
 
 			+ [ ] Light
+
+	+ [ ] Gui configurable degree particle systems
 			
 
 

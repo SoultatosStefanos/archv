@@ -9,9 +9,9 @@
 		},
 		"particle-systems" : 
 		{
-			"light" : "aa",
-			"medium" : "bb",
-			"heavy" : "cc" 
+			"light" : "Degrees/PurpleFountain",
+			"medium" : "Degrees/PurpleFountain",
+			"heavy" : "Degrees/PurpleFountain" 
 		},
 		"applied" : false
 	},
@@ -25,10 +25,10 @@
 		},
 		"particle-systems" : 
 		{
-			"light" : "aaa",
-			"medium" : "bbb",
-			"heavy" : "ccc" 
+			"light" : "Degrees/PurpleFountain",
+			"medium" : "Degrees/PurpleFountain",
+			"heavy" : "Degrees/PurpleFountain" 
 		},
-		"applied" : false
+		"applied" : true
 	}
 }

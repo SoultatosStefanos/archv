@@ -55,15 +55,12 @@ auto app::setup_graph_rendering() -> void
     m_graph_renderer->render_weights(make_weight_map());
 
     m_graph_renderer->render_in_degree_particle_systems(
-        [](auto) -> std::optional< std::string >
-        { return "Degrees/PurpleFountain"; });
-
-    m_graph_renderer->render_in_degree_particle_systems(
-        [](auto) -> std::optional< std::string > { return "Degrees/Aureola"; });
+        [this](auto degree)
+        { return degrees::evaluate_in_degree(*m_degrees_backend, degree); });
 
     m_graph_renderer->render_out_degree_particle_systems(
-        [](auto) -> std::optional< std::string >
-        { return "Degrees/PurpleFountain"; });
+        [this](auto degree)
+        { return degrees::evaluate_out_degree(*m_degrees_backend, degree); });
 
     BOOST_LOG_TRIVIAL(info) << "setup graph rendering";
 }

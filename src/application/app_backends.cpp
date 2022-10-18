@@ -98,9 +98,23 @@ auto app::setup_scaling() -> void
     BOOST_LOG_TRIVIAL(info) << "setup scaling";
 }
 
+auto app::setup_degrees() -> void
+{
+    m_degrees_backend = std::make_unique< degrees::backend >(m_degrees_config);
+
+    BOOST_LOG_TRIVIAL(info) << "setup degrees";
+}
+
 /***********************************************************
  * Shutdown                                                *
  ***********************************************************/
+
+auto app::shutdown_degrees() -> void
+{
+    m_degrees_backend.reset();
+
+    BOOST_LOG_TRIVIAL(info) << "shutdown degrees";
+}
 
 auto app::shutdown_scaling() -> void
 {

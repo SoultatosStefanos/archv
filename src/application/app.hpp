@@ -20,6 +20,7 @@
 
 #include "architecture/all.hpp"
 #include "config/all.hpp"
+#include "degrees/all.hpp"
 #include "dependencies/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
@@ -72,6 +73,7 @@ private:
     auto setup_dependencies() -> void;
     auto setup_layout() -> void;
     auto setup_scaling() -> void;
+    auto setup_degrees() -> void;
     auto setup_background_rendering() -> void;
     auto setup_graph_rendering() -> void;
     auto setup_gui() -> void;
@@ -106,6 +108,7 @@ private:
     auto shutdown_gui() -> void;
     auto shutdown_graph_rendering() -> void;
     auto shutdown_background_rendering() -> void;
+    auto shutdown_degrees() -> void;
     auto shutdown_scaling() -> void;
     auto shutdown_layout() -> void;
     auto shutdown_dependencies() -> void;
@@ -130,6 +133,7 @@ private:
     rendering::config_data m_rendering_config;
     gui::config_data m_gui_config;
     scaling::config_data m_scaling_config;
+    degrees::config_data m_degrees_config;
 
     /***********************************************************
      * Architecture                                            *
@@ -145,6 +149,7 @@ private:
     std::unique_ptr< dependencies::backend > m_dependencies_backend;
     std::unique_ptr< layout_backend > m_layout_backend;
     std::unique_ptr< scaling::backend > m_scaling_backend;
+    std::unique_ptr< degrees::backend > m_degrees_backend;
 
     /***********************************************************
      * Rendering                                               *

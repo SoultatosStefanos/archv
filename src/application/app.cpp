@@ -44,6 +44,9 @@ app::app(int argc, const char** argv) : base("ARCHV")
     m_scaling_config
         = scaling::deserialize(jsons.at(ARCHV_SCALING_CONFIG_PATH));
 
+    m_degrees_config
+        = degrees::deserialize(jsons.at(ARCHV_DEGREES_CONFIG_PATH));
+
     assert(!paused());
 }
 
@@ -152,6 +155,7 @@ void app::setup()
     setup_dependencies();
     setup_layout();
     setup_scaling();
+    setup_degrees();
 
     setup_background_rendering();
     setup_graph_rendering();
@@ -185,6 +189,7 @@ auto app::shutdown() -> void
     shutdown_graph_rendering();
     shutdown_background_rendering();
 
+    shutdown_degrees();
     shutdown_scaling();
     shutdown_layout();
     shutdown_dependencies();
