@@ -58,6 +58,9 @@ auto app::setup_graph_rendering() -> void
         [](auto) -> std::optional< std::string >
         { return "Degrees/PurpleFountain"; });
 
+    m_graph_renderer->render_in_degree_particle_systems(
+        [](auto) -> std::optional< std::string > { return "Degrees/Aureola"; });
+
     m_graph_renderer->render_out_degree_particle_systems(
         [](auto) -> std::optional< std::string >
         { return "Degrees/PurpleFountain"; });

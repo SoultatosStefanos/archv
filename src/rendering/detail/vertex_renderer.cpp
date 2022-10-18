@@ -52,16 +52,20 @@ namespace
         return id + " txt";
     }
 
-    inline auto
-    make_vertex_indegree_effect_name(const vertex_renderer::id_type& id)
+    inline auto make_vertex_indegree_effect_name(
+        const vertex_renderer::id_type& id,
+        const std::optional< vertex_renderer::name_type >& particle_system)
     {
-        return id + " indegree particle system";
+        const auto to_str = particle_system ? *particle_system : "";
+        return id + " indegree " + to_str;
     }
 
-    inline auto
-    make_vertex_outdegree_effect_name(const vertex_renderer::id_type& id)
+    inline auto make_vertex_outdegree_effect_name(
+        const vertex_renderer::id_type& id,
+        const std::optional< vertex_renderer::name_type >& particle_system)
     {
-        return id + " outdegree particle system";
+        const auto to_str = particle_system ? *particle_system : "";
+        return id + " outdegree " + to_str;
     }
 
     inline auto make_vertex_properties(
@@ -257,7 +261,7 @@ auto vertex_renderer::render_in_degree_particle_system(
         id,
         particle_system,
         vertex(id).in_degree_effect,
-        make_vertex_indegree_effect_name(id));
+        make_vertex_indegree_effect_name(id, particle_system));
 
     BOOST_LOG_TRIVIAL(debug) << "rendered in degree effect for vertex: " << id;
 }
@@ -270,7 +274,7 @@ auto vertex_renderer::render_out_degree_particle_system(
         id,
         particle_system,
         vertex(id).out_degree_effect,
-        make_vertex_outdegree_effect_name(id));
+        make_vertex_outdegree_effect_name(id, particle_system));
 
     BOOST_LOG_TRIVIAL(debug) << "rendered out degree effect for vertex: " << id;
 }
