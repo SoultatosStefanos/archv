@@ -27,8 +27,19 @@ auto commands_presenter::prepare_editor() -> void
 
 auto commands_presenter::connect_editor_with_commands() -> void
 {
-    editor().connect_to_undo([this]() { commands().undo(); });
-    editor().connect_to_redo([this]() { commands().redo(); });
+    editor().connect_to_undo(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected undo";
+            commands().undo();
+        });
+
+    editor().connect_to_redo(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected redo";
+            commands().redo();
+        });
 
     BOOST_LOG_TRIVIAL(info) << "connected editor with commands";
 }
