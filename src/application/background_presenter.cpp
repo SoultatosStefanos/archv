@@ -62,13 +62,13 @@ namespace
 auto background_presenter::connect_configurator_with_renderer() -> void
 {
     configurator().connect_to_skybox_material(
-        [this](auto material)
+        [this](auto mat)
         {
             BOOST_LOG_TRIVIAL(info)
-                << "selected background skybox material: " << material;
+                << "selected background skybox material: " << mat;
 
             renderer().config_api().config_data().skybox_material
-                = std::string(material);
+                = std::string(mat);
         });
 
     configurator().connect_to_skybox_distance(
@@ -85,6 +85,7 @@ auto background_presenter::connect_configurator_with_renderer() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background ambient color: " << to_string(c);
+
             renderer().config_api().config_data().ambient_light = from_rgba(c);
         });
 
@@ -93,6 +94,7 @@ auto background_presenter::connect_configurator_with_renderer() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected background diffuse color: " << to_string(c);
+
             renderer().config_api().config_data().diffuse_light = from_rgba(c);
         });
 

@@ -13,7 +13,7 @@
 namespace application
 {
 
-auto app::connect_gui_with_dependencies() -> void
+auto app::connect_gui_with_dependencies() -> void //
 {
     assert(m_gui);
     assert(m_dependencies_backend);
@@ -41,7 +41,7 @@ auto app::connect_gui_with_dependencies() -> void
     BOOST_LOG_TRIVIAL(info) << "connected gui with dependencies management";
 }
 
-auto app::connect_gui_with_layout() -> void
+auto app::connect_gui_with_layout() -> void //
 {
     assert(m_gui);
     assert(m_layout_backend);
@@ -84,7 +84,7 @@ auto app::connect_gui_with_layout() -> void
     BOOST_LOG_TRIVIAL(info) << "connected gui with layout management";
 }
 
-auto app::connect_gui_with_scaling() -> void
+auto app::connect_gui_with_scaling() -> void //
 {
     assert(m_gui);
     assert(m_scaling_backend);
@@ -150,7 +150,7 @@ auto app::connect_gui_with_scaling() -> void
         });
 }
 
-auto app::connect_gui_with_command_history() -> void
+auto app::connect_gui_with_command_history() -> void //
 {
     assert(m_gui);
 
@@ -162,7 +162,7 @@ auto app::connect_gui_with_command_history() -> void
     BOOST_LOG_TRIVIAL(info) << "connected gui with command history";
 }
 
-auto app::connect_rendering_with_layout() -> void
+auto app::connect_rendering_with_layout() -> void //
 {
     assert(m_graph_renderer);
     assert(m_layout_backend);
@@ -172,7 +172,7 @@ auto app::connect_rendering_with_layout() -> void
         { m_graph_renderer->render_layout(make_position_map()); });
 }
 
-auto app::connect_rendering_with_scaling() -> void
+auto app::connect_rendering_with_scaling() -> void //
 {
     assert(m_graph_renderer);
     assert(m_scaling_backend);
@@ -182,7 +182,7 @@ auto app::connect_rendering_with_scaling() -> void
         { m_graph_renderer->render_scaling(make_scale_map()); });
 }
 
-auto app::connect_rendering_with_dependencies() -> void
+auto app::connect_rendering_with_dependencies() -> void //
 {
     assert(m_graph_renderer);
     assert(m_dependencies_backend);
@@ -192,7 +192,7 @@ auto app::connect_rendering_with_dependencies() -> void
         { m_graph_renderer->render_weights(make_weight_map()); });
 }
 
-auto app::connect_gui_background_configurator() -> void
+auto app::connect_gui_background_configurator() -> void //
 {
     assert(m_gui);
 
@@ -306,7 +306,7 @@ auto app::connect_gui_background_configurator() -> void
         });
 }
 
-auto app::connect_gui_graph_configurator() -> void
+auto app::connect_gui_graph_configurator() -> void //
 {
     assert(m_gui);
 
