@@ -8,6 +8,9 @@ namespace architecture
 {
 
 class graph;
+class id_map;
+class dependency_map;
+
 class symbol_table;
 struct source_location;
 struct symbol;

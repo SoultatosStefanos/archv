@@ -70,11 +70,11 @@ public:
         std::string_view resource_group = Ogre::RGN_DEFAULT);
 
     edge_renderer(const edge_renderer&) = default;
-    edge_renderer(edge_renderer&&) = delete;
+    edge_renderer(edge_renderer&&) = default;
 
     ~edge_renderer();
 
-    auto operator=(const edge_renderer&) -> edge_renderer& = default;
+    auto operator=(const edge_renderer&) -> edge_renderer& = delete;
     auto operator=(edge_renderer&&) -> edge_renderer& = delete;
 
     auto setup(

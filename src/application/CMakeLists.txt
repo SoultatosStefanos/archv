@@ -5,6 +5,8 @@ set(FILES
 	app_input.cpp
 	app.cpp
 	commands.cpp
+	graph_interface.cpp
+	graph_presenter.cpp
 	shortcut_input_listener.cpp
 )
 set(SUBDIRECTORIES)

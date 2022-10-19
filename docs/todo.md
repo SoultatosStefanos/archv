@@ -528,6 +528,8 @@
 
 	+ [x] Degrees particle system management backend
 
+	+ [x] Particle Systems Editor
+
 	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
 	Note: Hollow Ellipsoid Emitter (3d ring)
 

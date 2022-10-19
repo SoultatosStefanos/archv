@@ -13,6 +13,9 @@ class factor_repo;
 struct scale_vector;
 struct config_data;
 
+template < typename Graph, typename FactorCounter >
+struct scale_map;
+
 } // namespace scaling
 
 #endif // SCALING_ALLFWD_HPP

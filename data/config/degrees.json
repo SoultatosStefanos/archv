@@ -19,9 +19,9 @@
 	{
 		"thresholds" : 
 		{ 
-			"light" : 1,
-			"medium" : 2,
-			"heavy": 3 
+			"light" : 2,
+			"medium" : 200,
+			"heavy": 300 
 		},
 		"particle-systems" : 
 		{
@@ -29,6 +29,6 @@
 			"medium" : "Degrees/PurpleFountain",
 			"heavy" : "Degrees/PurpleFountain" 
 		},
-		"applied" : true
+		"applied" : false
 	}
 }

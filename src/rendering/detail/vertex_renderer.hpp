@@ -55,11 +55,11 @@ public:
         std::string_view resource_group = Ogre::RGN_DEFAULT);
 
     vertex_renderer(const vertex_renderer&) = default;
-    vertex_renderer(vertex_renderer&&) = delete;
+    vertex_renderer(vertex_renderer&&) = default;
 
     ~vertex_renderer();
 
-    auto operator=(const vertex_renderer&) -> vertex_renderer& = default;
+    auto operator=(const vertex_renderer&) -> vertex_renderer& = delete;
     auto operator=(vertex_renderer&&) -> vertex_renderer& = delete;
 
     auto setup(const id_type& id, position_type pos) -> void;

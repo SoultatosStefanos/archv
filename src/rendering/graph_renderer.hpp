@@ -142,7 +142,7 @@ public:
     }
 
     graph_renderer(const graph_renderer&) = default;
-    graph_renderer(graph_renderer&&) = delete;
+    graph_renderer(graph_renderer&&) = default;
 
     ~graph_renderer()
     {
@@ -160,7 +160,7 @@ public:
             { m_vertex_renderer.shutdown(boost::get(vertex_id(), v)); });
     }
 
-    auto operator=(const graph_renderer&) -> graph_renderer& = default;
+    auto operator=(const graph_renderer&) -> graph_renderer& = delete;
     auto operator=(graph_renderer&&) -> graph_renderer& = delete;
 
     auto graph() const -> const auto& { return m_g; }

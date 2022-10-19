@@ -27,7 +27,7 @@ class gursoy_atun_layout;
 
 struct config_data;
 
-template < typename Graph >
+template < typename Graph, typename WeightMap >
 struct position_map;
 
 } // namespace layout

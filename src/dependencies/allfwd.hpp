@@ -11,7 +11,7 @@ class backend;
 class weight_repo;
 
 template < typename Graph, typename DependencyMap >
-class dynamic_weight_map;
+class weight_map;
 
 struct config_data;
 
