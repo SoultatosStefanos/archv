@@ -470,7 +470,7 @@ auto app::connect_gui_graph_configurator() -> void //
         });
 }
 
-auto app::connect_gui_gui_configurator() -> void
+auto app::connect_gui_gui_configurator() -> void //
 {
     assert(m_gui);
 
