@@ -1,4 +1,5 @@
 set(FILES
+	commands_presenter_tests.cpp
 	graph_interface_tests.cpp
 )
 set(SUBDIRECTORIES)

@@ -5,33 +5,92 @@
 #ifndef APPLICATION_COMMANDS_PRESENTER_HPP
 #define APPLICATION_COMMANDS_PRESENTER_HPP
 
-#include "gui/allfwd.hpp"
-#include "undo_redo/allfwd.hpp"
+#include "gui/editor.hpp"
+#include "undo_redo/command_history.hpp"
+
+#include <boost/log/trivial.hpp>
 
 namespace application
 {
 
+/***********************************************************
+ * Concepts                                                *
+ ***********************************************************/
+
+// clang-format off
+template < typename Class >
+concept commands = requires(Class val) 
+{
+    { val.can_undo() } -> std::same_as< bool >;
+    { val.can_redo() } -> std::same_as< bool >;
+    { val.undo() } -> std::same_as< void >;
+    { val.redo() } -> std::same_as< void >;
+};
+// clang-format on
+
+// clang-format off
+template < typename Class >
+concept commands_editor = requires(Class val, typename Class::connection con) 
+{
+    { val.set_can_undo([]() -> bool { return true; }) } -> std::same_as< void >;
+    { val.set_can_redo([]() -> bool { return true; }) } -> std::same_as< void >;
+    { val.connect_to_undo([]() -> void {}) } -> std::same_as< decltype(con) >;
+    { val.connect_to_redo([]() -> void {}) } -> std::same_as< decltype(con) >;
+};
+// clang-format on
+
+/***********************************************************
+ * Presenter                                               *
+ ***********************************************************/
+
+template <
+    commands Commands = undo_redo::command_history,
+    commands_editor Editor = gui::editor >
 class commands_presenter
 {
 public:
-    using command_history_type = undo_redo::command_history;
+    using commands_type = Commands;
+    using editor_type = Editor;
 
-    using editor_type = gui::editor;
+    commands_presenter(commands_type& cmds, editor_type& editor)
+    : m_cmds { cmds }, m_editor { editor }
+    {
+        install_editor_accessors();
+        install_editor_responses();
+    }
 
-    commands_presenter(command_history_type& cmds, editor_type& editor);
+    auto commands() const -> const commands_type& { return m_cmds; }
+    auto editor() const -> const editor_type& { return m_editor; }
 
-    auto commands() const -> const auto& { return m_cmds; }
-    auto commands() -> auto& { return m_cmds; }
+    auto fetch_can_undo() const -> bool { return m_cmds.can_undo(); }
+    auto fetch_can_redo() const -> bool { return m_cmds.can_redo(); }
 
-    auto editor() const -> const auto& { return m_editor; }
-    auto editor() -> auto& { return m_editor; }
+    auto select_undo() -> void
+    {
+        BOOST_LOG_TRIVIAL(info) << "selected undo";
+        m_cmds.undo();
+    }
+
+    auto select_redo() -> void
+    {
+        BOOST_LOG_TRIVIAL(info) << "selected redo";
+        m_cmds.redo();
+    }
 
 private:
-    auto prepare_editor() -> void;
+    auto install_editor_accessors() -> void
+    {
+        m_editor.set_can_undo([this]() { return fetch_can_undo(); });
+        m_editor.set_can_redo([this]() { return fetch_can_redo(); });
+    }
 
-    auto connect_editor_with_commands() -> void;
+    auto install_editor_responses() -> void
+    {
+        m_editor.connect_to_undo([this]() { select_undo(); });
+        m_editor.connect_to_redo([this]() { select_redo(); });
+    }
 
-    command_history_type& m_cmds;
+    commands_type& m_cmds;
     editor_type& m_editor;
 };
 

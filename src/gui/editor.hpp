@@ -39,13 +39,13 @@ public:
     auto get_scaling_editor() const -> const auto& { return m_scaling_edit; }
     auto get_scaling_editor() -> auto& { return m_scaling_edit; }
 
-    auto set_undo_enabled(undo_enabled_pred pred) -> void
+    auto set_can_undo(undo_enabled_pred pred) -> void
     {
         assert(pred);
         m_undo_enabled = std::move(pred);
     }
 
-    auto set_redo_enabled(redo_enabled_pred pred) -> void
+    auto set_can_redo(redo_enabled_pred pred) -> void
     {
         assert(pred);
         m_redo_enabled = std::move(pred);

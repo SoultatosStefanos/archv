@@ -5,7 +5,6 @@ set(FILES
 	app_input.cpp
 	app.cpp
 	background_presenter.cpp
-	commands_presenter.cpp
 	commands.cpp
 	graph_interface.cpp
 	graph_presenter.cpp
