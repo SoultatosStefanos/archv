@@ -12,6 +12,7 @@ add_executable(${TESTS} ${FILES})
 target_link_libraries(${TESTS} PRIVATE ${PROJECT_LIB} ${TESTS_LIBS})
 
 set(SUBDIRECTORIES
+  application
   architecture
   degrees
   dependencies
