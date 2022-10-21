@@ -1,4 +1,5 @@
 set(FILES
+	background_presenter_tests.cpp
 	commands_presenter_tests.cpp
 	graph_interface_tests.cpp
 )

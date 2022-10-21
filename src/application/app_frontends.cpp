@@ -265,11 +265,11 @@ auto app::setup_gui_undo_redo() -> void
 {
     assert(m_gui);
 
-    m_gui->get_editor().set_undo_enabled([this]()
-                                         { return m_commands->can_undo(); });
+    m_gui->get_editor().set_can_undo([this]()
+                                     { return m_commands->can_undo(); });
 
-    m_gui->get_editor().set_redo_enabled([this]()
-                                         { return m_commands->can_redo(); });
+    m_gui->get_editor().set_can_redo([this]()
+                                     { return m_commands->can_redo(); });
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui hooks";
 }
@@ -297,11 +297,11 @@ auto app::setup_gui_background_configurator() -> void
 
     bkg_gui.set_skybox_material(cfg.skybox_material);
     bkg_gui.set_skybox_distance(cfg.skybox_distance);
-    bkg_gui.set_ambient_color(to_rgba(cfg.ambient_light));
-    bkg_gui.set_diffuse_color(to_rgba(cfg.diffuse_light));
-    bkg_gui.set_specular_color(to_rgba(cfg.specular_light));
-    bkg_gui.set_cam_far_clip_distance(cfg.far_clip_distance);
-    bkg_gui.set_cam_near_clip_distance(cfg.near_clip_distance);
+    bkg_gui.set_ambient_color(to_rgba(cfg.ambient_color));
+    bkg_gui.set_diffuse_color(to_rgba(cfg.diffuse_color));
+    bkg_gui.set_specular_color(to_rgba(cfg.specular_color));
+    bkg_gui.set_cam_far_clip_distance(cfg.cam_far_clip_distance);
+    bkg_gui.set_cam_near_clip_distance(cfg.cam_near_clip_distance);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui background values";
 }

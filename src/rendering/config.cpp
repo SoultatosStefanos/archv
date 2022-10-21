@@ -54,21 +54,21 @@ namespace
 
         auto&& skybox_material = val["skybox-material"].as< string >();
         auto skybox_dist = val["skybox-distance"].as< real >();
-        auto&& ambient_light = deserialize_rgb(val["ambient-light"]);
-        auto&& diffuse_light = deserialize_rgb(val["diffuse-light"]);
-        auto&& specular_light = deserialize_rgb(val["specular-light"]);
-        auto near_clip_dist = val["near-clip-distance"].as< real >();
-        auto far_clip_dist = val["far-clip-distance"].as< real >();
+        auto&& ambient_color = deserialize_rgb(val["ambient-color"]);
+        auto&& diffuse_color = deserialize_rgb(val["diffuse-color"]);
+        auto&& specular_color = deserialize_rgb(val["specular-color"]);
+        auto cam_near_clip_dist = val["cam-near-clip-distance"].as< real >();
+        auto cam_far_clip_dist = val["cam-far-clip-distance"].as< real >();
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering background";
 
         return { std::move(skybox_material),
                  static_cast< Ogre::Real >(skybox_dist),
-                 ambient_light,
-                 diffuse_light,
-                 specular_light,
-                 static_cast< Ogre::Real >(near_clip_dist),
-                 static_cast< Ogre::Real >(far_clip_dist) };
+                 ambient_color,
+                 diffuse_color,
+                 specular_color,
+                 static_cast< Ogre::Real >(cam_near_clip_dist),
+                 static_cast< Ogre::Real >(cam_far_clip_dist) };
     }
 
     inline auto deserialize_vector3(const Json::Value& val) -> Ogre::Vector3

@@ -13,39 +13,9 @@
 namespace application
 {
 
-/***********************************************************
- * Concepts                                                *
- ***********************************************************/
-
-// clang-format off
-template < typename Class >
-concept commands = requires(Class val) 
-{
-    { val.can_undo() } -> std::same_as< bool >;
-    { val.can_redo() } -> std::same_as< bool >;
-    { val.undo() } -> std::same_as< void >;
-    { val.redo() } -> std::same_as< void >;
-};
-// clang-format on
-
-// clang-format off
-template < typename Class >
-concept commands_editor = requires(Class val, typename Class::connection con) 
-{
-    { val.set_can_undo([]() -> bool { return true; }) } -> std::same_as< void >;
-    { val.set_can_redo([]() -> bool { return true; }) } -> std::same_as< void >;
-    { val.connect_to_undo([]() -> void {}) } -> std::same_as< decltype(con) >;
-    { val.connect_to_redo([]() -> void {}) } -> std::same_as< decltype(con) >;
-};
-// clang-format on
-
-/***********************************************************
- * Presenter                                               *
- ***********************************************************/
-
 template <
-    commands Commands = undo_redo::command_history,
-    commands_editor Editor = gui::editor >
+    typename Commands = undo_redo::command_history,
+    typename Editor = gui::editor >
 class commands_presenter
 {
 public:
@@ -82,12 +52,14 @@ private:
     {
         m_editor.set_can_undo([this]() { return fetch_can_undo(); });
         m_editor.set_can_redo([this]() { return fetch_can_redo(); });
+        BOOST_LOG_TRIVIAL(debug) << "installed commands editor accessors";
     }
 
     auto install_editor_responses() -> void
     {
         m_editor.connect_to_undo([this]() { select_undo(); });
         m_editor.connect_to_redo([this]() { select_redo(); });
+        BOOST_LOG_TRIVIAL(debug) << "installed commands editor responses";
     }
 
     commands_type& m_cmds;

@@ -28,6 +28,7 @@ concept interactive_configurable = configurable< Class > && requires(Class val)
 {
     { val.config_api() };
     { val.config_api().config_data() };
+    { val.config_api().config_data() = val.config_data() };
     { val.config_data() = val.config_api().config_data() };
 };
 

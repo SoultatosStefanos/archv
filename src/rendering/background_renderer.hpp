@@ -22,15 +22,19 @@ namespace rendering
 
 struct background_config
 {
-    Ogre::String skybox_material;
-    Ogre::Real skybox_distance;
+    using name_type = Ogre::String;
+    using distance_type = Ogre::Real;
+    using rgba_type = Ogre::ColourValue;
 
-    Ogre::ColourValue ambient_light;
-    Ogre::ColourValue diffuse_light;
-    Ogre::ColourValue specular_light;
+    name_type skybox_material;
+    distance_type skybox_distance;
 
-    Ogre::Real near_clip_distance;
-    Ogre::Real far_clip_distance;
+    rgba_type ambient_color;
+    rgba_type diffuse_color;
+    rgba_type specular_color;
+
+    distance_type cam_near_clip_distance;
+    distance_type cam_far_clip_distance;
 
     auto operator==(const background_config&) const -> bool = default;
     auto operator!=(const background_config&) const -> bool = default;
@@ -44,6 +48,9 @@ class background_config_api
 {
 public:
     using config_data_type = background_config;
+    using name_type = config_data_type::name_type;
+    using distance_type = config_data_type::distance_type;
+    using rgba_type = config_data_type::rgba_type;
 
     explicit background_config_api(config_data_type cfg)
     : m_cfg { std::move(cfg) }
@@ -52,6 +59,14 @@ public:
 
     auto config_data() const -> const config_data_type& { return m_cfg; }
     auto config_data() -> config_data_type& { return m_cfg; }
+
+    auto set_skybox_material(name_type mat) -> void;
+    auto set_skybox_distance(distance_type dist) -> void;
+    auto set_ambient_color(rgba_type col) -> void;
+    auto set_diffuse_color(rgba_type col) -> void;
+    auto set_specular_color(rgba_type col) -> void;
+    auto set_cam_far_clip_distance(distance_type dist) -> void;
+    auto set_cam_near_clip_distance(distance_type dist) -> void;
 
 private:
     config_data_type m_cfg;

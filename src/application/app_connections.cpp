@@ -227,7 +227,7 @@ auto app::connect_gui_background_configurator() -> void //
                 << "selected background ambient color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
 
-            m_background_renderer->config_api().config_data().ambient_light
+            m_background_renderer->config_api().config_data().ambient_color
                 = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
@@ -240,7 +240,7 @@ auto app::connect_gui_background_configurator() -> void //
                 << "selected background diffuse color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
 
-            m_background_renderer->config_api().config_data().diffuse_light
+            m_background_renderer->config_api().config_data().diffuse_color
                 = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
@@ -253,7 +253,7 @@ auto app::connect_gui_background_configurator() -> void //
                 << "selected background specular color: " << col[0] << ", "
                 << col[1] << ", " << col[2] << ", " << col[3];
 
-            m_background_renderer->config_api().config_data().specular_light
+            m_background_renderer->config_api().config_data().specular_color
                 = Ogre::ColourValue(col[0], col[1], col[2], col[3]);
         });
 
@@ -263,7 +263,9 @@ auto app::connect_gui_background_configurator() -> void //
             BOOST_LOG_TRIVIAL(info)
                 << "selected background camera far clip distance: " << dist;
 
-            m_background_renderer->config_api().config_data().far_clip_distance
+            m_background_renderer->config_api()
+                .config_data()
+                .cam_far_clip_distance
                 = dist;
         });
 
@@ -273,7 +275,9 @@ auto app::connect_gui_background_configurator() -> void //
             BOOST_LOG_TRIVIAL(info)
                 << "selected background camera near clip distance: " << dist;
 
-            m_background_renderer->config_api().config_data().near_clip_distance
+            m_background_renderer->config_api()
+                .config_data()
+                .cam_near_clip_distance
                 = dist;
         });
 

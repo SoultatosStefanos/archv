@@ -3,11 +3,11 @@
 	{
 		"skybox-material" : "Gradient/Studio",
 		"skybox-distance" : 5000,
-		"ambient-light" : [ 0.2, 0.2, 0.2 ],
-		"diffuse-light" : [ 1, 1, 1 ],
-		"specular-light" : [ 0.6, 0.6, 0.6 ],
-		"far-clip-distance" : 0,
-		"near-clip-distance" : 5
+		"ambient-color" : [ 0.2, 0.2, 0.2 ],
+		"diffuse-color" : [ 1, 1, 1 ],
+		"specular-color" : [ 0.6, 0.6, 0.6 ],
+		"cam-far-clip-distance" : 0,
+		"cam-near-clip-distance" : 5
 	},
 	"graph" : 
 	{

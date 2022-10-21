@@ -42,6 +42,7 @@ requires default_configurable< UIComponent > && drawable< UIComponent >
 inline auto restore_defaults(UIComponent& c) -> void
 {
     c.draw(c.config_data() = c.default_data());
+    c.config_api().config_data() = c.default_data();
 }
 
 } // namespace ui

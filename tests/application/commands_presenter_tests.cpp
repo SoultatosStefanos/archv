@@ -62,32 +62,6 @@ struct mock_editor_t : public editor_interface
 using commands_presenter_t
     = commands_presenter< commands_interface, editor_interface >;
 
-class a_new_commands_presenter : public Test
-{
-};
-
-TEST_F(a_new_commands_presenter, installs_the_editor_accessors)
-{
-    NiceMock< mock_commands_t > mock_commands;
-    NiceMock< mock_editor_t > mock_editor;
-
-    EXPECT_CALL(mock_editor, set_can_undo(_)).Times(1);
-    EXPECT_CALL(mock_editor, set_can_redo(_)).Times(1);
-
-    commands_presenter_t(mock_commands, mock_editor);
-}
-
-TEST_F(a_new_commands_presenter, installs_the_editor_responses)
-{
-    NiceMock< mock_commands_t > mock_commands;
-    NiceMock< mock_editor_t > mock_editor;
-
-    EXPECT_CALL(mock_editor, connect_to_undo(_)).Times(1);
-    EXPECT_CALL(mock_editor, connect_to_redo(_)).Times(1);
-
-    commands_presenter_t(mock_commands, mock_editor);
-}
-
 class given_a_commands_presenter : public Test
 {
 public:

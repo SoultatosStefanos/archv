@@ -19,11 +19,11 @@ auto make_sample_rendering_0()
     auto&& background
         = background_config { .skybox_material = "foo",
                               .skybox_distance = 10,
-                              .ambient_light = ColourValue(0, 0, 0),
-                              .diffuse_light = ColourValue(1, 1, 1),
-                              .specular_light = ColourValue(2.5, 2.5, 2.5),
-                              .near_clip_distance = 3,
-                              .far_clip_distance = 3 };
+                              .ambient_color = ColourValue(0, 0, 0),
+                              .diffuse_color = ColourValue(1, 1, 1),
+                              .specular_color = ColourValue(2.5, 2.5, 2.5),
+                              .cam_near_clip_distance = 3,
+                              .cam_far_clip_distance = 3 };
 
     auto&& graph = graph_config { .vertex_mesh = "mesh.mesh",
                                   .vertex_scale = Vector3(0.1, 0.2, 0.3),
