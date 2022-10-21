@@ -10,6 +10,10 @@ using namespace testing;
 namespace
 {
 
+/***********************************************************
+ * Mocks                                                   *
+ ***********************************************************/
+
 struct commands_interface
 {
     virtual ~commands_interface() = default;
@@ -61,6 +65,10 @@ struct mock_editor_t : public editor_interface
 
 using commands_presenter_t
     = commands_presenter< commands_interface, editor_interface >;
+
+/***********************************************************
+ * Tests                                                   *
+ ***********************************************************/
 
 class given_a_commands_presenter : public Test
 {

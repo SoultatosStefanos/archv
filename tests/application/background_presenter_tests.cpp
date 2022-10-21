@@ -10,6 +10,10 @@ using namespace testing;
 namespace
 {
 
+/***********************************************************
+ * Mocks                                                   *
+ ***********************************************************/
+
 struct config_data_t
 {
     using name_type = Ogre::String;
@@ -193,6 +197,10 @@ struct mock_configurator : public configurator_interface
 using background_presenter = application::
     background_presenter< renderer_interface, configurator_interface >;
 
+/***********************************************************
+ * Tests                                                   *
+ ***********************************************************/
+
 class given_a_background_presenter : public Test
 {
 protected:
@@ -348,13 +356,11 @@ TEST_F(
 
 TEST_F(
     given_a_background_presenter,
-    select_apply_sets_and_draws_the_renderer_config_data_through_its_api)
+    select_apply_draws_the_renderer_config_data_through_its_api)
 {
     EXPECT_CALL(renderer, draw(renderer.api.config)).Times(1);
 
     pres->select_apply();
-
-    ASSERT_EQ(renderer.api.config, renderer.config);
 }
 
 TEST_F(
@@ -377,7 +383,7 @@ TEST_F(
 
 TEST_F(
     given_a_background_presenter,
-    select_restore_sets_the_renderer_config_data_to_the_default_data_and_reinitializes_the_configurator_and_config_api)
+    select_restore_draws_the_renderer_default_data_and_fetches_all)
 {
     EXPECT_CALL(renderer, draw(renderer.default_data())).Times(1);
 
@@ -395,9 +401,6 @@ TEST_F(
         .Times(1);
 
     pres->select_restore();
-
-    ASSERT_EQ(renderer.config, renderer.default_data());
-    ASSERT_EQ(renderer.api.config_data(), renderer.default_data());
 }
 
 using background_presenter_def = application::background_presenter<>;

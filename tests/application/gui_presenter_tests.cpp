@@ -9,6 +9,10 @@ using namespace testing;
 namespace
 {
 
+/***********************************************************
+ * Mocks                                                   *
+ ***********************************************************/
+
 struct config
 {
     using name_type = std::string;
@@ -162,6 +166,10 @@ struct mock_configurator : configurator_interface
 
 using gui_presenter
     = application::gui_presenter< gui_interface, configurator_interface >;
+
+/***********************************************************
+ * Tests                                                   *
+ ***********************************************************/
 
 class given_a_gui_presenter : public Test
 {

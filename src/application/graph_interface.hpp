@@ -16,6 +16,7 @@
 namespace application
 {
 
+// TODO: Pass commands, add functions here
 class graph_interface
 {
 public:
