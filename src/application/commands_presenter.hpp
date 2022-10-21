@@ -66,6 +66,14 @@ private:
     editor_type& m_editor;
 };
 
+template <
+    typename Commands = undo_redo::command_history,
+    typename Editor = gui::editor >
+inline auto make_commands_presenter(Commands& cmds, Editor& editor)
+{
+    return commands_presenter< Commands, Editor >(cmds, editor);
+}
+
 } // namespace application
 
 #endif // APPLICATION_COMMANDS_PRESENTER_HPP

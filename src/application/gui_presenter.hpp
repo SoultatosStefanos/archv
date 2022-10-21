@@ -14,7 +14,7 @@ namespace application
 template <
     typename GUI = gui::gui,
     typename Configurator = gui::gui_configurator >
-class gui_pesenter
+class gui_presenter
 {
 public:
     using gui_type = GUI;
@@ -58,13 +58,14 @@ public:
 
     auto fetch_window_bordered() -> void
     {
-        m_configurator.set_frame_bordered(m_root.config_data().window_bordered);
+        m_configurator.set_window_bordered(
+            m_root.config_data().window_bordered);
         BOOST_LOG_TRIVIAL(info) << "fetched gui window bordered";
     }
 
     auto fetch_popup_bordered() -> void
     {
-        m_configurator.set_frame_bordered(m_root.config_data().popup_bordered);
+        m_configurator.set_popup_bordered(m_root.config_data().popup_bordered);
         BOOST_LOG_TRIVIAL(info) << "fetched gui popup bordered";
     }
 
@@ -171,6 +172,14 @@ private:
     gui_type& m_root;
     configurator_type& m_configurator;
 };
+
+template <
+    typename GUI = gui::gui,
+    typename Configurator = gui::gui_configurator >
+inline auto make_gui_presenter(GUI& root, Configurator& configurator)
+{
+    return gui_presenter< GUI, Configurator >(root, configurator);
+}
 
 } // namespace application
 

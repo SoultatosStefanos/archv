@@ -226,6 +226,16 @@ private:
     configurator_type& m_gui;
 };
 
+template <
+    typename Renderer = rendering::background_renderer,
+    typename Configurator = gui::background_configurator >
+inline auto
+make_background_presenter(Renderer& renderer, Configurator& configurator)
+{
+    return background_presenter< Renderer, Configurator >(
+        renderer, configurator);
+}
+
 } // namespace application
 
 #endif // APPLICATION_BACKGROUND_PRESENTER_HPP
