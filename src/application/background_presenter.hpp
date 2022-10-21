@@ -32,14 +32,6 @@ public:
     using configurator_distance_type = typename Configurator::distance_type;
     using configurator_rgba_type = typename Configurator::rgba_type;
 
-    static_assert(std::is_convertible_v<
-                  renderer_distance_type,
-                  configurator_distance_type >);
-
-    static_assert(std::is_convertible_v<
-                  configurator_distance_type,
-                  renderer_distance_type >);
-
     background_presenter(renderer_type& renderer, configurator_type& cfg)
     : m_renderer { renderer }, m_gui { cfg }
     {
@@ -97,7 +89,7 @@ public:
         BOOST_LOG_TRIVIAL(info) << "fetched bkg camera near clip distance";
     }
 
-    auto select_skybox_material(const configurator_name_type& material) -> void
+    auto select_skybox_material(configurator_name_type material) -> void
     {
         BOOST_LOG_TRIVIAL(info) << "selected bkg skybox material " << material;
         m_renderer.config_api().set_skybox_material(translate(material));
@@ -166,29 +158,21 @@ public:
 
 protected:
     static inline auto translate(const configurator_rgba_type& rgba)
-        -> renderer_rgba_type
     {
         assert(rgba.size() == 4);
         return renderer_rgba_type { rgba[0], rgba[1], rgba[2], rgba[3] };
     }
 
     static inline auto translate(const configurator_name_type& name)
-        -> renderer_name_type
     {
         static_assert(std::is_constructible_v<
                       configurator_name_type,
                       renderer_name_type >);
 
-        if constexpr (std::is_convertible_v<
-                          configurator_name_type,
-                          renderer_name_type >)
-            return name;
-        else
-            return renderer_name_type { name };
+        return renderer_name_type { name };
     }
 
     static inline auto translate(const renderer_rgba_type& rgba)
-        -> configurator_rgba_type
     {
         return configurator_rgba_type { rgba.r, rgba.g, rgba.b, rgba.a };
     }
