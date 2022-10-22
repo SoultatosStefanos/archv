@@ -1,5 +1,6 @@
 #include "backend.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <ranges>
 
 namespace scaling
@@ -43,9 +44,11 @@ auto backend::update_factor(
     ratio_type min_ratio,
     ratio_type max_ratio) -> void
 {
-    verify_baseline(baseline);
-    verify_ratio(min_ratio);
-    verify_ratio(max_ratio);
+    if (baseline <= 0 or min_ratio < 0 or max_ratio < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid scaling factor update";
+        return;
+    }
 
     auto& f = m_repo.get_factor(tag);
     f.applied_dims = dims;

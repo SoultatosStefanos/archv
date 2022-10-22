@@ -72,6 +72,21 @@ TEST_F(given_a_scaling_backend, queries_on_factor_minmax_ratios_are_valid)
     ASSERT_EQ(get_factor_max_ratio(*b, "f"), 10);
 }
 
+TEST_F(given_a_scaling_backend, updating_with_any_invalid_arg_results_to_noop)
+{
+    update_factor_baseline(*b, "f", 0);
+    update_factor_min_ratio(*b, "f", -2);
+    update_factor_max_ratio(*b, "f", -2);
+
+    ASSERT_TRUE(is_factor_applied_on_x(*b, "f"));
+    ASSERT_FALSE(is_factor_applied_on_y(*b, "f"));
+    ASSERT_FALSE(is_factor_applied_on_z(*b, "f"));
+    ASSERT_TRUE(is_factor_enabled(*b, "f"));
+    ASSERT_EQ(get_factor_baseline(*b, "f"), 10);
+    ASSERT_EQ(get_factor_min_ratio(*b, "f"), 0);
+    ASSERT_EQ(get_factor_max_ratio(*b, "f"), 10);
+}
+
 TEST_F(given_a_scaling_backend, factor_applied_dims_can_be_set)
 {
     apply_factor_on_y_axis(*b, "f");
@@ -183,33 +198,6 @@ TEST_F(given_a_scaling_backend, setting_factor_ratios_notifies_observers)
     EXPECT_CALL(mock, Call(make_x_factor(10, true, 10, 100))).Times(1);
 
     update_factor_max_ratio(*b, "f", 100);
-}
-
-TEST_F(
-    given_a_scaling_backend, setting_factor_baseline_to_zero_results_to_error)
-{
-    ASSERT_THROW(update_factor_baseline(*b, "f", 0), invalid_baseline);
-}
-
-TEST_F(
-    given_a_scaling_backend,
-    setting_factor_baseline_to_negative_results_to_error)
-{
-    ASSERT_THROW(update_factor_baseline(*b, "f", -10), invalid_baseline);
-}
-
-TEST_F(
-    given_a_scaling_backend,
-    setting_factor_min_ratio_to_negative_results_to_error)
-{
-    ASSERT_THROW(update_factor_min_ratio(*b, "f", -10), invalid_ratio);
-}
-
-TEST_F(
-    given_a_scaling_backend,
-    setting_factor_max_ratio_to_negative_results_to_error)
-{
-    ASSERT_THROW(update_factor_max_ratio(*b, "f", -10), invalid_ratio);
 }
 
 TEST_F(given_a_scaling_backend, factors_can_be_restored_to_defaults)
