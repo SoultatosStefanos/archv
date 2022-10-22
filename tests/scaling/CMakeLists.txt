@@ -2,6 +2,7 @@ set(FILES
 	backend_tests.cpp
 	config_tests.cpp
 	factor_repo_tests.cpp
+	presenter_tests.cpp
 	scale_map_tests.cpp
 	scale_tests.cpp
 )
