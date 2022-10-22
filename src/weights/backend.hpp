@@ -55,6 +55,11 @@ private:
  * Use Cases                                               *
  ***********************************************************/
 
+inline auto get_weight(const backend& b, backend::dependency_type dependency)
+{
+    return b.get_weight_repo().get_weight(dependency);
+}
+
 inline auto update_weight(
     backend& b, backend::dependency_type dependency, backend::weight_type w)
 {
