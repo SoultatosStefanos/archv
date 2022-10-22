@@ -16,13 +16,21 @@ namespace rendering
 
 auto background_config_api::set_skybox_material(name_type mat) -> void
 {
-    assert(Ogre::MaterialManager::getSingleton().getByName(mat));
+    if (!Ogre::MaterialManager::getSingleton().getByName(mat))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid skybox material";
+        return;
+    }
     config_data().skybox_material = std::move(mat);
 }
 
 auto background_config_api::set_skybox_distance(distance_type dist) -> void
 {
-    assert(dist >= 0);
+    if (dist < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid skybox distance";
+        return;
+    }
     config_data().skybox_distance = dist;
 }
 
@@ -44,14 +52,22 @@ auto background_config_api::set_specular_color(rgba_type col) -> void
 auto background_config_api::set_cam_far_clip_distance(distance_type dist)
     -> void
 {
-    assert(dist >= 0);
+    if (dist < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid camera far clip dist";
+        return;
+    }
     config_data().cam_far_clip_distance = dist;
 }
 
 auto background_config_api::set_cam_near_clip_distance(distance_type dist)
     -> void
 {
-    assert(dist >= 0);
+    if (dist < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid camera near clip dist";
+        return;
+    }
     config_data().cam_near_clip_distance = dist;
 }
 
