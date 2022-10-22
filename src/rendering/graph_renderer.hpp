@@ -22,21 +22,27 @@ namespace rendering
 
 struct graph_config
 {
-    Ogre::String vertex_mesh;
-    Ogre::Vector3 vertex_scale;
-    Ogre::String vertex_id_font_name;
-    Ogre::Real vertex_id_char_height;
-    Ogre::ColourValue vertex_id_color;
-    Ogre::Real vertex_id_space_width;
+    using name_type = Ogre::String;
+    using scale_type = Ogre::Vector3;
+    using height_type = Ogre::Real;
+    using width_type = Ogre::Real;
+    using rgba_type = Ogre::ColourValue;
 
-    Ogre::String edge_material;
-    Ogre::String edge_tip_mesh;
-    Ogre::Vector3 edge_tip_scale;
+    name_type vertex_mesh;
+    scale_type vertex_scale;
+    name_type vertex_id_font_name;
+    height_type vertex_id_char_height;
+    rgba_type vertex_id_color;
+    width_type vertex_id_space_width;
 
-    Ogre::String edge_type_font_name;
-    Ogre::Real edge_type_char_height;
-    Ogre::ColourValue edge_type_color;
-    Ogre::Real edge_type_space_width;
+    name_type edge_material;
+    name_type edge_tip_mesh;
+    scale_type edge_tip_scale;
+
+    name_type edge_type_font_name;
+    height_type edge_type_char_height;
+    rgba_type edge_type_color;
+    width_type edge_type_space_width;
 
     auto operator==(const graph_config&) const -> bool = default;
     auto operator!=(const graph_config&) const -> bool = default;

@@ -6,6 +6,5 @@
 
 #include "ui_component.hpp"
 #include "ui_concepts.hpp"
-#include "ui_traits.hpp"
 
 #endif // UI_ALL_HPP
