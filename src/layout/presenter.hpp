@@ -5,60 +5,10 @@
 #ifndef LAYOUT_PRESENTER_HPP
 #define LAYOUT_PRESENTER_HPP
 
-#include "backend.hpp"
-
 #include <boost/log/trivial.hpp>
 
 namespace layout
 {
-
-/***********************************************************
- * Backend Adapter                                         *
- ***********************************************************/
-
-// Thin wrapper to make the layout backend class usable with the presenter.
-template < typename Graph, typename WeightMap >
-struct backend_adapter
-{
-    using backend_type = backend< Graph, WeightMap >;
-    using layout_id_type = typename backend_type::layout_id_type;
-    using topology_id_type = typename backend_type::topology_id_type;
-    using scale_type = typename backend_type::scale_type;
-
-    backend_type& b;
-
-    inline auto layout_id() const -> auto { return get_layout_id(b); }
-    inline auto topology_id() const -> auto { return get_topology_id(b); }
-    inline auto scale() const -> auto { return get_scale(b); }
-
-    inline auto update_layout(layout_id_type id) -> void
-    {
-        update_layout(b, id);
-    }
-
-    inline auto update_topology(topology_id_type id) -> void
-    {
-        update_topology(b, id);
-    }
-
-    inline auto update_scale(scale_type scale) -> void
-    {
-        update_scale(b, scale);
-    }
-
-    inline auto restore() -> void { restore_defaults(b); }
-};
-
-// Utility factory for type deduction.
-template < typename Graph, typename WeightMap >
-inline auto make_backend_adapter(backend< Graph, WeightMap >& b)
-{
-    return backend_adapter< Graph, WeightMap >(b);
-}
-
-/***********************************************************
- * Presenter                                               *
- ***********************************************************/
 
 template < typename View, typename Backend >
 class presenter

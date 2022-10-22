@@ -5,42 +5,12 @@
 #ifndef WEIGHTS_PRESENTER_HPP
 #define WEIGHTS_PRESENTER_HPP
 
-#include "backend.hpp"
-
 #include <boost/log/trivial.hpp>
 
 namespace weights
 {
 
-/***********************************************************
- * Backend Adapter                                         *
- ***********************************************************/
-
-struct backend_adapter
-{
-    using dependency_type = backend::dependency_type;
-    using weight_type = backend::weight_type;
-
-    backend& b;
-
-    inline auto weight(dependency_type type) const -> weight_type
-    {
-        return get_weight(b, type);
-    }
-
-    inline auto update_weight(dependency_type type, weight_type w) -> void
-    {
-        b.update_weight(type, w);
-    }
-
-    inline auto restore() -> void { restore_defaults(b); }
-};
-
-/***********************************************************
- * Presenter                                               *
- ***********************************************************/
-
-template < typename View, typename Backend = backend_adapter >
+template < typename View, typename Backend >
 class presenter
 {
 public:
@@ -109,7 +79,7 @@ private:
 };
 
 // Utility factory for type deduction.
-template < typename View, typename Backend = backend_adapter >
+template < typename View, typename Backend >
 inline auto make_presenter(Backend& back, View& view)
 {
     return presenter< View, Backend >(back, view);

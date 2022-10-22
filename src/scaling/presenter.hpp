@@ -5,86 +5,12 @@
 #ifndef SCALING_PRESENTER_HPP
 #define SCALING_PRESENTER_HPP
 
-#include "backend.hpp"
-#include "detail/presenter.hpp"
-
 #include <boost/log/trivial.hpp>
 
 namespace scaling
 {
 
-/***********************************************************
- * Backend Adapter                                         *
- ***********************************************************/
-
-struct backend_adapter
-{
-    using tag_type = backend::tag_type;
-    using dims_type = backend::dims_type;
-    using baseline_type = backend::baseline_type;
-    using enabled_type = backend::enabled_type;
-    using ratio_type = backend::ratio_type;
-
-    backend& b;
-
-    inline auto factor_baseline(tag_type tag) const -> baseline_type
-    {
-        return get_factor_baseline(b, tag);
-    }
-
-    inline auto factor_dims(tag_type tag) const -> dims_type
-    {
-        return get_factor_dims(b, tag);
-    }
-
-    inline auto factor_enabled(tag_type tag) const -> enabled_type
-    {
-        return is_factor_enabled(b, tag);
-    }
-
-    inline auto factor_min_ratio(tag_type tag) const -> ratio_type
-    {
-        return get_factor_min_ratio(b, tag);
-    }
-
-    inline auto factor_max_ratio(tag_type tag) const -> ratio_type
-    {
-        return get_factor_max_ratio(b, tag);
-    }
-
-    inline auto update_factor_baseline(tag_type tag, baseline_type base) -> void
-    {
-        detail::update_factor_baseline(b, tag, base);
-    }
-
-    inline auto update_factor_dims(tag_type tag, dims_type d) -> void
-    {
-        detail::update_factor_dims(b, tag, d);
-    }
-
-    inline auto update_factor_enabled(tag_type tag, enabled_type e) -> void
-    {
-        detail::update_factor_enabled(b, tag, e);
-    }
-
-    inline auto update_factor_min_ratio(tag_type tag, ratio_type r) -> void
-    {
-        detail::update_factor_min_ratio(b, tag, r);
-    }
-
-    inline auto update_factor_max_ratio(tag_type tag, ratio_type r) -> void
-    {
-        detail::update_factor_max_ratio(b, tag, r);
-    }
-
-    inline auto restore() -> void { restore_defaults(b); }
-};
-
-/***********************************************************
- * Presenter                                               *
- ***********************************************************/
-
-template < typename View, typename Backend = backend_adapter >
+template < typename View, typename Backend >
 class presenter
 {
 public:
@@ -233,7 +159,7 @@ private:
 };
 
 // Utility factory for type deduction.
-template < typename View, typename Backend = backend_adapter >
+template < typename View, typename Backend >
 inline auto make_presenter(Backend& back, View& view)
 {
     return presenter< View, Backend >(back, view);
