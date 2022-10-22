@@ -1,11 +1,13 @@
 #include "shortcut_input_listener.hpp"
 
+#include "gui/gui.hpp"
+
 #include <SDL2/SDL_keycode.h>
 
 namespace application
 {
 
-shortcut_input_listener::shortcut_input_listener(editor& bar) : m_menu { bar }
+shortcut_input_listener::shortcut_input_listener(gui_type& ui) : m_gui { ui }
 {
 }
 
@@ -63,13 +65,13 @@ auto shortcut_input_listener::keyReleased(const OgreBites::KeyboardEvent& e)
 auto shortcut_input_listener::handle_undo_combination() -> void
 {
     if (m_lctrl_pressed and m_z_pressed)
-        m_menu.undo_shortcut();
+        m_gui.undo_shortcut();
 }
 
 auto shortcut_input_listener::handle_redo_combination() -> void
 {
     if (m_lctrl_pressed and m_y_pressed)
-        m_menu.redo_shortcut();
+        m_gui.redo_shortcut();
 }
 
 } // namespace application

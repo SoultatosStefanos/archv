@@ -1,11 +1,12 @@
 #include "archive.hpp"
 
 #include <boost/log/trivial.hpp>
+#include <cassert>
 #include <filesystem>
 #include <fstream>
 #include <ranges>
 
-namespace config
+namespace application
 {
 
 namespace
@@ -37,4 +38,4 @@ auto archive::at(file_name_type fname) -> json_root_type&
     return const_cast< json_root_type& >(std::as_const(*this).at(fname));
 }
 
-} // namespace config
+} // namespace application

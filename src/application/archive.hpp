@@ -4,19 +4,12 @@
 #ifndef APPLICATION_ARCHIVE_HPP
 #define APPLICATION_ARCHIVE_HPP
 
-#include <boost/exception/all.hpp>
-#include <cassert>
 #include <jsoncpp/json/json.h>
-#include <stdexcept>
 #include <string_view>
 #include <unordered_map>
 
-namespace config
+namespace application
 {
-
-/***********************************************************
- * Archive                                                 *
- ***********************************************************/
 
 class archive final
 {
@@ -48,24 +41,6 @@ private:
     mutable holder m_roots;
 };
 
-/***********************************************************
- * Errors                                                  *
- ***********************************************************/
-
-struct archive_error : virtual std::exception, virtual boost::exception
-{
-};
-
-struct invalid_json_file : virtual archive_error
-{
-};
-
-/***********************************************************
- * Error Info                                              *
- ***********************************************************/
-
-using json_file_info = boost::error_info< struct tag_file, std::string_view >;
-
-} // namespace config
+} // namespace application
 
 #endif // APPLICATION_ARCHIVE_HPP
