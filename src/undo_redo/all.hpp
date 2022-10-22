@@ -6,5 +6,6 @@
 
 #include "command.hpp"
 #include "command_history.hpp"
+#include "presenter.hpp"
 
 #endif // UNDO_REDO_ALL_HPP

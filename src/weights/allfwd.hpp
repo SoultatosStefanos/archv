@@ -15,6 +15,9 @@ class weight_map;
 
 struct config_data;
 
-} // namespace dependencies
+template < typename View, typename Backend >
+class presenter;
+
+} // namespace weights
 
 #endif // WEIGHTS_ALLFWD_HPP

@@ -10,6 +10,9 @@ namespace undo_redo
 class command_history;
 class command;
 
+template < typename View, typename Commands >
+class presenter;
+
 } // namespace undo_redo
 
 #endif // UNDO_REDO_ALLFWD_HPP

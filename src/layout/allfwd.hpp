@@ -30,6 +30,9 @@ struct config_data;
 template < typename Graph, typename WeightMap >
 struct position_map;
 
+template < typename View, typename Backend >
+class presenter;
+
 } // namespace layout
 
 #endif // LAYOUT_ALLFWD_HPP
