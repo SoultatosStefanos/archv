@@ -1,23 +1,28 @@
 // Contains an input listener responsible for handling gui shortcuts.
 // Soultatos Stefanos 2022
 
-#ifndef APPLICATION_SHORTCUT_INPUT_HANDLER_HPP
-#define APPLICATION_SHORTCUT_INPUT_HANDLER_HPP
+#ifndef INPUT_SHORTCUT_INPUT_LISTENER_HPP
+#define INPUT_SHORTCUT_INPUT_LISTENER_HPP
 
 #include "gui/allfwd.hpp"
 
 #include <OGRE/Bites/OgreInput.h>
 
-namespace application
+namespace input
 {
 
-class shortcut_input_listener : public OgreBites::InputListener
+class shortcut_handler : public OgreBites::InputListener
 {
+    using base = OgreBites::InputListener;
+
 public:
     using gui_type = gui::gui;
 
-    explicit shortcut_input_listener(gui_type& ui);
-    virtual ~shortcut_input_listener() override = default;
+    explicit shortcut_handler(gui_type& ui);
+    virtual ~shortcut_handler() override = default;
+
+    auto get_gui() const -> const auto& { return m_gui; }
+    auto get_gui() -> auto& { return m_gui; }
 
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
@@ -33,6 +38,6 @@ private:
     bool m_y_pressed { false };
 };
 
-} // namespace application
+} // namespace input
 
-#endif // APPLICATION_SHORTCUT_INPUT_HANDLER_HPP
+#endif // INPUT_SHORTCUT_INPUT_LISTENER_HPP
