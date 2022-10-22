@@ -11,11 +11,12 @@
 #include "topology_factory.hpp"
 #include "topology_plugin.hpp"
 
+#include <boost/exception/all.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/signals2/signal.hpp>
 #include <cassert>
-#include <limits>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 
@@ -28,25 +29,50 @@ namespace layout
 
 struct backend_config
 {
-    // All available by default.
-    std::vector< std::string > layouts { std::cbegin(layout_ids),
-                                         std::cend(layout_ids) };
+    using id_type = std::string;
+    using scale_type = double;
 
-    // All available by default.
-    std::vector< std::string > topologies { std::cbegin(topology_ids),
-                                            std::cend(topology_ids) };
+    std::vector< id_type > layouts;
+    std::vector< id_type > topologies;
 
-    // From 0 to max double by default.
-    std::pair< double, double > scales { 0,
-                                         std::numeric_limits< double >::max() };
-
-    std::string layout;
-    std::string topology;
-    double scale;
+    id_type layout;
+    id_type topology;
+    scale_type scale;
 
     auto operator==(const backend_config&) const -> bool = default;
     auto operator!=(const backend_config&) const -> bool = default;
 };
+
+/***********************************************************
+ * Errors                                                  *
+ ***********************************************************/
+
+struct backend_error : virtual std::exception, virtual boost::exception
+{
+};
+
+struct unknown_plugin : virtual backend_error
+{
+};
+
+struct unlisted_default : virtual backend_error
+{
+};
+
+struct negative_scale : virtual backend_error
+{
+};
+
+/***********************************************************
+ * Error Info                                              *
+ ***********************************************************/
+
+using layout_info
+    = boost::error_info< struct tag_layout, backend_config::id_type >;
+using topology_info
+    = boost::error_info< struct tag_topology, backend_config::id_type >;
+using scale_info
+    = boost::error_info< struct tag_scale, backend_config::scale_type >;
 
 /***********************************************************
  * Backend                                                 *
@@ -89,8 +115,11 @@ public:
         config_data_type config = config_data_type())
     : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
     {
-        assert(is_layout_plugged_in(config_data().layout));
-        assert(is_topology_plugged_in(config_data().topology));
+        verify_layouts();
+        verify_topologies();
+        verify_layout();
+        verify_topology();
+        verify_scale();
 
         set_topology(config_data().topology, config_data().scale);
         set_layout(config_data().layout);
@@ -105,8 +134,13 @@ public:
 
     auto update_layout(layout_id_type id) -> void
     {
-        set_layout(id);
+        if (!is_layout_listed(id))
+        {
+            BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
+            return;
+        }
 
+        set_layout(id);
         emit_layout();
     }
 
@@ -115,6 +149,14 @@ public:
         scale_type topology_scale,
         layout_id_type algo_id) -> void
     {
+        if (!is_topology_listed(space_id)
+            or !is_scale_non_negative(topology_scale)
+            or !is_layout_listed(algo_id))
+        {
+            BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
+            return;
+        }
+
         set_topology(space_id, topology_scale);
         set_layout(algo_id);
 
@@ -138,12 +180,6 @@ protected:
     auto set_layout(layout_id_type id) -> void
     {
         assert(m_topology);
-        assert(
-            std::find(
-                std::cbegin(config_data().layouts),
-                std::cend(config_data().layouts),
-                id)
-            != std::cend(config_data().layouts));
 
         m_layout = layout_factory_type::make_layout(
             id, graph(), get_topology(), weight_map());
@@ -154,17 +190,6 @@ protected:
 
     auto set_topology(topology_id_type id, scale_type scale) -> void
     {
-        assert(
-            std::find(
-                std::cbegin(config_data().topologies),
-                std::cend(config_data().topologies),
-                id)
-            != std::cend(config_data().topologies));
-
-        assert(
-            scale >= config_data().scales.first
-            and scale <= config_data().scales.second);
-
         m_topology = topology_factory::make_topology(id, scale);
 
         assert(m_topology);
@@ -177,6 +202,64 @@ private:
     using layout_pointer = typename layout_factory< graph_type >::pointer;
     using topology_pointer = topology_factory::pointer;
 
+    auto is_layout_listed(layout_id_type id) const -> bool
+    {
+        return std::find(
+                   std::cbegin(config_data().layouts),
+                   std::cend(config_data().layouts),
+                   id)
+            != std::cend(config_data().layouts);
+    }
+
+    auto is_topology_listed(topology_id_type id) const -> bool
+    {
+        return std::find(
+                   std::cbegin(config_data().topologies),
+                   std::cend(config_data().topologies),
+                   id)
+            != std::cend(config_data().topologies);
+    }
+
+    static constexpr auto is_scale_non_negative(scale_type scale) -> bool
+    {
+        return scale >= 0;
+    }
+
+    auto verify_layouts() const -> void
+    {
+        for (const auto& layout : config_data().layouts)
+            if (!is_layout_plugged_in(layout))
+                BOOST_THROW_EXCEPTION(unknown_plugin() << layout_info(layout));
+    }
+
+    auto verify_topologies() const -> void
+    {
+        for (const auto& space : config_data().topologies)
+            if (!is_topology_plugged_in(space))
+                BOOST_THROW_EXCEPTION(unknown_plugin() << topology_info(space));
+    }
+
+    auto verify_layout() const -> void
+    {
+        if (!is_layout_listed(config_data().layout))
+            BOOST_THROW_EXCEPTION(
+                unlisted_default() << layout_info(config_data().layout));
+    }
+
+    auto verify_topology() const -> void
+    {
+        if (!is_topology_listed(config_data().topology))
+            BOOST_THROW_EXCEPTION(
+                unlisted_default() << topology_info(config_data().topology));
+    }
+
+    auto verify_scale() const -> void
+    {
+        if (!is_scale_non_negative(config_data().scale))
+            BOOST_THROW_EXCEPTION(
+                negative_scale() << scale_info(config_data().scale));
+    }
+
     const graph_type& m_g;
     weight_map_type m_edge_weight;
 
@@ -188,6 +271,16 @@ private:
 
     config_data_type m_config;
 };
+
+// Utility factory for type deduction.
+template < typename Graph, typename WeightMap >
+inline auto make_backend(
+    const Graph& g,
+    WeightMap edge_weight,
+    backend_config config = backend_config())
+{
+    return backend< Graph, WeightMap >(g, edge_weight, std::move(config));
+}
 
 /***********************************************************
  * Use Cases                                               *

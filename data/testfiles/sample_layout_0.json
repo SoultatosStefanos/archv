@@ -7,7 +7,6 @@
 	[
 		"Cube"
 	],
-	"scales" : { "low" : 0, "high" : 2000 },
 	"layout" : "Gursoy Atun",
 	"topology" : "Cube",
 	"scale" : 100 

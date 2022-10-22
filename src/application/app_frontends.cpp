@@ -234,8 +234,6 @@ auto app::install_gui_plugins() -> void
               return res;
           }() });
 
-    gui::plugins::install_scales(m_layout_config.scales);
-
     gui::plugins::install_factors(
         [this]()
         {

@@ -26,6 +26,91 @@ using mock_layout_slot = testing::NiceMock<
 using mock_topology_slot = testing::NiceMock<
     testing::MockFunction< void(const backend::topology_type&) > >;
 
+TEST(
+    when_making_a_layout_backend,
+    given_an_unknown_layout_results_to_unknown_plugin_error)
+{
+    auto&& config = layout::backend_config {
+        .layouts = { "aaa" },
+        .topologies = { std::string(layout::cube_id) },
+        .layout = std::string(layout::gursoy_atun_id),
+        .topology = std::string(layout::cube_id),
+        .scale = 2
+    };
+
+    ASSERT_THROW(
+        layout::make_backend(graph(), weight_map(), std::move(config)),
+        layout::unknown_plugin);
+}
+
+TEST(
+    when_making_a_layout_backend,
+    given_an_unknown_topology_results_to_unknown_plugin_error)
+{
+    auto&& config = layout::backend_config {
+        .layouts = { std::string(layout::gursoy_atun_id) },
+        .topologies = { "ooo" },
+        .layout = std::string(layout::gursoy_atun_id),
+        .topology = std::string(layout::cube_id),
+        .scale = 2
+    };
+
+    ASSERT_THROW(
+        layout::make_backend(graph(), weight_map(), std::move(config)),
+        layout::unknown_plugin);
+}
+
+TEST(
+    when_making_a_layout_backend,
+    given_an_unlisted_layout_results_to_unlisted_default_error)
+{
+    auto&& config = layout::backend_config {
+        .layouts = { std::string(layout::gursoy_atun_id) },
+        .topologies = { std::string(layout::cube_id) },
+        .layout = "aaa",
+        .topology = std::string(layout::cube_id),
+        .scale = 2
+    };
+
+    ASSERT_THROW(
+        layout::make_backend(graph(), weight_map(), std::move(config)),
+        layout::unlisted_default);
+}
+
+TEST(
+    when_making_a_layout_backend,
+    given_an_unlisted_topology_results_to_unlisted_default_error)
+{
+    auto&& config = layout::backend_config {
+        .layouts = { std::string(layout::gursoy_atun_id) },
+        .topologies = { std::string(layout::cube_id) },
+        .layout = std::string(layout::gursoy_atun_id),
+        .topology = std::string(layout::sphere_id),
+        .scale = 2
+    };
+
+    ASSERT_THROW(
+        layout::make_backend(graph(), weight_map(), std::move(config)),
+        layout::unlisted_default);
+}
+
+TEST(
+    when_making_a_layout_backend,
+    given_a_negative_scale_results_to_negative_scale_error)
+{
+    auto&& config = layout::backend_config {
+        .layouts = { std::string(layout::gursoy_atun_id) },
+        .topologies = { std::string(layout::cube_id) },
+        .layout = std::string(layout::gursoy_atun_id),
+        .topology = std::string(layout::cube_id),
+        .scale = -2
+    };
+
+    ASSERT_THROW(
+        layout::make_backend(graph(), weight_map(), std::move(config)),
+        layout::negative_scale);
+}
+
 class given_a_layout_backend : public testing::Test
 {
 public:
@@ -38,10 +123,14 @@ public:
         inst = std::make_unique< backend >(
             g,
             weight_map(),
-            backend::config_data_type { .layout = std::string(initial_layout),
-                                        .topology
-                                        = std::string(initial_topology),
-                                        .scale = initial_scale });
+            backend::config_data_type {
+                .layouts = { std::cbegin(layout::layout_ids),
+                             std::cend(layout::layout_ids) },
+                .topologies = { std::cbegin(layout::topology_ids),
+                                std::cend(layout::topology_ids) },
+                .layout = std::string(initial_layout),
+                .topology = std::string(initial_topology),
+                .scale = initial_scale });
     }
 
 protected:
@@ -51,6 +140,33 @@ protected:
     mock_layout_slot mock_layout_observer;
     mock_topology_slot mock_space_observer;
 };
+
+TEST_F(given_a_layout_backend, updating_with_unlisted_layout_results_to_noop)
+{
+    layout::update_layout(*inst, "aaaaa");
+
+    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
+    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(inst->get_topology().scale(), initial_scale);
+}
+
+TEST_F(given_a_layout_backend, updating_with_unlisted_topology_results_to_noop)
+{
+    layout::update_topology(*inst, "aaaaa");
+
+    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
+    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(inst->get_topology().scale(), initial_scale);
+}
+
+TEST_F(given_a_layout_backend, updating_with_negative_scale_results_to_noop)
+{
+    layout::update_scale(*inst, -2);
+
+    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
+    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(inst->get_topology().scale(), initial_scale);
+}
 
 TEST_F(given_a_layout_backend, initially_has_defaulted_entities)
 {

@@ -96,6 +96,8 @@
 	+ [ ] Camera speed
 
 
+## User input sanitizing
+
 	
 # 08 / 07 / 2022
 

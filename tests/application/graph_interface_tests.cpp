@@ -65,7 +65,6 @@ inline auto make_layout_cfg()
 {
     return layout_config_t { .layouts = { std::string(layout_type) },
                              .topologies = { std::string(topology_type) },
-                             .scales = { 0, 2000 },
                              .layout = std::string(layout_type),
                              .topology = std::string(topology_type),
                              .scale = scale };
