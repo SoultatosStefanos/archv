@@ -287,6 +287,24 @@ inline auto make_backend(
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
+inline auto get_layout_id(const backend< Graph, WeightMap >& b)
+{
+    return identify(b.get_layout());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto get_topology_id(const backend< Graph, WeightMap >& b)
+{
+    return identify(b.get_topology());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto get_scale(const backend< Graph, WeightMap >& b)
+{
+    return b.get_topology().scale();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto update_layout(
     backend< Graph, WeightMap >& b,
     typename backend< Graph, WeightMap >::layout_id_type id)
