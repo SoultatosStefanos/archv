@@ -1,8 +1,8 @@
 // Contains a function for creating a dynamic managed graph weight map.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_WEIGHT_MAP_HPP
-#define DEPENDENCIES_WEIGHT_MAP_HPP
+#ifndef WEIGHTS_WEIGHT_MAP_HPP
+#define WEIGHTS_WEIGHT_MAP_HPP
 
 #include "backend.hpp"
 #include "detail/weight_map.hpp"
@@ -10,7 +10,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/property_map/function_property_map.hpp>
 
-namespace dependencies
+namespace weights
 {
 
 // A runtime managed edge-weight property map from a dependencies backend.
@@ -40,6 +40,6 @@ inline auto make_weight_map(const backend& b, DependencyMap edge_dependency)
         detail::weight_dispatcher< Graph, DependencyMap >(b, edge_dependency));
 }
 
-} // namespace dependencies
+} // namespace weights
 
-#endif // DEPENDENCIES_WEIGHT_MAP_HPP
+#endif // WEIGHTS_WEIGHT_MAP_HPP

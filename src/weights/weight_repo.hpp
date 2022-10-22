@@ -1,15 +1,15 @@
 // Contains a weight_type repository, which allowes for dynamic dependencies
 // scoring. Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_WEIGHT_REPO_HPP
-#define DEPENDENCIES_WEIGHT_REPO_HPP
+#ifndef WEIGHTS_WEIGHT_REPO_HPP
+#define WEIGHTS_WEIGHT_REPO_HPP
 
 #include "misc/heterogeneous.hpp"
 
 #include <string>
 #include <string_view>
 
-namespace dependencies
+namespace weights
 {
 
 // Manages a table of strings, provides an interface of string views.
@@ -42,6 +42,6 @@ private:
     hash_table m_map;
 };
 
-} // namespace dependencies
+} // namespace weights
 
-#endif // DEPENDENCIES_WEIGHT_REPO_HPP
+#endif // WEIGHTS_WEIGHT_REPO_HPP

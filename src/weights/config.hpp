@@ -1,22 +1,20 @@
 // Contains a configuration module for the architecture dependencies.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_CONFIG_HPP
-#define DEPENDENCIES_CONFIG_HPP
+#ifndef WEIGHTS_CONFIG_HPP
+#define WEIGHTS_CONFIG_HPP
 
 #include "backend.hpp"
 
 #include <jsoncpp/json/json.h>
-#include <string>
-#include <unordered_map>
 
-namespace dependencies
+namespace weights
 {
 
 using config_data = backend::config_data_type;
 
 auto deserialize(const Json::Value& root) -> config_data;
 
-} // namespace dependencies
+} // namespace weights
 
-#endif // DEPENDENCIES_CONFIG_HPP
+#endif // WEIGHTS_CONFIG_HPP

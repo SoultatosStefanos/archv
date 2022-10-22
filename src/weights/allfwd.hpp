@@ -1,10 +1,10 @@
 // Distributes all types from this directory fwd declared.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_ALLFWD_HPP
-#define DEPENDENCIES_ALLFWD_HPP
+#ifndef WEIGHTS_ALLFWD_HPP
+#define WEIGHTS_ALLFWD_HPP
 
-namespace dependencies
+namespace weights
 {
 
 class backend;
@@ -17,4 +17,4 @@ struct config_data;
 
 } // namespace dependencies
 
-#endif // DEPENDENCIES_ALLFWD_HPP
+#endif // WEIGHTS_ALLFWD_HPP

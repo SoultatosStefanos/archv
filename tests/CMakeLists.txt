@@ -12,10 +12,8 @@ add_executable(${TESTS} ${FILES})
 target_link_libraries(${TESTS} PRIVATE ${PROJECT_LIB} ${TESTS_LIBS})
 
 set(SUBDIRECTORIES
-  application
   architecture
   degrees
-  dependencies
   gui
   layout
   progress
@@ -24,6 +22,7 @@ set(SUBDIRECTORIES
   ui
   undo_redo
   utility
+  weights
 )
 
 foreach(VAR ${SUBDIRECTORIES})

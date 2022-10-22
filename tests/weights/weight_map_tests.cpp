@@ -1,4 +1,4 @@
-#include "dependencies/weight_map.hpp"
+#include "weights/weight_map.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/property_maps/constant_property_map.hpp>
@@ -12,7 +12,7 @@ namespace
 {
 
 using namespace testing;
-using namespace dependencies;
+using namespace weights;
 
 using graph = boost::adjacency_list<
     boost::vecS,
@@ -26,7 +26,7 @@ using dependency_type = std::string;
 using dependency_map
     = boost::constant_property_map< graph::edge_descriptor, dependency_type >;
 
-inline auto initial_config() -> dependencies::backend::config_data_type
+inline auto initial_config() -> weights::backend::config_data_type
 {
     return { { "Inheritance", 100 } };
 }
@@ -41,11 +41,11 @@ public:
         edge = boost::add_edge(boost::add_vertex(*g), boost::add_vertex(*g), *g)
                    .first;
 
-        backend = std::make_unique< dependencies::backend >(initial_config());
+        backend = std::make_unique< weights::backend >(initial_config());
     }
 
 protected:
-    std::unique_ptr< dependencies::backend > backend;
+    std::unique_ptr< weights::backend > backend;
     std::unique_ptr< graph > g;
     graph::edge_descriptor edge;
 };

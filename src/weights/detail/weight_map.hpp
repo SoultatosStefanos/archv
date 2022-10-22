@@ -1,14 +1,14 @@
 // Contains a private subcomponent of the weight_map.hpp module.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
-#define DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
+#ifndef WEIGHTS_DETAIL_WEIGHT_MAP_HPP
+#define WEIGHTS_DETAIL_WEIGHT_MAP_HPP
 
-#include "dependencies/backend.hpp"
+#include "weights/backend.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 
-namespace dependencies::detail
+namespace weights::detail
 {
 
 template < typename Graph, typename DependencyMap >
@@ -37,6 +37,6 @@ private:
     dependency_map m_edge_dependency;
 };
 
-} // namespace dependencies::detail
+} // namespace weights::detail
 
-#endif // DEPENDENCIES_DETAIL_WEIGHT_MAP_HPP
+#endif // WEIGHTS_DETAIL_WEIGHT_MAP_HPP

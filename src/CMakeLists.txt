@@ -1,10 +1,8 @@
 set(FILES)
 set(SUBDIRECTORIES
-	application
 	architecture
 	config
 	degrees
-	dependencies
 	gui
 	layout
 	misc
@@ -14,6 +12,7 @@ set(SUBDIRECTORIES
 	scaling
 	ui
 	undo_redo
+	weights
 )
 
 foreach(VAR ${SUBDIRECTORIES})

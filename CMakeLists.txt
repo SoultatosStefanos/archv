@@ -78,11 +78,11 @@ set(THIRD_PARTY_INCLUDE_DIRS
 include_directories(${THIRD_PARTY_INCLUDE_DIRS})
 
 # setup driver target
-set(APP_FILES src/application/main.cpp)
+# set(APP_FILES src/application/main.cpp)
 
-if(APP_FILES)
-  add_executable(${PROJECT_APP} ${APP_FILES})
+# if(APP_FILES)
+# add_executable(${PROJECT_APP} ${APP_FILES})
 
-  # link driver with public library
-  target_link_libraries(${PROJECT_APP} PUBLIC ${PROJECT_LIB})
-endif()
+# # link driver with public library
+# target_link_libraries(${PROJECT_APP} PUBLIC ${PROJECT_LIB})
+# endif()

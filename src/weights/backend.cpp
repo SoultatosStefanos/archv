@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace dependencies
+namespace weights
 {
 
 backend::backend(config_data_type config)
@@ -26,4 +26,4 @@ auto restore_defaults(backend& b) -> void
         b.update_weight(dependency, weight);
 }
 
-} // namespace dependencies
+} // namespace weights

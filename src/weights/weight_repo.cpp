@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace dependencies
+namespace weights
 {
 
 weight_repo::weight_repo(hash_table table) : m_map { std::move(table) }
@@ -24,4 +24,4 @@ auto weight_repo::set_weight(dependency_type dependency, weight_type w) -> void
     assert(get_weight(dependency) == w);
 }
 
-} // namespace dependencies
+} // namespace weights

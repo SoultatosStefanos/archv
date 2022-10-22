@@ -1,27 +1,27 @@
 #include "../utility/config.hpp"
-#include "dependencies/config.hpp"
+#include "weights/config.hpp"
 
 #include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-using namespace dependencies;
+using namespace weights;
 using namespace utility;
 using namespace testing;
 
 namespace
 {
 
-auto make_sample_dependencies_0()
+auto make_sample_weights_0()
 {
     return config_data { { "strong", 10 }, { "weak", 2 } };
 }
 
-TEST(dependencies_deserialization, sample_dependencies_0)
+TEST(weights_deserialization, sample_weights_0)
 {
     const auto root
-        = read_json_root("../../data/testfiles/sample_dependencies_0.json");
-    const auto expected = make_sample_dependencies_0();
+        = read_json_root("../../data/testfiles/sample_weights_0.json");
+    const auto expected = make_sample_weights_0();
 
     const auto actual = deserialize(root);
 

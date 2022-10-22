@@ -2,7 +2,7 @@
 
 #include <boost/log/trivial.hpp>
 
-namespace dependencies
+namespace weights
 {
 
 auto deserialize(const Json::Value& root) -> config_data
@@ -29,4 +29,4 @@ auto deserialize(const Json::Value& root) -> config_data
     return res;
 }
 
-} // namespace dependencies
+} // namespace weights

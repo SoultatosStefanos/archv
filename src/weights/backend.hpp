@@ -1,15 +1,15 @@
 // Contains an edge weight (dependency) manager backend class.
 // Soultatos Stefanos 2022
 
-#ifndef DEPENDENCIES_BACKEND_HPP
-#define DEPENDENCIES_BACKEND_HPP
+#ifndef WEIGHTS_BACKEND_HPP
+#define WEIGHTS_BACKEND_HPP
 
 #include "weight_repo.hpp"
 
 #include <boost/signals2/signal.hpp>
 #include <string>
 
-namespace dependencies
+namespace weights
 {
 
 /***********************************************************
@@ -64,6 +64,6 @@ inline auto update_weight(
 // O(n)
 auto restore_defaults(backend& b) -> void;
 
-} // namespace dependencies
+} // namespace weights
 
-#endif // DEPENDENCIES_BACKEND_HPP
+#endif // WEIGHTS_BACKEND_HPP
