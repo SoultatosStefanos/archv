@@ -86,40 +86,91 @@ auto gui::render() const -> void
 {
     if (ImGui::BeginMainMenuBar())
     {
-        get_file_browser().render();
-
-        render_file_menu();
-        get_editor().render();
-        get_configurator().render();
-        render_help_menu();
+        render_editor();
+        render_configurator();
+        render_helper();
 
         ImGui::EndMainMenuBar();
     }
 }
 
-// TODO
-auto gui::render_file_menu() const -> void
+auto gui::render_editor() const -> void
 {
-    if (ImGui::BeginMenu("File"))
+    if (ImGui::BeginMenu("Edit"))
     {
-        if (ImGui::MenuItem("Open", "Ctrl+O"))
-            m_file_browser.open();
-
-        if (ImGui::BeginMenu("Open Recent"))
-        {
-            ImGui::EndMenu();
-        }
+        get_cmds_editor().render();
 
         ImGui::Separator();
 
-        ImGui::MenuItem("Quit", "Alt+F4");
+        if (ImGui::MenuItem("Weights", "", m_weights_open, true))
+            m_weights_open = m_weights_open ? false : true;
+
+        if (ImGui::MenuItem("Layout", "", m_layout_open, true))
+            m_layout_open = m_layout_open ? false : true;
+
+        if (ImGui::MenuItem("Scaling", "", m_scaling_open, true))
+            m_scaling_open = m_scaling_open ? false : true;
+
+        ImGui::EndMenu();
+    }
+
+    if (m_weights_open)
+        get_weights_editor().render();
+
+    if (m_layout_open)
+        get_layout_editor().render();
+
+    if (m_scaling_open)
+        get_scaling_editor().render();
+}
+
+auto gui::render_configurator() const -> void
+{
+    if (ImGui::BeginMenu("Configuration"))
+    {
+        render_rendering_configurator();
+        render_gui_configurator();
 
         ImGui::EndMenu();
     }
 }
 
+auto gui::render_rendering_configurator() const -> void
+{
+    if (ImGui::BeginMenu("Rendering"))
+    {
+        if (ImGui::BeginTabBar("##rendering tabs", ImGuiTabBarFlags_None))
+        {
+            if (ImGui::BeginTabItem("Background"))
+            {
+                get_bkg_configurator().render();
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem("Graph"))
+            {
+                get_graph_configurator().render();
+                ImGui::EndTabItem();
+            }
+
+            ImGui::EndTabBar();
+        }
+
+        ImGui::EndMenu();
+    }
+}
+
+auto gui::render_gui_configurator() const -> void
+{
+    if (ImGui::BeginMenu("GUI"))
+    {
+        get_gui_configurator().render();
+        ImGui::EndMenu();
+    }
+}
+
 // TODO
-auto gui::render_help_menu() const -> void
+auto gui::render_helper() const -> void
 {
     if (ImGui::BeginMenu("Help"))
     {

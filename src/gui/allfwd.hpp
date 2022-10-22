@@ -8,15 +8,13 @@ namespace gui
 {
 
 class background_configurator;
-class configurator;
-class dependencies_editor;
-class editor;
+class weights_editor;
+class commands_editor;
 class graph_configurator;
 class gui_configurator;
 class gui;
 class layout_editor;
 class scaling_editor;
-class file_browser;
 
 } // namespace gui
 

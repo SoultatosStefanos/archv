@@ -1,8 +1,8 @@
 // Contains a class responsible for the edge weights editing gui.
 // Soultatos Stefanos 2022
 
-#ifndef GUI_DEPENDENCIES_EDITOR_HPP
-#define GUI_DEPENDENCIES_EDITOR_HPP
+#ifndef GUI_WEIGHTS_EDITOR_HPP
+#define GUI_WEIGHTS_EDITOR_HPP
 
 #include <boost/signals2/signal.hpp>
 #include <functional>
@@ -13,7 +13,7 @@
 namespace gui
 {
 
-class dependencies_editor
+class weights_editor
 {
 public:
     using dependency_type = std::string_view;
@@ -32,7 +32,7 @@ public:
     using restore_slot = restore_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    dependencies_editor();
+    weights_editor();
 
     auto render() const -> void;
 
@@ -65,4 +65,4 @@ private:
 
 } // namespace gui
 
-#endif // GUI_DEPENDENCIES_EDITOR_HPP
+#endif // GUI_WEIGHTS_EDITOR_HPP

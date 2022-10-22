@@ -66,8 +66,7 @@ public:
     auto connect_to_diffuse_color(const rgba_slot& f) -> connection;
     auto connect_to_specular_color(const rgba_slot& f) -> connection;
     auto connect_to_cam_far_clip_distance(const distance_slot& f) -> connection;
-    auto connect_to_cam_near_clip_distance(const distance_slot& f)
-        -> connection;
+    auto connect_to_cam_near_clip_distance(const distance_slot&) -> connection;
     auto connect_to_apply(const apply_slot& f) -> connection;
     auto connect_to_preview(const preview_slot& f) -> connection;
     auto connect_to_cancel(const cancel_slot& f) -> connection;

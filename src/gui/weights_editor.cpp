@@ -1,4 +1,4 @@
-#include "dependencies_editor.hpp"
+#include "weights_editor.hpp"
 
 #include "detail/utility.hpp"
 #include "plugins.hpp"
@@ -10,7 +10,7 @@
 namespace gui
 {
 
-dependencies_editor::dependencies_editor()
+weights_editor::weights_editor()
 {
     detail::to_char_view(
         std::ranges::views::all(plugins::dependencies()),
@@ -27,14 +27,14 @@ namespace
 
 } // namespace
 
-auto dependencies_editor::render() const -> void
+auto weights_editor::render() const -> void
 {
     render_dependencies();
     spaces();
     render_restore_button();
 }
 
-auto dependencies_editor::render_dependencies() const -> void
+auto weights_editor::render_dependencies() const -> void
 {
     for (const auto* dependency : dependencies())
     {
@@ -54,43 +54,42 @@ auto dependencies_editor::render_dependencies() const -> void
     }
 }
 
-auto dependencies_editor::render_restore_button() const -> void
+auto weights_editor::render_restore_button() const -> void
 {
     if (ImGui::Button("Restore Defaults"))
         emit_restore();
 }
 
-auto dependencies_editor::weight(dependency_type d) const -> weight_type
+auto weights_editor::weight(dependency_type d) const -> weight_type
 {
     assert(m_weight);
     return m_weight(d);
 }
 
-auto dependencies_editor::set_weights(weight_accessor f) -> void
+auto weights_editor::set_weights(weight_accessor f) -> void
 {
     assert(f);
     m_weight = std::move(f);
 }
 
-auto dependencies_editor::connect_to_dependency(const dependency_slot& f)
+auto weights_editor::connect_to_dependency(const dependency_slot& f)
     -> connection
 {
     return m_dependency_sig.connect(f);
 }
 
-auto dependencies_editor::connect_to_restore(const restore_slot& f)
-    -> connection
+auto weights_editor::connect_to_restore(const restore_slot& f) -> connection
 {
     return m_restore_sig.connect(f);
 }
 
-auto dependencies_editor::emit_dependency(
-    dependency_type val, weight_type w) const -> void
+auto weights_editor::emit_dependency(dependency_type val, weight_type w) const
+    -> void
 {
     m_dependency_sig(val, w);
 }
 
-auto dependencies_editor::emit_restore() const -> void
+auto weights_editor::emit_restore() const -> void
 {
     m_restore_sig();
 }
