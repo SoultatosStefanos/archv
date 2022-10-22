@@ -1,5 +1,6 @@
 #include "backend.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace weights
@@ -13,10 +14,13 @@ backend::backend(config_data_type config)
 auto backend::update_weight(dependency_type dependency, weight_type weight)
     -> void
 {
-    assert(config_data().contains(dependency));
+    if (!config_data().contains(dependency))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid weight update";
+        return;
+    }
 
     m_repo.set_weight(dependency, weight);
-
     m_signal(dependency, weight);
 }
 

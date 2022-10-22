@@ -32,6 +32,16 @@ protected:
     nice_mock_slot mock;
 };
 
+TEST_F(given_a_weights_backend, updating_unkown_weight_results_to_noop)
+{
+    weights::update_weight(*backend, "aaaa", 300);
+
+    ASSERT_TRUE(std::equal(
+        std::cbegin(backend->config_data()),
+        std::cend(backend->config_data()),
+        std::cbegin(backend->get_weight_repo())));
+}
+
 TEST_F(given_a_weights_backend, initially_is_configured_via_config)
 {
     ASSERT_TRUE(std::equal(
