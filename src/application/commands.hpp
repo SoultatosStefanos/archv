@@ -5,25 +5,26 @@
 #ifndef APPLICATION_COMMANDS_HPP
 #define APPLICATION_COMMANDS_HPP
 
+#include "architecture/graph_interface.hpp"
 #include "scaling/backend.hpp"
-#include "typedefs.hpp"
 #include "undo_redo/allfwd.hpp"
 
-namespace application
+namespace application::commands
 {
 
 /***********************************************************
- * Dependencies                                            *
+ * Weights                                                 *
  ***********************************************************/
 
 auto update_dependency_weight(
     undo_redo::command_history& cmds,
-    dependencies::backend& backend,
-    dependencies::backend::dependency_type dependency,
-    dependencies::backend::weight_type weight) -> void;
+    architecture::graph_interface::weights_backend_type& backend,
+    architecture::graph_interface::dependency_type dependency,
+    architecture::graph_interface::weight_type weight) -> void;
 
-auto restore_dependencies_defaults(
-    undo_redo::command_history& cmds, dependencies::backend& backend) -> void;
+auto restore_weights(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::weights_backend_type& backend) -> void;
 
 /***********************************************************
  * Layout                                                  *
@@ -31,21 +32,22 @@ auto restore_dependencies_defaults(
 
 auto update_layout(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::layout_id_type layout_id) -> void;
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::layout_id_type layout_id) -> void;
 
 auto update_layout_topology(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::topology_id_type topology_id) -> void;
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::topology_id_type topology_id) -> void;
 
 auto update_layout_scale(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::scale_type scale) -> void;
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::scale_type scale) -> void;
 
-auto restore_layout_defaults(
-    undo_redo::command_history& cmds, layout_backend& backend) -> void;
+auto restore_layout(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::layout_backend_type& backend) -> void;
 
 /***********************************************************
  * Scaling                                                 *
@@ -53,37 +55,38 @@ auto restore_layout_defaults(
 
 auto update_scaling_factor_dims(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::dims_type dims) -> void;
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_dims_type dims) -> void;
 
 auto update_scaling_factor_baseline(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::baseline_type baseline) -> void;
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_baseline_type baseline) -> void;
 
 auto update_scaling_factor_enablement(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    bool enabled) -> void;
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_enabled_type enabled) -> void;
 
 auto update_scaling_factor_min_ratio(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::ratio_type ratio) -> void;
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_ratio_type ratio) -> void;
 
 auto update_scaling_factor_max_ratio(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::ratio_type ratio) -> void;
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_ratio_type ratio) -> void;
 
-auto restore_scaling_defaults(
-    undo_redo::command_history& cmds, scaling::backend& b) -> void;
+auto restore_scaling(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::scaling_backend_type& b) -> void;
 
-} // namespace application
+} // namespace application::commands
 
 #endif // APPLICATION_COMMANDS_HPP

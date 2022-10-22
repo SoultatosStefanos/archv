@@ -4,8 +4,10 @@
 
 #include <memory>
 
-namespace application
+namespace application::commands
 {
+
+using architecture::graph_interface;
 
 /***********************************************************
  * Dependencies                                            *
@@ -15,9 +17,9 @@ namespace
 {
     struct update_dependency_cmd : undo_redo::command
     {
-        using backend_type = dependencies::backend;
-        using dependency_type = backend_type::dependency_type;
-        using weight_type = backend_type::weight_type;
+        using backend_type = graph_interface::weights_backend_type;
+        using dependency_type = graph_interface::dependency_type;
+        using weight_type = graph_interface::weight_type;
 
         backend_type& backend;
         dependency_type dependency;
@@ -33,12 +35,12 @@ namespace
         auto execute() -> void override
         {
             old_weight = backend.get_weight_repo().get_weight(dependency);
-            dependencies::update_weight(backend, dependency, new_weight);
+            weights::update_weight(backend, dependency, new_weight);
         }
 
         auto undo() -> void override
         {
-            dependencies::update_weight(backend, dependency, old_weight);
+            weights::update_weight(backend, dependency, old_weight);
         }
 
         auto redo() -> void override { execute(); }
@@ -46,29 +48,26 @@ namespace
 
     struct restore_dependencies_defaults_cmd : undo_redo::command
     {
-        using backend_type = dependencies::backend;
+        using backend_type = graph_interface::weights_backend_type;
         using weight_repo_type = backend_type::weight_repo_type;
 
         backend_type& backend;
         weight_repo_type old_repo;
 
-        restore_dependencies_defaults_cmd(dependencies::backend& b)
-        : backend { b }
-        {
-        }
+        restore_dependencies_defaults_cmd(backend_type& b) : backend { b } { }
 
         ~restore_dependencies_defaults_cmd() override = default;
 
         auto execute() -> void override
         {
             old_repo = backend.get_weight_repo();
-            dependencies::restore_defaults(backend);
+            weights::restore_defaults(backend);
         }
 
         auto undo() -> void override
         {
             for (const auto& [dependency, weight] : old_repo)
-                dependencies::update_weight(backend, dependency, weight);
+                weights::update_weight(backend, dependency, weight);
         }
 
         auto redo() -> void override { execute(); }
@@ -78,16 +77,17 @@ namespace
 
 auto update_dependency_weight(
     undo_redo::command_history& cmds,
-    dependencies::backend& backend,
-    dependencies::backend::dependency_type dependency,
-    dependencies::backend::weight_type weight) -> void
+    architecture::graph_interface::weights_backend_type& backend,
+    architecture::graph_interface::dependency_type dependency,
+    architecture::graph_interface::weight_type weight) -> void
 {
     cmds.execute(
         std::make_unique< update_dependency_cmd >(backend, dependency, weight));
 }
 
-auto restore_dependencies_defaults(
-    undo_redo::command_history& cmds, dependencies::backend& backend) -> void
+auto restore_weights(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::weights_backend_type& backend) -> void
 {
     cmds.execute(
         std::make_unique< restore_dependencies_defaults_cmd >(backend));
@@ -101,12 +101,13 @@ namespace
 {
     struct update_layout_cmd : undo_redo::command
     {
-        using layout_id_type = layout_backend::layout_id_type;
+        using backend_type = graph_interface::layout_backend_type;
+        using layout_id_type = graph_interface::layout_id_type;
 
-        layout_backend& backend;
+        backend_type& backend;
         layout_id_type new_id, old_id;
 
-        update_layout_cmd(layout_backend& b, layout_id_type id)
+        update_layout_cmd(backend_type& b, layout_id_type id)
         : backend { b }, new_id { id }
         {
         }
@@ -115,7 +116,7 @@ namespace
 
         auto execute() -> void override
         {
-            old_id = layout::identify(backend.get_layout());
+            old_id = layout::get_layout_id(backend);
             layout::update_layout(backend, new_id);
         }
 
@@ -126,12 +127,13 @@ namespace
 
     struct update_topology_cmd : undo_redo::command
     {
-        using topology_id_type = layout_backend::topology_id_type;
+        using backend_type = graph_interface::layout_backend_type;
+        using topology_id_type = backend_type::topology_id_type;
 
-        layout_backend& backend;
+        backend_type& backend;
         topology_id_type new_id, old_id;
 
-        update_topology_cmd(layout_backend& b, topology_id_type id)
+        update_topology_cmd(backend_type& b, topology_id_type id)
         : backend { b }, new_id { id }
         {
         }
@@ -140,7 +142,7 @@ namespace
 
         auto execute() -> void override
         {
-            old_id = layout::identify(backend.get_topology());
+            old_id = layout::get_topology_id(backend);
             layout::update_topology(backend, new_id);
         }
 
@@ -154,12 +156,13 @@ namespace
 
     struct update_layout_scale_cmd : undo_redo::command
     {
-        using scale_type = layout_backend::scale_type;
+        using backend_type = graph_interface::layout_backend_type;
+        using scale_type = backend_type::scale_type;
 
-        layout_backend& backend;
+        backend_type& backend;
         scale_type old_scale, new_scale;
 
-        update_layout_scale_cmd(layout_backend& b, scale_type s)
+        update_layout_scale_cmd(backend_type& b, scale_type s)
         : backend { b }, new_scale { s }
         {
         }
@@ -168,7 +171,7 @@ namespace
 
         auto execute() -> void override
         {
-            old_scale = backend.get_topology().scale();
+            old_scale = layout::get_scale(backend);
             layout::update_scale(backend, new_scale);
         }
 
@@ -182,24 +185,25 @@ namespace
 
     struct restore_layout_defaults_cmd : undo_redo::command
     {
-        using layout_id_type = layout_backend::layout_id_type;
-        using topology_id_type = layout_backend::topology_id_type;
-        using scale_type = layout_backend::scale_type;
+        using backend_type = graph_interface::layout_backend_type;
+        using layout_id_type = backend_type::layout_id_type;
+        using topology_id_type = backend_type::topology_id_type;
+        using scale_type = backend_type::scale_type;
 
-        layout_backend& backend;
+        backend_type& backend;
         layout_id_type old_layout;
         topology_id_type old_topology;
         scale_type old_scale;
 
-        restore_layout_defaults_cmd(layout_backend& b) : backend { b } { }
+        restore_layout_defaults_cmd(backend_type& b) : backend { b } { }
 
         ~restore_layout_defaults_cmd() override = default;
 
         auto execute() -> void override
         {
-            old_layout = layout::identify(backend.get_layout());
-            old_topology = layout::identify(backend.get_topology());
-            old_scale = backend.get_topology().scale();
+            old_layout = layout::get_layout_id(backend);
+            old_topology = layout::get_topology_id(backend);
+            old_scale = layout::get_scale(backend);
             layout::restore_defaults(backend);
         }
 
@@ -215,30 +219,31 @@ namespace
 
 auto update_layout(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::layout_id_type layout_id) -> void
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::layout_id_type layout_id) -> void
 {
     cmds.execute(std::make_unique< update_layout_cmd >(backend, layout_id));
 }
 
 auto update_layout_topology(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::topology_id_type topology_id) -> void
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::topology_id_type topology_id) -> void
 {
     cmds.execute(std::make_unique< update_topology_cmd >(backend, topology_id));
 }
 
 auto update_layout_scale(
     undo_redo::command_history& cmds,
-    layout_backend& backend,
-    layout_backend::scale_type scale) -> void
+    architecture::graph_interface::layout_backend_type& backend,
+    architecture::graph_interface::scale_type scale) -> void
 {
     cmds.execute(std::make_unique< update_layout_scale_cmd >(backend, scale));
 }
 
-auto restore_layout_defaults(
-    undo_redo::command_history& cmds, layout_backend& backend) -> void
+auto restore_layout(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::layout_backend_type& backend) -> void
 {
     cmds.execute(std::make_unique< restore_layout_defaults_cmd >(backend));
 }
@@ -247,13 +252,11 @@ auto restore_layout_defaults(
  * Scaling                                                 *
  ***********************************************************/
 
-// TODO
-
 namespace
 {
     struct update_scaling_factor_dims_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using tag_type = backend_type::tag_type;
         using dims_type = backend_type::dims_type;
 
@@ -286,7 +289,7 @@ namespace
 
     struct update_scaling_factor_baseline_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using tag_type = backend_type::tag_type;
         using baseline_type = backend_type::baseline_type;
 
@@ -319,7 +322,7 @@ namespace
 
     struct update_scaling_factor_enablement_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using tag_type = backend_type::tag_type;
 
         backend_type& backend;
@@ -351,7 +354,7 @@ namespace
 
     struct update_scaling_factor_min_ratio_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using tag_type = backend_type::tag_type;
         using ratio_type = backend_type::ratio_type;
 
@@ -384,7 +387,7 @@ namespace
 
     struct update_scaling_factor_max_ratio_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using tag_type = backend_type::tag_type;
         using ratio_type = backend_type::ratio_type;
 
@@ -417,7 +420,7 @@ namespace
 
     struct restore_scaling_defaults_cmd : undo_redo::command
     {
-        using backend_type = scaling::backend;
+        using backend_type = graph_interface::scaling_backend_type;
         using repo_type = scaling::factor_repo;
 
         backend_type& backend;
@@ -453,9 +456,9 @@ namespace
 
 auto update_scaling_factor_dims(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::dims_type dims) -> void
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_dims_type dims) -> void
 {
     cmds.execute(
         std::make_unique< update_scaling_factor_dims_cmd >(b, tag, dims));
@@ -463,9 +466,9 @@ auto update_scaling_factor_dims(
 
 auto update_scaling_factor_baseline(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::baseline_type baseline) -> void
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_baseline_type baseline) -> void
 {
     cmds.execute(std::make_unique< update_scaling_factor_baseline_cmd >(
         b, tag, baseline));
@@ -473,9 +476,9 @@ auto update_scaling_factor_baseline(
 
 auto update_scaling_factor_enablement(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    bool enabled) -> void
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_enabled_type enabled) -> void
 {
     cmds.execute(std::make_unique< update_scaling_factor_enablement_cmd >(
         b, tag, enabled));
@@ -483,9 +486,9 @@ auto update_scaling_factor_enablement(
 
 auto update_scaling_factor_min_ratio(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::ratio_type ratio) -> void
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_ratio_type ratio) -> void
 {
     cmds.execute(
         std::make_unique< update_scaling_factor_min_ratio_cmd >(b, tag, ratio));
@@ -493,16 +496,17 @@ auto update_scaling_factor_min_ratio(
 
 auto update_scaling_factor_max_ratio(
     undo_redo::command_history& cmds,
-    scaling::backend& b,
-    scaling::backend::tag_type tag,
-    scaling::backend::ratio_type ratio) -> void
+    architecture::graph_interface::scaling_backend_type& b,
+    architecture::graph_interface::scaling_tag_type tag,
+    architecture::graph_interface::scaling_ratio_type ratio) -> void
 {
     cmds.execute(
         std::make_unique< update_scaling_factor_max_ratio_cmd >(b, tag, ratio));
 }
 
 auto restore_scaling_defaults(
-    undo_redo::command_history& cmds, scaling::backend& b) -> void
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::scaling_backend_type& b) -> void
 {
     cmds.execute(std::make_unique< restore_scaling_defaults_cmd >(b));
 }
