@@ -2,12 +2,9 @@ set(FILES)
 set(SUBDIRECTORIES
 	architecture
 	config
-	degrees
 	gui
 	layout
 	misc
-	multithreading
-	progress
 	rendering
 	scaling
 	ui
