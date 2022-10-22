@@ -1,7 +1,8 @@
 set(FILES
 	config.cpp
-	symbol_table.cpp
+	graph_interface.cpp
 	metadata.cpp
+	symbol_table.cpp
 )
 set(SUBDIRECTORIES)
 

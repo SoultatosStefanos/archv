@@ -1,21 +1,17 @@
-#include "application/graph_interface.hpp"
+#include "architecture/graph_interface.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 
 using namespace testing;
-using namespace application;
+using namespace architecture;
 
 namespace
 {
 
-using symbol_table_t = graph_interface::symbol_table_type;
-using structure_t = symbol_table_t::value_type;
-using graph_t = graph_interface::graph_type;
-using metadata_counter_t = graph_interface::metadata_counter_type;
-using dependencies_backend_t = graph_interface::dependencies_backend_type;
-using dependencies_config_t = dependencies_backend_t::config_data_type;
+using weights_backend_t = graph_interface::weights_backend_type;
+using weights_config_t = weights_backend_t::config_data_type;
 using layout_backend_t = graph_interface::layout_backend_type;
 using layout_config_t = layout_backend_t::config_data_type;
 using scaling_backend_t = graph_interface::scaling_backend_type;
@@ -34,14 +30,14 @@ constexpr auto scale = 100;
 
 inline auto make_structure(std::string id)
 {
-    structure_t s;
+    structure s;
     s.sym.id = std::move(id);
     return s;
 }
 
 inline auto make_symbol_table()
 {
-    symbol_table_t st;
+    symbol_table st;
     st.insert(make_structure(id0));
     st.insert(make_structure(id1));
     return st;
@@ -49,16 +45,16 @@ inline auto make_symbol_table()
 
 inline auto make_graph()
 {
-    graph_t g;
+    graph g;
     const auto v0 = boost::add_vertex(id0, g);
     const auto v1 = boost::add_vertex(id1, g);
     boost::add_edge(v0, v1, dependency0, g);
     return g;
 }
 
-inline auto make_dependencies_cfg()
+inline auto make_weights_cfg()
 {
-    return dependencies_config_t { { dependency0, weight0 } };
+    return weights_config_t { { dependency0, weight0 } };
 }
 
 inline auto make_layout_cfg()
@@ -72,7 +68,7 @@ inline auto make_layout_cfg()
 
 inline auto make_scaling_cfg()
 {
-    return scaling_config_t { { metadata_counter_t::fields_tag,
+    return scaling_config_t { { metadata_counter::fields_tag,
                                 scaling::make_xyz_factor(1, true) } };
 }
 
@@ -84,7 +80,7 @@ protected:
         iface = std::make_unique< graph_interface >(
             make_symbol_table(),
             make_graph(),
-            make_dependencies_cfg(),
+            make_weights_cfg(),
             make_layout_cfg(),
             make_scaling_cfg());
     }
@@ -94,8 +90,8 @@ protected:
 
 TEST_F(a_graph_interface, can_be_queried_for_vertex_ids)
 {
-    assert(boost::num_vertices(iface->graph()) == 2);
-    const auto [first, last] = boost::vertices(iface->graph());
+    assert(boost::num_vertices(iface->get_graph()) == 2);
+    const auto [first, last] = boost::vertices(iface->get_graph());
     const auto v0 = *first;
     const auto v1 = *(first + 1);
 
@@ -106,8 +102,8 @@ TEST_F(a_graph_interface, can_be_queried_for_vertex_ids)
 TEST_F(a_graph_interface, can_be_queried_for_vertex_pos)
 {
     // NOTE: non deterministic layout
-    assert(boost::num_vertices(iface->graph()) == 2);
-    const auto [first, last] = boost::vertices(iface->graph());
+    assert(boost::num_vertices(iface->get_graph()) == 2);
+    const auto [first, last] = boost::vertices(iface->get_graph());
     const auto v0 = *first;
     const auto v1 = *(first + 1);
     const auto& curr_layout = iface->layout_backend().get_layout();
@@ -124,8 +120,8 @@ TEST_F(a_graph_interface, can_be_queried_for_vertex_pos)
 
 TEST_F(a_graph_interface, can_be_queried_for_vertex_scale)
 {
-    assert(boost::num_vertices(iface->graph()) == 2);
-    const auto [first, last] = boost::vertices(iface->graph());
+    assert(boost::num_vertices(iface->get_graph()) == 2);
+    const auto [first, last] = boost::vertices(iface->get_graph());
     const auto v0 = *first;
     const auto v1 = *(first + 1);
 
@@ -139,8 +135,8 @@ TEST_F(a_graph_interface, can_be_queried_for_vertex_scale)
 
 TEST_F(a_graph_interface, can_be_queried_for_edge_dependencies)
 {
-    assert(boost::num_edges(iface->graph()) == 1);
-    const auto [first, last] = boost::edges(iface->graph());
+    assert(boost::num_edges(iface->get_graph()) == 1);
+    const auto [first, last] = boost::edges(iface->get_graph());
     const auto e0 = *first;
 
     ASSERT_EQ(boost::get(iface->edge_dependency(), e0), dependency0);
@@ -148,8 +144,8 @@ TEST_F(a_graph_interface, can_be_queried_for_edge_dependencies)
 
 TEST_F(a_graph_interface, can_be_queried_for_edge_weights)
 {
-    assert(boost::num_edges(iface->graph()) == 1);
-    const auto [first, last] = boost::edges(iface->graph());
+    assert(boost::num_edges(iface->get_graph()) == 1);
+    const auto [first, last] = boost::edges(iface->get_graph());
     const auto e0 = *first;
 
     ASSERT_EQ(boost::get(iface->edge_weight(), e0), weight0);
