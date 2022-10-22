@@ -1,4 +1,5 @@
 set(FILES
+	background_presenter_tests.cpp
 	config_tests.cpp
 )
 set(SUBDIRECTORIES)

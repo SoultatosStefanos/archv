@@ -1,6 +1,5 @@
-#include "application/background_presenter.hpp"
+#include "rendering/background_presenter.hpp"
 
-#include <boost/signals2/connection.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
@@ -119,9 +118,8 @@ struct mock_renderer : public renderer_interface
     MOCK_METHOD(void, draw, (const config_data_type&), (override));
 };
 
-struct configurator_interface
+struct view_interface
 {
-    using connection = boost::signals2::connection;
     using name_type = std::string_view;
     using distance_type = float;
     using rgba_type = std::array< float, 4 >;
@@ -131,8 +129,8 @@ struct configurator_interface
     using rgba_slot = std::function< void(const rgba_type&) >;
     using void_slot = std::function< void() >;
 
-    configurator_interface() = default;
-    virtual ~configurator_interface() = default;
+    view_interface() = default;
+    virtual ~view_interface() = default;
 
     virtual auto set_skybox_material(name_type) -> void = 0;
     virtual auto set_skybox_distance(distance_type) -> void = 0;
@@ -142,25 +140,23 @@ struct configurator_interface
     virtual auto set_cam_far_clip_distance(distance_type) -> void = 0;
     virtual auto set_cam_near_clip_distance(distance_type) -> void = 0;
 
-    virtual auto connect_to_skybox_material(name_slot) -> connection = 0;
-    virtual auto connect_to_skybox_distance(distance_slot) -> connection = 0;
-    virtual auto connect_to_ambient_color(rgba_slot) -> connection = 0;
-    virtual auto connect_to_diffuse_color(rgba_slot) -> connection = 0;
-    virtual auto connect_to_specular_color(rgba_slot) -> connection = 0;
-    virtual auto connect_to_cam_far_clip_distance(distance_slot)
-        -> connection = 0;
-    virtual auto connect_to_cam_near_clip_distance(distance_slot)
-        -> connection = 0;
-    virtual auto connect_to_apply(void_slot) -> connection = 0;
-    virtual auto connect_to_preview(void_slot) -> connection = 0;
-    virtual auto connect_to_cancel(void_slot) -> connection = 0;
-    virtual auto connect_to_restore(void_slot) -> connection = 0;
+    virtual auto connect_to_skybox_material(name_slot) -> void = 0;
+    virtual auto connect_to_skybox_distance(distance_slot) -> void = 0;
+    virtual auto connect_to_ambient_color(rgba_slot) -> void = 0;
+    virtual auto connect_to_diffuse_color(rgba_slot) -> void = 0;
+    virtual auto connect_to_specular_color(rgba_slot) -> void = 0;
+    virtual auto connect_to_cam_far_clip_distance(distance_slot) -> void = 0;
+    virtual auto connect_to_cam_near_clip_distance(distance_slot) -> void = 0;
+    virtual auto connect_to_apply(void_slot) -> void = 0;
+    virtual auto connect_to_preview(void_slot) -> void = 0;
+    virtual auto connect_to_cancel(void_slot) -> void = 0;
+    virtual auto connect_to_restore(void_slot) -> void = 0;
 };
 
-struct mock_configurator : public configurator_interface
+struct view_mock : public view_interface
 {
-    mock_configurator() = default;
-    virtual ~mock_configurator() override = default;
+    view_mock() = default;
+    virtual ~view_mock() override = default;
 
     MOCK_METHOD(void, set_skybox_material, (name_type), (override));
     MOCK_METHOD(void, set_skybox_distance, (distance_type), (override));
@@ -170,32 +166,21 @@ struct mock_configurator : public configurator_interface
     MOCK_METHOD(void, set_cam_far_clip_distance, (distance_type), (override));
     MOCK_METHOD(void, set_cam_near_clip_distance, (distance_type), (override));
 
-    MOCK_METHOD(
-        connection, connect_to_skybox_material, (name_slot), (override));
-    MOCK_METHOD(
-        connection, connect_to_skybox_distance, (distance_slot), (override));
-    MOCK_METHOD(connection, connect_to_ambient_color, (rgba_slot), (override));
-    MOCK_METHOD(connection, connect_to_diffuse_color, (rgba_slot), (override));
-    MOCK_METHOD(connection, connect_to_specular_color, (rgba_slot), (override));
-    MOCK_METHOD(
-        connection,
-        connect_to_cam_far_clip_distance,
-        (distance_slot),
-        (override));
-    MOCK_METHOD(
-        connection,
-        connect_to_cam_near_clip_distance,
-        (distance_slot),
-        (override));
-
-    MOCK_METHOD(connection, connect_to_apply, (void_slot), (override));
-    MOCK_METHOD(connection, connect_to_preview, (void_slot), (override));
-    MOCK_METHOD(connection, connect_to_cancel, (void_slot), (override));
-    MOCK_METHOD(connection, connect_to_restore, (void_slot), (override));
+    MOCK_METHOD(void, connect_to_skybox_material, (name_slot));
+    MOCK_METHOD(void, connect_to_skybox_distance, (distance_slot));
+    MOCK_METHOD(void, connect_to_ambient_color, (rgba_slot));
+    MOCK_METHOD(void, connect_to_diffuse_color, (rgba_slot));
+    MOCK_METHOD(void, connect_to_specular_color, (rgba_slot));
+    MOCK_METHOD(void, connect_to_cam_far_clip_distance, (distance_slot));
+    MOCK_METHOD(void, connect_to_cam_near_clip_distance, (distance_slot));
+    MOCK_METHOD(void, connect_to_apply, (void_slot));
+    MOCK_METHOD(void, connect_to_preview, (void_slot));
+    MOCK_METHOD(void, connect_to_cancel, (void_slot));
+    MOCK_METHOD(void, connect_to_restore, (void_slot));
 };
 
-using background_presenter = application::
-    background_presenter< renderer_interface, configurator_interface >;
+using background_presenter
+    = rendering::background_presenter< view_interface, renderer_interface >;
 
 /***********************************************************
  * Tests                                                   *
@@ -206,66 +191,64 @@ class given_a_background_presenter : public Test
 protected:
     void SetUp() override
     {
-        pres = std::make_unique< background_presenter >(renderer, configurator);
+        pres = std::make_unique< background_presenter >(renderer, view);
     }
 
     std::unique_ptr< background_presenter > pres;
     NiceMock< mock_renderer > renderer;
-    NiceMock< mock_configurator > configurator;
+    NiceMock< view_mock > view;
 };
 
 TEST_F(
     given_a_background_presenter,
-    fetch_skybox_material_sets_the_configurator_material_from_the_renderer_config_data)
+    fetch_skybox_material_sets_the_view_material_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_skybox_material(skybox_material)).Times(1);
+    EXPECT_CALL(view, set_skybox_material(skybox_material)).Times(1);
 
     pres->fetch_skybox_material();
 }
 
 TEST_F(
     given_a_background_presenter,
-    fetch_skybox_distance_sets_the_configurator_distance_from_the_renderer_config_data)
+    fetch_skybox_distance_sets_the_view_distance_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_skybox_distance(skybox_distance)).Times(1);
+    EXPECT_CALL(view, set_skybox_distance(skybox_distance)).Times(1);
 
     pres->fetch_skybox_distance();
 }
 
 TEST_F(
     given_a_background_presenter,
-    fetch_ambient_color_sets_the_configurator_ambient_color_from_the_renderer_config_data)
+    fetch_ambient_color_sets_the_view_ambient_color_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_ambient_color({ { 1, 1, 1, 0 } })).Times(1);
+    EXPECT_CALL(view, set_ambient_color({ { 1, 1, 1, 0 } })).Times(1);
 
     pres->fetch_ambient_color();
 }
 
 TEST_F(
     given_a_background_presenter,
-    fetch_diffuse_color_sets_the_configurator_diffuse_color_from_the_renderer_config_data)
+    fetch_diffuse_color_sets_the_view_diffuse_color_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_diffuse_color({ { 13, 11, 12, 0 } }))
-        .Times(1);
+    EXPECT_CALL(view, set_diffuse_color({ { 13, 11, 12, 0 } })).Times(1);
 
     pres->fetch_diffuse_color();
 }
 
 TEST_F(
     given_a_background_presenter,
-    fetch_specular_color_sets_the_configurator_specular_color_from_the_renderer_config_data)
+    fetch_specular_color_sets_the_view_specular_color_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_specular_color({ { 1, 31, 10, 0 } }))
-        .Times(1);
+    EXPECT_CALL(view, set_specular_color({ { 1, 31, 10, 0 } })).Times(1);
 
     pres->fetch_specular_color();
 }
 
 TEST_F(
     given_a_background_presenter,
-    fetch_cam_far_clip_distance_sets_the_configurator_distance_from_the_renderer_config_data)
+    fetch_cam_far_clip_distance_sets_the_view_distance_from_the_renderer_config_data)
 {
-    EXPECT_CALL(configurator, set_cam_far_clip_distance(cam_far_clip_distance))
+    EXPECT_CALL(view, set_cam_far_clip_distance(cam_far_clip_distance))
         .Times(1);
 
     pres->fetch_cam_far_clip_distance();
@@ -273,10 +256,9 @@ TEST_F(
 
 TEST_F(
     given_a_background_presenter,
-    fetch_cam_near_clip_distance_sets_the_configurator_distance_from_the_renderer_config_data)
+    fetch_cam_near_clip_distance_sets_the_view_distance_from_the_renderer_config_data)
 {
-    EXPECT_CALL(
-        configurator, set_cam_near_clip_distance(cam_near_clip_distance))
+    EXPECT_CALL(view, set_cam_near_clip_distance(cam_near_clip_distance))
         .Times(1);
 
     pres->fetch_cam_near_clip_distance();
@@ -387,22 +369,17 @@ TEST_F(
 {
     EXPECT_CALL(renderer, draw(renderer.default_data())).Times(1);
 
-    EXPECT_CALL(configurator, set_skybox_material(skybox_material)).Times(1);
-    EXPECT_CALL(configurator, set_skybox_distance(skybox_distance)).Times(1);
-    EXPECT_CALL(configurator, set_ambient_color({ { 1, 1, 1, 0 } })).Times(1);
-    EXPECT_CALL(configurator, set_diffuse_color({ { 13, 11, 12, 0 } }))
+    EXPECT_CALL(view, set_skybox_material(skybox_material)).Times(1);
+    EXPECT_CALL(view, set_skybox_distance(skybox_distance)).Times(1);
+    EXPECT_CALL(view, set_ambient_color({ { 1, 1, 1, 0 } })).Times(1);
+    EXPECT_CALL(view, set_diffuse_color({ { 13, 11, 12, 0 } })).Times(1);
+    EXPECT_CALL(view, set_specular_color({ { 1, 31, 10, 0 } })).Times(1);
+    EXPECT_CALL(view, set_cam_far_clip_distance(cam_far_clip_distance))
         .Times(1);
-    EXPECT_CALL(configurator, set_specular_color({ { 1, 31, 10, 0 } }))
-        .Times(1);
-    EXPECT_CALL(configurator, set_cam_far_clip_distance(cam_far_clip_distance))
-        .Times(1);
-    EXPECT_CALL(
-        configurator, set_cam_near_clip_distance(cam_near_clip_distance))
+    EXPECT_CALL(view, set_cam_near_clip_distance(cam_near_clip_distance))
         .Times(1);
 
     pres->select_restore();
 }
-
-using background_presenter_def = application::background_presenter<>;
 
 } // namespace
