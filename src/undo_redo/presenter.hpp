@@ -64,10 +64,10 @@ private:
 };
 
 // Utility factory for type deduction.
-template < typename View, typename Commands >
+template < typename View, typename Commands = command_history >
 inline auto make_presenter(Commands& cmds, View& view)
 {
-    return presenter< Commands, view >(cmds, view);
+    return presenter< View, Commands >(cmds, view);
 }
 
 } // namespace undo_redo

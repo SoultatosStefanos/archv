@@ -1,5 +1,6 @@
 set(FILES
 	command_history_tests.cpp
+	presenter_tests.cpp
 )
 set(SUBDIRECTORIES)
 
