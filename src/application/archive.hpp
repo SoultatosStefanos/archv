@@ -1,8 +1,8 @@
 // Contains a module for pooling json roots.
 // Soultatos Stefanos 2022
 
-#ifndef CONFIG_ARCHIVE_HPP
-#define CONFIG_ARCHIVE_HPP
+#ifndef APPLICATION_ARCHIVE_HPP
+#define APPLICATION_ARCHIVE_HPP
 
 #include <boost/exception/all.hpp>
 #include <cassert>
@@ -68,4 +68,4 @@ using json_file_info = boost::error_info< struct tag_file, std::string_view >;
 
 } // namespace config
 
-#endif // CONFIG_ARCHIVE_HPP
+#endif // APPLICATION_ARCHIVE_HPP

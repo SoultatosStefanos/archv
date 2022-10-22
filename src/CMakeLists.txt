@@ -1,7 +1,6 @@
 set(FILES)
 set(SUBDIRECTORIES
 	architecture
-	config
 	gui
 	layout
 	misc
