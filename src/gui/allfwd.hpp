@@ -9,7 +9,6 @@ namespace gui
 
 class background_configurator;
 class weights_editor;
-class commands_editor;
 class graph_configurator;
 class gui_configurator;
 class gui;

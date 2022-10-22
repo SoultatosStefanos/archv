@@ -5,7 +5,6 @@
 #define GUI_ALL_HPP
 
 #include "background_configurator.hpp"
-#include "commands_editor.hpp"
 #include "config.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"

@@ -1,6 +1,5 @@
 set(FILES
 	background_configurator.cpp
-	commands_editor.cpp
 	config.cpp
 	graph_configurator.cpp
 	gui_configurator.cpp

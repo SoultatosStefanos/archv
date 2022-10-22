@@ -77,6 +77,62 @@ namespace
 
 } // namespace
 
+auto gui::can_undo() const -> bool
+{
+    assert(m_undo_enabled);
+    return m_undo_enabled();
+}
+
+auto gui::can_redo() const -> bool
+{
+    assert(m_redo_enabled);
+    return m_redo_enabled();
+}
+
+auto gui::set_can_undo(pred pred) -> void
+{
+    assert(pred);
+    m_undo_enabled = std::move(pred);
+}
+
+auto gui::set_can_redo(pred pred) -> void
+{
+    assert(pred);
+    m_redo_enabled = std::move(pred);
+}
+
+auto gui::connect_to_undo(const undo_slot& f) -> connection
+{
+    return m_undo_sig.connect(f);
+}
+
+auto gui::connect_to_redo(const redo_slot& f) -> connection
+{
+    return m_redo_sig.connect(f);
+}
+
+void gui::undo_shortcut()
+{
+    if (can_redo())
+        emit_undo();
+}
+
+void gui::redo_shortcut()
+{
+    if (can_redo())
+        emit_redo();
+}
+
+auto gui::emit_undo() const -> void
+{
+    m_undo_sig();
+}
+
+auto gui::emit_redo() const -> void
+{
+    m_redo_sig();
+}
+
 auto gui::draw(const config_data_type& cfg) const -> void
 {
     draw_color_theme(cfg.color_theme);
@@ -107,7 +163,11 @@ auto gui::render_editor() const -> void
 {
     if (ImGui::BeginMenu("Edit"))
     {
-        get_cmds_editor().render();
+        if (ImGui::MenuItem("Undo", "CTRL+Z", false, can_undo()))
+            emit_undo();
+
+        if (ImGui::MenuItem("Redo", "CTRL+Y", false, can_redo()))
+            emit_redo();
 
         ImGui::Separator();
 
