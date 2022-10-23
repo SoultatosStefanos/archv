@@ -116,7 +116,6 @@ void gui::undo_shortcut()
     if (can_undo())
         emit_undo();
 }
-
 void gui::redo_shortcut()
 {
     if (can_redo())
@@ -151,11 +150,25 @@ auto gui::render() const -> void
 {
     if (ImGui::BeginMainMenuBar())
     {
+        render_file_editor();
         render_editor();
         render_configurator();
         render_helper();
 
         ImGui::EndMainMenuBar();
+    }
+}
+
+// TODO
+auto gui::render_file_editor() const -> void
+{
+    if (ImGui::BeginMenu("File"))
+    {
+        if (ImGui::MenuItem("Quit", "Esc"))
+        {
+        }
+
+        ImGui::EndMenu();
     }
 }
 

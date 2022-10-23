@@ -132,6 +132,7 @@ protected:
     auto emit_redo() const -> void;
 
 private:
+    auto render_file_editor() const -> void;
     auto render_editor() const -> void;
     auto render_configurator() const -> void;
     auto render_rendering_configurator() const -> void;
