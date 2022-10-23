@@ -22,7 +22,7 @@ auto graph_config_api::set_vertex_mesh(name_type name) -> void
 
 auto graph_config_api::set_vertex_scale(scale_type scale) -> void
 {
-    config_data().vertex_scale = std::move(scale);
+    config_data().vertex_scale = scale;
 }
 
 auto graph_config_api::set_vertex_id_font_name(name_type name) -> void
@@ -47,7 +47,7 @@ auto graph_config_api::set_vertex_id_char_height(height_type h) -> void
 
 auto graph_config_api::set_vertex_id_color(rgba_type col) -> void
 {
-    config_data().vertex_id_color = std::move(col);
+    config_data().vertex_id_color = col;
 }
 
 auto graph_config_api::set_vertex_space_width(width_type w) -> void
@@ -82,7 +82,7 @@ auto graph_config_api::set_edge_tip_mesh(name_type name) -> void
 
 auto graph_config_api::set_edge_tip_scale(scale_type scale) -> void
 {
-    config_data().edge_tip_scale = std::move(scale);
+    config_data().edge_tip_scale = scale;
 }
 
 auto graph_config_api::set_edge_type_font_name(name_type name) -> void
@@ -107,7 +107,7 @@ auto graph_config_api::set_edge_type_char_height(height_type h) -> void
 
 auto graph_config_api::set_edge_type_color(rgba_type col) -> void
 {
-    config_data().edge_type_color = std::move(col);
+    config_data().edge_type_color = col;
 }
 
 auto graph_config_api::set_edge_type_space_width(width_type w) -> void

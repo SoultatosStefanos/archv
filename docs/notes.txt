@@ -5,6 +5,5 @@ CMake
 Lint
 	run-clang-tidy-13 (from build/debug)
 
-
 GTest
   Run specific fixture with: <exec> --gtest_filter=<test_fixture>.*
