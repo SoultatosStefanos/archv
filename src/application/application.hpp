@@ -115,7 +115,7 @@ private:
 
     std::unique_ptr< gui_type > m_gui;
 
-    std::unique_ptr< tray_type > m_trays;
+    std::unique_ptr< tray_type > m_tray;
     std::unique_ptr< cameraman_type > m_cameraman;
     std::unique_ptr< gui_input_handler_type > m_gui_input_handler;
     std::unique_ptr< hud_input_handler_type > m_hud_input_handler;
