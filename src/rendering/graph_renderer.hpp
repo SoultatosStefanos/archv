@@ -69,7 +69,6 @@ public:
     auto config_data() const -> const config_data_type& { return m_config; }
     auto config_data() -> config_data_type& { return m_config; }
 
-    // TODO
     auto set_vertex_mesh(name_type name) -> void;
     auto set_vertex_scale(scale_type scale) -> void;
     auto set_vertex_id_font_name(name_type name) -> void;
