@@ -15,9 +15,6 @@ class background_renderer;
 template < typename Graph, typename VertexID, typename DependencyMap >
 class graph_renderer;
 
-template < typename Renderer, typename View >
-class background_presenter;
-
 } // namespace rendering
 
 #endif // RENDERING_ALLFWD_HPP

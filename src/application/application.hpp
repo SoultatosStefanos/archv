@@ -19,16 +19,12 @@
 #include <OGRE/Bites/OgreTrays.h>
 #include <memory>
 
-/***********************************************************
- * Application                                             *
- ***********************************************************/
-
 namespace application
 {
 
 // Initializes and hooks all of the subsystems.
 // Kick starts the application.
-class app : public OgreBites::ApplicationContext
+class application : public OgreBites::ApplicationContext
 {
     using base = OgreBites::ApplicationContext;
 
@@ -44,8 +40,8 @@ public:
 
     using gui_type = gui::gui;
 
-    app(int argc, const char* argv[]);
-    virtual ~app() override = default;
+    application(int argc, const char* argv[]);
+    virtual ~application() override = default;
 
     auto frameStarted(const Ogre::FrameEvent& e) -> bool override;
 

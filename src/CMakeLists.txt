@@ -1,7 +1,9 @@
 set(FILES)
 set(SUBDIRECTORIES
+	application
 	architecture
 	gui
+	input
 	layout
 	misc
 	rendering

@@ -1,7 +1,6 @@
 set(FILES
 	backend_tests.cpp
 	config_tests.cpp
-	presenter_tests.cpp
 	weight_map_tests.cpp
 	weight_repo_tests.cpp
 )

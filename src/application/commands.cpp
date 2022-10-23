@@ -504,7 +504,7 @@ auto update_scaling_factor_max_ratio(
         std::make_unique< update_scaling_factor_max_ratio_cmd >(b, tag, ratio));
 }
 
-auto restore_scaling_defaults(
+auto restore_scaling(
     undo_redo::command_history& cmds,
     architecture::graph_interface::scaling_backend_type& b) -> void
 {

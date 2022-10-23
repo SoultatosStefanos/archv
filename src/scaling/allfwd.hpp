@@ -16,9 +16,6 @@ struct config_data;
 template < typename Graph, typename FactorCounter >
 struct scale_map;
 
-template < typename View, typename Backend >
-class presenter;
-
 } // namespace scaling
 
 #endif // SCALING_ALLFWD_HPP

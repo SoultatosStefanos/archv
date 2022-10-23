@@ -17,10 +17,10 @@
 
 namespace application
 {
-    
+
 // TODO Show ogre config dialog
 
-app::app(int argc, const char* argv[]) : base("ARCHV")
+application::application(int argc, const char* argv[]) : base("ARCHV")
 {
     if (argc != 2)
     {
@@ -45,7 +45,7 @@ app::app(int argc, const char* argv[]) : base("ARCHV")
     m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
 }
 
-auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
+auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
@@ -58,7 +58,7 @@ auto app::frameStarted(const Ogre::FrameEvent& e) -> bool
  * Setup                                                   *
  ***********************************************************/
 
-auto app::setup() -> void
+auto application::setup() -> void
 {
     setup_graph_interface();
     setup_commands();
@@ -86,7 +86,7 @@ auto app::setup() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup";
 }
 
-auto app::shutdown() -> void
+auto application::shutdown() -> void
 {
     shutdown_input();
     shutdown_gui();
@@ -98,12 +98,12 @@ auto app::shutdown() -> void
     BOOST_LOG_TRIVIAL(debug) << "shutdown";
 }
 
-auto app::go() -> void
+auto application::go() -> void
 {
     getRoot()->startRendering();
 }
 
-auto app::setup_graph_interface() -> void
+auto application::setup_graph_interface() -> void
 {
     const auto& jsons = archive::get();
     auto&& [st, g, _] = architecture::deserialize(jsons.at(m_graph_path));
@@ -118,14 +118,14 @@ auto app::setup_graph_interface() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
 
-auto app::setup_commands() -> void
+auto application::setup_commands() -> void
 {
     m_cmds = std::make_unique< command_history_type >();
 
     BOOST_LOG_TRIVIAL(debug) << "setup commands";
 }
 
-auto app::setup_background_renderer() -> void
+auto application::setup_background_renderer() -> void
 {
     m_background_renderer = std::make_unique< background_renderer_type >(
         *getRenderWindow(),
@@ -135,7 +135,7 @@ auto app::setup_background_renderer() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup background renderer";
 }
 
-auto app::setup_graph_renderer() -> void
+auto application::setup_graph_renderer() -> void
 {
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->get_graph(),
@@ -258,7 +258,7 @@ namespace // gui setup
 
 } // namespace
 
-auto app::setup_gui() -> void
+auto application::setup_gui() -> void
 {
     install_gui_plugins(m_weights_config, m_layout_config, m_scaling_config);
     load_gui_resources();
@@ -273,7 +273,7 @@ auto app::setup_gui() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
 }
 
-auto app::setup_input() -> void
+auto application::setup_input() -> void
 {
     m_tray = std::make_unique< tray_type >("Bob", getRenderWindow());
     m_tray->showCursor();
@@ -313,7 +313,7 @@ auto app::setup_input() -> void
  * Shutdown                                                *
  ***********************************************************/
 
-auto app::shutdown_input() -> void
+auto application::shutdown_input() -> void
 {
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
@@ -332,35 +332,35 @@ auto app::shutdown_input() -> void
     BOOST_LOG_TRIVIAL(debug) << "shutdown input";
 }
 
-auto app::shutdown_gui() -> void
+auto application::shutdown_gui() -> void
 {
     m_gui.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
 }
 
-auto app::shutdown_graph_renderer() -> void
+auto application::shutdown_graph_renderer() -> void
 {
     m_graph_renderer.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown graph renderer";
 }
 
-auto app::shutdown_background_renderer() -> void
+auto application::shutdown_background_renderer() -> void
 {
     m_background_renderer.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown background renderer";
 }
 
-auto app::shutdown_commands() -> void
+auto application::shutdown_commands() -> void
 {
     m_cmds.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown commands";
 }
 
-auto app::shutdown_graph_interface() -> void
+auto application::shutdown_graph_interface() -> void
 {
     m_graph_iface.reset();
 
@@ -371,7 +371,7 @@ auto app::shutdown_graph_interface() -> void
  * GUI Prepare                                             *
  ***********************************************************/
 
-auto app::prepare_weights_editor() -> void
+auto application::prepare_weights_editor() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -384,7 +384,7 @@ auto app::prepare_weights_editor() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared weights editor";
 }
 
-auto app::prepare_layout_editor() -> void
+auto application::prepare_layout_editor() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -404,7 +404,7 @@ auto app::prepare_layout_editor() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared layout editor";
 }
 
-auto app::prepare_scaling_editor() -> void
+auto application::prepare_scaling_editor() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -469,7 +469,7 @@ namespace // presentation translations
 
 } // namespace
 
-auto app::prepare_background_configurator() -> void
+auto application::prepare_background_configurator() -> void
 {
     assert(m_gui);
     assert(m_background_renderer);
@@ -488,7 +488,7 @@ auto app::prepare_background_configurator() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared background configurator";
 }
 
-auto app::prepare_graph_configurator() -> void
+auto application::prepare_graph_configurator() -> void
 {
     assert(m_gui);
     assert(m_graph_renderer);
@@ -513,7 +513,7 @@ auto app::prepare_graph_configurator() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared graph configurator";
 }
 
-auto app::prepare_gui_configurator() -> void
+auto application::prepare_gui_configurator() -> void
 {
     assert(m_gui);
 
@@ -529,7 +529,7 @@ auto app::prepare_gui_configurator() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared gui configurator";
 }
 
-auto app::prepare_gui_undo_redo() -> void
+auto application::prepare_gui_undo_redo() -> void
 {
     assert(m_gui);
 
@@ -543,7 +543,7 @@ auto app::prepare_gui_undo_redo() -> void
  * Presentation Connections                                *
  ***********************************************************/
 
-auto app::connect_weights_presentation() -> void
+auto application::connect_weights_presentation() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -575,7 +575,7 @@ auto app::connect_weights_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected weights presentation";
 }
 
-auto app::connect_layout_presentation() -> void
+auto application::connect_layout_presentation() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -621,7 +621,7 @@ auto app::connect_layout_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected layout presentation";
 }
 
-auto app::connect_scaling_presentation() -> void
+auto application::connect_scaling_presentation() -> void
 {
     assert(m_gui);
     assert(m_graph_iface);
@@ -630,7 +630,7 @@ auto app::connect_scaling_presentation() -> void
     auto& backend = m_graph_iface->scaling_backend();
 
     editor.connect_to_baseline(
-        [this, &backend](auto tag, auto b)
+        [this, &backend](auto tag, auto baseline)
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected baseline: " << baseline << "for: " << tag;
@@ -689,7 +689,7 @@ auto app::connect_scaling_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected scaling presentation";
 }
 
-auto app::connect_background_presentation() -> void
+auto application::connect_background_presentation() -> void
 {
     assert(m_gui);
     assert(m_background_renderer);
@@ -778,7 +778,7 @@ auto app::connect_background_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected background presentation";
 }
 
-auto app::connect_graph_presentation() -> void
+auto application::connect_graph_presentation() -> void
 {
     assert(m_gui);
     assert(m_graph_renderer);
@@ -832,7 +832,7 @@ auto app::connect_graph_presentation() -> void
         [this, &api](auto mat)
         {
             BOOST_LOG_TRIVIAL(info) << "selected edge material: " << mat;
-            api.set_edge_material(std::string(material));
+            api.set_edge_material(std::string(mat));
         });
 
     iface.connect_to_edge_tip_mesh(
@@ -853,7 +853,7 @@ auto app::connect_graph_presentation() -> void
         [this, &api](auto font)
         {
             BOOST_LOG_TRIVIAL(info) << "selected edge type font: " << font;
-            api.set_edge_type_font_name(std::string(name));
+            api.set_edge_type_font_name(std::string(font));
         });
 
     iface.connect_to_edge_font_color(
@@ -909,7 +909,7 @@ auto app::connect_graph_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected graph presentation";
 }
 
-auto app::connect_gui_presentation() -> void
+auto application::connect_gui_presentation() -> void
 {
     assert(m_gui);
 
@@ -983,7 +983,7 @@ auto app::connect_gui_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected gui presentation";
 }
 
-auto app::connect_undo_redo_presentation() -> void
+auto application::connect_undo_redo_presentation() -> void
 {
     assert(m_gui);
 

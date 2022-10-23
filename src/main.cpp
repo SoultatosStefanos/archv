@@ -1,4 +1,4 @@
-#include "app.hpp"
+#include "application/application.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/log/core.hpp>
@@ -40,10 +40,10 @@ auto main(int argc, const char* argv[]) -> int
     {
         init_logging();
 
-        application::app archv { argc, argv };
-        archv.initApp();
-        archv.go();
-        archv.closeApp();
+        application::application app { argc, argv };
+        app.initApp();
+        app.go();
+        app.closeApp();
 
         return EXIT_SUCCESS;
     }

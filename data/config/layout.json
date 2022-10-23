@@ -8,7 +8,6 @@
 		"Cube",
 		"Sphere"
 	],
-	"scales" : { "low" : 0, "high" : 2000 },
 	"layout" : "Gursoy Atun",
 	"scale" : 900,
 	"topology" : "Sphere"
