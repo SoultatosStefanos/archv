@@ -113,7 +113,7 @@ auto gui::connect_to_redo(const redo_slot& f) -> connection
 
 void gui::undo_shortcut()
 {
-    if (can_redo())
+    if (can_undo())
         emit_undo();
 }
 
@@ -184,13 +184,25 @@ auto gui::render_editor() const -> void
     }
 
     if (m_weights_open)
+    {
+        ImGui::Begin("Weights Edit", &m_weights_open);
         get_weights_editor().render();
+        ImGui::End();
+    }
 
     if (m_layout_open)
+    {
+        ImGui::Begin("Layout Edit", &m_layout_open);
         get_layout_editor().render();
+        ImGui::End();
+    }
 
     if (m_scaling_open)
+    {
+        ImGui::Begin("Scaling Edit", &m_scaling_open);
         get_scaling_editor().render();
+        ImGui::End();
+    }
 }
 
 auto gui::render_configurator() const -> void
@@ -234,6 +246,7 @@ auto gui::render_gui_configurator() const -> void
     if (ImGui::BeginMenu("GUI"))
     {
         get_gui_configurator().render();
+
         ImGui::EndMenu();
     }
 }

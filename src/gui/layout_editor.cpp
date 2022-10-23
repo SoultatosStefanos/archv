@@ -62,7 +62,13 @@ auto layout_editor::render_scale_editor() const -> void
 {
     auto f = scale();
 
-    if (ImGui::InputFloat("Scale##layout", &f, 1))
+    if (ImGui::InputFloat(
+            "Scale##layout",
+            &f,
+            1,
+            0,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
         emit_scale(f);
 }
 

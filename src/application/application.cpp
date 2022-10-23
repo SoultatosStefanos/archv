@@ -60,6 +60,7 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 
 auto application::setup() -> void
 {
+    base::setup();
     setup_graph_interface();
     setup_commands();
     setup_background_renderer();
@@ -94,6 +95,7 @@ auto application::shutdown() -> void
     shutdown_background_renderer();
     shutdown_commands();
     shutdown_graph_interface();
+    base::shutdown();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown";
 }
@@ -127,6 +129,8 @@ auto application::setup_commands() -> void
 
 auto application::setup_background_renderer() -> void
 {
+    assert(getRenderWindow());
+
     m_background_renderer = std::make_unique< background_renderer_type >(
         *getRenderWindow(),
         m_rendering_config.background,
