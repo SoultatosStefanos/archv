@@ -12,10 +12,34 @@
 #include "scaling_editor.hpp"
 #include "weights_editor.hpp"
 
+#include <boost/exception/all.hpp>
+#include <stdexcept>
 #include <string>
 
 namespace gui
 {
+
+/***********************************************************
+ * Errors                                                  *
+ ***********************************************************/
+
+struct deserialization_error : virtual std::exception, virtual boost::exception
+{
+};
+
+struct unknown_color_theme : virtual deserialization_error
+{
+};
+
+/***********************************************************
+ * Error Info                                              *
+ ***********************************************************/
+
+using color_theme_info = boost::error_info< struct tag_theme, std::string >;
+
+/***********************************************************
+ * GUI                                                     *
+ ***********************************************************/
 
 // The root widget of the gui.
 class gui

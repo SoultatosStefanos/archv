@@ -1,5 +1,6 @@
 #include "../utility/config.hpp"
-#include "gui/all.hpp"
+#include "gui/config.hpp"
+#include "gui/gui_config.hpp"
 
 #include <fstream>
 #include <gmock/gmock.h>
@@ -11,13 +12,6 @@ using namespace utility;
 
 namespace
 {
-
-TEST(gui_deserialization, sample_gui_invalid)
-{
-    const auto root = read_json_root("../../data/testfiles/sample_gui_-1.json");
-
-    ASSERT_THROW(deserialize(root), unknown_color_theme);
-}
 
 auto build_sample_gui_0()
 {

@@ -539,7 +539,7 @@
 
 	+ [x] Introduce config modules to ease compile times
 
-	+ [ ] Gui configuration exceptions
+	+ [x] Gui configuration exceptions
 
 	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
 	Note: Hollow Ellipsoid Emitter (3d ring)

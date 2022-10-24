@@ -1,4 +1,7 @@
-set(FILES config_tests.cpp)
+set(FILES
+	config_tests.cpp
+	gui_tests.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})

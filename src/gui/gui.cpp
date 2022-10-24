@@ -33,7 +33,8 @@ namespace
         else if (theme == resources::classic_theme)
             ImGui::StyleColorsClassic();
         else
-            BOOST_LOG_TRIVIAL(warning) << "unknown color theme: " << theme;
+            BOOST_THROW_EXCEPTION(
+                unknown_color_theme() << color_theme_info(theme));
     }
 
 } // namespace
