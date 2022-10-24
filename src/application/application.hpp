@@ -91,6 +91,7 @@ private:
     auto connect_weights_presentation() -> void;
     auto connect_layout_presentation() -> void;
     auto connect_scaling_presentation() -> void;
+    auto connect_degrees_presentation() -> void;
     auto connect_background_presentation() -> void;
     auto connect_graph_presentation() -> void;
     auto connect_gui_presentation() -> void;

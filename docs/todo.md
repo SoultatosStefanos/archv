@@ -560,7 +560,7 @@
 
 			+ [x] Light
 
-	+ [ ] Gui configurable degree particle systems
+	+ [x] Gui configurable degree particle systems
 
 		+ [x] Gui editor
 
@@ -568,7 +568,9 @@
 
 		+ [x] Degree editing commands
 
-		+ [ ] Gui connections
+		+ [x] Gui connections
+
+	+ [ ] Degrees user input sanitizing
 
 	+ [ ] File Browser
 
