@@ -1,6 +1,7 @@
 set(FILES
 	background_configurator.cpp
 	config.cpp
+	degrees_editor.cpp
 	graph_configurator.cpp
 	gui_config.cpp
 	gui_configurator.cpp

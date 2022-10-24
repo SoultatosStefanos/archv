@@ -19,7 +19,7 @@ weights_editor::weights_editor()
 
 namespace
 {
-    auto spaces()
+    inline auto spaces()
     {
         ImGui::Spacing();
         ImGui::Spacing();

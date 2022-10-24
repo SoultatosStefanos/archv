@@ -6,6 +6,7 @@
 
 #include "background_configurator.hpp"
 #include "config.hpp"
+#include "degrees_editor.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"
 #include "gui_config.hpp"

@@ -21,7 +21,7 @@ layout_editor::layout_editor()
 
 namespace
 {
-    auto spaces()
+    inline auto spaces()
     {
         ImGui::Spacing();
         ImGui::Spacing();

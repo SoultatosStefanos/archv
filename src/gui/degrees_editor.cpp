@@ -4,6 +4,8 @@
 #include "resources.hpp"
 
 #include <cassert>
+#include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
 #include <ranges>
 
 namespace gui
@@ -146,9 +148,140 @@ auto degrees_editor::connect_to_restore(const restore_slot& f) -> connection
     return m_restore_sig.connect(f);
 }
 
-// TODO
+namespace
+{
+    inline auto spaced_text(const char* str)
+    {
+        assert(str);
+        ImGui::Spacing();
+        ImGui::Text("%s", str);
+        ImGui::Spacing();
+    }
+
+    inline auto spaced_separator()
+    {
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+    }
+
+    inline auto spaces()
+    {
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+} // namespace
+
 auto degrees_editor::render() const -> void
 {
+    spaced_text("Thresholds");
+    render_thresholds_editor();
+    spaced_separator();
+
+    spaced_text("Particle Systems");
+    render_particles_editor();
+    spaced_separator();
+
+    render_applied_editor();
+    spaces();
+
+    render_restore_button();
+}
+
+auto degrees_editor::render_thresholds_editor() const -> void
+{
+    auto light = light_threshold();
+    auto medium = medium_threshold();
+    auto heavy = heavy_threshold();
+
+    ImGui::PushID(this);
+
+    if (ImGui::InputInt(
+            "Light threshold",
+            &light,
+            1,
+            0,
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_light_threshold(light);
+
+    if (ImGui::InputInt(
+            "Medium threshold",
+            &medium,
+            1,
+            0,
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_medium_threshold(medium);
+
+    if (ImGui::InputInt(
+            "Heavy threshold",
+            &heavy,
+            1,
+            0,
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_heavy_threshold(heavy);
+
+    ImGui::PopID();
+}
+
+auto degrees_editor::render_particles_editor() const -> void
+{
+    using detail::find_index;
+    using resources::particle_systems;
+
+    const auto l_dif = find_index(particle_systems(), light_particles());
+    const auto m_dif = find_index(particle_systems(), medium_particles());
+    const auto h_dif = find_index(particle_systems(), heavy_particles());
+
+    auto l_index = static_cast< int >(l_dif);
+    auto m_index = static_cast< int >(m_dif);
+    auto h_index = static_cast< int >(h_dif);
+
+    ImGui::PushID(this);
+
+    if (ImGui::Combo(
+            "Light particle system",
+            &l_index,
+            particles().data(),
+            particles().size()))
+        emit_light_particles(particles().at(l_index));
+
+    if (ImGui::Combo(
+            "Medium particle system",
+            &m_index,
+            particles().data(),
+            particles().size()))
+        emit_medium_particles(particles().at(m_index));
+
+    if (ImGui::Combo(
+            "Heavy particle system",
+            &h_index,
+            particles().data(),
+            particles().size()))
+        emit_heavy_particles(particles().at(h_index));
+
+    ImGui::PopID();
+}
+
+auto degrees_editor::render_applied_editor() const -> void
+{
+    auto v = applied();
+
+    ImGui::PushID(this);
+
+    if (ImGui::Checkbox("Applied", &v))
+        emit_applied(v);
+
+    ImGui::PopID();
+}
+
+auto degrees_editor::render_restore_button() const -> void
+{
+    ImGui::PushID(this);
+
+    if (ImGui::Button("Restore Defaults"))
+        emit_restore();
+
+    ImGui::PopID();
 }
 
 auto degrees_editor::emit_light_threshold(threshold_type thres) const -> void

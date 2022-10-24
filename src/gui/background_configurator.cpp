@@ -21,7 +21,7 @@ background_configurator::background_configurator()
 
 namespace
 {
-    auto spaced_text(const char* str)
+    inline auto spaced_text(const char* str)
     {
         assert(str);
         ImGui::Spacing();
@@ -29,7 +29,7 @@ namespace
         ImGui::Spacing();
     }
 
-    auto spaced_separator()
+    inline auto spaced_separator()
     {
         ImGui::Spacing();
         ImGui::Separator();

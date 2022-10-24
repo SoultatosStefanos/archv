@@ -22,7 +22,7 @@ gui_configurator::gui_configurator()
 
 namespace
 {
-    auto spaced_separator()
+    inline auto spaced_separator()
     {
         ImGui::Spacing();
         ImGui::Separator();

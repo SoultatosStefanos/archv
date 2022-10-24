@@ -82,6 +82,11 @@ protected:
     auto emit_restore() const -> void;
 
 private:
+    auto render_thresholds_editor() const -> void;
+    auto render_particles_editor() const -> void;
+    auto render_applied_editor() const -> void;
+    auto render_restore_button() const -> void;
+
     threshold_accessor m_light_thres;
     threshold_accessor m_medium_thres;
     threshold_accessor m_heavy_thres;
