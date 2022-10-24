@@ -1,5 +1,7 @@
 #include "degrees_backend.hpp"
 
+#include <boost/log/trivial.hpp>
+
 namespace rendering
 {
 
@@ -22,9 +24,25 @@ auto degrees_backend::connect_to_out_degree_evaluation(const slot& f)
     return m_out_degree_sig.connect(f);
 }
 
+namespace
+{
+    inline auto must_ignore(const degree_evaluation_data& data) -> bool
+    {
+        return data.thresholds.light < 0
+            or data.thresholds.medium <= data.thresholds.light
+            or data.thresholds.heavy <= data.thresholds.medium;
+    }
+} // namespace
+
 auto degrees_backend::update_in_degree_evaluation(degree_evaluation_data data)
     -> void
 {
+    if (must_ignore(data))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid in degree data";
+        return;
+    }
+
     m_in_degree_data = std::move(data);
     emit_in_degree_evaluation_data();
 }
@@ -32,6 +50,12 @@ auto degrees_backend::update_in_degree_evaluation(degree_evaluation_data data)
 auto degrees_backend::update_out_degree_evaluation(degree_evaluation_data data)
     -> void
 {
+    if (must_ignore(data))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid out degree data";
+        return;
+    }
+
     m_out_degree_data = std::move(data);
     emit_out_degree_evaluation_data();
 }

@@ -570,7 +570,7 @@
 
 		+ [x] Gui connections
 
-	+ [ ] Degrees user input sanitizing
+	+ [x] Degrees user input sanitizing
 
 	+ [ ] File Browser
 
