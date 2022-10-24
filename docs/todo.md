@@ -562,6 +562,14 @@
 
 	+ [ ] Gui configurable degree particle systems
 
+		+ [x] Gui editor
+
+		+ [x] Gui preparation
+
+		+ [ ] Gui connections
+
+		+ [ ] Degree editing commands
+
 	+ [ ] File Browser
 
 
