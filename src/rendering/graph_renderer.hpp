@@ -4,6 +4,7 @@
 #ifndef RENDERING_GRAPH_RENDERER_HPP
 #define RENDERING_GRAPH_RENDERER_HPP
 
+#include "degrees_evaluator.hpp"
 #include "detail/edge_renderer.hpp"
 #include "detail/vertex_renderer.hpp"
 
@@ -89,13 +90,37 @@ private:
 };
 
 /***********************************************************
+ * Concepts                                                *
+ ***********************************************************/
+
+// clang-format off
+template < typename Class >
+concept degrees_evaluation_policy 
+= requires
+{
+    typename Class::degree_type;
+    typename Class::particles_type;
+} && requires(Class val, typename Class::degree_type degrees)
+{
+    { val.in_degree_particles(degrees) } 
+        -> std::same_as< typename Class::particles_type >;
+    { val.out_degree_particles(degrees) }  
+        -> std::same_as< typename Class::particles_type >;
+};
+// clang-format on
+
+/***********************************************************
  * Graph renderer                                          *
  ***********************************************************/
 
 // Generic directed graph renderer.
 // Will prepare a scene at a render window upon initialization.
 // NOTE: Parallel edges are allowed.
-template < typename Graph, typename VertexID, typename DependencyMap >
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    degrees_evaluation_policy DegreesEvaluator = degrees_evaluator >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -124,6 +149,8 @@ public:
     using config_data_type = graph_config;
     using config_api_type = graph_config_api;
 
+    using degrees_evaluator_type = DegreesEvaluator;
+
     // Renders the graph with its layout.
     template < typename PositionMap >
     graph_renderer(
@@ -133,7 +160,8 @@ public:
         dependency_map_type edge_dependency,
         scene_type& scene,
         config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT)
+        std::string_view resource_group = Ogre::RGN_DEFAULT,
+        degrees_evaluator_type degrees_eval = degrees_evaluator_type())
     : m_g { g }
     , m_vertex_id { vertex_id }
     , m_edge_dependency { edge_dependency }
@@ -144,6 +172,7 @@ public:
     , m_resource_group { resource_group }
     , m_vertex_renderer { scene, config_data(), resource_group }
     , m_edge_renderer { scene, config_data(), resource_group }
+    , m_degrees_eval { std::move(degrees_eval) }
     {
         BOOST_CONCEPT_ASSERT(
             (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -204,6 +233,9 @@ public:
     auto config_api() -> config_api_type& { return m_cfg_api; }
 
     auto resource_group() const -> auto* { return m_resource_group.data(); }
+
+    auto get_degrees_evaluator() const -> const auto& { return m_degrees_eval; }
+    auto get_degrees_evaluator() -> auto& { return m_degrees_eval; }
 
     template < typename PositionMap >
     inline auto render_layout(PositionMap vertex_pos) -> void
@@ -270,39 +302,39 @@ public:
             });
     }
 
-    template < typename ParticleSystemFunc >
-    requires std::invocable< ParticleSystemFunc, degree_type >
-    inline auto render_in_degree_particle_systems(ParticleSystemFunc f) -> void
+    inline auto render_in_degree_particles() -> void
     {
         BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
 
-        static_assert(std::is_same_v<
-                      decltype(f(boost::in_degree(vertex_type(), graph()))),
+        static_assert(std::is_convertible_v<
+                      decltype(m_degrees_eval.in_degree_particles(
+                          boost::in_degree(vertex_type(), graph()))),
                       std::optional< detail::vertex_renderer::name_type > >);
 
         visit_vertices(
-            [this, particle_sytem = std::move(f)](auto v)
+            [this](auto v)
             {
-                m_vertex_renderer.render_in_degree_particle_system(
+                m_vertex_renderer.render_in_degree_particles(
                     boost::get(vertex_id(), v),
-                    particle_sytem(boost::in_degree(v, graph())));
+                    m_degrees_eval.in_degree_particles(
+                        boost::in_degree(v, graph())));
             });
     }
 
-    template < typename ParticleSystemFunc >
-    requires std::invocable< ParticleSystemFunc, degree_type >
-    inline auto render_out_degree_particle_systems(ParticleSystemFunc f) -> void
+    inline auto render_out_degree_particles() -> void
     {
-        static_assert(std::is_same_v<
-                      decltype(f(boost::out_degree(vertex_type(), graph()))),
+        static_assert(std::is_convertible_v<
+                      decltype(m_degrees_eval.out_degree_particles(
+                          boost::out_degree(vertex_type(), graph()))),
                       std::optional< detail::vertex_renderer::name_type > >);
 
         visit_vertices(
-            [this, particle_sytem = std::move(f)](auto v)
+            [this](auto v)
             {
-                m_vertex_renderer.render_out_degree_particle_system(
+                m_vertex_renderer.render_out_degree_particles(
                     boost::get(vertex_id(), v),
-                    particle_sytem(boost::out_degree(v, graph())));
+                    m_degrees_eval.out_degree_particles(
+                        boost::out_degree(v, graph())));
             });
     }
 
@@ -389,6 +421,8 @@ private:
 
     detail::vertex_renderer m_vertex_renderer;
     detail::edge_renderer m_edge_renderer;
+
+    degrees_evaluator_type m_degrees_eval;
 };
 
 } // namespace rendering

@@ -141,6 +141,9 @@ auto application::setup_background_renderer() -> void
 
 auto application::setup_graph_renderer() -> void
 {
+    using degrees_evaluator = rendering::degrees_evaluator;
+    using degrees_backend = rendering::degrees_backend;
+
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->get_graph(),
         m_graph_iface->vertex_id(),
@@ -148,10 +151,13 @@ auto application::setup_graph_renderer() -> void
         m_graph_iface->edge_dependency(),
         m_background_renderer->scene(),
         m_rendering_config.graph,
-        ARCHV_RESOURCE_GROUP);
+        ARCHV_RESOURCE_GROUP,
+        degrees_evaluator(degrees_backend(m_rendering_config.degrees)));
 
     m_graph_renderer->render_scaling(m_graph_iface->vertex_scale());
     m_graph_renderer->render_weights(m_graph_iface->edge_weight());
+    m_graph_renderer->render_in_degree_particles();
+    m_graph_renderer->render_out_degree_particles();
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
 }

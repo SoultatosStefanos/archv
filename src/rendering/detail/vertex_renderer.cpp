@@ -146,10 +146,10 @@ auto vertex_renderer::shutdown(const id_type& id) -> void
     const bool has_out_degree_effect_rendered = v.out_degree_effect.has_value();
 
     if (has_in_degree_effect_rendered)
-        shutdown_in_degree_particle_system(v.id);
+        shutdown_in_degree_particles(v.id);
 
     if (has_out_degree_effect_rendered)
-        shutdown_out_degree_particle_system(v.id);
+        shutdown_out_degree_particles(v.id);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown vertex: " << id;
 }
@@ -253,11 +253,11 @@ auto vertex_renderer::hide_scale(const id_type& id) -> void
     BOOST_LOG_TRIVIAL(debug) << "hid scale of vertex: " << id;
 }
 
-auto vertex_renderer::render_in_degree_particle_system(
+auto vertex_renderer::render_in_degree_particles(
     const id_type& id, const std::optional< name_type >& particle_system)
     -> void
 {
-    render_degree_particle_system(
+    render_degree_particles(
         id,
         particle_system,
         vertex(id).in_degree_effect,
@@ -266,11 +266,11 @@ auto vertex_renderer::render_in_degree_particle_system(
     BOOST_LOG_TRIVIAL(debug) << "rendered in degree effect for vertex: " << id;
 }
 
-auto vertex_renderer::render_out_degree_particle_system(
+auto vertex_renderer::render_out_degree_particles(
     const id_type& id, const std::optional< name_type >& particle_system)
     -> void
 {
-    render_degree_particle_system(
+    render_degree_particles(
         id,
         particle_system,
         vertex(id).out_degree_effect,
@@ -279,7 +279,7 @@ auto vertex_renderer::render_out_degree_particle_system(
     BOOST_LOG_TRIVIAL(debug) << "rendered out degree effect for vertex: " << id;
 }
 
-auto vertex_renderer::render_degree_particle_system(
+auto vertex_renderer::render_degree_particles(
     const id_type& id,
     const std::optional< name_type >& particle_system,
     std::optional< name_type >& curr_effect,
@@ -296,7 +296,7 @@ auto vertex_renderer::render_degree_particle_system(
     {
         if (has_rendered_effect)
         {
-            shutdown_degree_particle_system(curr_effect);
+            shutdown_degree_particles(curr_effect);
         }
         return;
     }
@@ -309,7 +309,7 @@ auto vertex_renderer::render_degree_particle_system(
         }
         else
         {
-            shutdown_degree_particle_system(curr_effect);
+            shutdown_degree_particles(curr_effect);
         }
     }
 
@@ -334,23 +334,21 @@ auto vertex_renderer::render_degree_particle_system(
     curr_effect = std::move(new_effect_name);
 }
 
-auto vertex_renderer::shutdown_in_degree_particle_system(const id_type& id)
-    -> void
+auto vertex_renderer::shutdown_in_degree_particles(const id_type& id) -> void
 {
-    shutdown_degree_particle_system(vertex(id).in_degree_effect);
+    shutdown_degree_particles(vertex(id).in_degree_effect);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown in degree effect for vertex: " << id;
 }
 
-auto vertex_renderer::shutdown_out_degree_particle_system(const id_type& id)
-    -> void
+auto vertex_renderer::shutdown_out_degree_particles(const id_type& id) -> void
 {
-    shutdown_degree_particle_system(vertex(id).out_degree_effect);
+    shutdown_degree_particles(vertex(id).out_degree_effect);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown out degree effect for vertex: " << id;
 }
 
-auto vertex_renderer::shutdown_degree_particle_system(
+auto vertex_renderer::shutdown_degree_particles(
     std::optional< name_type >& curr_effect) -> void
 {
     assert(curr_effect.has_value());

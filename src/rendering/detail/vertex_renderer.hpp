@@ -71,13 +71,10 @@ public:
 
     auto hide_scale(const id_type& id) -> void;
 
-    auto render_in_degree_particle_system(
-        const id_type& id, const std::optional< name_type >& particle_system)
-        -> void;
-
-    auto render_out_degree_particle_system(
-        const id_type&, const std::optional< name_type >& particle_system)
-        -> void;
+    auto render_in_degree_particles(
+        const id_type& id, const std::optional< name_type >& particles) -> void;
+    auto render_out_degree_particles(
+        const id_type&, const std::optional< name_type >& particles) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;
@@ -104,17 +101,15 @@ private:
 
     // effect name is specific to the vertex, in order to be rendered with this
     // as an "id".
-    auto render_degree_particle_system(
+    auto render_degree_particles(
         const id_type& id,
         const std::optional< name_type >& particle_system,
         std::optional< name_type >& curr_effect,
         name_type&& new_effect) -> void;
 
-    auto shutdown_in_degree_particle_system(const id_type& id) -> void;
-    auto shutdown_out_degree_particle_system(const id_type& id) -> void;
-    auto
-    shutdown_degree_particle_system(std::optional< name_type >& curr_effect)
-        -> void;
+    auto shutdown_in_degree_particles(const id_type& id) -> void;
+    auto shutdown_out_degree_particles(const id_type& id) -> void;
+    auto shutdown_degree_particles(std::optional< name_type >& curr) -> void;
 
     auto draw_model(const vertex_type& v) -> void;
     auto draw_scale(const vertex_type& v) -> void;
