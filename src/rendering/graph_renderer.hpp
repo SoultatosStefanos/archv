@@ -151,6 +151,14 @@ public:
 
     using degrees_evaluator_type = DegreesEvaluator;
 
+    static_assert(std::is_convertible_v<
+                  typename degrees_evaluator_type::particles_type,
+                  std::optional< detail::vertex_renderer::name_type > >);
+
+    static_assert(std::is_convertible_v<
+                  degree_type,
+                  typename degrees_evaluator_type::degree_type >);
+
     // Renders the graph with its layout.
     template < typename PositionMap >
     graph_renderer(
@@ -306,11 +314,6 @@ public:
     {
         BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
 
-        static_assert(std::is_convertible_v<
-                      decltype(m_degrees_eval.in_degree_particles(
-                          boost::in_degree(vertex_type(), graph()))),
-                      std::optional< detail::vertex_renderer::name_type > >);
-
         visit_vertices(
             [this](auto v)
             {
@@ -323,11 +326,6 @@ public:
 
     inline auto render_out_degree_particles() -> void
     {
-        static_assert(std::is_convertible_v<
-                      decltype(m_degrees_eval.out_degree_particles(
-                          boost::out_degree(vertex_type(), graph()))),
-                      std::optional< detail::vertex_renderer::name_type > >);
-
         visit_vertices(
             [this](auto v)
             {
