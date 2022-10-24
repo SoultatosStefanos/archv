@@ -28,11 +28,13 @@ private:
     using particle_system_sig
         = boost::signals2::signal< void(particle_system_type) >;
     using applied_sig = boost::signals2::signal< void(applied_type) >;
+    using restore_sig = boost::signals2::signal< void() >;
 
 public:
     using threshold_slot = threshold_sig::slot_type;
     using particle_system_slot = particle_system_sig::slot_type;
     using applied_slot = applied_sig::slot_type;
+    using restore_slot = restore_sig::slot_type;
     using connection = boost::signals2::connection;
 
     degrees_editor();
@@ -60,6 +62,7 @@ public:
     auto connect_to_medium_particles(const particle_system_slot&) -> connection;
     auto connect_to_heavy_particles(const particle_system_slot&) -> connection;
     auto connect_to_applied(const applied_slot&) -> connection;
+    auto connect_to_restore(const restore_slot&) -> connection;
 
     auto render() const -> void;
 
@@ -76,6 +79,7 @@ protected:
     auto emit_medium_particles(particle_system_type particles) const -> void;
     auto emit_heavy_particles(particle_system_type particles) const -> void;
     auto emit_applied(applied_type val) const -> void;
+    auto emit_restore() const -> void;
 
 private:
     threshold_accessor m_light_thres;
@@ -93,6 +97,7 @@ private:
     particle_system_sig m_medium_particles_sig;
     particle_system_sig m_heavy_particles_sig;
     applied_sig m_applied_sig;
+    restore_sig m_restore_sig;
 
     mutable render_vector m_particles;
 };
