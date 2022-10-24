@@ -1,0 +1,18 @@
+material Particles/Flare
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+			diffuse vertexcolour
+
+			texture_unit
+			{
+				texture particles_flare.png
+			}
+		}
+	}
+}

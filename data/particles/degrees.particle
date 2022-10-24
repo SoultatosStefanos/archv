@@ -1,99 +1,237 @@
-// A sparkly purple fountain
-particle_system Degrees/PurpleFountain
+particle_system Degrees/SmallRingWhite
 {
-    material Degrees/Flare2
-    particle_width 20
-    particle_height 20
-    cull_each false
-    quota 10000
-    billboard_type oriented_self
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
 
-    // Area emitter
-    emitter Point
-    {
-        angle 15
-        emission_rate 75
-        time_to_live 3
-        direction 0 1 0
-        velocity_min 250
-        velocity_max 300
-        colour_range_start 1 0 0
-        colour_range_end 0 0 1
-    }
+	emitter Ring
+	{
+		angle	0
+        colour 0.5 0.5 0.5
+		direction	0 0 1
+		emission_rate	450
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
 
-    // Gravity
+        width 6
+        height 6
+        depth 6
+        inner_width 0.2
+        inner_height 0.2
+	}
+
     affector LinearForce
     {
-        force_vector 0 -100 0
+        force_vector 0 0 0
         force_application add
     }
 
-    // Fader
-    affector ColourFader
+}
+particle_system Degrees/SmallRingYellow
+{
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
+
+	emitter Ring
+	{
+		angle	0
+        colour 0.5 0.5 0
+		direction	0 0 1
+		emission_rate	450
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
+
+        width 6
+        height 6
+        depth 6
+        inner_width 0.2
+        inner_height 0.2
+	}
+
+    affector LinearForce
     {
-       red -0.25
-       green -0.25
-       blue -0.25
+        force_vector 0 0 0
+        force_application add
+    }
+
+}
+particle_system Degrees/SmallRingRed
+{
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
+
+	emitter Ring
+	{
+		angle	0
+        colour 1 0 0 1
+		direction	0 0 1
+		emission_rate	450
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
+
+        width 6
+        height 6
+        depth 6
+        inner_width 0.2
+        inner_height 0.2
+	}
+
+    affector LinearForce
+    {
+        force_vector 0 0 0
+        force_application add
+    }
+
+}
+particle_system Degrees/BigRingWhite
+{
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
+
+	emitter Ring
+	{
+		angle	0
+        colour 0.5 0.5 0.5
+		direction	0 0 1
+		emission_rate	650
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
+
+        width 13
+        height 13
+        depth 13
+        inner_width 1.4
+        inner_height 1.4
+	}
+
+    affector LinearForce
+    {
+        force_vector 0 0 0
+        force_application add
     }
 }
-// A circle of light
-particle_system Degrees/Aureola
+particle_system Degrees/BigRingYellow
 {
-    material        Degrees/Aureola
-    particle_width  200
-    particle_height 200
-    cull_each       false
-    quota           100
-    billboard_type  perpendicular_common
-    common_direction 0 1 0
-    common_up_vector 0 0 1
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
 
-    // Area emitter.
-    emitter Box
-    {
-        angle           30
-        emission_rate   4
-        time_to_live    5
-        position        0 -100 0
-        direction       0 1 0
-        velocity_min  	0
-        velocity_max  	30
-        colour_range_start  0.3 0.3 0.3 0.0
-        colour_range_end    0.8 0.8 0.8 0.0
-        width           10
-        height          10
-        depth           30
-    }
+	emitter Ring
+	{
+		angle	0
+        colour 0.5 0.5 0
+		direction	0 0 1
+		emission_rate	650
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
 
-    // Make 'em float upwards.
+        width 13
+        height 13
+        depth 13
+        inner_width 1.4
+        inner_height 1.4
+	}
+
     affector LinearForce
     {
-        force_vector      0 70 0
+        force_vector 0 0 0
         force_application add
     }
+}
+particle_system Degrees/BigRingRed
+{
+	quota	10000
+	material	Particles/Flare
+	particle_width	0.5
+	particle_height	0.5
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	true
+	billboard_type	point
+    billboard_origin center
 
-    // Fader.
-    affector ColourFader2
+	emitter Ring
+	{
+		angle	0
+        colour 1 0 0 1
+		direction	0 0 1
+		emission_rate	650
+		position	0 0 0
+		velocity_min	20
+		velocity_max	30
+		time_to_live	1
+		duration	0
+		repeat_delay 1
+
+        width 13
+        height 13
+        depth 13
+        inner_width 1.4
+        inner_height 1.4
+	}
+
+    affector LinearForce
     {
-        red1 +0.4
-        green1 +0.4
-        blue1 +0.4
-        alpha1 +0.7
-
-        red2 -0.25
-        green2 -0.25
-        blue2 -0.25
-        alpha2 -0.3333
-
-        state_change 3.5
-    }
-
-    // Rotater.
-    affector Rotator
-    {
-        rotation_range_start 0
-        rotation_range_end 360
-        rotation_speed_range_start 0
-        rotation_speed_range_end 360
+        force_vector 0 0 0
+        force_application add
     }
 }

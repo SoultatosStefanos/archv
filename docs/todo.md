@@ -541,26 +541,28 @@
 
 	+ [x] Gui configuration exceptions
 
-	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
+	+ [x] Create nifty particle systems for in/out-degrees (3 each)
 	Note: Hollow Ellipsoid Emitter (3d ring)
 
-		+ [ ] In-degree systems (Direction inward)
+		+ [x] In-degree systems (Direction inward)
 
-			+ [ ] Heavy
+			+ [x] Heavy
 
-			+ [ ] Medium
+			+ [x] Medium
 
-			+ [ ] Light
+			+ [x] Light
 			
-		+ [ ] Out-degree systems (Direction outward)
+		+ [x] Out-degree systems (Direction outward)
 
-			+ [ ] Heavy
+			+ [x] Heavy
 
-			+ [ ] Medium
+			+ [x] Medium
 
-			+ [ ] Light
+			+ [x] Light
 
 	+ [ ] Gui configurable degree particle systems
+
+	+ [ ] File Browser
 
 
 

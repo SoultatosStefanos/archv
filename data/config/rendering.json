@@ -39,31 +39,31 @@
 			{ 
 				"light" : 2,
 				"medium" : 5,
-				"heavy": 10 
+				"heavy": 10
 			},
 			"particle-systems" : 
 			{
-				"light" : "Degrees/PurpleFountain",
-				"medium" : "Degrees/PurpleFountain",
-				"heavy" : "Degrees/PurpleFountain" 
+				"light" : "Degrees/SmallRingWhite",
+				"medium" : "Degrees/SmallRingYellow",
+				"heavy" : "Degrees/SmallRingRed" 
 			},
-			"applied" : false
+			"applied" : true
 		},
 		"out-degree" :
 		{
 			"thresholds" : 
 			{ 
 				"light" : 2,
-				"medium" : 200,
-				"heavy": 300 
+				"medium" : 5,
+				"heavy": 10
 			},
 			"particle-systems" : 
 			{
-				"light" : "Degrees/PurpleFountain",
-				"medium" : "Degrees/PurpleFountain",
-				"heavy" : "Degrees/PurpleFountain" 
+				"light" : "Degrees/BigRingWhite",
+				"medium" : "Degrees/BigRingYellow",
+				"heavy" : "Degrees/BigRingRed" 
 			},
-			"applied" : false
+			"applied" : true
 		}
 	}
 }

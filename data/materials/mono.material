@@ -62,3 +62,19 @@ material Mono/White
 		}
 	}
 }
+material Mono/Yellow
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 0.9 0.9 0
+			}
+		}
+	}
+}
