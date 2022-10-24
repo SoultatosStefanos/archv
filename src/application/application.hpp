@@ -82,6 +82,7 @@ private:
     auto prepare_weights_editor() -> void;
     auto prepare_layout_editor() -> void;
     auto prepare_scaling_editor() -> void;
+    auto prepare_degrees_editor() -> void;
     auto prepare_background_configurator() -> void;
     auto prepare_graph_configurator() -> void;
     auto prepare_gui_configurator() -> void;

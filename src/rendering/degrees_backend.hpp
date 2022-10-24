@@ -52,12 +52,14 @@ private:
  * Usecases                                                *
  ***********************************************************/
 
-inline auto get_in_degree_evaluation_data(const degrees_backend& b)
+inline auto get_in_degree_evaluation_data(const degrees_backend& b) -> const
+    auto&
 {
     return b.in_degree_data();
 }
 
-inline auto get_out_degree_evaluation_data(const degrees_backend& b)
+inline auto get_out_degree_evaluation_data(const degrees_backend& b) -> const
+    auto&
 {
     return b.out_degree_data();
 }
@@ -73,11 +75,13 @@ inline auto is_out_degree_evaluation_applied(const degrees_backend& b)
 }
 
 inline auto get_in_degree_evaluation_thresholds(const degrees_backend& b)
+    -> const auto&
 {
     return get_in_degree_evaluation_data(b).thresholds;
 }
 
 inline auto get_out_degree_evaluation_thresholds(const degrees_backend& b)
+    -> const auto&
 {
     return get_out_degree_evaluation_data(b).thresholds;
 }
@@ -112,42 +116,50 @@ inline auto get_out_degree_evaluation_heavy_threshold(const degrees_backend& b)
     return get_out_degree_evaluation_thresholds(b).heavy;
 }
 
-inline auto get_in_degree_evaluation_effects(const degrees_backend& b)
+inline auto get_in_degree_evaluation_effects(const degrees_backend& b) -> const
+    auto&
 {
     return get_in_degree_evaluation_data(b).particles;
 }
 
-inline auto get_out_degree_evaluation_effects(const degrees_backend& b)
+inline auto get_out_degree_evaluation_effects(const degrees_backend& b) -> const
+    auto&
 {
     return get_out_degree_evaluation_data(b).particles;
 }
 
 inline auto get_in_degree_evaluation_light_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_in_degree_evaluation_effects(b).light;
 }
 
 inline auto get_out_degree_evaluation_light_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_out_degree_evaluation_effects(b).light;
 }
 
 inline auto get_in_degree_evaluation_medium_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_in_degree_evaluation_effects(b).medium;
 }
 
 inline auto get_out_degree_evaluation_medium_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_out_degree_evaluation_effects(b).medium;
 }
 
 inline auto get_in_degree_evaluation_heavy_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_in_degree_evaluation_effects(b).heavy;
 }
 
 inline auto get_out_degree_evaluation_heavy_effect(const degrees_backend& b)
+    -> const auto&
 {
     return get_out_degree_evaluation_effects(b).heavy;
 }

@@ -192,6 +192,10 @@ auto gui::render_editor() const -> void
             ImGui::TreePop();
         }
 
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
         if (ImGui::TreeNode("Out-Degrees"))
         {
             get_out_degrees_editor().render();

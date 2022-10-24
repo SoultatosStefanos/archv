@@ -6,6 +6,7 @@
 #include "ui/all.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreParticleSystemManager.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -13,6 +14,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <map>
 #include <ranges>
 
 namespace application
@@ -71,6 +73,7 @@ auto application::setup() -> void
     prepare_weights_editor();
     prepare_layout_editor();
     prepare_scaling_editor();
+    prepare_degrees_editor();
     prepare_background_configurator();
     prepare_graph_configurator();
     prepare_gui_configurator();
@@ -250,11 +253,31 @@ namespace // gui setup
         gui::resources::load_fonts(std::move(fonts));
     }
 
+    inline auto load_gui_particles()
+    {
+        using namespace Ogre;
+
+        auto& particles = ParticleSystemManager::getSingleton();
+
+        static auto templates = particles.getTemplateIterator();
+
+        auto systems = gui::resources::particle_systems_vector();
+
+        std::transform(
+            std::begin(templates),
+            std::end(templates),
+            std::back_inserter(systems),
+            [](const auto& pair) { return pair.first.c_str(); });
+
+        gui::resources::load_particle_systems(std::move(systems));
+    }
+
     inline auto load_gui_resources()
     {
         load_gui_meshes();
         load_gui_materials();
         load_gui_fonts();
+        load_gui_particles();
     }
 
     inline auto setup_gui_overlay()
@@ -453,6 +476,88 @@ auto application::prepare_scaling_editor() -> void
         });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared scaling editor";
+}
+
+auto application::prepare_degrees_editor() -> void
+{
+    assert(m_gui);
+    assert(m_graph_renderer);
+
+    auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+
+    m_gui->get_in_degrees_editor().set_light_threshold(
+        [this, &backend]() {
+            return rendering::get_in_degree_evaluation_light_threshold(backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_light_threshold(
+        [this, &backend]() {
+            return rendering::get_out_degree_evaluation_light_threshold(
+                backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_medium_threshold(
+        [this, &backend]() {
+            return rendering::get_in_degree_evaluation_medium_threshold(
+                backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_medium_threshold(
+        [this, &backend]() {
+            return rendering::get_out_degree_evaluation_medium_threshold(
+                backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_heavy_threshold(
+        [this, &backend]() {
+            return rendering::get_in_degree_evaluation_heavy_threshold(backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_heavy_threshold(
+        [this, &backend]() {
+            return rendering::get_out_degree_evaluation_heavy_threshold(
+                backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_light_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_in_degree_evaluation_light_effect(backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_light_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_out_degree_evaluation_light_effect(backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_medium_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_in_degree_evaluation_medium_effect(backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_medium_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_out_degree_evaluation_medium_effect(backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_heavy_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_in_degree_evaluation_heavy_effect(backend);
+        });
+
+    m_gui->get_out_degrees_editor().set_heavy_particles(
+        [ this, &backend ]() -> const auto& {
+            return rendering::get_out_degree_evaluation_heavy_effect(backend);
+        });
+
+    m_gui->get_in_degrees_editor().set_applied(
+        [this, &backend]()
+        { return rendering::is_in_degree_evaluation_applied(backend); });
+
+    m_gui->get_out_degrees_editor().set_applied(
+        [this, &backend]()
+        { return rendering::is_out_degree_evaluation_applied(backend); });
+
+    BOOST_LOG_TRIVIAL(debug) << "prepared degrees editor";
 }
 
 namespace // presentation translations
