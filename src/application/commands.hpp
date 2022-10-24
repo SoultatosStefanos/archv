@@ -6,6 +6,7 @@
 #define APPLICATION_COMMANDS_HPP
 
 #include "architecture/graph_interface.hpp"
+#include "rendering/degrees_backend.hpp"
 #include "scaling/backend.hpp"
 #include "undo_redo/allfwd.hpp"
 
@@ -86,6 +87,88 @@ auto update_scaling_factor_max_ratio(
 auto restore_scaling(
     undo_redo::command_history& cmds,
     architecture::graph_interface::scaling_backend_type& b) -> void;
+
+/***********************************************************
+ * Degrees                                                 *
+ ***********************************************************/
+
+auto update_in_degree_evaluation_light_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_out_degree_evaluation_light_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_in_degree_evaluation_medium_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_out_degree_evaluation_medium_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_in_degree_evaluation_heavy_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_out_degree_evaluation_heavy_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void;
+
+auto update_in_degree_evaluation_light_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_out_degree_evaluation_light_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_in_degree_evaluation_medium_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_out_degree_evaluation_medium_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_in_degree_evaluation_heavy_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_out_degree_evaluation_heavy_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void;
+
+auto update_in_degree_evaluation_applied(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::applied_type applied) -> void;
+
+auto update_out_degree_evaluation_applied(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::applied_type applied) -> void;
+
+auto restore_in_degree_evaluation(
+    undo_redo::command_history& cmds, rendering::degrees_backend& backend)
+    -> void;
+
+auto restore_out_degree_evaluation(
+    undo_redo::command_history& cmds, rendering::degrees_backend& backend)
+    -> void;
 
 } // namespace application::commands
 

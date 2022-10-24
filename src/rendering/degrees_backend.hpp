@@ -18,6 +18,10 @@ class degrees_backend
         = boost::signals2::signal< void(const degree_evaluation_data&) >;
 
 public:
+    using threshold_type = degree_evaluation_data::threshold_type;
+    using particle_system_type = degree_evaluation_data::particle_system_type;
+    using applied_type = degree_evaluation_data::applied_type;
+
     using slot = signal::slot_type;
     using connection = boost::signals2::connection;
 

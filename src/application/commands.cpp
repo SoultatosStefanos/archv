@@ -511,4 +511,754 @@ auto restore_scaling(
     cmds.execute(std::make_unique< restore_scaling_defaults_cmd >(b));
 }
 
-} // namespace application
+/***********************************************************
+ * Degrees                                                 *
+ ***********************************************************/
+
+namespace
+{
+    struct in_degree_tag
+    {
+    };
+
+    struct out_degree_tag
+    {
+    };
+
+    struct light_tag
+    {
+    };
+
+    struct medium_tag
+    {
+    };
+
+    struct heavy_tag
+    {
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct get_degree_threshold
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& backend) const -> threshold_type
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< in_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_in_degree_evaluation_light_threshold(back);
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< in_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_in_degree_evaluation_medium_threshold(back);
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< in_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_in_degree_evaluation_heavy_threshold(back);
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< out_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_out_degree_evaluation_light_threshold(back);
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< out_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_out_degree_evaluation_medium_threshold(back);
+        }
+    };
+
+    template <>
+    struct get_degree_threshold< out_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& back) const
+        {
+            return rendering::get_out_degree_evaluation_heavy_threshold(back);
+        }
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct update_degree_threshold
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const -> void
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< in_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_in_degree_evaluation_light_threshold(b, t);
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< in_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_in_degree_evaluation_medium_threshold(b, t);
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< in_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_in_degree_evaluation_heavy_threshold(b, t);
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< out_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_out_degree_evaluation_light_threshold(b, t);
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< out_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_out_degree_evaluation_medium_threshold(b, t);
+        }
+    };
+
+    template <>
+    struct update_degree_threshold< out_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        inline auto operator()(backend_type& b, threshold_type t) const
+        {
+            rendering::update_out_degree_evaluation_heavy_threshold(b, t);
+        }
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct update_degree_threshold_cmd : undo_redo::command
+    {
+        using backend_type = rendering::degrees_backend;
+        using threshold_type = rendering::degrees_backend::threshold_type;
+
+        using degree_tag = DegreeTag;
+        using rank_tag = RankTag;
+        using accessor = get_degree_threshold< degree_tag, rank_tag >;
+        using updater = update_degree_threshold< degree_tag, rank_tag >;
+
+        backend_type& backend;
+        threshold_type new_thres, old_thres;
+
+        update_degree_threshold_cmd(backend_type& b, threshold_type thres)
+        : backend { b }, new_thres { thres }
+        {
+        }
+
+        ~update_degree_threshold_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_thres = accessor()(backend);
+            updater()(backend, new_thres);
+        }
+
+        auto undo() -> void override { updater()(backend, old_thres); }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct get_degree_particles
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct get_degree_particles< in_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_in_degree_evaluation_light_effect(backend);
+        }
+    };
+
+    template <>
+    struct get_degree_particles< in_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_in_degree_evaluation_medium_effect(backend);
+        }
+    };
+
+    template <>
+    struct get_degree_particles< in_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_in_degree_evaluation_heavy_effect(backend);
+        }
+    };
+
+    template <>
+    struct get_degree_particles< out_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_out_degree_evaluation_light_effect(backend);
+        }
+    };
+
+    template <>
+    struct get_degree_particles< out_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_out_degree_evaluation_medium_effect(backend);
+        }
+    };
+
+    template <>
+    struct get_degree_particles< out_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& backend) const -> particles_type
+        {
+            return rendering::get_out_degree_evaluation_heavy_effect(backend);
+        }
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct update_degree_particles
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct update_degree_particles< in_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_in_degree_evaluation_light_effect(
+                b, std::move(t));
+        }
+    };
+
+    template <>
+    struct update_degree_particles< in_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_in_degree_evaluation_medium_effect(
+                b, std::move(t));
+        }
+    };
+
+    template <>
+    struct update_degree_particles< in_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_in_degree_evaluation_heavy_effect(
+                b, std::move(t));
+        }
+    };
+
+    template <>
+    struct update_degree_particles< out_degree_tag, light_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_out_degree_evaluation_light_effect(
+                b, std::move(t));
+        }
+    };
+
+    template <>
+    struct update_degree_particles< out_degree_tag, medium_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_out_degree_evaluation_medium_effect(
+                b, std::move(t));
+        }
+    };
+
+    template <>
+    struct update_degree_particles< out_degree_tag, heavy_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        inline auto operator()(backend_type& b, particles_type t) const -> void
+        {
+            rendering::update_out_degree_evaluation_heavy_effect(
+                b, std::move(t));
+        }
+    };
+
+    template < typename DegreeTag, typename RankTag >
+    struct update_degree_particles_cmd : undo_redo::command
+    {
+        using backend_type = rendering::degrees_backend;
+        using particles_type = rendering::degrees_backend::particle_system_type;
+
+        using degree_tag = DegreeTag;
+        using rank_tag = RankTag;
+        using accessor = get_degree_particles< degree_tag, rank_tag >;
+        using updater = update_degree_particles< degree_tag, rank_tag >;
+
+        backend_type& backend;
+        particles_type new_parts, old_parts;
+
+        update_degree_particles_cmd(backend_type& b, particles_type parts)
+        : backend { b }, new_parts { std::move(parts) }
+        {
+        }
+
+        ~update_degree_particles_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_parts = accessor()(backend);
+            updater()(backend, new_parts);
+        }
+
+        auto undo() -> void override { updater()(backend, old_parts); }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    template < typename DegreeTag >
+    struct is_degree_applied
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& backend) const -> applied_type
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct is_degree_applied< in_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& backend) const -> applied_type
+        {
+            return rendering::is_in_degree_evaluation_applied(backend);
+        }
+    };
+
+    template <>
+    struct is_degree_applied< out_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& backend) const -> applied_type
+        {
+            return rendering::is_out_degree_evaluation_applied(backend);
+        }
+    };
+
+    template < typename DegreeTag >
+    struct update_degree_applied
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& b, applied_type v) const -> void
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct update_degree_applied< in_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& b, applied_type v) const -> void
+        {
+            rendering::update_in_degree_evaluation_applied(b, v);
+        }
+    };
+
+    template <>
+    struct update_degree_applied< out_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        inline auto operator()(backend_type& b, applied_type v) const -> void
+        {
+            rendering::update_out_degree_evaluation_applied(b, v);
+        }
+    };
+
+    template < typename DegreeTag >
+    struct update_degree_applied_cmd : undo_redo::command
+    {
+        using backend_type = rendering::degrees_backend;
+        using applied_type = rendering::degrees_backend::applied_type;
+
+        using degree_tag = DegreeTag;
+        using accessor = is_degree_applied< degree_tag >;
+        using updater = update_degree_applied< degree_tag >;
+
+        backend_type& backend;
+        applied_type new_val, old_val;
+
+        update_degree_applied_cmd(backend_type& b, applied_type val)
+        : backend { b }, new_val { val }
+        {
+        }
+
+        ~update_degree_applied_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_val = accessor()(backend);
+            updater()(backend, new_val);
+        }
+
+        auto undo() -> void override { updater()(backend, old_val); }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    template < typename DegreeTag >
+    struct restore_degree
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& b) const -> void
+        {
+            __builtin_unreachable();
+        }
+    };
+
+    template <>
+    struct restore_degree< in_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& b) const -> void
+        {
+            rendering::restore_in_degree_evaluation(b);
+        }
+    };
+
+    template <>
+    struct restore_degree< out_degree_tag >
+    {
+        using backend_type = rendering::degrees_backend;
+
+        inline auto operator()(backend_type& b) const -> void
+        {
+            rendering::restore_out_degree_evaluation(b);
+        }
+    };
+
+    template < typename DegreeTag >
+    struct restore_degree_cmd : undo_redo::command
+    {
+        using backend_type = rendering::degrees_backend;
+        using data_type = rendering::degree_evaluation_data;
+
+        using degree_tag = DegreeTag;
+        using action = restore_degree< degree_tag >;
+
+        backend_type& backend;
+        data_type old_in, old_out;
+
+        restore_degree_cmd(backend_type& b) : backend { b } { }
+        ~restore_degree_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_in = rendering::get_in_degree_evaluation_data(backend);
+            old_out = rendering::get_out_degree_evaluation_data(backend);
+            action()(backend);
+        }
+
+        auto undo() -> void override
+        {
+            rendering::update_in_degree_evaluation(backend, old_in);
+            rendering::update_out_degree_evaluation(backend, old_out);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+} // namespace
+
+auto update_in_degree_evaluation_light_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< in_degree_tag, light_tag > >(
+        backend, thres));
+}
+
+auto update_out_degree_evaluation_light_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< out_degree_tag, light_tag > >(
+        backend, thres));
+}
+
+auto update_in_degree_evaluation_medium_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< in_degree_tag, medium_tag > >(
+        backend, thres));
+}
+
+auto update_out_degree_evaluation_medium_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< out_degree_tag, medium_tag > >(
+        backend, thres));
+}
+
+auto update_in_degree_evaluation_heavy_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< in_degree_tag, heavy_tag > >(
+        backend, thres));
+}
+
+auto update_out_degree_evaluation_heavy_threshold(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::threshold_type thres) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_threshold_cmd< out_degree_tag, heavy_tag > >(
+        backend, thres));
+}
+
+auto update_in_degree_evaluation_light_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< in_degree_tag, light_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_out_degree_evaluation_light_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< out_degree_tag, light_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_in_degree_evaluation_medium_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< in_degree_tag, medium_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_out_degree_evaluation_medium_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< out_degree_tag, medium_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_in_degree_evaluation_heavy_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< in_degree_tag, heavy_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_out_degree_evaluation_heavy_particles(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::particle_system_type particles) -> void
+{
+    cmds.execute(std::make_unique<
+                 update_degree_particles_cmd< out_degree_tag, heavy_tag > >(
+        backend, std::move(particles)));
+}
+
+auto update_in_degree_evaluation_applied(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::applied_type applied) -> void
+{
+    cmds.execute(std::make_unique< update_degree_applied_cmd< in_degree_tag > >(
+        backend, applied));
+}
+
+auto update_out_degree_evaluation_applied(
+    undo_redo::command_history& cmds,
+    rendering::degrees_backend& backend,
+    rendering::degrees_backend::applied_type applied) -> void
+{
+    cmds.execute(
+        std::make_unique< update_degree_applied_cmd< out_degree_tag > >(
+            backend, applied));
+}
+
+auto restore_in_degree_evaluation(
+    undo_redo::command_history& cmds, rendering::degrees_backend& backend)
+    -> void
+{
+    cmds.execute(
+        std::make_unique< restore_degree_cmd< in_degree_tag > >(backend));
+}
+
+auto restore_out_degree_evaluation(
+    undo_redo::command_history& cmds, rendering::degrees_backend& backend)
+    -> void
+{
+    cmds.execute(
+        std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));
+}
+
+} // namespace application::commands

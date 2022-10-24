@@ -566,9 +566,9 @@
 
 		+ [x] Gui preparation
 
-		+ [ ] Gui connections
+		+ [x] Degree editing commands
 
-		+ [ ] Degree editing commands
+		+ [ ] Gui connections
 
 	+ [ ] File Browser
 
