@@ -4,6 +4,7 @@
 #ifndef LAYOUT_BACKEND_HPP
 #define LAYOUT_BACKEND_HPP
 
+#include "backend_config.hpp"
 #include "layout.hpp"
 #include "layout_factory.hpp"
 #include "layout_plugin.hpp"
@@ -22,26 +23,6 @@
 
 namespace layout
 {
-
-/***********************************************************
- * Config Data                                             *
- ***********************************************************/
-
-struct backend_config
-{
-    using id_type = std::string;
-    using scale_type = double;
-
-    std::vector< id_type > layouts;
-    std::vector< id_type > topologies;
-
-    id_type layout;
-    id_type topology;
-    scale_type scale;
-
-    auto operator==(const backend_config&) const -> bool = default;
-    auto operator!=(const backend_config&) const -> bool = default;
-};
 
 /***********************************************************
  * Errors                                                  *

@@ -9,6 +9,6 @@
 		"Sphere"
 	],
 	"layout" : "Gursoy Atun",
-	"scale" : 900,
-	"topology" : "Sphere"
+	"topology" : "Sphere",
+	"scale" : 900
 }

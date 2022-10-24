@@ -1,6 +1,6 @@
 #include "config.hpp"
 
-#include "backend.hpp"
+#include "backend_config.hpp"
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
@@ -28,45 +28,16 @@ namespace
 
     inline auto deserialize_layouts(const Json::Value& root)
     {
-        using json_layouts = std::vector< std::string >;
+        using json_layouts = std::vector< config_data::id_type >;
         BOOST_LOG_TRIVIAL(debug) << "reading layouts";
         return read_json_array< json_layouts >(root["layouts"]);
     }
 
     inline auto deserialize_topologies(const Json::Value& root)
     {
-        using json_topologies = std::vector< std::string >;
+        using json_topologies = std::vector< config_data::id_type >;
         BOOST_LOG_TRIVIAL(debug) << "reading topologies";
         return read_json_array< json_topologies >(root["topologies"]);
-    }
-
-    auto deserialize_defaults(const Json::Value& root)
-    {
-        BOOST_LOG_TRIVIAL(debug) << "reading defaults";
-
-        const auto& defaults = root;
-
-        std::string layout, topology;
-        double scale;
-
-        for (auto iter = std::begin(defaults); iter != std::end(defaults);
-             ++iter)
-        {
-            if (iter.name() == "layout")
-            {
-                layout = (*iter).asString();
-            }
-            else if (iter.name() == "topology")
-            {
-                topology = (*iter).asString();
-            }
-            else if (iter.name() == "scale")
-            {
-                scale = (*iter).asDouble();
-            }
-        }
-
-        return std::make_tuple(std::move(layout), std::move(topology), scale);
     }
 
 } // namespace
@@ -75,7 +46,9 @@ auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& layouts = deserialize_layouts(root);
     auto&& topologies = deserialize_topologies(root);
-    auto&& [layout, topology, scale] = deserialize_defaults(root);
+    auto&& layout = root["layout"].as< config_data::id_type >();
+    auto&& topology = root["topology"].as< config_data::id_type >();
+    auto&& scale = root["scale"].as< config_data::scale_type >();
 
     config_data res { .layouts = std::move(layouts),
                       .topologies = std::move(topologies),
