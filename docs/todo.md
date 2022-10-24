@@ -537,7 +537,7 @@
 
 	+ [x] Particle system degree renderer
 
-	+ [ ] Introduce config modules to ease compile times
+	+ [x] Introduce config modules to ease compile times
 
 	+ [ ] Gui configuration exceptions
 
