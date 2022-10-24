@@ -1,5 +1,6 @@
 #include "config.hpp"
 
+#include "gui_config.hpp"
 #include "resources.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -7,18 +8,8 @@
 namespace gui
 {
 
-auto default_config() -> config_data
-{
-    return config_data { .color_theme = "Dark",
-                         .frame_rounding = 0,
-                         .window_bordered = true,
-                         .frame_bordered = true,
-                         .popup_bordered = true };
-}
-
 namespace
 {
-
     auto verify_color_theme(const std::string& theme)
     {
         if (std::find(

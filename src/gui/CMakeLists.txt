@@ -2,6 +2,7 @@ set(FILES
 	background_configurator.cpp
 	config.cpp
 	graph_configurator.cpp
+	gui_config.cpp
 	gui_configurator.cpp
 	gui.cpp
 	layout_editor.cpp

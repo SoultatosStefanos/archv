@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"
+#include "gui_config.hpp"
 #include "gui_configurator.hpp"
 #include "layout_editor.hpp"
 #include "plugins.hpp"

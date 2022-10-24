@@ -4,8 +4,6 @@
 #ifndef GUI_CONFIG_HPP
 #define GUI_CONFIG_HPP
 
-#include "gui.hpp"
-
 #include <boost/exception/all.hpp>
 #include <jsoncpp/json/json.h>
 #include <stdexcept>
@@ -35,9 +33,9 @@ using color_theme_info = boost::error_info< struct tag_theme, std::string >;
  * Functions                                               *
  ***********************************************************/
 
-using config_data = gui::config_data_type;
+class gui_config;
 
-auto default_config() -> config_data;
+using config_data = gui_config;
 
 auto deserialize(const Json::Value& root) -> config_data;
 
