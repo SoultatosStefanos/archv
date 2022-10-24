@@ -533,7 +533,7 @@
 	+ [x] Particle Systems Editor			
 
 
-# 23 / 10 / 2022
+# 24 / 10 / 2022
 
 	+ [ ] Particle system degree renderer
 
@@ -557,5 +557,7 @@
 			+ [ ] Light
 
 	+ [ ] Gui configurable degree particle systems
+
+	+ [ ] Introduce config modules to ease compile times
 
 
