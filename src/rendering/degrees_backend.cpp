@@ -5,8 +5,8 @@ namespace rendering
 
 degrees_backend::degrees_backend(config_data_type degree_data)
 : m_cfg { degree_data }
-, m_in_degree_data { degree_data.first }
-, m_out_degree_data { degree_data.second }
+, m_in_degree_data { degree_data.in_data }
+, m_out_degree_data { degree_data.out_data }
 {
 }
 

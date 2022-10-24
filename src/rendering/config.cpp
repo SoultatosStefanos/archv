@@ -126,14 +126,60 @@ namespace
                  static_cast< float >(edgetype_space_width) };
     }
 
+    template < typename T >
+    inline auto deserialize_degree_ranks(const Json::Value& val)
+    {
+        auto&& light = val["light"].as< T >();
+        auto&& medium = val["medium"].as< T >();
+        auto&& heavy = val["heavy"].as< T >();
+
+        return std::make_tuple(
+            std::move(light), std::move(medium), std::move(heavy));
+    }
+
+    inline auto deserialize_degrees_section(const Json::Value& val)
+    {
+        using threshold_type = degree_evaluation_data::threshold_type;
+        using system_type = degree_evaluation_data::particle_system_type;
+        using applied_type = degree_evaluation_data::applied_type;
+
+        auto&& [light_threshold, medium_threshold, heavy_threshold]
+            = deserialize_degree_ranks< threshold_type >(val["thresholds"]);
+
+        auto&& [light_particles, medium_particles, heavy_particles]
+            = deserialize_degree_ranks< system_type >(val["particle-systems"]);
+
+        const auto applied = val["applied"].as< applied_type >();
+
+        BOOST_LOG_TRIVIAL(debug) << "deserialized degree effects";
+
+        return degree_evaluation_data(
+            make_ranked(light_threshold, medium_threshold, heavy_threshold),
+            make_ranked(
+                std::move(light_particles),
+                std::move(medium_particles),
+                std::move(heavy_particles)),
+            applied);
+    }
+
+    inline auto deserialize_degrees(const Json::Value& root) -> degrees_config
+    {
+        return degrees_config(
+            deserialize_degrees_section(root["in-degree"]),
+            deserialize_degrees_section(root["out-degree"]));
+    }
+
 } // namespace
 
 auto deserialize(const Json::Value& root) -> config_data
 {
     auto&& bkg = deserialize_background(root["background"]);
     auto&& g = deserialize_graph(root["graph"]);
+    auto&& degrees = deserialize_degrees(root["degrees"]);
 
-    return config_data { .background = std::move(bkg), .graph = std::move(g) };
+    return config_data { .background = std::move(bkg),
+                         .graph = std::move(g),
+                         .degrees = std::move(degrees) };
 }
 
 } // namespace rendering

@@ -5,6 +5,7 @@
 #define RENDERING_CONFIG_HPP
 
 #include "background_renderer.hpp"
+#include "degrees_backend.hpp"
 #include "graph_renderer.hpp"
 
 #include <jsoncpp/json/json.h>
@@ -20,8 +21,7 @@ struct config_data
 {
     background_config background;
     graph_config graph;
-
-    // ...
+    degrees_config degrees;
 
     auto operator==(const config_data&) const -> bool = default;
     auto operator!=(const config_data&) const -> bool = default;

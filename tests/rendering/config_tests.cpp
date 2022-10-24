@@ -39,8 +39,15 @@ auto make_sample_rendering_0()
                                   .edge_type_color = ColourValue(1.0, 1.0, 1.0),
                                   .edge_type_space_width = 1.0 };
 
+    auto&& degrees
+        = degrees_config { .in_data = degree_evaluation_data(
+                               { 2, 5, 10 }, { "aa", "bb", "cc" }, true),
+                           .out_data = degree_evaluation_data(
+                               { 1, 2, 3 }, { "aaa", "bbb", "ccc" }, true) };
+
     return config_data { .background = std::move(background),
-                         .graph = std::move(graph) };
+                         .graph = std::move(graph),
+                         .degrees = std::move(degrees) };
 }
 
 TEST(rendering_deserialization, sample_rendering_0)

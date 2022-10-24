@@ -12,15 +12,14 @@ namespace
 
 inline auto initial_data()
 {
-    return std::make_pair(
-        degree_evaluation_data(
-            make_ranked(1, 3, 5),
-            make_ranked< std::string >("a", "b", "c"),
-            true),
-        degree_evaluation_data(
-            make_ranked(2, 4, 6),
-            make_ranked< std::string >("aa", "bb", "cc"),
-            true));
+    return degrees_config { .in_data = degree_evaluation_data(
+                                make_ranked(1, 3, 5),
+                                make_ranked< std::string >("a", "b", "c"),
+                                true),
+                            .out_data = degree_evaluation_data(
+                                make_ranked(2, 4, 6),
+                                make_ranked< std::string >("aa", "bb", "cc"),
+                                true) };
 }
 
 class given_a_degrees_degrees_backend : public Test
@@ -40,7 +39,7 @@ protected:
 
 TEST_F(
     given_a_degrees_degrees_backend,
-    in_degree_evaluation_is_applied_on_first_evaluation_data)
+    in_degree_evaluation_is_applied_on_in_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_in_degree(*b, 0), null_particles);
     EXPECT_EQ(evaluate_in_degree(*b, 1), "a");
@@ -53,7 +52,7 @@ TEST_F(
 
 TEST_F(
     given_a_degrees_degrees_backend,
-    out_degree_evaluation_is_applied_on_second_evaluation_data)
+    out_degree_evaluation_is_applied_on_out_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_out_degree(*b, 0), null_particles);
     EXPECT_EQ(evaluate_out_degree(*b, 2), "aa");
@@ -480,7 +479,7 @@ TEST_F(
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(initial_data().first)).Times(1);
+    EXPECT_CALL(mock, Call(initial_data().in_data)).Times(1);
 
     restore_in_degree_evaluation(*b);
 }
@@ -489,10 +488,10 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_restoring_the_in_degree_evaluation_access_to_it_yield_original)
 {
-    update_in_degree_evaluation(*b, initial_data().second);
+    update_in_degree_evaluation(*b, initial_data().out_data);
     restore_in_degree_evaluation(*b);
 
-    ASSERT_EQ(get_in_degree_evaluation_data(*b), initial_data().first);
+    ASSERT_EQ(get_in_degree_evaluation_data(*b), initial_data().in_data);
 }
 
 TEST_F(
@@ -501,7 +500,7 @@ TEST_F(
 {
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
 
-    EXPECT_CALL(mock, Call(initial_data().second)).Times(1);
+    EXPECT_CALL(mock, Call(initial_data().out_data)).Times(1);
 
     restore_out_degree_evaluation(*b);
 }
@@ -510,10 +509,10 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_restoring_the_out_degree_evaluation_access_to_it_yield_original)
 {
-    update_out_degree_evaluation(*b, initial_data().first);
+    update_out_degree_evaluation(*b, initial_data().in_data);
     restore_out_degree_evaluation(*b);
 
-    ASSERT_EQ(get_out_degree_evaluation_data(*b), initial_data().second);
+    ASSERT_EQ(get_out_degree_evaluation_data(*b), initial_data().out_data);
 }
 
 } // namespace

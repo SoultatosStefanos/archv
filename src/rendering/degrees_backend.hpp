@@ -12,6 +12,19 @@ namespace rendering
 {
 
 /***********************************************************
+ * Config Data                                             *
+ ***********************************************************/
+
+struct degrees_config
+{
+    degree_evaluation_data in_data;
+    degree_evaluation_data out_data;
+
+    auto operator==(const degrees_config&) const -> bool = default;
+    auto operator!=(const degrees_config&) const -> bool = default;
+};
+
+/***********************************************************
  * Backend                                                 *
  ***********************************************************/
 
@@ -24,8 +37,7 @@ public:
     using slot = signal::slot_type;
     using connection = boost::signals2::connection;
 
-    using config_data_type
-        = std::pair< degree_evaluation_data, degree_evaluation_data >;
+    using config_data_type = degrees_config;
 
     explicit degrees_backend(config_data_type degree_data = config_data_type());
 
@@ -346,12 +358,18 @@ inline auto update_out_degree_evaluation_applied(
 
 inline auto restore_in_degree_evaluation(degrees_backend& b)
 {
-    b.update_in_degree_evaluation(b.config_data().first);
+    b.update_in_degree_evaluation(b.config_data().in_data);
 }
 
 inline auto restore_out_degree_evaluation(degrees_backend& b)
 {
-    b.update_out_degree_evaluation(b.config_data().second);
+    b.update_out_degree_evaluation(b.config_data().out_data);
+}
+
+inline auto restore_defaults(degrees_backend& b)
+{
+    restore_in_degree_evaluation(b);
+    restore_out_degree_evaluation(b);
 }
 
 } // namespace rendering

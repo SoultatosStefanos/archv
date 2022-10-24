@@ -30,6 +30,40 @@
 			"color" : [ 1.0, 1.0, 1.0 ],
 			"space-width" : 1.0
 		}
+	},
+	"degrees" : 
+	{
+		"in-degree" :
+		{
+			"thresholds" : 
+			{ 
+				"light" : 2,
+				"medium" : 5,
+				"heavy": 10 
+			},
+			"particle-systems" : 
+			{
+				"light" : "aa",
+				"medium" : "bb",
+				"heavy" : "cc" 
+			},
+			"applied" : true
+		},
+		"out-degree" :
+		{
+			"thresholds" : 
+			{ 
+				"light" : 1,
+				"medium" : 2,
+				"heavy": 3 
+			},
+			"particle-systems" : 
+			{
+				"light" : "aaa",
+				"medium" : "bbb",
+				"heavy" : "ccc" 
+			},
+			"applied" : true
+		}
 	}
-
 }

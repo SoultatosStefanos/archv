@@ -537,6 +537,10 @@
 
 	+ [ ] Particle system degree renderer
 
+	+ [ ] Introduce config modules to ease compile times
+
+	+ [ ] Gui configuration exceptions
+
 	+ [ ] Create nifty particle systems for in/out-degrees (3 each)
 	Note: Hollow Ellipsoid Emitter (3d ring)
 
@@ -558,6 +562,5 @@
 
 	+ [ ] Gui configurable degree particle systems
 
-	+ [ ] Introduce config modules to ease compile times
 
 
