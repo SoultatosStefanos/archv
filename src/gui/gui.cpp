@@ -155,6 +155,9 @@ auto gui::render_editor() const -> void
         if (ImGui::MenuItem("Scaling", "", m_scaling_open, true))
             m_scaling_open = m_scaling_open ? false : true;
 
+        if (ImGui::MenuItem("Degrees", "", m_degrees_open, true))
+            m_degrees_open = m_degrees_open ? false : true;
+
         ImGui::EndMenu();
     }
 
@@ -176,6 +179,25 @@ auto gui::render_editor() const -> void
     {
         ImGui::Begin("Scaling Edit", &m_scaling_open);
         get_scaling_editor().render();
+        ImGui::End();
+    }
+
+    if (m_degrees_open)
+    {
+        ImGui::Begin("Degrees Edit", &m_degrees_open);
+
+        if (ImGui::TreeNode("In-Degrees"))
+        {
+            get_in_degrees_editor().render();
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Out-Degrees"))
+        {
+            get_out_degrees_editor().render();
+            ImGui::TreePop();
+        }
+
         ImGui::End();
     }
 }

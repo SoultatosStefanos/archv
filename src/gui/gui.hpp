@@ -5,6 +5,7 @@
 #define GUI_GUI_HPP
 
 #include "background_configurator.hpp"
+#include "degrees_editor.hpp"
 #include "graph_configurator.hpp"
 #include "gui_config.hpp"
 #include "gui_configurator.hpp"
@@ -76,6 +77,18 @@ public:
     auto get_scaling_editor() const -> const auto& { return m_scaling_editor; }
     auto get_scaling_editor() -> auto& { return m_scaling_editor; }
 
+    auto get_in_degrees_editor() const -> const auto&
+    {
+        return m_in_degrees_editor;
+    }
+    auto get_in_degrees_editor() -> auto& { return m_in_degrees_editor; }
+
+    auto get_out_degrees_editor() const -> const auto&
+    {
+        return m_out_degrees_editor;
+    }
+    auto get_out_degrees_editor() -> auto& { return m_out_degrees_editor; }
+
     auto get_bkg_configurator() const -> const auto& { return m_bkg_cfg; }
     auto get_bkg_configurator() -> auto& { return m_bkg_cfg; }
 
@@ -119,6 +132,8 @@ private:
     weights_editor m_weights_editor;
     layout_editor m_layout_editor;
     scaling_editor m_scaling_editor;
+    degrees_editor m_in_degrees_editor;
+    degrees_editor m_out_degrees_editor;
 
     background_configurator m_bkg_cfg;
     graph_configurator m_graph_cfg;
@@ -133,6 +148,7 @@ private:
     mutable bool m_weights_open { false };
     mutable bool m_layout_open { false };
     mutable bool m_scaling_open { false };
+    mutable bool m_degrees_open { false };
 };
 
 } // namespace gui
