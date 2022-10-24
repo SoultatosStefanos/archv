@@ -572,7 +572,10 @@
 
 	+ [x] Degrees user input sanitizing
 
-	+ [ ] File Browser
+	+ [n] File Browser
 
 
+# 25 / 10 / 2022
+
+	+ [ ] Clustering
 

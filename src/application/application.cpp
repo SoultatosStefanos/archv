@@ -20,8 +20,6 @@
 namespace application
 {
 
-// TODO Show ogre config dialog
-
 application::application(int argc, const char* argv[]) : base("ARCHV")
 {
     if (argc != 2)
@@ -33,18 +31,17 @@ application::application(int argc, const char* argv[]) : base("ARCHV")
     m_graph_path = argv[1];
     const auto& jsons = archive::get();
 
-    m_weights_config
-        = weights::deserialize(jsons.at(ARCHV_WEIGHTS_CONFIG_PATH));
+    const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
+    const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
+    const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
+    const auto& rendering_root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
+    const auto& gui_root = jsons.at(ARCHV_GUI_CONFIG_PATH);
 
-    m_layout_config = layout::deserialize(jsons.at(ARCHV_LAYOUT_CONFIG_PATH));
-
-    m_scaling_config
-        = scaling::deserialize(jsons.at(ARCHV_SCALING_CONFIG_PATH));
-
-    m_rendering_config
-        = rendering::deserialize(jsons.at(ARCHV_RENDERING_CONFIG_PATH));
-
-    m_gui_config = gui::deserialize(jsons.at(ARCHV_GUI_CONFIG_PATH));
+    m_weights_config = weights::deserialize(weights_root);
+    m_layout_config = layout::deserialize(layout_root);
+    m_scaling_config = scaling::deserialize(scaling_root);
+    m_rendering_config = rendering::deserialize(rendering_root);
+    m_gui_config = gui::deserialize(gui_root);
 }
 
 auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
@@ -54,6 +51,11 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
     if (m_pause_resume_handler->paused())
         m_gui->render();
     return true;
+}
+
+auto application::go() -> void
+{
+    getRoot()->startRendering();
 }
 
 /***********************************************************
@@ -89,24 +91,6 @@ auto application::setup() -> void
     connect_undo_redo_presentation();
 
     BOOST_LOG_TRIVIAL(debug) << "setup";
-}
-
-auto application::shutdown() -> void
-{
-    shutdown_input();
-    shutdown_gui();
-    shutdown_graph_renderer();
-    shutdown_background_renderer();
-    shutdown_commands();
-    shutdown_graph_interface();
-    base::shutdown();
-
-    BOOST_LOG_TRIVIAL(debug) << "shutdown";
-}
-
-auto application::go() -> void
-{
-    getRoot()->startRendering();
 }
 
 auto application::setup_graph_interface() -> void
@@ -346,6 +330,19 @@ auto application::setup_input() -> void
 /***********************************************************
  * Shutdown                                                *
  ***********************************************************/
+
+auto application::shutdown() -> void
+{
+    shutdown_input();
+    shutdown_gui();
+    shutdown_graph_renderer();
+    shutdown_background_renderer();
+    shutdown_commands();
+    shutdown_graph_interface();
+    base::shutdown();
+
+    BOOST_LOG_TRIVIAL(debug) << "shutdown";
+}
 
 auto application::shutdown_input() -> void
 {
