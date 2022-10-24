@@ -535,7 +535,7 @@
 
 # 24 / 10 / 2022
 
-	+ [ ] Particle system degree renderer
+	+ [x] Particle system degree renderer
 
 	+ [ ] Introduce config modules to ease compile times
 
