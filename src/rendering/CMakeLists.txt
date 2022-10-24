@@ -1,9 +1,10 @@
 set(FILES
+	background_config.cpp
 	background_renderer.cpp
 	config.cpp
 	degrees_backend.cpp
 	degrees_evaluation.cpp
-	graph_renderer.cpp
+	graph_config.cpp
 )
 set(SUBDIRECTORIES detail)
 

@@ -5,6 +5,7 @@
 #define LAYOUT_ALL_HPP
 
 #include "backend.hpp"
+#include "backend_config.hpp"
 #include "config.hpp"
 #include "cube.hpp"
 #include "gursoy_atun_layout.hpp"

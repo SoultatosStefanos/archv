@@ -1,4 +1,4 @@
-#include "graph_renderer.hpp"
+#include "graph_config.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMeshManager.h>

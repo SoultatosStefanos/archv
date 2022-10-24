@@ -4,9 +4,9 @@
 #ifndef RENDERING_CONFIG_HPP
 #define RENDERING_CONFIG_HPP
 
-#include "background_renderer.hpp"
-#include "degrees_backend.hpp"
-#include "graph_renderer.hpp"
+#include "background_config.hpp"
+#include "degrees_config.hpp"
+#include "graph_config.hpp"
 
 #include <jsoncpp/json/json.h>
 

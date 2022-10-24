@@ -4,29 +4,13 @@
 #ifndef RENDERING_DEGREES_BACKEND_HPP
 #define RENDERING_DEGREES_BACKEND_HPP
 
+#include "degrees_config.hpp"
 #include "degrees_evaluation.hpp"
 
 #include <boost/signals2/signal.hpp>
 
 namespace rendering
 {
-
-/***********************************************************
- * Config Data                                             *
- ***********************************************************/
-
-struct degrees_config
-{
-    degree_evaluation_data in_data;
-    degree_evaluation_data out_data;
-
-    auto operator==(const degrees_config&) const -> bool = default;
-    auto operator!=(const degrees_config&) const -> bool = default;
-};
-
-/***********************************************************
- * Backend                                                 *
- ***********************************************************/
 
 class degrees_backend
 {
