@@ -577,5 +577,21 @@
 
 # 25 / 10 / 2022
 
-	+ [ ] Clustering
+	+ [ ] Rework legacy algortihms to a pure interface with ClusterMaps
+
+		+ [x] k-Spanning Tree
+
+		+ [ ] ?
+
+		+ [ ] ?
+
+	+ [ ] Clustering plugin algorithms backend
+
+	+ [ ] Json configurable clustering plugin backend
+
+	+ [ ] POC clustering rendering with hardcoded color mapping
+
+	+ [ ] Rendering clustering color mapping backend
+
+	+ [ ] GUI configurable clustering color mapping
 
