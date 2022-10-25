@@ -7,11 +7,6 @@ namespace rendering
 
 auto background_config_api::set_skybox_material(name_type mat) -> void
 {
-    if (!Ogre::MaterialManager::getSingleton().getByName(mat))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid skybox material";
-        return;
-    }
     config_data().skybox_material = std::move(mat);
 }
 

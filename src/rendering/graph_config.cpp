@@ -1,8 +1,5 @@
 #include "graph_config.hpp"
 
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreMeshManager.h>
-#include <OGRE/Overlay/OgreFontManager.h>
 #include <boost/log/trivial.hpp>
 
 namespace rendering
@@ -12,11 +9,6 @@ using namespace Ogre;
 
 auto graph_config_api::set_vertex_mesh(name_type name) -> void
 {
-    if (!MeshManager::getSingleton().getByName(name))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid vertex mesh: " << name;
-        return;
-    }
     config_data().vertex_mesh = std::move(name);
 }
 
@@ -27,11 +19,6 @@ auto graph_config_api::set_vertex_scale(scale_type scale) -> void
 
 auto graph_config_api::set_vertex_id_font_name(name_type name) -> void
 {
-    if (!FontManager::getSingleton().getByName(name))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid vertex font: " << name;
-        return;
-    }
     config_data().vertex_id_font_name = std::move(name);
 }
 
@@ -62,21 +49,11 @@ auto graph_config_api::set_vertex_space_width(width_type w) -> void
 
 auto graph_config_api::set_edge_material(name_type name) -> void
 {
-    if (!MaterialManager::getSingleton().getByName(name))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid edge mat: " << name;
-        return;
-    }
     config_data().edge_material = std::move(name);
 }
 
 auto graph_config_api::set_edge_tip_mesh(name_type name) -> void
 {
-    if (!MeshManager::getSingleton().getByName(name))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid tip mesh: " << name;
-        return;
-    }
     config_data().edge_tip_mesh = std::move(name);
 }
 
@@ -87,11 +64,6 @@ auto graph_config_api::set_edge_tip_scale(scale_type scale) -> void
 
 auto graph_config_api::set_edge_type_font_name(name_type name) -> void
 {
-    if (!FontManager::getSingleton().getByName(name))
-    {
-        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid edge font: " << name;
-        return;
-    }
     config_data().edge_type_font_name = std::move(name);
 }
 
