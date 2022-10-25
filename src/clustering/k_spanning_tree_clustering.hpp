@@ -76,8 +76,9 @@ auto k_spanning_tree_clustering(
 
     // Assign vertices to clusters.
     constexpr cluster_type mst_cluster = 0;
-    for (cluster_type isolated_cluster = mst_cluster + 1;
-         auto v : boost::make_iterator_range(boost::vertices(g)))
+    cluster_type isolated_cluster = mst_cluster + 1;
+
+    for (auto v : boost::make_iterator_range(boost::vertices(g)))
     {
         assert(isolated_cluster != mst_cluster);
 
@@ -86,6 +87,8 @@ auto k_spanning_tree_clustering(
         else
             boost::put(vertex_cluster, v, isolated_cluster++);
     }
+
+    assert(isolated_cluster >= k);
 }
 
 } // namespace clustering

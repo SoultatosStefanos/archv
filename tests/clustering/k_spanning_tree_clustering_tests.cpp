@@ -38,6 +38,49 @@ TEST(k_spanning_tree_clustering_tests, empty_yields_empty_cluster_map)
     ASSERT_TRUE(clusters.empty());
 }
 
+TEST(k_spanning_tree_clustering_tests, one_vertex_is_assigned_to_1)
+{
+    auto g = graph();
+    auto v1 = boost::add_vertex(1, g);
+
+    const auto k = 1;
+    auto clusters = cluster_map();
+    const auto nil_mst = [](const auto&, auto) {};
+
+    clustering::k_spanning_tree_clustering(
+        g,
+        k,
+        nil_mst,
+        boost::get(boost::edge_bundle, g),
+        boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.at(v1), 1);
+}
+
+TEST(
+    k_spanning_tree_clustering_tests,
+    three_disconnected_vertices_are_assigned_to_clusters_1_2_3)
+{
+    auto g = graph();
+    auto v1 = boost::add_vertex(1, g);
+    auto v2 = boost::add_vertex(1, g);
+    auto v3 = boost::add_vertex(1, g);
+    const auto nil_mst = [](const auto&, auto) {};
+    const auto k = 1;
+    auto clusters = cluster_map();
+
+    clustering::k_spanning_tree_clustering(
+        g,
+        k,
+        nil_mst,
+        boost::get(boost::edge_bundle, g),
+        boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.at(v1), 1);
+    ASSERT_EQ(clusters.at(v2), 2);
+    ASSERT_EQ(clusters.at(v3), 3);
+}
+
 // See:
 // https://www.csc2.ncsu.edu/faculty/nfsamato/practical-graph-mining-with-R/slides/pdf/Graph_Cluster_Analysis.pdf
 // (At k-Spanning Tree clustering section).
@@ -70,7 +113,7 @@ inline auto make_input_graph()
     return std::make_pair(std::move(g), std::move(map));
 }
 
-TEST(k_spanning_tree_clustering_tests, clustering_with_kruskal_mst)
+TEST(k_spanning_tree_clustering_tests, clustering_sample_with_kruskal_mst)
 {
     const auto [g, vertices] = make_input_graph();
     constexpr auto k = 3;
@@ -95,7 +138,7 @@ TEST(k_spanning_tree_clustering_tests, clustering_with_kruskal_mst)
     EXPECT_NE(clusters.at(vertices.at(2)), clusters.at(vertices.at(5)));
 }
 
-TEST(k_spanning_tree_clustering_tests, clustering_with_prim_mst)
+TEST(k_spanning_tree_clustering_tests, clustering_sample_with_prim_mst)
 {
     const auto [g, vertices] = make_input_graph();
     constexpr auto k = 3;
