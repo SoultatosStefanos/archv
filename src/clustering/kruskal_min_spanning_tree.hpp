@@ -31,7 +31,7 @@ public:
     using weight_map_type = typename base::weight_map_type;
     using edge_type = typename graph_traits::edge_type;
 
-    using min_spanning_tree = typename base::min_spanning_tree;
+    using spanning_tree = typename base::spanning_tree;
     using output_iterator = typename base::output_iterator;
 
     kruskal_min_spanning_tree() = default;

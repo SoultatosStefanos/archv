@@ -22,6 +22,12 @@ class kruskal_min_spanning_tree;
 template < typename Graph, typename WeightMap >
 class prim_min_spanning_tree;
 
+template < typename Graph, typename WeightMap >
+class clusterer_builder;
+
+template < typename Graph, typename WeightMap >
+class min_spanning_tree_finder_factory;
+
 } // namespace clustering
 
 #endif // CLUSTERING_ALLFWD_HPP

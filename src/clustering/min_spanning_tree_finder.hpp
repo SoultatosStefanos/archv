@@ -31,8 +31,8 @@ public:
     using weight_map_type = WeightMap;
     using edge_type = typename graph_traits::edge_descriptor;
 
-    using min_spanning_tree = std::unordered_set< edge_type >;
-    using output_iterator = std::insert_iterator< min_spanning_tree >;
+    using spanning_tree = std::unordered_set< edge_type >;
+    using output_iterator = std::insert_iterator< spanning_tree >;
 
     min_spanning_tree_finder() = default;
     min_spanning_tree_finder(const min_spanning_tree_finder&) = default;

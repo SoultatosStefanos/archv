@@ -30,7 +30,7 @@ public:
     using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename base::edge_type;
 
-    using min_spanning_tree = typename base::min_spanning_tree;
+    using spanning_tree = typename base::spanning_tree;
     using output_iterator = typename base::output_iterator;
 
     prim_min_spanning_tree() = default;
