@@ -29,7 +29,6 @@ public:
     using id_type = typename base::id_type;
     using graph_type = typename base::graph_type;
     using vertex_type = typename base::vertex_type;
-    using visitor_type = typename base::visitor_type;
 
     using cluster = typename base::cluster;
     using cluster_map = typename base::cluster_map;
@@ -86,7 +85,7 @@ inline auto k_spanning_tree_clusterer< Graph, WeightMap >::operator()(
     k_spanning_tree_clustering(
         g,
         k(),
-        mst_finder(),
+        std::cref(mst_finder()),
         edge_weight(),
         boost::make_assoc_property_map(res));
     return res;

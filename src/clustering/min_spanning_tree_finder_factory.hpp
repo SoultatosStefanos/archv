@@ -76,6 +76,7 @@ min_spanning_tree_finder_factory< Graph, WeightMap >::make_mst_finder(
     }
     else
     {
+        assert(!is_mst_finder_plugged_in(id));
         BOOST_LOG_TRIVIAL(error) << "unknown mst type: " << id;
         assert(false);
         return nullptr;

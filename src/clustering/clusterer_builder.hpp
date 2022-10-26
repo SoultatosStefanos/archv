@@ -54,6 +54,8 @@ public:
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
 
+    auto clear() -> void;
+
     auto build_clusterer(id_type id) const -> pointer;
 
 private:
@@ -101,6 +103,13 @@ inline auto clusterer_builder< Graph, WeightMap >::set_mst_finder(
 }
 
 template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::clear() -> void
+{
+    m_k = -1;
+    m_mst_finder = nullptr;
+}
+
+template < typename Graph, typename WeightMap >
 inline auto
 clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     -> pointer
@@ -115,6 +124,7 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     }
     else
     {
+        assert(!is_clusterer_plugged_in(id));
         BOOST_LOG_TRIVIAL(error) << "unknown clusterer type: " << id;
         assert(false);
         return nullptr;
