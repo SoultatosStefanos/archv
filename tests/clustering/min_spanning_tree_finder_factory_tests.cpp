@@ -24,22 +24,29 @@ using mst_finder_factory
 
 TEST(clusterin_mst_finder_factory_tests, given_prim_id_returns_prim_mst)
 {
+    using expected_t = clustering::prim_min_spanning_tree< graph, weight_map >;
+
     constexpr auto id = clustering::prim_mst_id;
     static_assert(clustering::is_mst_finder_plugged_in(id));
-    auto finder = mst_finder_factory::make_mst_finder(id);
+    const auto finder = mst_finder_factory::make_mst_finder(id);
 
     ASSERT_NE(nullptr, finder);
-    ASSERT_EQ(id, finder->id());
+    EXPECT_EQ(id, finder->id());
+    ASSERT_EQ(typeid(*finder), typeid(expected_t));
 }
 
 TEST(clusterin_mst_finder_factory_tests, given_kruskal_id_returns_kruskal_mst)
 {
+    using expected_t
+        = clustering::kruskal_min_spanning_tree< graph, weight_map >;
+
     constexpr auto id = clustering::kruskal_mst_id;
     static_assert(clustering::is_mst_finder_plugged_in(id));
-    auto finder = mst_finder_factory::make_mst_finder(id);
+    const auto finder = mst_finder_factory::make_mst_finder(id);
 
     ASSERT_NE(nullptr, finder);
-    ASSERT_EQ(id, finder->id());
+    EXPECT_EQ(id, finder->id());
+    ASSERT_EQ(typeid(*finder), typeid(expected_t));
 }
 
 } // namespace

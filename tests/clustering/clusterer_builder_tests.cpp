@@ -68,7 +68,7 @@ TEST_F(
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
-    ASSERT_NE(dynamic_cast< const expected_t* >(clusterer.get()), nullptr);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
     const auto& downcasted = static_cast< const expected_t& >(*clusterer);
     EXPECT_EQ(downcasted.k(), 0);
     EXPECT_EQ(downcasted.mst_finder().id(), dummy_mst_finder::static_id);
