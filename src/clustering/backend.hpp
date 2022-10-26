@@ -12,6 +12,7 @@
 #include "plugin.hpp"
 
 #include <boost/exception/all.hpp>
+#include <boost/signals2/signal.hpp>
 #include <stdexcept>
 
 namespace clustering
@@ -63,6 +64,23 @@ public:
     using mst_factory_type
         = min_spanning_tree_finder_factory< Graph, WeightMap >;
 
+    using k_type = int;
+
+private:
+    using clusterer_signal
+        = boost::signals2::signal< void(const clusterer_type&) >;
+
+    using mst_finder_signal
+        = boost::signals2::signal< void(const mst_finder_type&) >;
+
+    using k_signal = boost::signals2::signal< void(k_type) >;
+
+public:
+    using clusterer_slot = clusterer_signal::slot_type;
+    using mst_finder_slot = mst_finder_signal::slot_type;
+    using k_slot = k_signal::slot_type;
+    using connection = boost::signals2::connection;
+
     backend(
         const graph_type& g,
         weight_map_type edge_weight,
@@ -71,6 +89,20 @@ public:
     auto graph() const -> const auto& { return m_g; }
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto config_data() const -> const auto& { return m_cfg; }
+
+    // TODO
+
+    auto get_clusterer() const -> const clusterer_type& { }
+    auto get_mst_finder() const -> const mst_finder_type& { }
+    auto get_k() const -> k_type { }
+
+    auto connect_to_clusterer(const clusterer_slot& f) -> connection;
+    auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
+    auto connect_to_k(const k_slot& f) -> connection;
+
+    auto update_clusterer(id_type id) -> void;
+    auto update_mst_finder(id_type id) -> void;
+    auto update_k(k_type k) -> void;
 
 private:
     const graph_type& m_g;

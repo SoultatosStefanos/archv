@@ -50,6 +50,10 @@ public:
 
     static auto get() -> self&;
 
+    auto weight_map() const -> weight_map_type { return m_edge_weight; }
+    auto mst_finder() const -> const mst_finder_type& { return *m_mst_finder; }
+    auto k() const -> k_type { return m_k; }
+
     auto set_weight_map(weight_map_type edge_weight) -> self&;
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
@@ -120,7 +124,7 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
         assert(m_k != -1);
 
         return std::make_unique< k_spanning_tree_type >(
-            m_k, *m_mst_finder, m_edge_weight);
+            k(), mst_finder(), weight_map());
     }
     else
     {
