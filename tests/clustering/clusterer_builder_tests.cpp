@@ -35,12 +35,11 @@ struct dummy_mst_finder
 
     auto id() const -> id_type override { return static_id; }
 
-    void operator()(
-        const graph_type&, output_iterator, weight_map_type) const override
+    void operator()(const graph_type&, output_iterator, weight_map_type) const
     {
     }
 
-    auto clone() const -> std::unique_ptr< base > override { return nullptr; };
+    auto clone() const -> std::unique_ptr< base > { return nullptr; };
 };
 
 class clustering_cluster_builder_tests : public Test

@@ -1,7 +1,6 @@
 #include "clustering/k_spanning_tree_clustering.hpp"
 #include "misc/random.hpp"
 
-#include <boost/graph/isomorphism.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <gmock/gmock.h>

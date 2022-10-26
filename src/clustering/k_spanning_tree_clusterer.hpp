@@ -106,11 +106,11 @@ inline auto k_spanning_tree_clusterer< Graph, WeightMap >::clone() const
 template < typename Graph, typename WeightMap >
 inline auto make_k_spanning_tree_clusterer(
     typename k_spanning_tree_clusterer< Graph, WeightMap >::k_type k,
-    std::unique_ptr< min_spanning_tree_finder< Graph, WeightMap > > mst_finder,
+    const min_spanning_tree_finder< Graph, WeightMap >& mst_finder,
     WeightMap edge_weight)
 {
     return k_spanning_tree_clusterer< Graph, WeightMap >(
-        k, std::move(mst_finder), edge_weight);
+        k, mst_finder, edge_weight);
 }
 
 } // namespace clustering
