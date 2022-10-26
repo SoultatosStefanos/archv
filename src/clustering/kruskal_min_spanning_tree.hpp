@@ -24,12 +24,13 @@ class kruskal_min_spanning_tree
 {
     using base = min_spanning_tree_finder< Graph, WeightMap >;
     using self = kruskal_min_spanning_tree< Graph, WeightMap >;
+    using graph_traits = boost::graph_traits< Graph >;
 
 public:
     using id_type = typename base::id_type;
-    using graph_type = typename base::graph_type;
-    using weight_map_type = typename base::weight_map_type;
-    using edge_type = typename graph_traits::edge_type;
+    using graph_type = Graph;
+    using weight_map_type = WeightMap;
+    using edge_type = typename graph_traits::edge_descriptor;
 
     using spanning_tree = typename base::spanning_tree;
     using output_iterator = typename base::output_iterator;
@@ -44,7 +45,7 @@ public:
         output_iterator out,
         weight_map_type edge_weight) const override;
 
-    auto clone() const -> std::unique_ptr< self > override;
+    auto clone() const -> std::unique_ptr< base > override;
 };
 
 /***********************************************************
@@ -62,9 +63,9 @@ inline auto kruskal_min_spanning_tree< Graph, WeightMap >::operator()(
 
 template < typename Graph, typename WeightMap >
 inline auto kruskal_min_spanning_tree< Graph, WeightMap >::clone() const
-    -> std::unique_ptr< self >
+    -> std::unique_ptr< base >
 {
-    return std::make_unique< self >(this);
+    return std::make_unique< self >(*this);
 }
 
 /***********************************************************

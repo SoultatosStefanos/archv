@@ -4,6 +4,8 @@
 #ifndef CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 #define CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 
+#include "detail/hash.hpp"
+
 #include <boost/graph/graph_concepts.hpp>
 #include <memory>
 #include <string_view>
@@ -31,7 +33,7 @@ public:
     using weight_map_type = WeightMap;
     using edge_type = typename graph_traits::edge_descriptor;
 
-    using spanning_tree = std::unordered_set< edge_type >;
+    using spanning_tree = std::unordered_set< edge_type, detail::edge_hash >;
     using output_iterator = std::insert_iterator< spanning_tree >;
 
     min_spanning_tree_finder() = default;

@@ -1,5 +1,6 @@
 set(FILES
 	k_spanning_tree_clustering_tests.cpp
+	min_spanning_tree_finder_factory_tests.cpp
 	plugin_tests.cpp
 )
 set(SUBDIRECTORIES)

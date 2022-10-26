@@ -4,6 +4,7 @@
 #ifndef CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP
 #define CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP
 
+#include "detail/hash.hpp"
 #include "detail/k_spanning_tree_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>

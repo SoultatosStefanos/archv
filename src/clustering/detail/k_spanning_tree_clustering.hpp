@@ -10,18 +10,6 @@
 namespace clustering::detail
 {
 
-struct edge_hash
-{
-    template < typename Edge >
-    inline auto operator()(Edge e) const -> auto
-    {
-        using num_type = uint64_t;
-        using hash_type = std::hash< num_type >;
-
-        return hash_type()(reinterpret_cast< num_type >(e.get_property()));
-    }
-};
-
 template < typename Graph >
 inline auto has_no_vertices(const Graph& g) -> bool
 {
