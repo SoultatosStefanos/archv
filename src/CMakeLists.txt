@@ -2,6 +2,7 @@ set(FILES)
 set(SUBDIRECTORIES
 	application
 	architecture
+	clustering
 	gui
 	input
 	layout

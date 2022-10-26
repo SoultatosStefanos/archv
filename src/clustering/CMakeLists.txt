@@ -1,4 +1,6 @@
-set(FILES)
+set(FILES
+	backend_config.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
@@ -6,5 +8,5 @@ foreach(VAR ${SUBDIRECTORIES})
 endforeach()
 
 if(FILES)
-	target_sources(${PROJECT_NAME} PUBLIC ${FILES})
+	target_sources(${PROJECT_LIB} PUBLIC ${FILES})
 endif()
