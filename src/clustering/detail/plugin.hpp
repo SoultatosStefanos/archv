@@ -15,7 +15,7 @@ array_contains(const Array& data, const typename Array::value_type& value)
     -> bool
 {
     return std::find(std::cbegin(data), std::cend(data), value)
-        != std::cend(value);
+        != std::cend(data);
 }
 
 } // namespace clustering::detail
