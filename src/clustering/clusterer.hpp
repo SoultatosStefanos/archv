@@ -6,23 +6,30 @@
 
 #include <boost/graph/graph_concepts.hpp>
 #include <memory>
+#include <string_view>
 #include <unordered_map>
 
 namespace clustering
 {
 
-template < typename Graph >
-class clusterer_visitor;
+/***********************************************************
+ * Clustering Interface                                    *
+ ***********************************************************/
 
+// Returns a cluster map, where each graph vertex is assigned an integral c.
+// For a graph g: c e { 0, ..., num_vertices(g) }
 template < typename Graph >
 class clusterer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
+    using self = clusterer< Graph >;
+    using graph_traits = boost::graph_traits< Graph >;
+
 public:
+    using id_type = std::string_view;
     using graph_type = Graph;
-    using vertex_type = typename graph_type ::vertex_descriptor;
-    using visitor_type = clusterer_visitor< graph_type >;
+    using vertex_type = typename graph_traits ::vertex_descriptor;
 
     using cluster = int;
     using cluster_map = std::unordered_map< vertex_type, cluster >;
@@ -35,12 +42,23 @@ public:
     auto operator=(const clusterer&) -> clusterer& = default;
     auto operator=(clusterer&&) -> clusterer& = default;
 
-    virtual auto operator()() const -> cluster_map = 0;
+    virtual auto id() const -> id_type = 0;
 
-    virtual auto accept(const visitor_type& visitor) const -> void = 0;
+    virtual auto operator()(const graph_type& g) const -> cluster_map = 0;
 
-    virtual auto clone() const -> std::unique_ptr< clusterer< Graph > > = 0;
+    virtual auto clone() const -> std::unique_ptr< self > = 0;
 };
+
+/***********************************************************
+ * Utilities                                               *
+ ***********************************************************/
+
+// Alternative interface to invoking a clusterer.
+template < typename Graph >
+inline auto cluster(const Graph& g, const clusterer< Graph >& clusterer)
+{
+    return clusterer(g);
+}
 
 } // namespace clustering
 
