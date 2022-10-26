@@ -47,7 +47,8 @@ auto k_spanning_tree_clustering(
     static_assert(std::is_invocable_v<
                   MinimumSpanningTreeFunc,
                   const Graph&,
-                  std::insert_iterator< edges_set > >);
+                  std::insert_iterator< edges_set >,
+                  WeightMap >);
 
     static_assert(std::is_integral_v< cluster_type >);
 
@@ -59,7 +60,7 @@ auto k_spanning_tree_clustering(
 
     // Fill mst edge set.
     auto mst = edges_set();
-    fill_mst(g, std::inserter(mst, std::begin(mst)));
+    fill_mst(g, std::inserter(mst, std::begin(mst)), edge_weight);
 
     // Remove k-1 highest weight edges from the mst set.
     const auto steps = k - 1;

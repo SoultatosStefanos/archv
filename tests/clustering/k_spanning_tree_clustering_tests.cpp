@@ -25,7 +25,7 @@ TEST(k_spanning_tree_clustering_tests, empty_yields_empty_cluster_map)
 {
     const auto g = graph();
     const auto k = misc::urandom(1, 10);
-    const auto nil_mst = [](const auto&, auto) {};
+    const auto nil_mst = [](const auto&, auto, auto) {};
     auto clusters = cluster_map();
 
     clustering::k_spanning_tree_clustering(
@@ -45,7 +45,7 @@ TEST(k_spanning_tree_clustering_tests, one_vertex_is_assigned_to_1)
 
     const auto k = 1;
     auto clusters = cluster_map();
-    const auto nil_mst = [](const auto&, auto) {};
+    const auto nil_mst = [](const auto&, auto, auto) {};
 
     clustering::k_spanning_tree_clustering(
         g,
@@ -65,7 +65,7 @@ TEST(
     auto v1 = boost::add_vertex(1, g);
     auto v2 = boost::add_vertex(1, g);
     auto v3 = boost::add_vertex(1, g);
-    const auto nil_mst = [](const auto&, auto) {};
+    const auto nil_mst = [](const auto&, auto, auto) {};
     const auto k = 1;
     auto clusters = cluster_map();
 
@@ -122,10 +122,10 @@ TEST(k_spanning_tree_clustering_tests, clustering_sample_with_kruskal_mst)
     clustering::k_spanning_tree_clustering(
         g,
         k,
-        [](const auto& g, auto edges)
+        [](const auto& g, auto out, auto edge_weight)
         {
             boost::kruskal_minimum_spanning_tree(
-                g, edges, boost::weight_map(boost::get(boost::edge_bundle, g)));
+                g, out, boost::weight_map(edge_weight));
         },
         boost::get(boost::edge_bundle, g),
         boost::make_assoc_property_map(clusters));
@@ -147,7 +147,7 @@ TEST(k_spanning_tree_clustering_tests, clustering_sample_with_prim_mst)
     clustering::k_spanning_tree_clustering(
         g,
         k,
-        [](const auto& g, auto edges)
+        [](const auto& g, auto out, auto edge_weight)
         {
             using vertex = graph::vertex_descriptor;
             using predecessor_map = std::vector< vertex >;
@@ -157,14 +157,14 @@ TEST(k_spanning_tree_clustering_tests, clustering_sample_with_prim_mst)
                 g,
                 &p[0],
                 boost::root_vertex(*boost::vertices(g).first)
-                    .weight_map(boost::get(boost::edge_bundle, g)));
+                    .weight_map(edge_weight));
 
             for (decltype(p.size()) u = 0; u != p.size(); ++u)
                 if (u != p[u])
                 {
                     auto [e, res] = boost::edge(p[u], u, g);
                     assert(res);
-                    edges = e;
+                    out = e;
                 }
         },
         boost::get(boost::edge_bundle, g),
