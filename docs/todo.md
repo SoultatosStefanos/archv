@@ -575,27 +575,26 @@
 	+ [n] File Browser
 
 
-# 25 / 10 / 2022
-
-	+ [ ] Rework legacy algortihms to a pure interface with ClusterMaps
-
-		+ [x] k-Spanning Tree
-
-		+ [ ] ?
-
-		+ [ ] ?
-
-	+ [ ] Clustering plugin algorithms backend
-
-	+ [ ] Json configurable clustering plugin backend
-
-	+ [ ] POC clustering rendering with hardcoded color mapping
-
-	+ [ ] Rendering clustering color mapping backend
-
-	+ [ ] GUI configurable clustering color mapping
-
-
 # 27 / 10 / 2022
-	
-	+ [ ] POC clustering rendering with hardcoded color mapping
+
+	+ [ ] Compiler flags controlling wether to render degrees/clusters immediately
+
+	+ [ ] POC clustering rendering
+
+		+ [x] k-Spanning Tree clusterer
+
+			+ [x] Prim MST
+
+			+ [x] Kruskal MST
+
+		+ [x] Backend
+
+		+ [ ] Cluster vertex property map
+
+		+ [ ] Json configurable
+
+		+ [ ] Rendering Cluster Color Coder policy class
+
+		+ [ ] Expand Graph Renderer to color clusters
+
+		+ [ ] GUI configurable clustering color mapping
