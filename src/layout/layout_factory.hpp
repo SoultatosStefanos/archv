@@ -16,6 +16,10 @@
 namespace layout
 {
 
+/***********************************************************
+ * Layout Factory                                          *
+ ***********************************************************/
+
 template < typename Graph >
 class layout_factory final
 {
@@ -35,27 +39,39 @@ public:
         id_type id,
         const graph_type& g,
         const topology& space,
-        WeightMap edge_weight) -> pointer
-    {
-        using gursoy_atun_type = gursoy_atun_layout< graph_type >;
-
-        if (id == gursoy_atun_id)
-        {
-            return std::make_unique< gursoy_atun_type >(g, space, edge_weight);
-        }
-        else
-        {
-            assert(!is_layout_plugged_in(id));
-            BOOST_LOG_TRIVIAL(fatal) << "invalid layout id: " << id;
-            assert(false);
-            return nullptr;
-        }
-    }
+        WeightMap edge_weight) -> pointer;
 
 private:
     layout_factory() = default;
     ~layout_factory() = default;
 };
+
+/***********************************************************
+ * Definitions                                             *
+ ***********************************************************/
+
+template < typename Graph >
+template < typename WeightMap >
+inline auto layout_factory< Graph >::make_layout(
+    id_type id,
+    const graph_type& g,
+    const topology& space,
+    WeightMap edge_weight) -> pointer
+{
+    using gursoy_atun_type = gursoy_atun_layout< graph_type >;
+
+    if (id == gursoy_atun_id)
+    {
+        return std::make_unique< gursoy_atun_type >(g, space, edge_weight);
+    }
+    else
+    {
+        assert(!is_layout_plugged_in(id));
+        BOOST_LOG_TRIVIAL(fatal) << "invalid layout id: " << id;
+        assert(false);
+        return nullptr;
+    }
+}
 
 } // namespace layout
 

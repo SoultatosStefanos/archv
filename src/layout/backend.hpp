@@ -69,40 +69,31 @@ class backend
             WeightMap,
             typename boost::graph_traits< Graph >::edge_descriptor >));
 
-    using layout_signal_type
-        = boost::signals2::signal< void(const layout< Graph >&) >;
-
-    using topology_signal_type
-        = boost::signals2::signal< void(const topology&) >;
-
 public:
     using config_data_type = backend_config;
     using graph_type = Graph;
+    using graph_traits = boost::graph_traits<graph_type>;
+    using vertex_type = typename graph_traits::vertex_descriptor; 
+    using edge_type = typename graph_traits::edge_descriptor; 
     using weight_map_type = WeightMap;
     using layout_type = layout< graph_type >;
     using topology_type = topology;
     using id_type = id_t;
     using scale_type = topology_type::scale_type;
 
-    using layout_slot_type = typename layout_signal_type::slot_type;
-    using topology_slot_type = topology_signal_type::slot_type;
-    using connection_type = boost::signals2::connection;
+private:
+    using layout_signal = boost::signals2::signal< void(const layout_type&) >;
+    using topology_signal = boost::signals2::signal< void(const topology&) >;
+
+public:
+    using layout_slot = typename layout_signal::slot_type;
+    using topology_slot = topology_signal::slot_type;
+    using connection = boost::signals2::connection;
 
     backend(
         const graph_type& g,
         weight_map_type edge_weight,
-        config_data_type config = config_data_type())
-    : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
-    {
-        verify_layouts();
-        verify_topologies();
-        verify_layout();
-        verify_topology();
-        verify_scale();
-
-        set_topology(config_data().topology, config_data().scale);
-        set_layout(config_data().layout);
-    }
+        config_data_type config = config_data_type());
 
     auto get_layout() const -> const layout_type& { return *m_layout; }
     auto get_topology() const -> const topology& { return *m_topology; }
@@ -111,144 +102,161 @@ public:
     auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_layout(id_type id) -> void
-    {
-        if (!is_layout_listed(id))
-        {
-            BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
-            return;
-        }
+    auto update_layout(id_type id) -> void;
+    auto update_layout(id_type space, scale_type scale, id_type lay) -> void;
 
-        set_layout(id);
-        emit_layout();
-    }
-
-    auto
-    update_layout(id_type space_id, scale_type topology_scale, id_type algo_id)
-        -> void
-    {
-        if (!is_topology_listed(space_id)
-            or !is_scale_non_negative(topology_scale)
-            or !is_layout_listed(algo_id))
-        {
-            BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
-            return;
-        }
-
-        set_topology(space_id, topology_scale);
-        set_layout(algo_id);
-
-        emit_layout();
-        emit_topology();
-    }
-
-    auto connect_to_layout(const layout_slot_type& slot) -> connection_type
-    {
-        return m_layout_signal.connect(slot);
-    }
-
-    auto connect_to_topology(const topology_slot_type& slot) -> connection_type
-    {
-        return m_topology_signal.connect(slot);
-    }
+    auto connect_to_layout(const layout_slot& slot) -> connection;
+    auto connect_to_topology(const topology_slot& slot) -> connection;
 
 protected:
     using layout_factory_type = layout_factory< graph_type >;
 
-    auto set_layout(id_type id) -> void
-    {
-        assert(m_topology);
+    auto set_layout(id_type id) -> void;
+    auto set_topology(id_type id, scale_type scale) -> void;
 
-        m_layout = layout_factory_type::make_layout(
-            id, graph(), get_topology(), weight_map());
-
-        assert(m_layout);
-        assert(m_topology);
-    }
-
-    auto set_topology(id_type id, scale_type scale) -> void
-    {
-        m_topology = topology_factory::make_topology(id, scale);
-
-        assert(m_topology);
-    }
-
-    auto emit_layout() const -> void { m_layout_signal(get_layout()); }
-    auto emit_topology() const -> void { m_topology_signal(get_topology()); }
+    auto emit_layout() const -> void;
+    auto emit_topology() const -> void;
 
 private:
     using layout_pointer = typename layout_factory< graph_type >::pointer;
     using topology_pointer = topology_factory::pointer;
 
-    auto is_layout_listed(id_type id) const -> bool
-    {
-        return std::find(
-                   std::cbegin(config_data().layouts),
-                   std::cend(config_data().layouts),
-                   id)
-            != std::cend(config_data().layouts);
-    }
-
-    auto is_topology_listed(id_type id) const -> bool
-    {
-        return std::find(
-                   std::cbegin(config_data().topologies),
-                   std::cend(config_data().topologies),
-                   id)
-            != std::cend(config_data().topologies);
-    }
-
-    static constexpr auto is_scale_non_negative(scale_type scale) -> bool
-    {
-        return scale >= 0;
-    }
-
-    auto verify_layouts() const -> void
-    {
-        for (const auto& layout : config_data().layouts)
-            if (!is_layout_plugged_in(layout))
-                BOOST_THROW_EXCEPTION(unknown_plugin() << layout_info(layout));
-    }
-
-    auto verify_topologies() const -> void
-    {
-        for (const auto& space : config_data().topologies)
-            if (!is_topology_plugged_in(space))
-                BOOST_THROW_EXCEPTION(unknown_plugin() << topology_info(space));
-    }
-
-    auto verify_layout() const -> void
-    {
-        if (!is_layout_listed(config_data().layout))
-            BOOST_THROW_EXCEPTION(
-                unlisted_default() << layout_info(config_data().layout));
-    }
-
-    auto verify_topology() const -> void
-    {
-        if (!is_topology_listed(config_data().topology))
-            BOOST_THROW_EXCEPTION(
-                unlisted_default() << topology_info(config_data().topology));
-    }
-
-    auto verify_scale() const -> void
-    {
-        if (!is_scale_non_negative(config_data().scale))
-            BOOST_THROW_EXCEPTION(
-                negative_scale() << scale_info(config_data().scale));
-    }
+    auto verify_config() const -> void;
 
     const graph_type& m_g;
     weight_map_type m_edge_weight;
 
-    layout_signal_type m_layout_signal;
-    topology_signal_type m_topology_signal;
+    layout_signal m_layout_sig;
+    topology_signal m_topology_sig;
 
     topology_pointer m_topology;
     layout_pointer m_layout;
 
     config_data_type m_config;
 };
+
+/***********************************************************
+ * Definitions                                             *
+ ***********************************************************/
+
+template < typename Graph, typename WeightMap >
+inline backend< Graph, WeightMap >::backend(
+    const graph_type& g, weight_map_type edge_weight, config_data_type config)
+: m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
+{
+    verify_config();
+
+    set_topology(config_data().topology, config_data().scale);
+    set_layout(config_data().layout);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_layout(id_type id) -> void
+{
+    if (!is_layout_listed(config_data(), id))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
+        return;
+    }
+
+    set_layout(id);
+    emit_layout();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_layout(
+    id_type space, scale_type scale, id_type lay) -> void
+{
+    if (!is_topology_listed(config_data(), space) or scale < 0
+        or !is_layout_listed(config_data(), lay))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid layout update";
+        return;
+    }
+
+    set_topology(space, scale);
+    set_layout(lay);
+
+    emit_layout();
+    emit_topology();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_layout(const layout_slot& slot)
+    -> connection
+{
+    return m_layout_sig.connect(slot);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_topology(const topology_slot& slot)
+    -> connection
+{
+    return m_topology_sig.connect(slot);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_layout(id_type id) -> void
+{
+    assert(m_topology);
+    m_layout = layout_factory_type::make_layout(
+        id, graph(), get_topology(), weight_map());
+    assert(m_layout);
+    assert(m_topology);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::set_topology(id_type id, scale_type scale) -> void
+{
+    m_topology = topology_factory::make_topology(id, scale);
+    assert(m_topology);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_layout() const -> void
+{
+    m_layout_sig(get_layout());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_topology() const -> void
+{
+    m_topology_sig(get_topology());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::verify_config() const -> void
+{
+    for (const auto& l : config_data().layouts)
+        if (!is_layout_plugged_in(l))
+            BOOST_THROW_EXCEPTION(unknown_plugin() << layout_info(l));
+
+    for (const auto& t : config_data().topologies)
+        if (!is_topology_plugged_in(t))
+            BOOST_THROW_EXCEPTION(unknown_plugin() << topology_info(t));
+
+    if (!is_layout_listed(config_data()))
+        BOOST_THROW_EXCEPTION(
+            unlisted_default() << layout_info(config_data().layout));
+
+    if (!is_topology_listed(config_data()))
+        BOOST_THROW_EXCEPTION(
+            unlisted_default() << topology_info(config_data().topology));
+
+    if (config_data().scale < 0)
+        BOOST_THROW_EXCEPTION(
+            negative_scale() << scale_info(config_data().scale));
+
+    assert(are_layouts_plugged_in(config_data()));
+    assert(are_topologies_plugged_in(config_data()));
+}
+
+/***********************************************************
+ * Utilities                                               *
+ ***********************************************************/
 
 // Utility factory for type deduction.
 template < typename Graph, typename WeightMap >
