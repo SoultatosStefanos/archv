@@ -68,17 +68,6 @@ inline auto kruskal_min_spanning_tree< Graph, WeightMap >::clone() const
     return std::make_unique< self >(*this);
 }
 
-/***********************************************************
- * Utilities                                               *
- ***********************************************************/
-
-// For type deduction.
-template < typename Graph, typename WeightMap >
-inline auto make_kruskal_min_spanning_tree()
-{
-    return kruskal_min_spanning_tree< Graph, WeightMap >();
-}
-
 } // namespace clustering
 
 #endif // CLUSTERING_KRUSKAL_MIN_SPANNING_TREE_HPP

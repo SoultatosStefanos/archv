@@ -19,7 +19,7 @@ namespace clustering
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-class clusterer_builder final
+class clusterer_builder
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
@@ -42,30 +42,17 @@ public:
     using k_type = typename k_spanning_tree_type::k_type;
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
 
-    clusterer_builder(const clusterer_builder&) = delete;
-    clusterer_builder(clusterer_builder&&) = delete;
-
-    auto operator=(const clusterer_builder&) -> clusterer_builder& = delete;
-    auto operator=(clusterer_builder&&) -> clusterer_builder& = delete;
-
-    static auto get() -> self&;
-
-    auto weight_map() const -> weight_map_type { return m_edge_weight; }
+    auto edge_weight() const -> weight_map_type { return m_edge_weight; }
     auto mst_finder() const -> const mst_finder_type& { return *m_mst_finder; }
     auto k() const -> k_type { return m_k; }
 
-    auto set_weight_map(weight_map_type edge_weight) -> self&;
+    auto set_edge_weight(weight_map_type edge_weight) -> self&;
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
-
-    auto clear() -> void;
 
     auto build_clusterer(id_type id) const -> pointer;
 
 private:
-    clusterer_builder() = default;
-    ~clusterer_builder() = default;
-
     weight_map_type m_edge_weight;
     std::unique_ptr< mst_finder_type > m_mst_finder;
     k_type m_k { -1 };
@@ -76,14 +63,7 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline auto clusterer_builder< Graph, WeightMap >::get() -> self&
-{
-    static auto singleton = clusterer_builder();
-    return singleton;
-}
-
-template < typename Graph, typename WeightMap >
-inline auto clusterer_builder< Graph, WeightMap >::set_weight_map(
+inline auto clusterer_builder< Graph, WeightMap >::set_edge_weight(
     weight_map_type edge_weight) -> self&
 {
     m_edge_weight = edge_weight;
@@ -107,13 +87,6 @@ inline auto clusterer_builder< Graph, WeightMap >::set_mst_finder(
 }
 
 template < typename Graph, typename WeightMap >
-inline auto clusterer_builder< Graph, WeightMap >::clear() -> void
-{
-    m_k = -1;
-    m_mst_finder = nullptr;
-}
-
-template < typename Graph, typename WeightMap >
 inline auto
 clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     -> pointer
@@ -124,7 +97,7 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
         assert(m_k != -1);
 
         return std::make_unique< k_spanning_tree_type >(
-            k(), mst_finder(), weight_map());
+            k(), mst_finder(), edge_weight());
     }
     else
     {

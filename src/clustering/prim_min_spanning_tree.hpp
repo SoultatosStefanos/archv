@@ -84,17 +84,6 @@ inline auto prim_min_spanning_tree< Graph, WeightMap >::clone() const
     return std::make_unique< self >(*this);
 }
 
-/***********************************************************
- * Utilities                                               *
- ***********************************************************/
-
-// For type deduction.
-template < typename Graph, typename WeightMap >
-inline auto make_prim_min_spanning_tree()
-{
-    return prim_min_spanning_tree< Graph, WeightMap >();
-}
-
 } // namespace clustering
 
 #endif // CLUSTERING_PRIM_MIN_SPANNING_TREE_HPP

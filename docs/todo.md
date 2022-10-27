@@ -595,3 +595,7 @@
 
 	+ [ ] GUI configurable clustering color mapping
 
+
+# 27 / 10 / 2022
+	
+	+ [ ] POC clustering rendering with hardcoded color mapping

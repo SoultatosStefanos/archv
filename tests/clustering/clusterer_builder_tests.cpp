@@ -45,7 +45,9 @@ struct dummy_mst_finder
 class clustering_cluster_builder_tests : public Test
 {
 protected:
-    void TearDown() override { builder_t::get().clear(); }
+    void SetUp() override { builder = std::make_unique< builder_t >(); }
+
+    std::unique_ptr< builder_t > builder;
 };
 
 TEST_F(
@@ -59,10 +61,9 @@ TEST_F(
     static_assert(clustering::is_clusterer_plugged_in(id));
 
     const auto clusterer
-        = builder_t::get()
-              .set_k(0)
+        = builder->set_k(0)
               .set_mst_finder(std::make_unique< dummy_mst_finder >())
-              .set_weight_map(weight_map(10))
+              .set_edge_weight(weight_map(10))
               .build_clusterer(id);
 
     ASSERT_NE(clusterer, nullptr);
