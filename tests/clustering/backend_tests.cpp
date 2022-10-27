@@ -314,6 +314,29 @@ TEST_F(
 
 TEST_F(
     given_a_clustering_backend,
+    when_restoring_to_defaults_default_data_are_given_after_querying)
+{
+    constexpr auto id = clustering::kruskal_mst_id;
+    constexpr auto k = 3000;
+
+    static_assert(id != defualt_mst_finder);
+    static_assert(k != default_k);
+
+    clustering::update_k(*backend, k);
+    clustering::update_mst_finder(*backend, id);
+
+    EXPECT_EQ(clustering::get_k(*backend), k);
+    EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
+
+    clustering::restore_defaults(*backend);
+
+    ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
+    ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
+    ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend,
     updating_k_spanning_tree_clustering_details_use_case)
 {
     using expected_t
