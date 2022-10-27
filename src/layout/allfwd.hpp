@@ -17,9 +17,6 @@ class cube;
 class sphere;
 
 template < typename Graph >
-class layout_visitor;
-
-template < typename Graph >
 class layout;
 
 template < typename Graph >
@@ -29,6 +26,8 @@ struct config_data;
 
 template < typename Graph, typename WeightMap >
 struct position_map;
+
+struct backend_config;
 
 } // namespace layout
 

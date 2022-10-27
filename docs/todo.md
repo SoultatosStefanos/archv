@@ -593,8 +593,11 @@
 
 		+ [x] Json configurable
 
-		+ [ ] Rendering Cluster Color Coder policy class
 
-		+ [ ] Expand Graph Renderer to color clusters
+# 28 / 10 / 2022
 
-		+ [ ] GUI configurable clustering color mapping
+	+ [ ] Expand Graph Renderer to color clusters
+
+	+ [ ] Rendering Cluster Color Coder policy class
+
+	+ [ ] GUI configurable clustering color mapping
