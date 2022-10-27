@@ -589,7 +589,7 @@
 
 		+ [x] Backend
 
-		+ [ ] Cluster vertex property map
+		+ [x] Cluster vertex property map
 
 		+ [ ] Json configurable
 

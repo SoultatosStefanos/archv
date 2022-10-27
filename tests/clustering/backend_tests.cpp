@@ -123,8 +123,8 @@ TEST(
 
 using backend_t = clustering::backend< graph, weight_map >;
 
-using mock_clusters_slot_t
-    = NiceMock< MockFunction< void(const typename backend_t::cluster_map&) > >;
+using mock_clusters_slot_t = NiceMock<
+    MockFunction< void(const typename backend_t::cluster_map_type&) > >;
 
 using mock_clusterer_slot_t = NiceMock<
     MockFunction< void(const typename backend_t::clusterer_type&) > >;
@@ -147,8 +147,9 @@ protected:
 
     static constexpr auto weight = 10;
 
-    clustering::backend_config cfg { .clusterers = all_clusterers(),
-                                     .mst_finders = all_mst_finders(),
+    clustering::backend_config cfg { .clusterers = clustering::all_clusterers(),
+                                     .mst_finders
+                                     = clustering::all_mst_finders(),
                                      .clusterer = to_id(defualt_clusterer),
                                      .mst_finder = to_id(defualt_mst_finder),
                                      .k = default_k };

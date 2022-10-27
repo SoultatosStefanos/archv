@@ -59,6 +59,9 @@ class backend
 {
 public:
     using graph_type = Graph;
+    using graph_traits = boost::graph_traits< graph_type >;
+    using vertex_type = typename graph_traits::vertex_descriptor;
+    using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_type = WeightMap;
     using config_data_type = backend_config;
 
@@ -67,10 +70,12 @@ public:
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
     using k_type = int;
 
-    using cluster_map = typename clusterer_type::cluster_map;
+    using cluster_type = typename clusterer_type::cluster;
+    using cluster_map_type = typename clusterer_type::cluster_map;
 
 private:
-    using clusters_signal = boost::signals2::signal< void(const cluster_map&) >;
+    using clusters_signal
+        = boost::signals2::signal< void(const cluster_map_type&) >;
     using clusterer_signal
         = boost::signals2::signal< void(const clusterer_type&) >;
     using mst_finder_signal
@@ -93,7 +98,7 @@ public:
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto config_data() const -> const auto& { return m_cfg; }
 
-    auto get_clusters() const -> const cluster_map& { return m_clusters; }
+    auto get_clusters() const -> const cluster_map_type& { return m_clusters; }
     auto get_clusterer() const -> const clusterer_type& { return *m_clusterer; }
     auto get_mst_finder() const -> const mst_finder_type&;
     auto get_k() const -> k_type;
@@ -127,7 +132,7 @@ private:
     weight_map_type m_edge_weight;
     config_data_type m_cfg;
 
-    cluster_map m_clusters;
+    cluster_map_type m_clusters;
 
     clusterer_builder_type m_builder;
     clusterer_ptr m_clusterer;
@@ -192,7 +197,7 @@ inline auto backend< Graph, WeightMap >::get_k() const -> k_type
 
 template < typename Graph, typename WeightMap >
 auto cluster(const backend< Graph, WeightMap >& b) ->
-    typename backend< Graph, WeightMap >::cluster_map;
+    typename backend< Graph, WeightMap >::cluster_map_type;
 
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_clusters() -> void
@@ -310,7 +315,7 @@ inline auto make_backend(
 // Cluster from a backend.
 template < typename Graph, typename WeightMap >
 inline auto cluster(const backend< Graph, WeightMap >& b) ->
-    typename backend< Graph, WeightMap >::cluster_map
+    typename backend< Graph, WeightMap >::cluster_map_type
 {
     return cluster(b.graph(), b.get_clusterer());
 }
