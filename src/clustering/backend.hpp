@@ -63,21 +63,22 @@ public:
     using config_data_type = backend_config;
 
     using id_type = id_t;
-
     using clusterer_type = clusterer< Graph >;
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
     using k_type = int;
 
+    using cluster_map = typename clusterer_type::cluster_map;
+
 private:
+    using clusters_signal = boost::signals2::signal< void(const cluster_map&) >;
     using clusterer_signal
         = boost::signals2::signal< void(const clusterer_type&) >;
-
     using mst_finder_signal
         = boost::signals2::signal< void(const mst_finder_type&) >;
-
     using k_signal = boost::signals2::signal< void(k_type) >;
 
 public:
+    using clusters_slot = clusters_signal::slot_type;
     using clusterer_slot = clusterer_signal::slot_type;
     using mst_finder_slot = mst_finder_signal::slot_type;
     using k_slot = k_signal::slot_type;
@@ -92,19 +93,23 @@ public:
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto config_data() const -> const auto& { return m_cfg; }
 
+    auto get_clusters() const -> const cluster_map& { return m_clusters; }
     auto get_clusterer() const -> const clusterer_type& { return *m_clusterer; }
     auto get_mst_finder() const -> const mst_finder_type&;
     auto get_k() const -> k_type;
 
+    auto update_clusters() -> void;
     auto update_clusterer(id_type id) -> void;
     auto update_mst_finder(id_type id) -> void;
     auto update_k(k_type k) -> void;
 
+    auto connect_to_clusters(const clusters_slot& f) -> connection;
     auto connect_to_clusterer(const clusterer_slot& f) -> connection;
     auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
     auto connect_to_k(const k_slot& f) -> connection;
 
 protected:
+    auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
     auto emit_mst_finder() const -> void;
     auto emit_k() const -> void;
@@ -122,9 +127,12 @@ private:
     weight_map_type m_edge_weight;
     config_data_type m_cfg;
 
+    cluster_map m_clusters;
+
     clusterer_builder_type m_builder;
     clusterer_ptr m_clusterer;
 
+    clusters_signal m_clusters_sig;
     clusterer_signal m_clusterer_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;
@@ -183,6 +191,17 @@ inline auto backend< Graph, WeightMap >::get_k() const -> k_type
 }
 
 template < typename Graph, typename WeightMap >
+auto cluster(const backend< Graph, WeightMap >& b) ->
+    typename backend< Graph, WeightMap >::cluster_map;
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_clusters() -> void
+{
+    m_clusters = cluster(*this);
+    emit_clusters();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_clusterer(id_type id) -> void
 {
     if (!is_clusterer_listed(config_data(), id))
@@ -221,6 +240,14 @@ inline auto backend< Graph, WeightMap >::update_k(k_type k) -> void
 
 template < typename Graph, typename WeightMap >
 inline auto
+backend< Graph, WeightMap >::connect_to_clusters(const clusters_slot& f)
+    -> connection
+{
+    return m_clusters_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
 backend< Graph, WeightMap >::connect_to_clusterer(const clusterer_slot& f)
     -> connection
 {
@@ -240,6 +267,12 @@ inline auto backend< Graph, WeightMap >::connect_to_k(const k_slot& f)
     -> connection
 {
     return m_k_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_clusters() const -> void
+{
+    m_clusters_sig(get_clusters());
 }
 
 template < typename Graph, typename WeightMap >
@@ -276,9 +309,10 @@ inline auto make_backend(
 
 // Cluster from a backend.
 template < typename Graph, typename WeightMap >
-inline auto cluster(const backend< Graph, WeightMap >& b)
+inline auto cluster(const backend< Graph, WeightMap >& b) ->
+    typename backend< Graph, WeightMap >::cluster_map
 {
-    return cluster(b.get_clusterer(), b.graph());
+    return cluster(b.graph(), b.get_clusterer());
 }
 
 /***********************************************************
@@ -301,6 +335,12 @@ template < typename Graph, typename WeightMap >
 inline auto get_k(const backend< Graph, WeightMap >& b)
 {
     return b.get_k();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_clusters(backend< Graph, WeightMap >& b)
+{
+    b.update_clusters();
 }
 
 template < typename Graph, typename WeightMap >

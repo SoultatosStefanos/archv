@@ -123,6 +123,9 @@ TEST(
 
 using backend_t = clustering::backend< graph, weight_map >;
 
+using mock_clusters_slot_t
+    = NiceMock< MockFunction< void(const typename backend_t::cluster_map&) > >;
+
 using mock_clusterer_slot_t = NiceMock<
     MockFunction< void(const typename backend_t::clusterer_type&) > >;
 
@@ -152,6 +155,7 @@ protected:
 
     graph g;
     std::unique_ptr< backend_t > backend;
+    mock_clusters_slot_t clusters_slot;
     mock_clusterer_slot_t clusterer_slot;
     mock_mst_finder_slot_t mst_finder_slot;
     mock_k_slot_t k_slot;
@@ -242,6 +246,17 @@ TEST_F(
     ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
     ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_clusters_observers_are_notified)
+{
+    backend->connect_to_clusters(clusters_slot.AsStdFunction());
+
+    EXPECT_CALL(clusters_slot, Call(_)).Times(1);
+
+    clustering::update_clusters(*backend);
 }
 
 TEST_F(
