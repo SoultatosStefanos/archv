@@ -43,7 +43,7 @@ public:
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
 
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
-    auto mst_finder() const -> const mst_finder_type& { return *m_mst_finder; }
+    auto mst_finder() const -> mst_finder_type* { return m_mst_finder.get(); }
     auto k() const -> k_type { return m_k; }
 
     auto set_edge_weight(weight_map_type edge_weight) -> self&;
@@ -97,7 +97,7 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
         assert(m_k != -1);
 
         return std::make_unique< k_spanning_tree_type >(
-            k(), mst_finder(), edge_weight());
+            k(), *mst_finder(), edge_weight());
     }
     else
     {

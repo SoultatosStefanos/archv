@@ -44,4 +44,19 @@ auto is_mst_finder_listed(const backend_config& cfg) -> bool
     return is_listed_at(cfg.mst_finders, cfg.mst_finder);
 }
 
+auto all_clusterers() -> backend_config::ids_type
+{
+    using id_type = backend_config::id_type;
+
+    return backend_config::ids_type { id_type(k_spanning_tree_clusterer_id) };
+}
+
+auto all_mst_finders() -> backend_config::ids_type
+{
+    using id_type = backend_config::id_type;
+
+    return backend_config::ids_type { id_type(prim_mst_id),
+                                      id_type(kruskal_mst_id) };
+}
+
 } // namespace clustering

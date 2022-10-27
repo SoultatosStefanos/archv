@@ -19,7 +19,8 @@ TEST(
         clustering::backend_config { .clusterers = {},
                                      .mst_finders = {},
                                      .clusterer = "",
-                                     .mst_finder = "" }));
+                                     .mst_finder = "",
+                                     .k = 1 }));
 }
 
 TEST(
@@ -31,7 +32,8 @@ TEST(
             .clusterers = { id_t(clustering::k_spanning_tree_clusterer_id) },
             .mst_finders = {},
             .clusterer = "",
-            .mst_finder = "" }));
+            .mst_finder = "",
+            .k = 1 }));
 }
 
 TEST(
@@ -42,7 +44,8 @@ TEST(
         clustering::backend_config { .clusterers = { "Bob" },
                                      .mst_finders = {},
                                      .clusterer = "",
-                                     .mst_finder = "" }));
+                                     .mst_finder = "",
+                                     .k = 1 }));
 }
 
 TEST(
@@ -55,7 +58,8 @@ TEST(
             = { "Bob", id_t(clustering::k_spanning_tree_clusterer_id) },
             .mst_finders = {},
             .clusterer = "",
-            .mst_finder = "" }));
+            .mst_finder = "",
+            .k = 1 }));
 }
 
 TEST(
@@ -66,7 +70,8 @@ TEST(
         clustering::backend_config { .clusterers = {},
                                      .mst_finders = {},
                                      .clusterer = "",
-                                     .mst_finder = "" }));
+                                     .mst_finder = "",
+                                     .k = 1 }));
 }
 
 TEST(
@@ -79,7 +84,8 @@ TEST(
             .mst_finders = { id_t(clustering::kruskal_mst_id),
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
-            .mst_finder = "" }));
+            .mst_finder = "",
+            .k = 1 }));
 }
 
 TEST(
@@ -90,7 +96,8 @@ TEST(
         clustering::backend_config { .clusterers = {},
                                      .mst_finders = { "Bob" },
                                      .clusterer = "",
-                                     .mst_finder = "" }));
+                                     .mst_finder = "",
+                                     .k = 1 }));
 }
 
 TEST(
@@ -104,7 +111,8 @@ TEST(
                              id_t(clustering::kruskal_mst_id),
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
-            .mst_finder = "" }));
+            .mst_finder = "",
+            .k = 1 }));
 }
 
 TEST(clustering_backend_config_tests, clusterer_from_config_is_listed)
@@ -112,7 +120,8 @@ TEST(clustering_backend_config_tests, clusterer_from_config_is_listed)
     const auto cfg = clustering::backend_config { .clusterers = { "Bob" },
                                                   .mst_finders = {},
                                                   .clusterer = "Bob",
-                                                  .mst_finder = "" };
+                                                  .mst_finder = "",
+                                                  .k = 1 };
 
     ASSERT_TRUE(clustering::is_clusterer_listed(cfg));
 }
@@ -123,7 +132,8 @@ TEST(clustering_backend_config_tests, clusterer_outside_config_is_not_listed)
         .clusterers = { "Bob" },
         .mst_finders = {},
         .clusterer = id_t(clustering::k_spanning_tree_clusterer_id),
-        .mst_finder = ""
+        .mst_finder = "",
+        .k = 1
     };
 
     ASSERT_FALSE(clustering::is_clusterer_listed(cfg));
@@ -134,19 +144,20 @@ TEST(clustering_backend_config_tests, mst_finder_from_config_is_listed)
     const auto cfg = clustering::backend_config { .clusterers = {},
                                                   .mst_finders = { "Bob" },
                                                   .clusterer = "",
-                                                  .mst_finder = "Bob" };
+                                                  .mst_finder = "Bob",
+                                                  .k = 1 };
 
     ASSERT_TRUE(clustering::is_mst_finder_listed(cfg));
 }
 
 TEST(clustering_backend_config_tests, mst_finder_outside_config_is_not_listed)
 {
-    const auto cfg
-        = clustering::backend_config { .clusterers = {},
-                                       .mst_finders = { "Bob" },
-                                       .clusterer = "",
-                                       .mst_finder
-                                       = id_t(clustering::prim_mst_id) };
+    const auto cfg = clustering::backend_config { .clusterers = {},
+                                                  .mst_finders = { "Bob" },
+                                                  .clusterer = "",
+                                                  .mst_finder = id_t(
+                                                      clustering::prim_mst_id),
+                                                  .k = 1 };
 
     ASSERT_FALSE(clustering::is_mst_finder_listed(cfg));
 }
