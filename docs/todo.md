@@ -591,7 +591,7 @@
 
 		+ [x] Cluster vertex property map
 
-		+ [ ] Json configurable
+		+ [x] Json configurable
 
 		+ [ ] Rendering Cluster Color Coder policy class
 

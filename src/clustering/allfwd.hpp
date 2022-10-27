@@ -28,6 +28,15 @@ class clusterer_builder;
 template < typename Graph, typename WeightMap >
 class min_spanning_tree_finder_factory;
 
+template < typename Graph, typename WeightMap >
+class backend;
+
+template < typename Backend >
+class cluster_map;
+
+struct backend_config;
+struct config_data;
+
 } // namespace clustering
 
 #endif // CLUSTERING_ALLFWD_HPP

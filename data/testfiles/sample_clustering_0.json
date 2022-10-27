@@ -1,0 +1,14 @@
+{
+	"clusterers" : 
+	[
+		"Bob",
+		"Alice"
+	],
+	"min-spanning-tree-finders" : 
+	[
+		"Popeye"
+	],
+	"clusterer" : "M",
+	"min-spanning-tree-finder" : "N",
+	"k" : 20
+}
