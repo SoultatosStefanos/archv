@@ -166,9 +166,13 @@ inline backend< Graph, WeightMap >::backend(
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::verify_config_data() const -> void
 {
-    if (!are_clusterers_plugged_in(config_data())
-        or !are_mst_finders_plugged_in(config_data()))
-        BOOST_THROW_EXCEPTION(unknown_plugin());
+    for (const auto& c : config_data().clusterers)
+        if (!is_clusterer_plugged_in(c))
+            BOOST_THROW_EXCEPTION(unknown_plugin() << clusterer_info(c));
+
+    for (const auto& f : config_data().mst_finders)
+        if (!is_mst_finder_plugged_in(f))
+            BOOST_THROW_EXCEPTION(unknown_plugin() << mst_finder_info(f));
 
     if (!is_clusterer_listed(config_data()))
         BOOST_THROW_EXCEPTION(
@@ -180,6 +184,9 @@ inline auto backend< Graph, WeightMap >::verify_config_data() const -> void
 
     if (config_data().k < 1)
         BOOST_THROW_EXCEPTION(invalid_k() << k_info(config_data().k));
+
+    assert(are_clusterers_plugged_in(config_data()));
+    assert(are_mst_finders_plugged_in(config_data()));
 }
 
 template < typename Graph, typename WeightMap >
