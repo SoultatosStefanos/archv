@@ -128,7 +128,7 @@ namespace
     struct update_topology_cmd : undo_redo::command
     {
         using backend_type = graph_interface::layout_backend_type;
-        using topology_id_type = backend_type::topology_id_type;
+        using topology_id_type = graph_interface::topology_id_type;
 
         backend_type& backend;
         topology_id_type new_id, old_id;
@@ -186,8 +186,8 @@ namespace
     struct restore_layout_defaults_cmd : undo_redo::command
     {
         using backend_type = graph_interface::layout_backend_type;
-        using layout_id_type = backend_type::layout_id_type;
-        using topology_id_type = backend_type::topology_id_type;
+        using layout_id_type = graph_interface::layout_id_type;
+        using topology_id_type = graph_interface::topology_id_type;
         using scale_type = backend_type::scale_type;
 
         backend_type& backend;

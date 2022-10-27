@@ -7,10 +7,9 @@
 #include "backend_config.hpp"
 #include "layout.hpp"
 #include "layout_factory.hpp"
-#include "layout_plugin.hpp"
+#include "plugin.hpp"
 #include "topology.hpp"
 #include "topology_factory.hpp"
-#include "topology_plugin.hpp"
 
 #include <boost/exception/all.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -82,8 +81,7 @@ public:
     using weight_map_type = WeightMap;
     using layout_type = layout< graph_type >;
     using topology_type = topology;
-    using layout_id_type = layout_id;
-    using topology_id_type = topology_id;
+    using id_type = id_t;
     using scale_type = topology_type::scale_type;
 
     using layout_slot_type = typename layout_signal_type::slot_type;
@@ -113,7 +111,7 @@ public:
     auto weight_map() const -> const weight_map_type& { return m_edge_weight; }
     auto config_data() const -> const config_data_type& { return m_config; }
 
-    auto update_layout(layout_id_type id) -> void
+    auto update_layout(id_type id) -> void
     {
         if (!is_layout_listed(id))
         {
@@ -125,10 +123,9 @@ public:
         emit_layout();
     }
 
-    auto update_layout(
-        topology_id_type space_id,
-        scale_type topology_scale,
-        layout_id_type algo_id) -> void
+    auto
+    update_layout(id_type space_id, scale_type topology_scale, id_type algo_id)
+        -> void
     {
         if (!is_topology_listed(space_id)
             or !is_scale_non_negative(topology_scale)
@@ -158,7 +155,7 @@ public:
 protected:
     using layout_factory_type = layout_factory< graph_type >;
 
-    auto set_layout(layout_id_type id) -> void
+    auto set_layout(id_type id) -> void
     {
         assert(m_topology);
 
@@ -169,7 +166,7 @@ protected:
         assert(m_topology);
     }
 
-    auto set_topology(topology_id_type id, scale_type scale) -> void
+    auto set_topology(id_type id, scale_type scale) -> void
     {
         m_topology = topology_factory::make_topology(id, scale);
 
@@ -183,7 +180,7 @@ private:
     using layout_pointer = typename layout_factory< graph_type >::pointer;
     using topology_pointer = topology_factory::pointer;
 
-    auto is_layout_listed(layout_id_type id) const -> bool
+    auto is_layout_listed(id_type id) const -> bool
     {
         return std::find(
                    std::cbegin(config_data().layouts),
@@ -192,7 +189,7 @@ private:
             != std::cend(config_data().layouts);
     }
 
-    auto is_topology_listed(topology_id_type id) const -> bool
+    auto is_topology_listed(id_type id) const -> bool
     {
         return std::find(
                    std::cbegin(config_data().topologies),
@@ -270,13 +267,13 @@ inline auto make_backend(
 template < typename Graph, typename WeightMap >
 inline auto get_layout_id(const backend< Graph, WeightMap >& b)
 {
-    return identify(b.get_layout());
+    return b.get_layout().id();
 }
 
 template < typename Graph, typename WeightMap >
 inline auto get_topology_id(const backend< Graph, WeightMap >& b)
 {
-    return identify(b.get_topology());
+    return b.get_topology().id();
 }
 
 template < typename Graph, typename WeightMap >
@@ -288,7 +285,7 @@ inline auto get_scale(const backend< Graph, WeightMap >& b)
 template < typename Graph, typename WeightMap >
 inline auto update_layout(
     backend< Graph, WeightMap >& b,
-    typename backend< Graph, WeightMap >::layout_id_type id)
+    typename backend< Graph, WeightMap >::id_type id)
 {
     b.update_layout(id);
 }
@@ -296,8 +293,8 @@ inline auto update_layout(
 template < typename Graph, typename WeightMap >
 inline auto update_layout(
     backend< Graph, WeightMap >& b,
-    typename backend< Graph, WeightMap >::layout_id_type algo_id,
-    typename backend< Graph, WeightMap >::topology_id_type space_id,
+    typename backend< Graph, WeightMap >::id_type algo_id,
+    typename backend< Graph, WeightMap >::id_type space_id,
     typename backend< Graph, WeightMap >::scale_type scale)
 {
     b.update_layout(space_id, scale, algo_id);
@@ -306,16 +303,16 @@ inline auto update_layout(
 template < typename Graph, typename WeightMap >
 inline auto update_topology(
     backend< Graph, WeightMap >& b,
-    typename backend< Graph, WeightMap >::topology_id_type id,
+    typename backend< Graph, WeightMap >::id_type id,
     typename backend< Graph, WeightMap >::scale_type scale)
 {
-    b.update_layout(id, scale, identify(b.get_layout()));
+    b.update_layout(id, scale, b.get_layout().id());
 }
 
 template < typename Graph, typename WeightMap >
 inline auto update_topology(
     backend< Graph, WeightMap >& b,
-    typename backend< Graph, WeightMap >::topology_id_type id)
+    typename backend< Graph, WeightMap >::id_type id)
 {
     update_topology(b, id, b.get_topology().scale());
 }
@@ -325,7 +322,7 @@ inline auto update_scale(
     backend< Graph, WeightMap >& b,
     typename backend< Graph, WeightMap >::scale_type scale)
 {
-    update_topology(b, identify(b.get_topology()), scale);
+    update_topology(b, b.get_topology().id(), scale);
 }
 
 template < typename Graph, typename WeightMap >

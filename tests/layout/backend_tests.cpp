@@ -145,8 +145,8 @@ TEST_F(given_a_layout_backend, updating_with_unlisted_layout_results_to_noop)
 {
     layout::update_layout(*inst, "aaaaa");
 
-    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
-    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(layout::get_layout_id(*inst), initial_layout);
+    ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
@@ -154,8 +154,8 @@ TEST_F(given_a_layout_backend, updating_with_unlisted_topology_results_to_noop)
 {
     layout::update_topology(*inst, "aaaaa");
 
-    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
-    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(layout::get_layout_id(*inst), initial_layout);
+    ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
@@ -163,15 +163,15 @@ TEST_F(given_a_layout_backend, updating_with_negative_scale_results_to_noop)
 {
     layout::update_scale(*inst, -2);
 
-    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
-    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(layout::get_layout_id(*inst), initial_layout);
+    ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
 TEST_F(given_a_layout_backend, initially_has_defaulted_entities)
 {
-    ASSERT_EQ(layout::identify(inst->get_layout()), initial_layout);
-    ASSERT_EQ(layout::identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(layout::get_layout_id(*inst), initial_layout);
+    ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 
@@ -179,7 +179,7 @@ TEST_F(given_a_layout_backend, a_layout_update_will_set_new_type)
 {
     layout::update_layout(*inst, layout::gursoy_atun_id);
 
-    ASSERT_EQ(layout::identify(inst->get_layout()), layout::gursoy_atun_id);
+    ASSERT_EQ(layout::get_layout_id(*inst), layout::gursoy_atun_id);
 }
 
 TEST_F(given_a_layout_backend, a_layout_update_will_callback_observers)
@@ -195,7 +195,7 @@ TEST_F(given_a_layout_backend, a_topology_update_will_set_new_topology_type)
 {
     layout::update_topology(*inst, layout::sphere_id);
 
-    ASSERT_EQ(layout::identify(inst->get_topology()), layout::sphere_id);
+    ASSERT_EQ(layout::get_topology_id(*inst), layout::sphere_id);
 }
 
 TEST_F(given_a_layout_backend, a_topology_update_will_callback_observers)
@@ -232,12 +232,12 @@ TEST_F(given_a_layout_backend, restoring_defaults_sets_initial_values)
 {
     layout::update_topology(*inst, layout::sphere_id, 300);
 
-    EXPECT_NE(identify(inst->get_topology()), initial_topology);
+    EXPECT_NE(layout::get_topology_id(*inst), initial_topology);
     EXPECT_NE(inst->get_topology().scale(), initial_scale);
 
     layout::restore_defaults(*inst);
 
-    ASSERT_EQ(identify(inst->get_topology()), initial_topology);
+    ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
 }
 

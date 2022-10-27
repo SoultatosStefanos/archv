@@ -6,7 +6,7 @@
 
 #include "gursoy_atun_layout.hpp"
 #include "layout.hpp"
-#include "layout_plugin.hpp"
+#include "plugin.hpp"
 #include "topology.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -21,7 +21,7 @@ class layout_factory final
 {
 public:
     using graph_type = Graph;
-    using id_type = layout_id;
+    using id_type = id_t;
     using pointer = std::unique_ptr< layout< graph_type > >;
 
     layout_factory(const layout_factory&) = default;

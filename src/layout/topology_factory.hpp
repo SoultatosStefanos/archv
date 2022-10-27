@@ -4,8 +4,8 @@
 #ifndef LAYOUT_TOPOLOGY_FACTORY_HPP
 #define LAYOUT_TOPOLOGY_FACTORY_HPP
 
+#include "plugin.hpp"
 #include "topology.hpp"
-#include "topology_plugin.hpp"
 
 #include <memory>
 
@@ -16,7 +16,7 @@ class topology_factory final
 {
 public:
     using pointer = std::unique_ptr< topology >;
-    using id_type = topology_id;
+    using id_type = id_t;
     using scale_type = topology::scale_type;
 
     topology_factory(const topology_factory&) = delete;

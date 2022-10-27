@@ -6,12 +6,10 @@
 
 #include <boost/graph/graph_concepts.hpp>
 #include <memory>
+#include <string_view>
 
 namespace layout
 {
-
-template < typename Graph >
-class layout_visitor;
 
 // In 3D space.
 template < typename Graph >
@@ -19,11 +17,13 @@ class layout
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
+    using self = layout< Graph >;
+
 public:
+    using id_type = std::string_view;
     using graph_type = Graph;
     using vertex_type = typename graph_type::vertex_descriptor;
     using coord_type = double;
-    using visitor_type = layout_visitor< graph_type >;
 
     layout() = default;
     layout(const layout&) = default;
@@ -33,13 +33,13 @@ public:
     auto operator=(const layout&) -> layout& = default;
     auto operator=(layout&&) -> layout& = default;
 
+    virtual auto id() const -> id_type = 0;
+
     virtual auto x(vertex_type v) const -> coord_type = 0;
     virtual auto y(vertex_type v) const -> coord_type = 0;
     virtual auto z(vertex_type v) const -> coord_type = 0;
 
-    virtual auto accept(const visitor_type& visitor) const -> void = 0;
-
-    virtual auto clone() const -> std::unique_ptr< layout< graph_type > > = 0;
+    virtual auto clone() const -> std::unique_ptr< self > = 0;
 };
 
 } // namespace layout

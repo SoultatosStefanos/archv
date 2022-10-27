@@ -1,7 +1,7 @@
 #include "layout/cube.hpp"
+#include "layout/plugin.hpp"
 #include "layout/sphere.hpp"
 #include "layout/topology_factory.hpp"
-#include "layout/topology_plugin.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

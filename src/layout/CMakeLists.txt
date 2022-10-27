@@ -1,9 +1,9 @@
 set(FILES
+	backend_config.cpp
 	config.cpp
 	cube.cpp
 	sphere.cpp
 	topology_factory.cpp
-	topology_plugin.cpp
 )
 set(SUBDIRECTORIES)
 

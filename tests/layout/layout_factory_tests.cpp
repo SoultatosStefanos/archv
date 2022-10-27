@@ -30,6 +30,7 @@ public:
     mock_topology() = default;
     ~mock_topology() override = default;
 
+    MOCK_METHOD(id_type, id, (), (const, override));
     MOCK_METHOD(scale_type, scale, (), (const, override));
     MOCK_METHOD(void, accept, (const visitor_type&), (const, override));
     MOCK_METHOD(std::unique_ptr< topology >, clone, (), (const, override));

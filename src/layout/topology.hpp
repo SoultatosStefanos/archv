@@ -7,6 +7,7 @@
 #include <boost/graph/topology.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <memory>
+#include <string_view>
 
 // NOTE: The bgl topology abstractions are not meant to be used polymorphically.
 // Plus, we need to access the scale of each topolgy.
@@ -24,6 +25,7 @@ class topology_visitor;
 class topology
 {
 public:
+    using id_type = std::string_view;
     using point_type = typename boost::convex_topology< 3 >::point_type;
     using scale_type = double;
     using visitor_type = topology_visitor;
@@ -35,6 +37,8 @@ public:
 
     auto operator=(const topology&) -> topology& = default;
     auto operator=(topology&&) -> topology& = default;
+
+    virtual auto id() const -> id_type = 0;
 
     virtual auto scale() const -> scale_type = 0;
 

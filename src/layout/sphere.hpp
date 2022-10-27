@@ -22,11 +22,13 @@ public:
     auto data() const -> const data_type& { return m_sphere; }
     auto data() -> data_type& { return m_sphere; }
 
-    virtual auto scale() const -> scale_type override { return m_scale; }
+    auto id() const -> id_type override ;
 
-    virtual auto accept(const visitor_type& visitor) const -> void override;
+    auto scale() const -> scale_type override { return m_scale; }
 
-    virtual auto clone() const -> std::unique_ptr< topology > override;
+    auto accept(const visitor_type& visitor) const -> void override;
+
+    auto clone() const -> std::unique_ptr< topology > override;
 
 private:
     data_type m_sphere;
