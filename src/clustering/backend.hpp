@@ -114,6 +114,10 @@ public:
     auto connect_to_k(const k_slot& f) -> connection;
 
 protected:
+    auto set_clusterer(id_type id) -> void;
+    auto set_mst_finder(id_type id) -> void;
+    auto set_k(k_type k) -> void;
+
     auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
     auto emit_mst_finder() const -> void;
@@ -154,9 +158,9 @@ inline backend< Graph, WeightMap >::backend(
 {
     verify_config_data();
 
-    update_mst_finder(config_data().mst_finder);
-    update_k(config_data().k);
-    update_clusterer(config_data().clusterer);
+    set_mst_finder(config_data().mst_finder);
+    set_k(config_data().k);
+    set_clusterer(config_data().clusterer);
 
     assert(m_clusterer);
     assert(m_builder.mst_finder());
@@ -221,7 +225,8 @@ inline auto backend< Graph, WeightMap >::update_clusterer(id_type id) -> void
         BOOST_LOG_TRIVIAL(warning) << "ignoring unlisted clusterer: " << id;
         return;
     }
-    m_clusterer = m_builder.build_clusterer(id);
+
+    set_clusterer(id);
     emit_clusterer();
 }
 
@@ -234,7 +239,7 @@ inline auto backend< Graph, WeightMap >::update_mst_finder(id_type id) -> void
         return;
     }
 
-    m_builder.set_mst_finder(mst_finder_factory_type::make_mst_finder(id));
+    set_mst_finder(id);
     emit_mst_finder();
 }
 
@@ -246,7 +251,8 @@ inline auto backend< Graph, WeightMap >::update_k(k_type k) -> void
         BOOST_LOG_TRIVIAL(warning) << "ignoring invalid k: " << k;
         return;
     }
-    m_builder.set_k(k);
+
+    set_k(k);
     emit_k();
 }
 
@@ -279,6 +285,24 @@ inline auto backend< Graph, WeightMap >::connect_to_k(const k_slot& f)
     -> connection
 {
     return m_k_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
+{
+    m_clusterer = m_builder.build_clusterer(id);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_mst_finder(id_type id) -> void
+{
+    m_builder.set_mst_finder(mst_finder_factory_type::make_mst_finder(id));
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_k(k_type k) -> void
+{
+    m_builder.set_k(k);
 }
 
 template < typename Graph, typename WeightMap >
