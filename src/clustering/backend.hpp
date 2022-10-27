@@ -12,6 +12,7 @@
 #include "plugin.hpp"
 
 #include <boost/exception/all.hpp>
+#include <boost/log/trivial.hpp>
 #include <boost/signals2/signal.hpp>
 #include <stdexcept>
 
@@ -52,6 +53,7 @@ using k_info = boost::error_info< struct tag_k, backend_config::k_type >;
  * Backend                                                 *
  ***********************************************************/
 
+// Clusterer package application specific user interactor.
 template < typename Graph, typename WeightMap >
 class backend
 {
@@ -183,6 +185,11 @@ inline auto backend< Graph, WeightMap >::get_k() const -> k_type
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_clusterer(id_type id) -> void
 {
+    if (!is_clusterer_listed(config_data(), id))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring unlisted clusterer: " << id;
+        return;
+    }
     m_clusterer = m_builder.build_clusterer(id);
     emit_clusterer();
 }
@@ -190,6 +197,12 @@ inline auto backend< Graph, WeightMap >::update_clusterer(id_type id) -> void
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_mst_finder(id_type id) -> void
 {
+    if (!is_mst_finder_listed(config_data(), id))
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring unlisted mst finder: " << id;
+        return;
+    }
+
     m_builder.set_mst_finder(mst_finder_factory_type::make_mst_finder(id));
     emit_mst_finder();
 }
@@ -197,6 +210,11 @@ inline auto backend< Graph, WeightMap >::update_mst_finder(id_type id) -> void
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_k(k_type k) -> void
 {
+    if (k < 1)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid k: " << k;
+        return;
+    }
     m_builder.set_k(k);
     emit_k();
 }

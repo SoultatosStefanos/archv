@@ -190,6 +190,62 @@ TEST_F(given_a_clustering_backend, initially_given_default_k_is_held)
 
 TEST_F(
     given_a_clustering_backend,
+    when_updating_clusterer_with_unlisted_id_nothing_happens)
+{
+    backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
+    backend->connect_to_k(k_slot.AsStdFunction());
+    backend->connect_to_clusterer(clusterer_slot.AsStdFunction());
+
+    EXPECT_CALL(mst_finder_slot, Call(_)).Times(0);
+    EXPECT_CALL(k_slot, Call(_)).Times(0);
+    EXPECT_CALL(clusterer_slot, Call(_)).Times(0);
+
+    clustering::update_clusterer(*backend, "Bob");
+
+    ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
+    ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
+    ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_mst_finder_with_unlisted_id_nothing_happens)
+{
+    backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
+    backend->connect_to_k(k_slot.AsStdFunction());
+    backend->connect_to_clusterer(clusterer_slot.AsStdFunction());
+
+    EXPECT_CALL(mst_finder_slot, Call(_)).Times(0);
+    EXPECT_CALL(k_slot, Call(_)).Times(0);
+    EXPECT_CALL(clusterer_slot, Call(_)).Times(0);
+
+    clustering::update_mst_finder(*backend, "Bob");
+
+    ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
+    ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
+    ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend, when_updating_k_with_invalid_k_nothing_happens)
+{
+    backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
+    backend->connect_to_k(k_slot.AsStdFunction());
+    backend->connect_to_clusterer(clusterer_slot.AsStdFunction());
+
+    EXPECT_CALL(mst_finder_slot, Call(_)).Times(0);
+    EXPECT_CALL(k_slot, Call(_)).Times(0);
+    EXPECT_CALL(clusterer_slot, Call(_)).Times(0);
+
+    clustering::update_k(*backend, -10);
+
+    ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
+    ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
+    ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend,
     after_updating_the_clusterer_new_clusterer_is_held)
 {
     constexpr auto id = clustering::k_spanning_tree_clusterer_id;

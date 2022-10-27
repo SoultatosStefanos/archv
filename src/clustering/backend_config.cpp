@@ -26,7 +26,7 @@ auto are_mst_finders_plugged_in(const backend_config& cfg) -> bool
 namespace
 {
     inline auto is_listed_at(
-        const backend_config::ids_type& ids, const backend_config::id_type& id)
+        const backend_config::ids_type& ids, backend_config::id_view_type id)
         -> bool
     {
         return std::find(std::cbegin(ids), std::cend(ids), id)
@@ -36,12 +36,24 @@ namespace
 
 auto is_clusterer_listed(const backend_config& cfg) -> bool
 {
-    return is_listed_at(cfg.clusterers, cfg.clusterer);
+    return is_clusterer_listed(cfg, cfg.clusterer);
+}
+
+auto is_clusterer_listed(
+    const backend_config& cfg, backend_config::id_view_type id) -> bool
+{
+    return is_listed_at(cfg.clusterers, id);
 }
 
 auto is_mst_finder_listed(const backend_config& cfg) -> bool
 {
-    return is_listed_at(cfg.mst_finders, cfg.mst_finder);
+    return is_mst_finder_listed(cfg, cfg.mst_finder);
+}
+
+auto is_mst_finder_listed(
+    const backend_config& cfg, backend_config::id_view_type id) -> bool
+{
+    return is_listed_at(cfg.mst_finders, id);
 }
 
 auto all_clusterers() -> backend_config::ids_type

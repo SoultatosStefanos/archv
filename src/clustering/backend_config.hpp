@@ -5,6 +5,7 @@
 #define CLUSTERING_BACKEND_CONFIG_HPP
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace clustering
@@ -17,6 +18,7 @@ namespace clustering
 struct backend_config
 {
     using id_type = std::string;
+    using id_view_type = std::string_view;
     using ids_type = std::vector< id_type >;
     using k_type = int;
 
@@ -39,7 +41,12 @@ auto are_clusterers_plugged_in(const backend_config& cfg) -> bool;
 auto are_mst_finders_plugged_in(const backend_config& cfg) -> bool;
 
 auto is_clusterer_listed(const backend_config& cfg) -> bool;
+auto is_clusterer_listed(
+    const backend_config& cfg, backend_config::id_view_type id) -> bool;
+
 auto is_mst_finder_listed(const backend_config& cfg) -> bool;
+auto is_mst_finder_listed(
+    const backend_config& cfg, backend_config::id_view_type id) -> bool;
 
 auto all_clusterers() -> backend_config::ids_type;
 auto all_mst_finders() -> backend_config::ids_type;
