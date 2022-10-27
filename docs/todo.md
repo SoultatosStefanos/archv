@@ -577,7 +577,7 @@
 
 # 27 / 10 / 2022
 
-	+ [ ] Compiler flags controlling wether to render degrees/clusters immediately
+	+ [n] Compiler flags controlling wether to render degrees/clusters immediately
 
 	+ [ ] POC clustering rendering
 
