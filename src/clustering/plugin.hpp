@@ -5,7 +5,7 @@
 #ifndef CLUSTERING_PLUGIN_HPP
 #define CLUSTERING_PLUGIN_HPP
 
-#include "detail/plugin.hpp"
+#include "misc/algorithm.hpp"
 
 #include <array>
 #include <string_view>
@@ -25,7 +25,7 @@ constexpr auto clusterer_ids = std::array { k_spanning_tree_clusterer_id };
 
 constexpr auto is_clusterer_plugged_in(id_t id) -> bool
 {
-    return detail::array_contains(clusterer_ids, id);
+    return misc::container_contains(clusterer_ids, id);
 }
 
 static_assert(is_clusterer_plugged_in(k_spanning_tree_clusterer_id));
@@ -41,7 +41,7 @@ constexpr auto mst_finders_ids = std::array { prim_mst_id, kruskal_mst_id };
 
 constexpr auto is_mst_finder_plugged_in(id_t id) -> bool
 {
-    return detail::array_contains(mst_finders_ids, id);
+    return misc::container_contains(mst_finders_ids, id);
 }
 
 static_assert(is_mst_finder_plugged_in(prim_mst_id));

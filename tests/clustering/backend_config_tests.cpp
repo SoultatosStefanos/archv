@@ -9,7 +9,6 @@ namespace
 {
 
 using id_t = clustering::backend_config::id_type;
-using config_t = clustering::backend_config;
 
 TEST(
     clustering_backend_config_tests,

@@ -4,6 +4,7 @@
 #ifndef MISC_ALL_HPP
 #define MISC_ALL_HPP
 
+#include "algorithm.hpp"
 #include "concepts.hpp"
 #include "heterogeneous.hpp"
 #include "random.hpp"
