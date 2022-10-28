@@ -1,7 +1,6 @@
 #include "sphere.hpp"
 
 #include "plugin.hpp"
-#include "topology_visitor.hpp"
 
 namespace layout
 {
@@ -31,11 +30,6 @@ auto sphere::move_position_toward(
     -> point_type
 {
     return data().move_position_toward(p1, fraction, p2);
-}
-
-auto sphere::accept(const visitor_type& visitor) const -> void
-{
-    visitor.visit(*this);
 }
 
 auto sphere::clone() const -> std::unique_ptr< topology >

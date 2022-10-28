@@ -14,13 +14,8 @@ namespace layout
 class sphere : public topology
 {
 public:
-    using data_type = boost::sphere_topology< std::minstd_rand >;
-
     explicit sphere(scale_type scale);
     virtual ~sphere() override = default;
-
-    auto data() const -> const data_type& { return m_sphere; }
-    auto data() -> data_type& { return m_sphere; }
 
     auto id() const -> id_type override;
     auto scale() const -> scale_type override { return m_scale; }
@@ -35,9 +30,14 @@ public:
         fraction_type fraction,
         const point_type& p2) const -> point_type override;
 
-    auto accept(const visitor_type& visitor) const -> void override;
-
     auto clone() const -> std::unique_ptr< topology > override;
+
+protected:
+    using data_type = boost::sphere_topology< std::minstd_rand >;
+
+    // Raw topology data access.
+    auto data() const -> const data_type& { return m_sphere; }
+    auto data() -> data_type& { return m_sphere; }
 
 private:
     data_type m_sphere;

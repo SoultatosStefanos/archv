@@ -1,7 +1,6 @@
 #include "layout/gursoy_atun_layout.hpp"
 #include "layout/layout_factory.hpp"
 #include "layout/topology.hpp"
-#include "layout/topology_visitor.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/property_maps/constant_property_map.hpp>
@@ -43,7 +42,6 @@ public:
         move_position_toward,
         (const point_type&, fraction_type, const point_type&),
         (const, override));
-    MOCK_METHOD(void, accept, (const visitor_type&), (const, override));
     MOCK_METHOD(std::unique_ptr< topology >, clone, (), (const, override));
 };
 

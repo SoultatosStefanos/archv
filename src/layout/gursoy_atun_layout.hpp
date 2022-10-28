@@ -4,12 +4,12 @@
 #ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 #define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 
-#include "detail/gursoy_atun_layout.hpp"
 #include "layout.hpp"
 #include "plugin.hpp"
 #include "topology.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/gursoy_atun_layout.hpp>
 #include <cassert>
 
 namespace layout
@@ -77,8 +77,11 @@ inline gursoy_atun_layout< Graph >::gursoy_atun_layout(
             WeightMap,
             typename boost::graph_traits< graph_type >::edge_descriptor >));
 
-    space.accept(detail::make_gursoy_atun_visitor(
-        g, edge_weight, boost::make_assoc_property_map(m_map)));
+    boost::gursoy_atun_layout(
+        g,
+        space,
+        boost::make_assoc_property_map(m_map),
+        boost::weight_map(edge_weight));
 
     assert(std::all_of(
         boost::vertices(g).first,

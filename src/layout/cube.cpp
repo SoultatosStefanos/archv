@@ -1,7 +1,6 @@
 #include "cube.hpp"
 
 #include "plugin.hpp"
-#include "topology_visitor.hpp"
 
 namespace layout
 {
@@ -31,11 +30,6 @@ auto cube::move_position_toward(
     -> point_type
 {
     return data().move_position_toward(p1, fraction, p2);
-}
-
-auto cube::accept(const visitor_type& visitor) const -> void
-{
-    visitor.visit(*this);
 }
 
 auto cube::clone() const -> std::unique_ptr< topology >

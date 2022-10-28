@@ -10,8 +10,6 @@ namespace layout
 template < typename Graph, typename WeightMap >
 class backend;
 
-class topology_visitor;
-
 class topology;
 class cube;
 class sphere;

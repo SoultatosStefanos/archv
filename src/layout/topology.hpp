@@ -18,8 +18,6 @@
 namespace layout
 {
 
-class topology_visitor;
-
 // In 3D space.
 // Slight boost adaptor for runtime polymorphism.
 class topology
@@ -30,7 +28,6 @@ public:
     using distance_type = double;
     using fraction_type = double;
     using scale_type = double;
-    using visitor_type = topology_visitor;
 
     topology() = default;
     topology(const topology&) = default;
@@ -52,8 +49,6 @@ public:
         const point_type& p1,
         fraction_type fraction,
         const point_type& p2) const -> point_type = 0;
-
-    virtual auto accept(const visitor_type&) const -> void = 0;
 
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };

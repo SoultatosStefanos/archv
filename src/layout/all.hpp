@@ -14,6 +14,5 @@
 #include "position_map.hpp"
 #include "sphere.hpp"
 #include "topology.hpp"
-#include "topology_visitor.hpp"
 
 #endif // LAYOUT_ALL_HPP
