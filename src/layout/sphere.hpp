@@ -22,9 +22,18 @@ public:
     auto data() const -> const data_type& { return m_sphere; }
     auto data() -> data_type& { return m_sphere; }
 
-    auto id() const -> id_type override ;
-
+    auto id() const -> id_type override;
     auto scale() const -> scale_type override { return m_scale; }
+
+    auto random_point() const -> point_type override;
+
+    auto distance(const point_type& p1, const point_type& p2) const
+        -> distance_type override;
+
+    auto move_position_toward(
+        const point_type& p1,
+        fraction_type fraction,
+        const point_type& p2) const -> point_type override;
 
     auto accept(const visitor_type& visitor) const -> void override;
 

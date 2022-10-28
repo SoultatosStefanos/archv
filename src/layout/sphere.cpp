@@ -15,6 +15,24 @@ auto sphere::id() const -> id_type
     return sphere_id;
 }
 
+auto sphere::random_point() const -> point_type
+{
+    return data().random_point();
+}
+
+auto sphere::distance(const point_type& p1, const point_type& p2) const
+    -> distance_type
+{
+    return data().distance(p1, p2);
+}
+
+auto sphere::move_position_toward(
+    const point_type& p1, fraction_type fraction, const point_type& p2) const
+    -> point_type
+{
+    return data().move_position_toward(p1, fraction, p2);
+}
+
 auto sphere::accept(const visitor_type& visitor) const -> void
 {
     visitor.visit(*this);

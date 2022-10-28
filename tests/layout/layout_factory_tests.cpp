@@ -32,6 +32,17 @@ public:
 
     MOCK_METHOD(id_type, id, (), (const, override));
     MOCK_METHOD(scale_type, scale, (), (const, override));
+    MOCK_METHOD(point_type, random_point, (), (const, override));
+    MOCK_METHOD(
+        distance_type,
+        distance,
+        (const point_type&, const point_type&),
+        (const, override));
+    MOCK_METHOD(
+        point_type,
+        move_position_toward,
+        (const point_type&, fraction_type, const point_type&),
+        (const, override));
     MOCK_METHOD(void, accept, (const visitor_type&), (const, override));
     MOCK_METHOD(std::unique_ptr< topology >, clone, (), (const, override));
 };

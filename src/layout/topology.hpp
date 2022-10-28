@@ -27,6 +27,8 @@ class topology
 public:
     using id_type = std::string_view;
     using point_type = typename boost::convex_topology< 3 >::point_type;
+    using distance_type = double;
+    using fraction_type = double;
     using scale_type = double;
     using visitor_type = topology_visitor;
 
@@ -39,8 +41,19 @@ public:
     auto operator=(topology&&) -> topology& = default;
 
     virtual auto id() const -> id_type = 0;
-
     virtual auto scale() const -> scale_type = 0;
+
+    virtual auto random_point() const -> point_type = 0;
+
+    virtual auto distance(const point_type& p1, const point_type& p2) const
+        -> distance_type
+        = 0;
+
+    virtual auto move_position_toward(
+        const point_type& p1,
+        fraction_type fraction,
+        const point_type& p2) const -> point_type
+        = 0;
 
     virtual auto accept(const visitor_type&) const -> void = 0;
 
