@@ -47,7 +47,7 @@
 				"medium" : "Degrees/SmallRingYellow",
 				"heavy" : "Degrees/SmallRingRed" 
 			},
-			"applied" : true
+			"applied" : false
 		},
 		"out-degree" :
 		{
@@ -63,7 +63,7 @@
 				"medium" : "Degrees/BigRingYellow",
 				"heavy" : "Degrees/BigRingRed" 
 			},
-			"applied" : true
+			"applied" : false
 		}
 	}
 }

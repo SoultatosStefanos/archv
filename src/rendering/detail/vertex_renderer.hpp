@@ -48,6 +48,7 @@ public:
     using degree_type = int;
 
     using name_type = std::string;
+    using rgba_type = Ogre::ColourValue;
 
     vertex_renderer(
         scene_type& scene,
@@ -75,6 +76,8 @@ public:
         const id_type& id, const std::optional< name_type >& particles) -> void;
     auto render_out_degree_particles(
         const id_type&, const std::optional< name_type >& particles) -> void;
+
+    auto render_cluster(const id_type& id, const rgba_type& col) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;

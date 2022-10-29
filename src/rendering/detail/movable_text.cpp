@@ -59,9 +59,9 @@ MovableText::~MovableText()
  
 void MovableText::setFontName(const String &fontName, const String& groupName)
 {
-    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(getName(), groupName))) 
+    if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(getName(), RGN_INTERNAL))) 
     { 
-        Ogre::MaterialManager::getSingleton().remove(getName(), groupName);
+        Ogre::MaterialManager::getSingleton().remove(getName(), RGN_INTERNAL);
     }
  
     if (mFontName != fontName || !mpMaterial || !mpFont)
@@ -79,7 +79,7 @@ void MovableText::setFontName(const String &fontName, const String& groupName)
         //     mpMaterial.setNull();
         // }
  
-        mpMaterial = mpFont->getMaterial()->clone(getName(), groupName);
+        mpMaterial = mpFont->getMaterial()->clone(getName(), RGN_INTERNAL);
         if (!mpMaterial->isLoaded())
             mpMaterial->load();
  

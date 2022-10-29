@@ -367,6 +367,38 @@ auto vertex_renderer::shutdown_degree_particles(
     curr_effect = std::nullopt;
 }
 
+namespace
+{
+    inline auto solid_color_material(const ColourValue& col)
+    {
+        const auto id = Ogre::to_string(col);
+        const auto* group = RGN_INTERNAL;
+        auto& manager = MaterialManager::getSingleton();
+        auto mat = manager.getByName(id, group);
+
+        if (!mat)
+        {
+            mat = manager.create(id, group);
+            mat->setLightingEnabled(true);
+            mat->setAmbient(col);
+            mat->setDiffuse(col);
+            mat->setSpecular(col);
+            mat->setSelfIllumination(col);
+        }
+
+        return mat;
+    }
+} // namespace
+
+auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
+    -> void
+{
+    assert(m_scene.hasEntity(id));
+    auto* e = m_scene.getEntity(id);
+    assert(e);
+    e->setMaterial(solid_color_material(col));
+}
+
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)
     -> void
 {
