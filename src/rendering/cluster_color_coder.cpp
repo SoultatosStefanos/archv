@@ -171,6 +171,8 @@ namespace
         return rgba_type(r, g, b, a);
     }
 
+    // NOTE: It would be better if we computed this values at compile time
+
     inline auto make_rgbas()
     {
         rgbas_type rgbas;
