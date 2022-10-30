@@ -440,6 +440,43 @@ auto edge_renderer::render_weight(
     BOOST_LOG_TRIVIAL(debug) << "rendered weight for edge: " << name;
 }
 
+// TODO Extract utility
+namespace
+{
+    inline auto solid_color_material(const ColourValue& col)
+    {
+        const auto id = Ogre::to_string(col);
+        const auto* group = RGN_INTERNAL;
+        auto& manager = MaterialManager::getSingleton();
+        auto mat = manager.getByName(id, group);
+
+        if (!mat)
+        {
+            mat = manager.create(id, group);
+            mat->setLightingEnabled(true);
+            mat->setAmbient(col);
+            mat->setDiffuse(col);
+            mat->setSpecular(col);
+            mat->setSelfIllumination(col);
+        }
+
+        return mat;
+    }
+} // namespace
+
+auto edge_renderer::render_cluster(
+    const vertex_id_type& source,
+    const vertex_id_type& target,
+    const dependency_type& dependency,
+    const rgba_type& col) -> void
+{
+    const auto id = make_edge_name(source, target, dependency);
+    assert(m_scene.hasEntity(id));
+    auto* e = m_scene.getEntity(id);
+    assert(e);
+    e->setMaterial(solid_color_material(col));
+}
+
 // NOTE: Performs only mutations, no allocations take place.
 auto edge_renderer::hide_weight(
     const vertex_id_type& source,

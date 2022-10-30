@@ -79,6 +79,10 @@ public:
 
     auto render_cluster(const id_type& id, const rgba_type& col) -> void;
 
+    // TODO
+    // TODO Clean up solid colors
+    auto hide_cluster(const id_type& id) -> void;
+
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
     auto draw(const id_type&, config_data_type&&) -> void = delete;
 

@@ -4,6 +4,7 @@
 #ifndef RENDERING_GRAPH_RENDERER_HPP
 #define RENDERING_GRAPH_RENDERER_HPP
 
+#include "cluster_color_coder.hpp"
 #include "degrees_evaluator.hpp"
 #include "detail/edge_renderer.hpp"
 #include "detail/vertex_renderer.hpp"
@@ -24,7 +25,7 @@ namespace rendering
 
 // clang-format off
 template < typename Class >
-concept degrees_evaluation_policy 
+concept DegreesEvaluationPolicy 
 = requires
 {
     typename Class::degree_type;
@@ -35,6 +36,21 @@ concept degrees_evaluation_policy
         -> std::same_as< typename Class::particles_type >;
     { val.out_degree_particles(degrees) }  
         -> std::same_as< typename Class::particles_type >;
+};
+// clang-format on
+
+// clang-format off
+template < typename Class >
+concept ClusterColorCodingPolicy 
+= requires
+{
+    typename Class::cluster;
+    typename Class::rgba_type;
+} && requires(Class val,
+    typename Class::cluster c, 
+    typename Class::rgba_type rgba)
+{
+    { std::invoke(val, c) } -> std::same_as< decltype(rgba) >;
 };
 // clang-format on
 
@@ -49,8 +65,8 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator = degrees_evaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator = degrees_evaluator,
+    ClusterColorCodingPolicy ClusterColorCoder = cluster_color_coder >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -80,6 +96,7 @@ public:
     using config_api_type = graph_config_api;
 
     using degrees_evaluator_type = DegreesEvaluator;
+    using cluster_color_coder_type = ClusterColorCoder;
 
     static_assert(std::is_convertible_v<
                   typename degrees_evaluator_type::particles_type,
@@ -99,7 +116,8 @@ public:
         scene_type& scene,
         config_data_type cfg,
         std::string_view resource_group = Ogre::RGN_DEFAULT,
-        degrees_evaluator_type degrees_eval = degrees_evaluator_type());
+        degrees_evaluator_type degrees_eval = degrees_evaluator_type(),
+        cluster_color_coder_type color_coder = cluster_color_coder_type());
 
     graph_renderer(const graph_renderer&) = default;
     graph_renderer(graph_renderer&&) = default;
@@ -127,6 +145,12 @@ public:
     auto get_degrees_evaluator() const -> const auto& { return m_degrees_eval; }
     auto get_degrees_evaluator() -> auto& { return m_degrees_eval; }
 
+    auto get_cluster_color_coder() const -> const auto&
+    {
+        return m_cluster_col_coder;
+    }
+    auto get_cluster_color_coder() -> auto& { return m_cluster_col_coder; }
+
     template < typename PositionMap >
     auto render_layout(PositionMap vertex_pos) -> void;
 
@@ -139,8 +163,12 @@ public:
     auto render_in_degree_particles() -> void;
     auto render_out_degree_particles() -> void;
 
+    template < typename ClusterMap >
+    auto render_clusters(ClusterMap vertex_cluster) -> void;
+
     auto hide_scaling() -> void;
     auto hide_weights() -> void;
+    auto hide_clusters() -> void; // TODO
 
     auto draw(const config_data_type& cfg) -> void;
     auto draw(config_data_type&&) -> void = delete; // disallow temporaries
@@ -169,6 +197,7 @@ private:
     detail::edge_renderer m_edge_renderer;
 
     degrees_evaluator_type m_degrees_eval;
+    cluster_color_coder_type m_cluster_col_coder;
 };
 
 /***********************************************************
@@ -179,10 +208,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename PositionMap >
-inline graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
+inline graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::
     graph_renderer(
         const graph_type& g,
         vertex_id_type vertex_id,
@@ -191,7 +225,8 @@ inline graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
         scene_type& scene,
         config_data_type cfg,
         std::string_view resource_group,
-        degrees_evaluator_type degrees_eval)
+        degrees_evaluator_type degrees_eval,
+        cluster_color_coder_type color_coder)
 : m_g { g }
 , m_vertex_id { vertex_id }
 , m_edge_dependency { edge_dependency }
@@ -203,6 +238,7 @@ inline graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
 , m_vertex_renderer { scene, config_data(), resource_group }
 , m_edge_renderer { scene, config_data(), resource_group }
 , m_degrees_eval { std::move(degrees_eval) }
+, m_cluster_col_coder { std::move(color_coder) }
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -229,10 +265,14 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    ~graph_renderer()
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::~graph_renderer()
 {
     visit_edges(
         [this](auto e)
@@ -251,11 +291,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename UnaryOperation >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    visit_vertices(UnaryOperation f) const -> void
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::visit_vertices(UnaryOperation f) const -> void
 {
     static_assert(std::is_invocable_v< UnaryOperation, vertex_type >);
     for (auto v : boost::make_iterator_range(boost::vertices(graph())))
@@ -266,12 +310,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename UnaryOperation >
-inline auto
-graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::visit_edges(
-    UnaryOperation f) const
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::visit_edges(UnaryOperation f) const
 {
     static_assert(std::is_invocable_v< UnaryOperation, edge_type >);
     for (auto e : boost::make_iterator_range(boost::edges(graph())))
@@ -282,11 +329,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename PositionMap >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    render_layout(PositionMap vertex_pos) -> void
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_layout(PositionMap vertex_pos) -> void
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -313,11 +364,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename ScaleMap >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    render_scaling(ScaleMap vertex_scale) -> void
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_scaling(ScaleMap vertex_scale) -> void
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept< ScaleMap, vertex_type >));
@@ -344,11 +399,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename WeightMap >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    render_weights(WeightMap edge_weight) -> void
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_weights(WeightMap edge_weight) -> void
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept< WeightMap, edge_type >));
@@ -368,10 +427,14 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    render_in_degree_particles() -> void
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_in_degree_particles() -> void
 {
     BOOST_CONCEPT_ASSERT((boost::BidirectionalGraphConcept< graph_type >));
 
@@ -380,7 +443,7 @@ inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
         {
             m_vertex_renderer.render_in_degree_particles(
                 boost::get(vertex_id(), v),
-                m_degrees_eval.in_degree_particles(
+                get_degrees_evaluator().in_degree_particles(
                     boost::in_degree(v, graph())));
         });
 }
@@ -389,17 +452,21 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    render_out_degree_particles() -> void
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_out_degree_particles() -> void
 {
     visit_vertices(
         [this](auto v)
         {
             m_vertex_renderer.render_out_degree_particles(
                 boost::get(vertex_id(), v),
-                m_degrees_eval.out_degree_particles(
+                get_degrees_evaluator().out_degree_particles(
                     boost::out_degree(v, graph())));
         });
 }
@@ -408,10 +475,58 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    hide_scaling() -> void
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+template < typename ClusterMap >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_clusters(ClusterMap vertex_cluster) -> void
+{
+    BOOST_CONCEPT_ASSERT(
+        (boost::ReadablePropertyMapConcept< ClusterMap, vertex_type >));
+
+    visit_vertices(
+        [this, vertex_cluster](auto v)
+        {
+            m_vertex_renderer.render_cluster(
+                boost::get(vertex_id(), v),
+                get_cluster_color_coder()(boost::get(vertex_cluster, v)));
+        });
+
+    visit_edges(
+        [this, vertex_cluster](auto e)
+        {
+            const auto src = boost::source(e, graph());
+            const auto trgt = boost::target(e, graph());
+
+            const auto src_c = boost::get(vertex_cluster, src);
+            const auto trgt_c = boost::get(vertex_cluster, trgt);
+            const bool within_same_cluster = (src_c == trgt_c);
+
+            if (within_same_cluster)
+                m_edge_renderer.render_cluster(
+                    boost::get(vertex_id(), src),
+                    boost::get(vertex_id(), trgt),
+                    boost::get(edge_dependency(), e),
+                    get_cluster_color_coder()(boost::get(vertex_cluster, src)));
+        });
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::hide_scaling() -> void
 {
     visit_vertices(
         [this](auto v)
@@ -431,10 +546,14 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline auto graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::
-    hide_weights() -> void
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::hide_weights() -> void
 {
     visit_edges(
         [this](auto e)
@@ -450,11 +569,14 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
-inline auto
-graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::draw(
-    const config_data_type& cfg) -> void
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::draw(const config_data_type& cfg) -> void
 {
     visit_vertices(
         [this, &cfg](auto v)
@@ -475,12 +597,15 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 template < typename Tuple >
-inline auto
-graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >::to_vector3(
-    const Tuple& t)
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::to_vector3(const Tuple& t)
 {
     const auto& [x, y, z] = t;
     return Ogre::Vector3(x, y, z);
@@ -496,8 +621,8 @@ template <
     typename VertexID,
     typename PositionMap,
     typename DependencyMap,
-    typename DegreesEvaluator >
-requires degrees_evaluation_policy< DegreesEvaluator >
+    DegreesEvaluationPolicy DegreesEvaluator,
+    ClusterColorCodingPolicy ClusterColorCoder >
 inline auto make_graph_renderer(
     const Graph& g,
     VertexID vertex_id,
@@ -506,9 +631,15 @@ inline auto make_graph_renderer(
     Ogre::SceneManager& scene,
     graph_config cfg,
     std::string_view resource_group = Ogre::RGN_DEFAULT,
-    DegreesEvaluator degrees_eval = DegreesEvaluator())
+    DegreesEvaluator degrees_eval = DegreesEvaluator(),
+    ClusterColorCoder cluster_col_coder = ClusterColorCoder())
 {
-    return graph_renderer< Graph, VertexID, DependencyMap, DegreesEvaluator >(
+    return graph_renderer<
+        Graph,
+        VertexID,
+        DependencyMap,
+        DegreesEvaluator,
+        ClusterColorCoder >(
         g,
         vertex_id,
         vertex_pos,
@@ -516,7 +647,8 @@ inline auto make_graph_renderer(
         scene,
         std::move(cfg),
         resource_group,
-        std::move(degrees_eval));
+        std::move(degrees_eval),
+        std::move(cluster_col_coder));
 }
 
 } // namespace rendering

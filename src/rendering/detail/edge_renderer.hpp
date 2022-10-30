@@ -64,6 +64,8 @@ public:
     using dependency_type = std::string;
     using weight_type = int;
 
+    using rgba_type = Ogre::ColourValue;
+
     edge_renderer(
         scene_type& scene,
         const config_data_type& cfg,
@@ -98,7 +100,19 @@ public:
         const dependency_type& dependency,
         weight_type weight) -> void;
 
+    auto render_cluster(
+        const vertex_id_type& source,
+        const vertex_id_type& target,
+        const dependency_type& dependency,
+        const rgba_type& col) -> void;
+
     auto hide_weight(
+        const vertex_id_type& source,
+        const vertex_id_type& target,
+        const dependency_type& dependency) -> void;
+
+    // TODO
+    auto hide_cluster(
         const vertex_id_type& source,
         const vertex_id_type& target,
         const dependency_type& dependency) -> void;
