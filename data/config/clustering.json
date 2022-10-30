@@ -1,0 +1,14 @@
+{
+	"clusterers" : 
+	[
+		"k-Spanning Tree"
+	],
+	"min-spanning-tree-finders" : 
+	[
+		"Prim MST",
+		"Kruskal MST"
+	],
+	"clusterer" : "k-Spanning Tree",
+	"min-spanning-tree-finder" : "Prim MST",
+	"k" : 3
+}

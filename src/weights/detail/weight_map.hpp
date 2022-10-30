@@ -20,6 +20,7 @@ public:
     using edge_type = typename graph_type ::edge_descriptor;
     using weight_type = backend::weight_type;
 
+    weight_dispatcher() = default;
     weight_dispatcher(const backend& b, dependency_map edge_dependency)
     : m_backend { &b }, m_edge_dependency { edge_dependency }
     {

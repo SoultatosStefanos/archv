@@ -4,6 +4,8 @@
 #ifndef ARCHITECTURE_GRAPH_INTERFACE_HPP
 #define ARCHITECTURE_GRAPH_INTERFACE_HPP
 
+#include "clustering/backend.hpp"
+#include "clustering/cluster_map.hpp"
 #include "graph.hpp"
 #include "layout/position_map.hpp"
 #include "metadata.hpp"
@@ -28,6 +30,10 @@ public:
     using layout_config_type = layout_backend_type::config_data_type;
     using scaling_backend_type = scaling::backend;
     using scaling_config_type = scaling_backend_type::config_data_type;
+    using clustering_backend_type = clustering::backend< graph, weight_map >;
+    using clustering_config_type = clustering::backend_config;
+
+    using cluster_map = clustering::cluster_map< clustering_backend_type >;
 
     using dependency_type = weights_backend_type::dependency_type;
     using weight_type = weights_backend_type::weight_type;
@@ -45,7 +51,8 @@ public:
         graph g,
         weights_config_type weights_cfg,
         layout_config_type layout_cfg,
-        scaling_config_type scaling_cfg);
+        scaling_config_type scaling_cfg,
+        clustering_config_type clustering_cfg);
 
     auto get_symbol_table() const -> const symbol_table& { return m_st; }
     auto get_graph() const -> const graph& { return m_g; }
@@ -59,9 +66,13 @@ public:
     auto scaling_backend() const -> const auto& { return m_scaling; }
     auto scaling_backend() -> auto& { return m_scaling; }
 
+    auto clustering_backend() const -> const auto& { return m_clustering; }
+    auto clustering_backend() -> auto& { return m_clustering; }
+
     auto vertex_id() const -> id_map;
     auto vertex_position() const -> position_map;
     auto vertex_scale() const -> scale_map;
+    auto vertex_cluster() const -> cluster_map;
     auto edge_dependency() const -> dependency_map;
     auto edge_weight() const -> weight_map;
 
@@ -71,6 +82,7 @@ private:
     weights_backend_type m_weights;
     layout_backend_type m_layout;
     scaling_backend_type m_scaling;
+    clustering_backend_type m_clustering;
 };
 
 } // namespace architecture

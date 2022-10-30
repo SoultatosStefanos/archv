@@ -16,6 +16,8 @@ using layout_backend_t = graph_interface::layout_backend_type;
 using layout_config_t = layout_backend_t::config_data_type;
 using scaling_backend_t = graph_interface::scaling_backend_type;
 using scaling_config_t = scaling_backend_t::config_data_type;
+using clustering_backend_t = graph_interface::clustering_backend_type;
+using clustering_config_t = graph_interface::clustering_config_type;
 
 constexpr auto id0 = "id0";
 constexpr auto id1 = "id1";
@@ -27,6 +29,10 @@ constexpr auto weight0 = 10;
 constexpr auto layout_type = layout::gursoy_atun_id;
 constexpr auto topology_type = layout::cube_id;
 constexpr auto scale = 100;
+
+constexpr auto clusterer_type = clustering::k_spanning_tree_clusterer_id;
+constexpr auto mst_finder_type = clustering::prim_mst_id;
+constexpr auto k = 100;
 
 inline auto make_structure(std::string id)
 {
@@ -72,6 +78,15 @@ inline auto make_scaling_cfg()
                                 scaling::make_xyz_factor(1, true) } };
 }
 
+inline auto make_clustering_cfg()
+{
+    return clustering_config_t { clustering::all_clusterers(),
+                                 clustering::all_mst_finders(),
+                                 std::string(clusterer_type),
+                                 std::string(mst_finder_type),
+                                 k };
+}
+
 class a_graph_interface : public Test
 {
 protected:
@@ -82,7 +97,8 @@ protected:
             make_graph(),
             make_weights_cfg(),
             make_layout_cfg(),
-            make_scaling_cfg());
+            make_scaling_cfg(),
+            make_clustering_cfg());
     }
 
     std::unique_ptr< graph_interface > iface;

@@ -24,6 +24,9 @@
 // The path of the scaling.json config file.
 #define ARCHV_SCALING_CONFIG_PATH ARCHV_CONFIG_DIR "/scaling.json"
 
+// The path of the clustering.json config file.
+#define ARCHV_CLUSTERING_CONFIG_PATH ARCHV_CONFIG_DIR "/clustering.json"
+
 #ifndef ARCHV_RESOURCE_GROUP
 #define ARCHV_RESOURCE_GROUP "Archv"
 #endif

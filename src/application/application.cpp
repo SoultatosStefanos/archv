@@ -34,12 +34,14 @@ application::application(int argc, const char* argv[]) : base("ARCHV")
     const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
     const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
     const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
+    const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
     const auto& rendering_root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
     const auto& gui_root = jsons.at(ARCHV_GUI_CONFIG_PATH);
 
     m_weights_config = weights::deserialize(weights_root);
     m_layout_config = layout::deserialize(layout_root);
     m_scaling_config = scaling::deserialize(scaling_root);
+    m_clustering_config = clustering::deserialize(clustering_root);
     m_rendering_config = rendering::deserialize(rendering_root);
     m_gui_config = gui::deserialize(gui_root);
 }
@@ -103,7 +105,8 @@ auto application::setup_graph_interface() -> void
         std::move(g),
         m_weights_config,
         m_layout_config,
-        m_scaling_config);
+        m_scaling_config,
+        m_clustering_config);
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -146,6 +149,10 @@ auto application::setup_graph_renderer() -> void
     m_graph_renderer->render_weights(m_graph_iface->edge_weight());
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
+
+    // TODO Remove
+    clustering::update_clusters(m_graph_iface->clustering_backend());
+    m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
 }

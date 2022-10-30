@@ -5,6 +5,7 @@
 #define APPLICATION_APPLICATION_HPP
 
 #include "architecture/all.hpp"
+#include "clustering/all.hpp"
 #include "gui/all.hpp"
 #include "input/all.hpp"
 #include "layout/all.hpp"
@@ -54,6 +55,7 @@ private:
     using weights_config_data_type = weights::config_data;
     using layout_config_data_type = layout::config_data;
     using scaling_config_data_type = scaling::config_data;
+    using clustering_config_data_type = clustering::config_data;
     using rendering_config_data_type = rendering::config_data;
     using gui_config_data_type = gui::config_data;
 
@@ -102,6 +104,7 @@ private:
     weights_config_data_type m_weights_config;
     layout_config_data_type m_layout_config;
     scaling_config_data_type m_scaling_config;
+    clustering_config_data_type m_clustering_config;
     rendering_config_data_type m_rendering_config;
     gui_config_data_type m_gui_config;
 
