@@ -6,8 +6,7 @@
 
 #include "cluster_color_coder.hpp"
 #include "degrees_evaluator.hpp"
-#include "detail/edge_renderer.hpp"
-#include "detail/vertex_renderer.hpp"
+#include "detail/graph_renderer.hpp"
 #include "graph_config.hpp"
 
 #include <OGRE/OgreResourceGroupManager.h>
