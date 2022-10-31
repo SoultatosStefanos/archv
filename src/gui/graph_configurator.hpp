@@ -54,6 +54,7 @@ public:
     auto render() const -> void;
 
     auto node_mesh() const -> name_type;
+    auto node_material() const -> name_type;
     auto node_scale() const -> const scale_type&;
     auto node_font() const -> name_type;
     auto node_char_height() const -> char_height_type;
@@ -68,6 +69,7 @@ public:
     auto edge_space_width() const -> space_width_type;
 
     auto set_node_mesh(name_type mesh) -> void;
+    auto set_node_material(name_type mat) -> void;
     auto set_node_scale(scale_type scale) -> void;
     auto set_node_font(name_type font) -> void;
     auto set_node_char_height(char_height_type height) -> void;
@@ -82,6 +84,7 @@ public:
     auto set_edge_space_width(space_width_type width) -> void;
 
     auto connect_to_node_mesh(const name_slot& f) -> connection;
+    auto connect_to_node_material(const name_slot& f) -> connection;
     auto connect_to_node_scale(const scale_slot& f) -> connection;
     auto connect_to_node_font(const name_slot& f) -> connection;
     auto connect_to_node_char_height(const char_height_slot& f) -> connection;
@@ -112,6 +115,7 @@ protected:
     auto materials() -> render_vector& { return m_materials; }
 
     auto emit_node_mesh() const -> void;
+    auto emit_node_material() const -> void;
     auto emit_node_scale() const -> void;
     auto emit_node_font() const -> void;
     auto emit_node_char_height() const -> void;
@@ -139,6 +143,7 @@ private:
     auto render_config_buttons() const -> void;
 
     auto render_node_mesh_selector() const -> void;
+    auto render_node_material_selector() const -> void;
     auto render_node_scale_selector() const -> void;
     auto render_node_font_selector() const -> void;
     auto render_node_char_height_selector() const -> void;
@@ -153,6 +158,7 @@ private:
     auto render_edge_space_width_selector() const -> void;
 
     name_signal m_node_mesh_sig;
+    name_signal m_node_material_sig;
     name_signal m_node_font_sig;
     name_signal m_edge_font_sig;
     name_signal m_edge_material_sig;
@@ -171,6 +177,7 @@ private:
     restore_signal m_restore_sig;
 
     mutable index_type m_node_mesh { 0 };
+    mutable index_type m_node_material { 0 };
     mutable index_type m_node_font { 0 };
     mutable index_type m_edge_font { 0 };
     mutable index_type m_edge_material { 0 };

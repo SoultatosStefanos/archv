@@ -89,8 +89,6 @@ public:
 
     auto render_scale(const id_type& id, scale_type scale) -> void;
 
-    auto hide_scale(const id_type& id) -> void;
-
     auto render_in_degree_particles(
         const id_type& id, const std::optional< name_type >& particles) -> void;
     auto render_out_degree_particles(
@@ -98,8 +96,9 @@ public:
 
     auto render_cluster(const id_type& id, const rgba_type& col) -> void;
 
+    auto hide_scale(const id_type& id) -> void;
+
     // TODO
-    // TODO Clean up solid colors
     auto hide_cluster(const id_type& id) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;

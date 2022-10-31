@@ -12,6 +12,7 @@
 	"graph" : 
 	{
 		"vertex-mesh" : "cube.mesh",
+		"vertex-material" : "Cubie",
 		"vertex-scale" :  [	5, 5, 5 ],
 		"vertex-id" : 
 		{

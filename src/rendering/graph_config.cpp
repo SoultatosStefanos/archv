@@ -12,6 +12,11 @@ auto graph_config_api::set_vertex_mesh(name_type name) -> void
     config_data().vertex_mesh = std::move(name);
 }
 
+auto graph_config_api::set_vertex_material(name_type name) -> void
+{
+    config_data().vertex_material = std::move(name);
+}
+
 auto graph_config_api::set_vertex_scale(scale_type scale) -> void
 {
     config_data().vertex_scale = scale;

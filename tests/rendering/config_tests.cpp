@@ -26,6 +26,7 @@ auto make_sample_rendering_0()
                               .cam_far_clip_distance = 3 };
 
     auto&& graph = graph_config { .vertex_mesh = "mesh.mesh",
+                                  .vertex_material = "mat.mat",
                                   .vertex_scale = Vector3(0.1, 0.2, 0.3),
                                   .vertex_id_font_name = "a",
                                   .vertex_id_char_height = 1.0,

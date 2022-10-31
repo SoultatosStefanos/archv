@@ -91,6 +91,7 @@ namespace
         static_assert(std::is_convertible_v< string, Ogre::String >);
 
         auto&& vertex_mesh = val["vertex-mesh"].as< string >();
+        auto&& vertex_material = val["vertex-material"].as< string >();
         auto&& vertex_scale = deserialize_vector3(val["vertex-scale"]);
 
         const auto& vboard_val = val["vertex-id"];
@@ -112,6 +113,7 @@ namespace
         BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
 
         return { std::move(vertex_mesh),
+                 std::move(vertex_material),
                  vertex_scale,
                  std::move(vboard_font_name),
                  static_cast< float >(vboard_char_height),

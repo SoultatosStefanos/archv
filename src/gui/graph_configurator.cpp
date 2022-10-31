@@ -54,6 +54,7 @@ auto graph_configurator::render_nodes_configurator() const -> void
     spaced_text("Nodes");
 
     render_node_mesh_selector();
+    render_node_material_selector();
     render_node_scale_selector();
 }
 
@@ -92,6 +93,16 @@ auto graph_configurator::render_node_mesh_selector() const -> void
     if (ImGui::Combo(
             "Mesh Name##node", &m_node_mesh, meshes().data(), meshes().size()))
         emit_node_mesh();
+}
+
+auto graph_configurator::render_node_material_selector() const -> void
+{
+    if (ImGui::Combo(
+            "Material Name##node",
+            &m_node_material,
+            materials().data(),
+            materials().size()))
+        emit_node_material();
 }
 
 auto graph_configurator::render_node_scale_selector() const -> void
@@ -211,6 +222,11 @@ auto graph_configurator::node_mesh() const -> name_type
     return resources::meshes().at(m_node_mesh);
 }
 
+auto graph_configurator::node_material() const -> name_type
+{
+    return resources::materials().at(m_node_material);
+}
+
 auto graph_configurator::node_scale() const -> const scale_type&
 {
     return m_node_scale;
@@ -276,6 +292,11 @@ auto graph_configurator::set_node_mesh(name_type mesh) -> void
     m_node_mesh = misc::find_index(resources::meshes(), mesh);
 }
 
+auto graph_configurator::set_node_material(name_type mat) -> void
+{
+    m_node_material = misc::find_index(resources::materials(), mat);
+}
+
 auto graph_configurator::set_node_scale(scale_type scale) -> void
 {
     m_node_scale = scale;
@@ -339,6 +360,12 @@ auto graph_configurator::set_edge_space_width(space_width_type width) -> void
 auto graph_configurator::connect_to_node_mesh(const name_slot& f) -> connection
 {
     return m_node_mesh_sig.connect(f);
+}
+
+auto graph_configurator::connect_to_node_material(const name_slot& f)
+    -> connection
+{
+    return m_node_material_sig.connect(f);
 }
 
 auto graph_configurator::connect_to_node_scale(const scale_slot& f)
@@ -434,6 +461,11 @@ auto graph_configurator::connect_to_restore(const restore_slot& f) -> connection
 auto graph_configurator::emit_node_mesh() const -> void
 {
     m_node_mesh_sig(node_mesh());
+}
+
+auto graph_configurator::emit_node_material() const -> void
+{
+    m_node_material_sig(node_material());
 }
 
 auto graph_configurator::emit_node_scale() const -> void

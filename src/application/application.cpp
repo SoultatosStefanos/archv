@@ -1078,6 +1078,13 @@ auto application::connect_graph_presentation() -> void
             api.set_vertex_mesh(std::string(mesh));
         });
 
+    iface.connect_to_node_material(
+        [this, &api](auto material)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected node material: " << material;
+            api.set_vertex_material(std::string(material));
+        });
+
     iface.connect_to_node_scale(
         [this, &api](const auto& scale)
         {

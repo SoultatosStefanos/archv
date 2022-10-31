@@ -22,6 +22,7 @@ struct graph_config
     using rgba_type = Ogre::ColourValue;
 
     name_type vertex_mesh;
+    name_type vertex_material;
     scale_type vertex_scale;
     name_type vertex_id_font_name;
     height_type vertex_id_char_height;
@@ -63,6 +64,7 @@ public:
     auto config_data() -> config_data_type& { return m_config; }
 
     auto set_vertex_mesh(name_type name) -> void;
+    auto set_vertex_material(name_type name) -> void;
     auto set_vertex_scale(scale_type scale) -> void;
     auto set_vertex_id_font_name(name_type name) -> void;
     auto set_vertex_id_char_height(height_type h) -> void;

@@ -151,6 +151,7 @@ auto vertex_renderer::setup_model(const vertex_type& v) -> void
 
     auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
     assert(e);
+    e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 
@@ -427,6 +428,7 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
 
     auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
     assert(e);
+    e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 }

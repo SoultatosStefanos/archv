@@ -605,6 +605,12 @@
 
 	+ [ ] Hide clusters at graph renderer, draw update
 
+		+ [x] Add vertex material configuration
+
+		+ [ ] Revert to config materials on hide
+
+		+ [ ] Do not draw materials on draw if clustered
+
 	+ [ ] Integrate the rest of the clusterers
 
 	+ [ ] GUI configurable clustering color mapping
