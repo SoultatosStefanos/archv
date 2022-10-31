@@ -10,5 +10,6 @@
 	],
 	"clusterer" : "k-Spanning Tree",
 	"min-spanning-tree-finder" : "Prim MST",
-	"k" : 3
+	"k" : 3,
+	"snn-threshold" : 3
 }

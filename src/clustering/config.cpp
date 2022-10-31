@@ -30,18 +30,21 @@ auto deserialize(const Json::Value& root) -> config_data
 {
     using id_type = config_data::id_type;
     using k_type = config_data::k_type;
+    using snn_thres_type = config_data::snn_threshold_type;
 
     auto&& clusterers = deserialize_ids(root["clusterers"]);
     auto&& mst_finders = deserialize_ids(root["min-spanning-tree-finders"]);
     auto&& clusterer = root["clusterer"].as< id_type >();
     auto&& mst_finder = root["min-spanning-tree-finder"].as< id_type >();
     auto k = root["k"].as< k_type >();
+    auto snn_thres = root["snn-threshold"].as< snn_thres_type >();
 
     return config_data { .clusterers = std::move(clusterers),
                          .mst_finders = std::move(mst_finders),
                          .clusterer = std::move(clusterer),
                          .mst_finder = std::move(mst_finder),
-                         .k = k };
+                         .k = k,
+                         .snn_threshold = snn_thres };
 }
 
 } // namespace clustering

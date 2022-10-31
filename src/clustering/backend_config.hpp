@@ -21,6 +21,7 @@ struct backend_config
     using id_view_type = std::string_view;
     using ids_type = std::vector< id_type >;
     using k_type = int;
+    using snn_threshold_type = int;
 
     ids_type clusterers;
     ids_type mst_finders;
@@ -28,6 +29,7 @@ struct backend_config
     id_type clusterer;
     id_type mst_finder;
     k_type k;
+    snn_threshold_type snn_threshold;
 
     auto operator==(const backend_config&) const -> bool = default;
     auto operator!=(const backend_config&) const -> bool = default;

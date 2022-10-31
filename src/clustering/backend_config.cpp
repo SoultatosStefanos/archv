@@ -49,17 +49,14 @@ auto is_mst_finder_listed(
 auto all_clusterers() -> backend_config::ids_type
 {
     using ids_type = backend_config::ids_type;
-    using id_type = backend_config::id_type;
-
-    return ids_type { id_type(k_spanning_tree_clusterer_id) };
+    return ids_type { std::cbegin(clusterer_ids), std::cend(clusterer_ids) };
 }
 
 auto all_mst_finders() -> backend_config::ids_type
 {
     using ids_type = backend_config::ids_type;
-    using id_type = backend_config::id_type;
-
-    return ids_type { id_type(prim_mst_id), id_type(kruskal_mst_id) };
+    return ids_type { std::cbegin(mst_finders_ids),
+                      std::cend(mst_finders_ids) };
 }
 
 } // namespace clustering

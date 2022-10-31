@@ -16,7 +16,8 @@ inline auto make_sample_0() -> clustering::config_data
                                      .mst_finders = { "Popeye" },
                                      .clusterer = "M",
                                      .mst_finder = "N",
-                                     .k = 20 };
+                                     .k = 20,
+                                     .snn_threshold = 9 };
 }
 
 TEST(clustering_config_tests, clustering_sample_0)

@@ -10,5 +10,6 @@
 	],
 	"clusterer" : "M",
 	"min-spanning-tree-finder" : "N",
-	"k" : 20
+	"k" : 20,
+	"snn-threshold" : 9
 }
