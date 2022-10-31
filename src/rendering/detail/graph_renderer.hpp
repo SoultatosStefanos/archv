@@ -98,7 +98,6 @@ public:
 
     auto hide_scale(const id_type& id) -> void;
 
-    // TODO
     auto hide_cluster(const id_type& id) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
@@ -211,7 +210,6 @@ public:
         const vertex_id_type& target,
         const dependency_type& dependency) -> void;
 
-    // TODO
     auto hide_cluster(
         const vertex_id_type& source,
         const vertex_id_type& target,

@@ -27,6 +27,7 @@ struct vertex_properties
     using position_type = Ogre::Vector3;
     using name_type = std::string;
     using scale_type = Ogre::Vector3;
+    using rgba_type = Ogre::ColourValue;
 
     id_type id; // acts as a name as well.
     position_type pos;
@@ -36,6 +37,7 @@ struct vertex_properties
     std::optional< scale_type > scale = std::nullopt;
     std::optional< name_type > in_degree_effect = std::nullopt;
     std::optional< name_type > out_degree_effect = std::nullopt;
+    std::optional< rgba_type > cluster_col = std::nullopt;
 
     auto operator==(const vertex_properties&) const -> bool = default;
     auto operator!=(const vertex_properties&) const -> bool = default;
@@ -402,7 +404,22 @@ auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
     assert(e);
     e->setMaterial(solid_color_material(col));
 
+    vertex(id).cluster_col = col;
+
     BOOST_LOG_TRIVIAL(debug) << "rendered cluster for vertex: " << id;
+}
+
+auto vertex_renderer::hide_cluster(const id_type& id) -> void
+{
+    assert(m_scene.hasEntity(id));
+
+    auto* e = m_scene.getEntity(id);
+    assert(e);
+    e->setMaterialName(m_cfg->vertex_material);
+
+    vertex(id).cluster_col = std::nullopt;
+
+    BOOST_LOG_TRIVIAL(debug) << "hid cluster of vertex: " << id;
 }
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)
@@ -428,7 +445,8 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
 
     auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
     assert(e);
-    e->setMaterialName(m_cfg->vertex_material);
+    if (!v.cluster_col) // do not draw configs if rendering cluster
+        e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 }
@@ -512,6 +530,7 @@ struct edge_properties
     using dependency_type = std::string;
     using name_type = std::string;
     using weight_type = int;
+    using rgba_type = Ogre::ColourValue;
 
     vertex_id_type source;
     vertex_id_type target;
@@ -522,6 +541,7 @@ struct edge_properties
     name_type txt_name;
 
     std::optional< weight_type > weight = std::nullopt;
+    std::optional< rgba_type > cluster_col = std::nullopt;
 
     auto operator==(const edge_properties&) const -> bool = default;
     auto operator!=(const edge_properties&) const -> bool = default;
@@ -870,7 +890,8 @@ auto edge_renderer::render_model_pos(const edge_type& e, const path_type& path)
 
     auto* entity = m_scene.createEntity(e.name, e.name);
     assert(entity);
-    entity->setMaterialName(m_cfg->edge_material);
+    if (!e.cluster_col) // omit material draw if rendering clusters
+        entity->setMaterialName(m_cfg->edge_material);
     node->attachObject(entity);
 
     assert(m_scene.hasSceneNode(e.name));
@@ -939,6 +960,8 @@ auto edge_renderer::render_cluster(
     assert(e);
     e->setMaterial(solid_color_material(col));
 
+    edge(name).cluster_col = col;
+
     BOOST_LOG_TRIVIAL(debug) << "rendered cluster for edge: " << name;
 }
 
@@ -966,6 +989,22 @@ auto edge_renderer::hide_weight(
     e.weight = std::nullopt;
 
     BOOST_LOG_TRIVIAL(debug) << "hid weight for edge: " << name;
+}
+
+auto edge_renderer::hide_cluster(
+    const vertex_id_type& source,
+    const vertex_id_type& target,
+    const dependency_type& dependency) -> void
+{
+    const auto name = make_edge_name(source, target, dependency);
+    assert(m_scene.hasEntity(name));
+    auto* e = m_scene.getEntity(name);
+    assert(e);
+    e->setMaterialName(m_cfg->edge_material);
+
+    edge(name).cluster_col = std::nullopt;
+
+    BOOST_LOG_TRIVIAL(debug) << "hid cluster for edge: " << name;
 }
 
 auto edge_renderer::draw(

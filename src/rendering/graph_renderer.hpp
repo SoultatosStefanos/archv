@@ -167,7 +167,7 @@ public:
 
     auto hide_scaling() -> void;
     auto hide_weights() -> void;
-    auto hide_clusters() -> void; // TODO
+    auto hide_clusters() -> void;
 
     auto draw(const config_data_type& cfg) -> void;
     auto draw(config_data_type&&) -> void = delete; // disallow temporaries
@@ -558,6 +558,33 @@ inline auto graph_renderer<
         [this](auto e)
         {
             m_edge_renderer.hide_weight(
+                boost::get(vertex_id(), boost::source(e, graph())),
+                boost::get(vertex_id(), boost::target(e, graph())),
+                boost::get(edge_dependency(), e));
+        });
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    degrees_evaluator DegreesEvaluator,
+    cluster_color_coder ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::hide_clusters() -> void
+{
+    visit_vertices(
+        [this](auto v)
+        { m_vertex_renderer.hide_cluster(boost::get(vertex_id(), v)); });
+
+    visit_edges(
+        [this](auto e)
+        {
+            m_edge_renderer.hide_cluster(
                 boost::get(vertex_id(), boost::source(e, graph())),
                 boost::get(vertex_id(), boost::target(e, graph())),
                 boost::get(edge_dependency(), e));

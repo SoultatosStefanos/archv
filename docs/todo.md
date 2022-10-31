@@ -603,13 +603,13 @@
 
 # 31 / 10 / 2022
 
-	+ [ ] Hide clusters at graph renderer, draw update
+	+ [x] Hide clusters at graph renderer, draw update
 
 		+ [x] Add vertex material configuration
 
-		+ [ ] Revert to config materials on hide
+		+ [x] Revert to config materials on hide
 
-		+ [ ] Do not draw materials on draw if clustered
+		+ [x] Do not draw materials on draw if clustered
 
 	+ [ ] Integrate the rest of the clusterers
 
