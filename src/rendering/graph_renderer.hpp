@@ -4,7 +4,7 @@
 #ifndef RENDERING_GRAPH_RENDERER_HPP
 #define RENDERING_GRAPH_RENDERER_HPP
 
-#include "cluster_color_coder.hpp"
+#include "cluster_color_pool.hpp"
 #include "degrees_evaluator.hpp"
 #include "detail/graph_renderer.hpp"
 #include "graph_config.hpp"
@@ -40,7 +40,7 @@ concept DegreesEvaluationPolicy
 
 // clang-format off
 template < typename Class >
-concept ClusterColorCodingPolicy 
+concept cluster_color_coder 
 = requires
 {
     typename Class::cluster;
@@ -65,7 +65,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator = degrees_evaluator,
-    ClusterColorCodingPolicy ClusterColorCoder = cluster_color_coder >
+    cluster_color_coder ClusterColorCoder = cluster_color_pool >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -208,7 +208,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename PositionMap >
 inline graph_renderer<
     Graph,
@@ -265,7 +265,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline graph_renderer<
     Graph,
     VertexID,
@@ -291,7 +291,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename UnaryOperation >
 inline auto graph_renderer<
     Graph,
@@ -310,7 +310,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename UnaryOperation >
 inline auto graph_renderer<
     Graph,
@@ -329,7 +329,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename PositionMap >
 inline auto graph_renderer<
     Graph,
@@ -364,7 +364,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename ScaleMap >
 inline auto graph_renderer<
     Graph,
@@ -399,7 +399,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename WeightMap >
 inline auto graph_renderer<
     Graph,
@@ -427,7 +427,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -452,7 +452,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -475,7 +475,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename ClusterMap >
 inline auto graph_renderer<
     Graph,
@@ -519,7 +519,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -546,7 +546,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -569,7 +569,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -597,7 +597,7 @@ template <
     typename VertexID,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 template < typename Tuple >
 inline auto graph_renderer<
     Graph,
@@ -621,7 +621,7 @@ template <
     typename PositionMap,
     typename DependencyMap,
     DegreesEvaluationPolicy DegreesEvaluator,
-    ClusterColorCodingPolicy ClusterColorCoder >
+    cluster_color_coder ClusterColorCoder >
 inline auto make_graph_renderer(
     const Graph& g,
     VertexID vertex_id,

@@ -1,5 +1,5 @@
 set(FILES
-	cluster_color_coder_tests.cpp
+	cluster_color_pool_tests.cpp
 	config_tests.cpp
 	degrees_backend_tests.cpp
 	degrees_evaluation_tests.cpp

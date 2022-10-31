@@ -6,7 +6,7 @@
 
 #include "background_config.hpp"
 #include "background_renderer.hpp"
-#include "cluster_color_coder.hpp"
+#include "cluster_color_pool.hpp"
 #include "config.hpp"
 #include "degrees_backend.hpp"
 #include "degrees_config.hpp"

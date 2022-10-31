@@ -1,4 +1,4 @@
-#include "cluster_color_coder.hpp"
+#include "cluster_color_pool.hpp"
 
 #include <cassert>
 
@@ -157,7 +157,7 @@ namespace
         "9E5585", "BA6200"
     };
 
-    using rgba_type = cluster_color_coder::rgba_type;
+    using rgba_type = cluster_color_pool::rgba_type;
     using rgbas_type = std::array< rgba_type, hexes.size() >;
 
     inline auto to_rgba(const char* str)
@@ -192,7 +192,7 @@ namespace
 
 } // namespace
 
-auto cluster_color_coder::operator()(cluster c) const -> rgba_type
+auto cluster_color_pool::operator()(cluster c) const -> rgba_type
 {
     assert(c >= 0);
     return rgbas()[c % hexes.size()];

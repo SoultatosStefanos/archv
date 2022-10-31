@@ -18,7 +18,7 @@ class graph_renderer;
 class degrees_evaluator;
 class degrees_backend;
 
-struct cluster_color_coder;
+struct cluster_color_pool;
 
 } // namespace rendering
 

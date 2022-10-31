@@ -1,7 +1,7 @@
 set(FILES
 	background_config.cpp
 	background_renderer.cpp
-	cluster_color_coder.cpp
+	cluster_color_pool.cpp
 	config.cpp
 	degrees_backend.cpp
 	degrees_evaluation.cpp

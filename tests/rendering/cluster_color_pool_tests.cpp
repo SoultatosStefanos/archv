@@ -1,5 +1,5 @@
 #include "misc/random.hpp"
-#include "rendering/cluster_color_coder.hpp"
+#include "rendering/cluster_color_pool.hpp"
 
 #include <gtest/gtest.h>
 
