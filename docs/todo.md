@@ -613,4 +613,6 @@
 
 	+ [ ] Integrate the rest of the clusterers
 
+		+ [ ] Shared nearest neighbour clustering
+
 	+ [ ] GUI configurable clustering color mapping

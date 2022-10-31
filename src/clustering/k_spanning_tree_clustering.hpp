@@ -43,7 +43,8 @@ auto k_spanning_tree_clustering(
     using graph_traits = boost::graph_traits< Graph >;
     using edge_type = typename graph_traits::edge_descriptor;
     using edges_set = std::unordered_set< edge_type, detail::edge_hash >;
-    using cluster_type = boost::property_traits< ClusterMap >::value_type;
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::value_type;
 
     static_assert(std::is_invocable_v<
                   MinimumSpanningTreeFunc,

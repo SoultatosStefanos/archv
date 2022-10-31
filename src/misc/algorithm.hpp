@@ -70,6 +70,42 @@ constexpr auto to_chars(InputRange range, OutputIterator out) -> void
         });
 }
 
+// Set intersection algorithm.
+// NOTE: std::set_intersection only works on sorted ranges.
+template < std::ranges::input_range InputRange, typename OutputIterator >
+requires std::output_iterator<
+    OutputIterator,
+    std::ranges::range_value_t< InputRange > > && std::
+    equality_comparable< std::ranges::range_value_t< InputRange > >
+constexpr auto
+set_intersection(InputRange range1, InputRange range2, OutputIterator out)
+{
+    std::copy_if(
+        std::cbegin(range1),
+        std::cend(range1),
+        out,
+        [range2](const auto& v)
+        { return std::ranges::find(range2, v) != std::cend(range2); });
+}
+
+// Set intersection algorithm.
+// NOTE: std::set_intersection only works on sorted ranges.
+template < std::input_iterator InputIterator, typename OutputIterator >
+requires std::output_iterator<
+    OutputIterator,
+    typename InputIterator::value_type > && std::
+    equality_comparable< typename InputIterator::value_type >
+constexpr auto set_intersection(
+    InputIterator first1,
+    InputIterator last1,
+    InputIterator first2,
+    InputIterator last2,
+    OutputIterator out)
+{
+    using std::ranges::subrange;
+    set_intersection(subrange(first1, last1), subrange(first2, last2), out);
+}
+
 } // namespace misc
 
 #endif // MISC_ALGORITHM_HPP
