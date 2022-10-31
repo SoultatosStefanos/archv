@@ -22,20 +22,14 @@ using cluster_id = int;
 
 using cluster_map = std::unordered_map< graph::vertex_descriptor, cluster_id >;
 
-using proximity_storage = std::map< graph::edge_descriptor, std::size_t >;
-
 TEST(shared_nearest_neighbour_tests, empty_yields_empty_cluster_map)
 {
     graph g;
     const auto threshold = misc::urandom(1, 10);
     auto clusters = cluster_map();
-    proximity_storage proximity;
 
     clustering::shared_nearest_neighbour_clustering(
-        g,
-        boost::make_assoc_property_map(clusters),
-        threshold,
-        boost::make_assoc_property_map(proximity));
+        g, threshold, boost::make_assoc_property_map(clusters));
 
     ASSERT_TRUE(clusters.empty());
 }
@@ -53,13 +47,9 @@ TEST(
 
     const auto threshold = misc::urandom(1, 10);
     auto clusters = cluster_map();
-    proximity_storage proximity;
 
     clustering::shared_nearest_neighbour_clustering(
-        g,
-        boost::make_assoc_property_map(clusters),
-        threshold,
-        boost::make_assoc_property_map(proximity));
+        g, threshold, boost::make_assoc_property_map(clusters));
 
     ASSERT_EQ(clusters.size(), 3);
     EXPECT_NE(clusters.at(v0), clusters.at(v1));
@@ -83,13 +73,9 @@ TEST(
 
     constexpr auto threshold = 3;
     auto clusters = cluster_map();
-    proximity_storage proximity;
 
     clustering::shared_nearest_neighbour_clustering(
-        g,
-        boost::make_assoc_property_map(clusters),
-        threshold,
-        boost::make_assoc_property_map(proximity));
+        g, threshold, boost::make_assoc_property_map(clusters));
 
     ASSERT_EQ(clusters.size(), 3);
     EXPECT_NE(clusters.at(v0), clusters.at(v1));
@@ -122,13 +108,9 @@ TEST(
 
     constexpr auto threshold = 3;
     auto clusters = cluster_map();
-    proximity_storage proximity;
 
     clustering::shared_nearest_neighbour_clustering(
-        g,
-        boost::make_assoc_property_map(clusters),
-        threshold,
-        boost::make_assoc_property_map(proximity));
+        g, threshold, boost::make_assoc_property_map(clusters));
 
     ASSERT_EQ(clusters.size(), 5);
     EXPECT_NE(clusters.at(v0), clusters.at(v1));
@@ -149,31 +131,27 @@ TEST(shared_nearest_neighbour_tests, clustering_computing_snn)
 {
     constexpr auto threshold = 3;
 
-    graph actual;
+    graph g;
 
-    auto v0 = boost::add_vertex(0, actual);
-    auto v1 = boost::add_vertex(1, actual);
-    auto v2 = boost::add_vertex(2, actual);
-    auto v3 = boost::add_vertex(3, actual);
-    auto v4 = boost::add_vertex(4, actual);
+    auto v0 = boost::add_vertex(0, g);
+    auto v1 = boost::add_vertex(1, g);
+    auto v2 = boost::add_vertex(2, g);
+    auto v3 = boost::add_vertex(3, g);
+    auto v4 = boost::add_vertex(4, g);
 
-    boost::add_edge(v0, v1, actual);
-    boost::add_edge(v0, v2, actual);
-    boost::add_edge(v0, v3, actual);
-    boost::add_edge(v1, v2, actual);
-    boost::add_edge(v1, v3, actual);
-    boost::add_edge(v3, v2, actual);
-    boost::add_edge(v3, v4, actual);
-    boost::add_edge(v4, v2, actual);
+    boost::add_edge(v0, v1, g);
+    boost::add_edge(v0, v2, g);
+    boost::add_edge(v0, v3, g);
+    boost::add_edge(v1, v2, g);
+    boost::add_edge(v1, v3, g);
+    boost::add_edge(v3, v2, g);
+    boost::add_edge(v3, v4, g);
+    boost::add_edge(v4, v2, g);
 
     auto clusters = cluster_map();
-    proximity_storage proximity;
 
     clustering::shared_nearest_neighbour_clustering(
-        actual,
-        boost::make_assoc_property_map(clusters),
-        threshold,
-        boost::make_assoc_property_map(proximity));
+        g, threshold, boost::make_assoc_property_map(clusters));
 
     ASSERT_EQ(clusters.size(), 5);
     EXPECT_EQ(clusters.at(v2), clusters.at(v3));

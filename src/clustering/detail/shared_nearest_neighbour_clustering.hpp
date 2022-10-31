@@ -7,7 +7,6 @@
 #include "misc/algorithm.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <concepts>
 
 namespace clustering::detail
 {
