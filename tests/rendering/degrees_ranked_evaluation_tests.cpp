@@ -1,4 +1,4 @@
-#include "rendering/degrees_evaluation.hpp"
+#include "rendering/degrees_ranked_evaluation.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

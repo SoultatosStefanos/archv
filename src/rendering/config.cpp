@@ -162,9 +162,10 @@ namespace
             applied);
     }
 
-    inline auto deserialize_degrees(const Json::Value& root) -> degrees_config
+    inline auto deserialize_degrees(const Json::Value& root)
+        -> degrees_ranked_config
     {
-        return degrees_config(
+        return degrees_ranked_config(
             deserialize_degrees_section(root["in-degree"]),
             deserialize_degrees_section(root["out-degree"]));
     }

@@ -1,25 +1,25 @@
 // Contains the static default vertex degree evaluation policy class.
 // Soultatos Stefanos 2022
 
-#ifndef RENDERING_DEGREES_EVALUATOR_HPP
-#define RENDERING_DEGREES_EVALUATOR_HPP
+#ifndef RENDERING_DEGREES_RANKED_EVALUATOR_HPP
+#define RENDERING_DEGREES_RANKED_EVALUATOR_HPP
 
-#include "degrees_backend.hpp"
-#include "degrees_evaluation.hpp"
+#include "degrees_ranked_backend.hpp"
+#include "degrees_ranked_evaluation.hpp"
 
 namespace rendering
 {
 
 // Graph vertex degree evaluation policy based on ranked thresholds.
 // Proxy to the degrees evaluation backend.
-class degrees_evaluator
+class degrees_ranked_evaluator
 {
 public:
     using degree_type = degree_t;
     using particles_type = particle_system_t;
-    using backend_type = degrees_backend;
+    using backend_type = degrees_ranked_backend;
 
-    explicit degrees_evaluator(backend_type backend = backend_type())
+    explicit degrees_ranked_evaluator(backend_type backend = backend_type())
     : m_backend { std::move(backend) }
     {
     }
@@ -43,4 +43,4 @@ private:
 
 } // namespace rendering
 
-#endif // RENDERING_DEGREES_EVALUATOR_HPP
+#endif // RENDERING_DEGREES_RANKED_EVALUATOR_HPP

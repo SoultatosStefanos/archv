@@ -132,8 +132,8 @@ auto application::setup_background_renderer() -> void
 
 auto application::setup_graph_renderer() -> void
 {
-    using degrees_evaluator = rendering::degrees_evaluator;
-    using degrees_backend = rendering::degrees_backend;
+    using degrees_evaluator = rendering::degrees_ranked_evaluator;
+    using degrees_backend = rendering::degrees_ranked_backend;
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->get_graph(),

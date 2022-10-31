@@ -2,8 +2,8 @@
 // given data and a vertex degree.
 // Soultatos Stefanos 2022
 
-#ifndef RENDERING_DEGREES_EVALUATION_HPP
-#define RENDERING_DEGREES_EVALUATION_HPP
+#ifndef RENDERING_DEGREES_RANKED_EVALUATION_HPP
+#define RENDERING_DEGREES_RANKED_EVALUATION_HPP
 
 #include <optional>
 #include <string>
@@ -68,4 +68,4 @@ auto evaluate(degree_t degree, const degree_evaluation_data& data)
 
 } // namespace rendering
 
-#endif // RENDERING_DEGREES_EVALUATION_HPP
+#endif // RENDERING_DEGREES_RANKED_EVALUATION_HPP

@@ -15,8 +15,8 @@ class background_renderer;
 template < typename Graph, typename VertexID, typename DependencyMap >
 class graph_renderer;
 
-class degrees_evaluator;
-class degrees_backend;
+class degrees_ranked_evaluator;
+class degrees_ranked_backend;
 
 struct cluster_color_pool;
 

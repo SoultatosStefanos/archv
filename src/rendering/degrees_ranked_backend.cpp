@@ -1,24 +1,24 @@
-#include "degrees_backend.hpp"
+#include "degrees_ranked_backend.hpp"
 
 #include <boost/log/trivial.hpp>
 
 namespace rendering
 {
 
-degrees_backend::degrees_backend(config_data_type degree_data)
+degrees_ranked_backend::degrees_ranked_backend(config_data_type degree_data)
 : m_cfg { degree_data }
 , m_in_degree_data { degree_data.in_data }
 , m_out_degree_data { degree_data.out_data }
 {
 }
 
-auto degrees_backend::connect_to_in_degree_evaluation(const slot& f)
+auto degrees_ranked_backend::connect_to_in_degree_evaluation(const slot& f)
     -> connection
 {
     return m_in_degree_sig.connect(f);
 }
 
-auto degrees_backend::connect_to_out_degree_evaluation(const slot& f)
+auto degrees_ranked_backend::connect_to_out_degree_evaluation(const slot& f)
     -> connection
 {
     return m_out_degree_sig.connect(f);
@@ -34,8 +34,8 @@ namespace
     }
 } // namespace
 
-auto degrees_backend::update_in_degree_evaluation(degree_evaluation_data data)
-    -> void
+auto degrees_ranked_backend::update_in_degree_evaluation(
+    degree_evaluation_data data) -> void
 {
     if (must_ignore(data))
     {
@@ -47,8 +47,8 @@ auto degrees_backend::update_in_degree_evaluation(degree_evaluation_data data)
     emit_in_degree_evaluation_data();
 }
 
-auto degrees_backend::update_out_degree_evaluation(degree_evaluation_data data)
-    -> void
+auto degrees_ranked_backend::update_out_degree_evaluation(
+    degree_evaluation_data data) -> void
 {
     if (must_ignore(data))
     {
@@ -60,12 +60,12 @@ auto degrees_backend::update_out_degree_evaluation(degree_evaluation_data data)
     emit_out_degree_evaluation_data();
 }
 
-auto degrees_backend::emit_in_degree_evaluation_data() const -> void
+auto degrees_ranked_backend::emit_in_degree_evaluation_data() const -> void
 {
     m_in_degree_sig(in_degree_data());
 }
 
-auto degrees_backend::emit_out_degree_evaluation_data() const -> void
+auto degrees_ranked_backend::emit_out_degree_evaluation_data() const -> void
 {
     m_out_degree_sig(out_degree_data());
 }

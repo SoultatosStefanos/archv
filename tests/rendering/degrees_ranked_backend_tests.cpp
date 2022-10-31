@@ -1,4 +1,4 @@
-#include "rendering/degrees_backend.hpp"
+#include "rendering/degrees_ranked_backend.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -12,14 +12,16 @@ namespace
 
 inline auto initial_data()
 {
-    return degrees_config { .in_data = degree_evaluation_data(
-                                make_ranked(1, 3, 5),
-                                make_ranked< std::string >("a", "b", "c"),
-                                true),
-                            .out_data = degree_evaluation_data(
-                                make_ranked(2, 4, 6),
-                                make_ranked< std::string >("aa", "bb", "cc"),
-                                true) };
+    return degrees_ranked_config {
+        .in_data = degree_evaluation_data(
+            make_ranked(1, 3, 5),
+            make_ranked< std::string >("a", "b", "c"),
+            true),
+        .out_data = degree_evaluation_data(
+            make_ranked(2, 4, 6),
+            make_ranked< std::string >("aa", "bb", "cc"),
+            true)
+    };
 }
 
 class given_a_degrees_degrees_backend : public Test
@@ -30,10 +32,10 @@ protected:
 
     void SetUp() override
     {
-        b = std::make_unique< degrees_backend >(initial_data());
+        b = std::make_unique< degrees_ranked_backend >(initial_data());
     }
 
-    std::unique_ptr< degrees_backend > b;
+    std::unique_ptr< degrees_ranked_backend > b;
     mock_type mock;
 };
 
