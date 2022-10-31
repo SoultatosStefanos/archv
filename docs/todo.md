@@ -603,6 +603,8 @@
 
 # 31 / 10 / 2022
 
+	+ [ ] Hide clusters at graph renderer, draw update
+
 	+ [ ] Integrate the rest of the clusterers
 
 	+ [ ] GUI configurable clustering color mapping
