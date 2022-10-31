@@ -36,7 +36,7 @@ constexpr auto make_ranked(T light, T medium, T heavy)
  * Evaluation data                                         *
  ***********************************************************/
 
-struct degree_evaluation_data
+struct degrees_ranked_evaluation_data
 {
     using threshold_type = int;
     using particle_system_type = std::string;
@@ -48,8 +48,10 @@ struct degree_evaluation_data
     particle_systems_type particles;
     applied_type applied;
 
-    auto operator==(const degree_evaluation_data&) const -> bool = default;
-    auto operator!=(const degree_evaluation_data&) const -> bool = default;
+    auto operator==(const degrees_ranked_evaluation_data&) const -> bool
+        = default;
+    auto operator!=(const degrees_ranked_evaluation_data&) const -> bool
+        = default;
 };
 
 /***********************************************************
@@ -58,12 +60,12 @@ struct degree_evaluation_data
 
 using degree_t = int;
 using particle_system_t
-    = std::optional< degree_evaluation_data::particle_system_type >;
+    = std::optional< degrees_ranked_evaluation_data::particle_system_type >;
 
 constexpr auto null_particles = std::nullopt;
 
 // Effect evaluation strategy, given a degree.
-auto evaluate(degree_t degree, const degree_evaluation_data& data)
+auto evaluate(degree_t degree, const degrees_ranked_evaluation_data& data)
     -> particle_system_t;
 
 } // namespace rendering

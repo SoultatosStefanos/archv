@@ -139,9 +139,10 @@ namespace
 
     inline auto deserialize_degrees_section(const Json::Value& val)
     {
-        using threshold_type = degree_evaluation_data::threshold_type;
-        using system_type = degree_evaluation_data::particle_system_type;
-        using applied_type = degree_evaluation_data::applied_type;
+        using threshold_type = degrees_ranked_evaluation_data::threshold_type;
+        using system_type
+            = degrees_ranked_evaluation_data::particle_system_type;
+        using applied_type = degrees_ranked_evaluation_data::applied_type;
 
         auto&& [light_threshold, medium_threshold, heavy_threshold]
             = deserialize_degree_ranks< threshold_type >(val["thresholds"]);
@@ -153,7 +154,7 @@ namespace
 
         BOOST_LOG_TRIVIAL(debug) << "deserialized degree effects";
 
-        return degree_evaluation_data(
+        return degrees_ranked_evaluation_data(
             make_ranked(light_threshold, medium_threshold, heavy_threshold),
             make_ranked(
                 std::move(light_particles),

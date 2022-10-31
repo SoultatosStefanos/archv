@@ -26,7 +26,7 @@ auto degrees_ranked_backend::connect_to_out_degree_evaluation(const slot& f)
 
 namespace
 {
-    inline auto must_ignore(const degree_evaluation_data& data) -> bool
+    inline auto must_ignore(const degrees_ranked_evaluation_data& data) -> bool
     {
         return data.thresholds.light < 0
             or data.thresholds.medium <= data.thresholds.light
@@ -35,7 +35,7 @@ namespace
 } // namespace
 
 auto degrees_ranked_backend::update_in_degree_evaluation(
-    degree_evaluation_data data) -> void
+    degrees_ranked_evaluation_data data) -> void
 {
     if (must_ignore(data))
     {
@@ -48,7 +48,7 @@ auto degrees_ranked_backend::update_in_degree_evaluation(
 }
 
 auto degrees_ranked_backend::update_out_degree_evaluation(
-    degree_evaluation_data data) -> void
+    degrees_ranked_evaluation_data data) -> void
 {
     if (must_ignore(data))
     {

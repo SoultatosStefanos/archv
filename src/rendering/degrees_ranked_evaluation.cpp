@@ -5,7 +5,7 @@
 namespace rendering
 {
 
-auto evaluate(degree_t degree, const degree_evaluation_data& data)
+auto evaluate(degree_t degree, const degrees_ranked_evaluation_data& data)
     -> particle_system_t
 {
     assert(degree >= 0);

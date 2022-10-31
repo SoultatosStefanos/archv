@@ -14,13 +14,14 @@ namespace rendering
 
 class degrees_ranked_backend
 {
-    using signal
-        = boost::signals2::signal< void(const degree_evaluation_data&) >;
+    using signal = boost::signals2::signal< void(
+        const degrees_ranked_evaluation_data&) >;
 
 public:
-    using threshold_type = degree_evaluation_data::threshold_type;
-    using particle_system_type = degree_evaluation_data::particle_system_type;
-    using applied_type = degree_evaluation_data::applied_type;
+    using threshold_type = degrees_ranked_evaluation_data::threshold_type;
+    using particle_system_type
+        = degrees_ranked_evaluation_data::particle_system_type;
+    using applied_type = degrees_ranked_evaluation_data::applied_type;
 
     using slot = signal::slot_type;
     using connection = boost::signals2::connection;
@@ -38,8 +39,8 @@ public:
     auto connect_to_in_degree_evaluation(const slot& f) -> connection;
     auto connect_to_out_degree_evaluation(const slot& f) -> connection;
 
-    auto update_in_degree_evaluation(degree_evaluation_data data) -> void;
-    auto update_out_degree_evaluation(degree_evaluation_data data) -> void;
+    auto update_in_degree_evaluation(degrees_ranked_evaluation_data d) -> void;
+    auto update_out_degree_evaluation(degrees_ranked_evaluation_data d) -> void;
 
 protected:
     auto emit_in_degree_evaluation_data() const -> void;
@@ -49,8 +50,8 @@ private:
     config_data_type m_cfg;
     signal m_in_degree_sig;
     signal m_out_degree_sig;
-    degree_evaluation_data m_in_degree_data;
-    degree_evaluation_data m_out_degree_data;
+    degrees_ranked_evaluation_data m_in_degree_data;
+    degrees_ranked_evaluation_data m_out_degree_data;
 };
 
 /***********************************************************
@@ -196,21 +197,22 @@ evaluate_out_degree(const degrees_ranked_backend& b, degree_t degree)
 }
 
 inline auto update_in_degree_evaluation(
-    degrees_ranked_backend& b, degree_evaluation_data data)
+    degrees_ranked_backend& b, degrees_ranked_evaluation_data data)
 {
     b.update_in_degree_evaluation(std::move(data));
 }
 
 inline auto update_out_degree_evaluation(
-    degrees_ranked_backend& b, degree_evaluation_data data)
+    degrees_ranked_backend& b, degrees_ranked_evaluation_data data)
 {
     b.update_out_degree_evaluation(std::move(data));
 }
 
 inline auto update_in_degree_evaluation_light_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             threshold,
             get_in_degree_evaluation_medium_threshold(b),
@@ -220,9 +222,10 @@ inline auto update_in_degree_evaluation_light_threshold(
 }
 
 inline auto update_out_degree_evaluation_light_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             threshold,
             get_out_degree_evaluation_medium_threshold(b),
@@ -232,10 +235,10 @@ inline auto update_out_degree_evaluation_light_threshold(
 }
 
 inline auto update_in_degree_evaluation_medium_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
-    -> void
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold) -> void
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             get_in_degree_evaluation_light_threshold(b),
             threshold,
@@ -245,10 +248,10 @@ inline auto update_in_degree_evaluation_medium_threshold(
 }
 
 inline auto update_out_degree_evaluation_medium_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
-    -> void
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold) -> void
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             get_out_degree_evaluation_light_threshold(b),
             threshold,
@@ -258,9 +261,10 @@ inline auto update_out_degree_evaluation_medium_threshold(
 }
 
 inline auto update_in_degree_evaluation_heavy_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             get_in_degree_evaluation_light_threshold(b),
             get_in_degree_evaluation_medium_threshold(b),
@@ -270,9 +274,10 @@ inline auto update_in_degree_evaluation_heavy_threshold(
 }
 
 inline auto update_out_degree_evaluation_heavy_threshold(
-    degrees_ranked_backend& b, degree_evaluation_data::threshold_type threshold)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         make_ranked(
             get_out_degree_evaluation_light_threshold(b),
             get_out_degree_evaluation_medium_threshold(b),
@@ -283,11 +288,11 @@ inline auto update_out_degree_evaluation_heavy_threshold(
 
 inline auto update_in_degree_evaluation_light_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         get_in_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
             get_in_degree_evaluation_medium_effect(b),
             get_in_degree_evaluation_heavy_effect(b)),
@@ -296,11 +301,11 @@ inline auto update_in_degree_evaluation_light_effect(
 
 inline auto update_out_degree_evaluation_light_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         get_out_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
             get_out_degree_evaluation_medium_effect(b),
             get_out_degree_evaluation_heavy_effect(b)),
@@ -309,11 +314,11 @@ inline auto update_out_degree_evaluation_light_effect(
 
 inline auto update_in_degree_evaluation_medium_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         get_in_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             get_in_degree_evaluation_light_effect(b),
             std::move(effect),
             get_in_degree_evaluation_heavy_effect(b)),
@@ -322,11 +327,11 @@ inline auto update_in_degree_evaluation_medium_effect(
 
 inline auto update_out_degree_evaluation_medium_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         get_out_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             get_out_degree_evaluation_light_effect(b),
             std::move(effect),
             get_out_degree_evaluation_heavy_effect(b)),
@@ -335,11 +340,11 @@ inline auto update_out_degree_evaluation_medium_effect(
 
 inline auto update_in_degree_evaluation_heavy_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         get_in_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             get_in_degree_evaluation_light_effect(b),
             get_in_degree_evaluation_medium_effect(b),
             std::move(effect)),
@@ -348,11 +353,11 @@ inline auto update_in_degree_evaluation_heavy_effect(
 
 inline auto update_out_degree_evaluation_heavy_effect(
     degrees_ranked_backend& b,
-    degree_evaluation_data::particle_system_type effect)
+    degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         get_out_degree_evaluation_thresholds(b),
-        make_ranked< degree_evaluation_data::particle_system_type >(
+        make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             get_out_degree_evaluation_light_effect(b),
             get_out_degree_evaluation_medium_effect(b),
             std::move(effect)),
@@ -360,18 +365,20 @@ inline auto update_out_degree_evaluation_heavy_effect(
 }
 
 inline auto update_in_degree_evaluation_applied(
-    degrees_ranked_backend& b, degree_evaluation_data::applied_type applied)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::applied_type applied)
 {
-    b.update_in_degree_evaluation(degree_evaluation_data(
+    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
         get_in_degree_evaluation_thresholds(b),
         get_in_degree_evaluation_effects(b),
         applied));
 }
 
 inline auto update_out_degree_evaluation_applied(
-    degrees_ranked_backend& b, degree_evaluation_data::applied_type applied)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data::applied_type applied)
 {
-    b.update_out_degree_evaluation(degree_evaluation_data(
+    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
         get_out_degree_evaluation_thresholds(b),
         get_out_degree_evaluation_effects(b),
         applied));

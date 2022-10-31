@@ -11,8 +11,8 @@ namespace rendering
 
 struct degrees_ranked_config
 {
-    degree_evaluation_data in_data;
-    degree_evaluation_data out_data;
+    degrees_ranked_evaluation_data in_data;
+    degrees_ranked_evaluation_data out_data;
 
     auto operator==(const degrees_ranked_config&) const -> bool = default;
     auto operator!=(const degrees_ranked_config&) const -> bool = default;

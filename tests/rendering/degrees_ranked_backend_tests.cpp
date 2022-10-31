@@ -13,11 +13,11 @@ namespace
 inline auto initial_data()
 {
     return degrees_ranked_config {
-        .in_data = degree_evaluation_data(
+        .in_data = degrees_ranked_evaluation_data(
             make_ranked(1, 3, 5),
             make_ranked< std::string >("a", "b", "c"),
             true),
-        .out_data = degree_evaluation_data(
+        .out_data = degrees_ranked_evaluation_data(
             make_ranked(2, 4, 6),
             make_ranked< std::string >("aa", "bb", "cc"),
             true)
@@ -27,8 +27,8 @@ inline auto initial_data()
 class given_a_degrees_degrees_backend : public Test
 {
 protected:
-    using mock_type
-        = NiceMock< MockFunction< void(const degree_evaluation_data&) > >;
+    using mock_type = NiceMock<
+        MockFunction< void(const degrees_ranked_evaluation_data&) > >;
 
     void SetUp() override
     {
@@ -114,7 +114,7 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_updating_the_in_degree_evaluation_data_observers_are_notified)
 {
-    auto new_data = degree_evaluation_data(
+    auto new_data = degrees_ranked_evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
 
@@ -127,7 +127,7 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_updating_the_in_degree_evaluation_data_access_to_them_yields_new_data)
 {
-    auto new_data = degree_evaluation_data(
+    auto new_data = degrees_ranked_evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
 
     update_in_degree_evaluation(*b, new_data);
@@ -139,7 +139,7 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_updating_the_out_degree_evaluation_data_observers_are_notified)
 {
-    auto new_data = degree_evaluation_data(
+    auto new_data = degrees_ranked_evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
 
@@ -152,7 +152,7 @@ TEST_F(
     given_a_degrees_degrees_backend,
     after_updating_the_out_degree_evaluation_data_access_to_them_yields_new_data)
 {
-    auto new_data = degree_evaluation_data(
+    auto new_data = degrees_ranked_evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
 
     update_out_degree_evaluation(*b, new_data);
@@ -166,9 +166,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 2;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(new_threshold, 3, 5),
-                                            { "a", "b", "c" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data {
+        make_ranked(new_threshold, 3, 5), { "a", "b", "c" }, true
+    };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -192,9 +192,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 3;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(3, 4, 6),
-                                            { "aa", "bb", "cc" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(3, 4, 6),
+                                                    { "aa", "bb", "cc" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -218,9 +218,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 3;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "b", "c" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
+                                                    { "a", "b", "c" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -244,9 +244,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 3;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 3, 6),
-                                            { "aa", "bb", "cc" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(2, 3, 6),
+                                                    { "aa", "bb", "cc" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -270,9 +270,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 100;
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, new_threshold),
-                                            { "a", "b", "c" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data {
+        make_ranked(1, 3, new_threshold), { "a", "b", "c" }, true
+    };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -296,9 +296,9 @@ TEST_F(
 {
     constexpr auto new_threshold = 200;
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 4, new_threshold),
-                                            { "aa", "bb", "cc" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data {
+        make_ranked(2, 4, new_threshold), { "aa", "bb", "cc" }, true
+    };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -322,9 +322,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "bob", "b", "c" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
+                                                    { "bob", "b", "c" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -348,9 +348,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "bob", "bb", "cc" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
+                                                    { "bob", "bb", "cc" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -374,9 +374,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "bob", "c" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
+                                                    { "a", "bob", "c" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -400,9 +400,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "aa", "bob", "cc" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
+                                                    { "aa", "bob", "cc" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -426,9 +426,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "b", "bob" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
+                                                    { "a", "b", "bob" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -452,9 +452,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "aa", "bb", "bob" },
-                                            true };
+    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
+                                                    { "aa", "bb", "bob" },
+                                                    true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -477,9 +477,9 @@ TEST_F(
     after_updating_the_in_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(1, 3, 5),
-                                            { "a", "b", "c" },
-                                            false };
+    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
+                                                    { "a", "b", "c" },
+                                                    false };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -500,9 +500,9 @@ TEST_F(
     after_updating_the_out_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
-    const degree_evaluation_data new_data { make_ranked(2, 4, 6),
-                                            { "aa", "bb", "cc" },
-                                            false };
+    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
+                                                    { "aa", "bb", "cc" },
+                                                    false };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 

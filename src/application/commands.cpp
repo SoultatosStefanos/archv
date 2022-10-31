@@ -541,7 +541,8 @@ namespace
     struct get_degree_threshold
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& backend) const -> threshold_type
         {
@@ -619,7 +620,8 @@ namespace
     struct update_degree_threshold
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const -> void
         {
@@ -631,7 +633,8 @@ namespace
     struct update_degree_threshold< in_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -643,7 +646,8 @@ namespace
     struct update_degree_threshold< in_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -655,7 +659,8 @@ namespace
     struct update_degree_threshold< in_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -667,7 +672,8 @@ namespace
     struct update_degree_threshold< out_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -679,7 +685,8 @@ namespace
     struct update_degree_threshold< out_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -691,7 +698,8 @@ namespace
     struct update_degree_threshold< out_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
@@ -703,7 +711,8 @@ namespace
     struct update_degree_threshold_cmd : undo_redo::command
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using threshold_type = rendering::degrees_ranked_backend::threshold_type;
+        using threshold_type
+            = rendering::degrees_ranked_backend::threshold_type;
 
         using degree_tag = DegreeTag;
         using rank_tag = RankTag;
@@ -735,7 +744,8 @@ namespace
     struct get_degree_particles
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -747,7 +757,8 @@ namespace
     struct get_degree_particles< in_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -759,7 +770,8 @@ namespace
     struct get_degree_particles< in_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -771,7 +783,8 @@ namespace
     struct get_degree_particles< in_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -783,7 +796,8 @@ namespace
     struct get_degree_particles< out_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -795,7 +809,8 @@ namespace
     struct get_degree_particles< out_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -807,7 +822,8 @@ namespace
     struct get_degree_particles< out_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
@@ -819,7 +835,8 @@ namespace
     struct update_degree_particles
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -831,7 +848,8 @@ namespace
     struct update_degree_particles< in_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -844,7 +862,8 @@ namespace
     struct update_degree_particles< in_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -857,7 +876,8 @@ namespace
     struct update_degree_particles< in_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -870,7 +890,8 @@ namespace
     struct update_degree_particles< out_degree_tag, light_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -883,7 +904,8 @@ namespace
     struct update_degree_particles< out_degree_tag, medium_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -896,7 +918,8 @@ namespace
     struct update_degree_particles< out_degree_tag, heavy_tag >
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
@@ -909,7 +932,8 @@ namespace
     struct update_degree_particles_cmd : undo_redo::command
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using particles_type = rendering::degrees_ranked_backend::particle_system_type;
+        using particles_type
+            = rendering::degrees_ranked_backend::particle_system_type;
 
         using degree_tag = DegreeTag;
         using rank_tag = RankTag;
@@ -1077,7 +1101,7 @@ namespace
     struct restore_degree_cmd : undo_redo::command
     {
         using backend_type = rendering::degrees_ranked_backend;
-        using data_type = rendering::degree_evaluation_data;
+        using data_type = rendering::degrees_ranked_evaluation_data;
 
         using degree_tag = DegreeTag;
         using action = restore_degree< degree_tag >;
@@ -1246,16 +1270,16 @@ auto update_out_degree_evaluation_applied(
 }
 
 auto restore_in_degree_evaluation(
-    undo_redo::command_history& cmds, rendering::degrees_ranked_backend& backend)
-    -> void
+    undo_redo::command_history& cmds,
+    rendering::degrees_ranked_backend& backend) -> void
 {
     cmds.execute(
         std::make_unique< restore_degree_cmd< in_degree_tag > >(backend));
 }
 
 auto restore_out_degree_evaluation(
-    undo_redo::command_history& cmds, rendering::degrees_ranked_backend& backend)
-    -> void
+    undo_redo::command_history& cmds,
+    rendering::degrees_ranked_backend& backend) -> void
 {
     cmds.execute(
         std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));
