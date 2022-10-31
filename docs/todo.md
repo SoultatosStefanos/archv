@@ -596,8 +596,13 @@
 
 # 28 / 10 / 2022
 
-	+ [ ] Expand Graph Renderer to color clusters
+	+ [x] Expand Graph Renderer to color clusters
 
-	+ [ ] Rendering Cluster Color Coder policy class
+	+ [x] Rendering Cluster Color Coder policy class
+
+
+# 31 / 10 / 2022
+
+	+ [ ] Integrate the rest of the clusterers
 
 	+ [ ] GUI configurable clustering color mapping
