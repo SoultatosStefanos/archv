@@ -16,5 +16,7 @@
 #include "min_spanning_tree_finder_factory.hpp"
 #include "plugin.hpp"
 #include "prim_min_spanning_tree.hpp"
+#include "shared_nearest_neighbour_clusterer.hpp"
+#include "shared_nearest_neighbour_clustering.hpp"
 
 #endif // CLUSTERING_ALL_HPP

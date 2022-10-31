@@ -6,6 +6,7 @@
 
 #include "k_spanning_tree_clusterer.hpp"
 #include "plugin.hpp"
+#include "shared_nearest_neighbour_clusterer.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/log/trivial.hpp>
@@ -42,15 +43,20 @@ public:
     using k_type = typename k_spanning_tree_type::k_type;
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
 
+    using snn_type = shared_nearest_neighbour_clusterer< Graph >;
+    using snn_thres_type = typename snn_type::threshold_type;
+
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
     auto graph() const -> const graph_type& { return m_g; }
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
     auto mst_finder() const -> mst_finder_type* { return m_mst_finder.get(); }
     auto k() const -> k_type { return m_k; }
+    auto snn_threshold() const -> snn_thres_type { return m_snn_t; }
 
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
+    auto set_snn_threshold(snn_thres_type threshold) -> self&;
 
     auto build_clusterer(id_type id) const -> pointer;
 
@@ -59,6 +65,7 @@ private:
     weight_map_type m_edge_weight;
     std::unique_ptr< mst_finder_type > m_mst_finder;
     k_type m_k { -1 };
+    snn_thres_type m_snn_t { -1 };
 };
 
 /***********************************************************
@@ -89,6 +96,14 @@ inline auto clusterer_builder< Graph, WeightMap >::set_mst_finder(
 }
 
 template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::set_snn_threshold(
+    snn_thres_type threshold) -> self&
+{
+    m_snn_t = threshold;
+    return *this;
+}
+
+template < typename Graph, typename WeightMap >
 inline auto
 clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     -> pointer
@@ -96,10 +111,16 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     if (id == k_spanning_tree_clusterer_id)
     {
         assert(m_mst_finder);
-        assert(m_k != -1);
+        assert(k() != -1);
 
         return std::make_unique< k_spanning_tree_type >(
             k(), *mst_finder(), edge_weight());
+    }
+    else if (id == snn_clusterer_id)
+    {
+        assert(snn_threshold() != -1);
+
+        return std::make_unique< snn_type >(snn_threshold());
     }
     else
     {

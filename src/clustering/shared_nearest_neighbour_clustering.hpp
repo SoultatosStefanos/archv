@@ -8,7 +8,6 @@
 #include "detail/shared_nearest_neighbour_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace clustering

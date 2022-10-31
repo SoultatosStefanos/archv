@@ -13,6 +13,9 @@ class clusterer;
 template < typename Graph, typename WeightMap >
 class k_spanning_tree_clusterer;
 
+template < typename Graph >
+class shared_nearest_neighbour_clusterer;
+
 template < typename Graph, typename WeightMap >
 class min_spanning_tree_finder;
 

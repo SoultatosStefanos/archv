@@ -75,4 +75,22 @@ TEST_F(
     EXPECT_EQ(downcasted.mst_finder().id(), dummy_mst_finder::static_id);
 }
 
+TEST_F(
+    clustering_cluster_builder_tests,
+    given_snn_clusterer_id_returns_appropriate_implementation)
+{
+    using expected_t = clustering::shared_nearest_neighbour_clusterer< graph >;
+
+    constexpr auto id = clustering::snn_clusterer_id;
+    static_assert(clustering::is_clusterer_plugged_in(id));
+
+    const auto clusterer = builder->set_snn_threshold(0).build_clusterer(id);
+
+    ASSERT_NE(clusterer, nullptr);
+    EXPECT_EQ(clusterer->id(), id);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
+    const auto& downcasted = static_cast< const expected_t& >(*clusterer);
+    EXPECT_EQ(downcasted.threshold(), 0);
+}
+
 } // namespace
