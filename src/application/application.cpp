@@ -150,9 +150,10 @@ auto application::setup_graph_renderer() -> void
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
 
-    // TODO Remove
+#if (0) // FIXME
     clustering::update_clusters(m_graph_iface->clustering_backend());
     m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
+#endif
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
 }
