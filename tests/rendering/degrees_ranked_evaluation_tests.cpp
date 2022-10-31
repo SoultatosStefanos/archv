@@ -9,7 +9,9 @@ using namespace testing;
 namespace
 {
 
-TEST(a_degrees_effect_evaluation, given_false_applied_returns_empty_option)
+TEST(
+    a_degrees_effect_ranked_evaluation,
+    given_false_applied_returns_empty_option)
 {
     constexpr auto thresholds = make_ranked(1, 2, 3);
     const auto particles = make_ranked< std::string >("a", "n", "y");
@@ -20,7 +22,7 @@ TEST(a_degrees_effect_evaluation, given_false_applied_returns_empty_option)
 }
 
 TEST(
-    a_degrees_effect_evaluation,
+    a_degrees_effect_ranked_evaluation,
     given_degree_below_light_threshold_returns_empty_option)
 {
     constexpr auto thresholds = make_ranked(1, 2, 3);
@@ -32,7 +34,7 @@ TEST(
 }
 
 TEST(
-    a_degrees_effect_evaluation,
+    a_degrees_effect_ranked_evaluation,
     given_degree_above_or_equal_light_and_below_medium_threshold_returns_light_option)
 {
     constexpr auto thresholds = make_ranked(1, 3, 4);
@@ -45,7 +47,7 @@ TEST(
 }
 
 TEST(
-    a_degrees_effect_evaluation,
+    a_degrees_effect_ranked_evaluation,
     given_degree_above_or_equal_medium_and_below_heavy_threshold_returns_medium_option)
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);
@@ -58,7 +60,7 @@ TEST(
 }
 
 TEST(
-    a_degrees_effect_evaluation,
+    a_degrees_effect_ranked_evaluation,
     given_degree_above_or_equal_heavy_threshold_returns_heavy_option)
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);

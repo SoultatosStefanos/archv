@@ -24,7 +24,7 @@ inline auto initial_data()
     };
 }
 
-class given_a_degrees_degrees_backend : public Test
+class given_a_ranked_degrees_backend : public Test
 {
 protected:
     using mock_type = NiceMock<
@@ -40,7 +40,7 @@ protected:
 };
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     in_degree_evaluation_is_applied_on_in_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_in_degree(*b, 0), null_particles);
@@ -53,7 +53,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     out_degree_evaluation_is_applied_on_out_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_out_degree(*b, 0), null_particles);
@@ -66,7 +66,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     updates_with_negative_light_threshold_are_ignored)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
@@ -79,7 +79,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     updates_with_medium_threshold_which_is_not_greater_to_the_light_are_ignored)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
@@ -92,7 +92,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     updates_with_heavy_threshold_which_is_not_greater_to_the_medium_are_ignored)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
@@ -104,14 +104,13 @@ TEST_F(
     update_out_degree_evaluation_heavy_threshold(*b, 4);
 }
 
-TEST_F(
-    given_a_degrees_degrees_backend, its_config_data_are_equal_to_the_initial)
+TEST_F(given_a_ranked_degrees_backend, its_config_data_are_equal_to_the_initial)
 {
     ASSERT_EQ(b->config_data(), initial_data());
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_evaluation_data_observers_are_notified)
 {
     auto new_data = degrees_ranked_evaluation_data(
@@ -124,7 +123,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_evaluation_data_access_to_them_yields_new_data)
 {
     auto new_data = degrees_ranked_evaluation_data(
@@ -136,7 +135,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_evaluation_data_observers_are_notified)
 {
     auto new_data = degrees_ranked_evaluation_data(
@@ -149,7 +148,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_evaluation_data_access_to_them_yields_new_data)
 {
     auto new_data = degrees_ranked_evaluation_data(
@@ -161,7 +160,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_light_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 2;
@@ -176,7 +175,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_light_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 2;
@@ -187,7 +186,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_light_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
@@ -202,7 +201,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_light_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -213,7 +212,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_medium_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
@@ -228,7 +227,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_medium_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -239,7 +238,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_medium_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
@@ -254,7 +253,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_medium_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -265,7 +264,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_heavy_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 100;
@@ -280,7 +279,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_heavy_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 100;
@@ -291,7 +290,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_heavy_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 200;
@@ -306,7 +305,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_heavy_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 100;
@@ -317,7 +316,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_light_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -332,7 +331,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_light_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -343,7 +342,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_light_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -358,7 +357,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_light_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -369,7 +368,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_medium_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -384,7 +383,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_medium_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -395,7 +394,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_medium_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -410,7 +409,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_medium_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -421,7 +420,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_heavy_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -436,7 +435,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_heavy_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -447,7 +446,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_heavy_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
@@ -462,7 +461,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_heavy_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -473,7 +472,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
@@ -487,7 +486,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_in_degree_applied_prop_access_it_yields_new_effect)
 {
     update_in_degree_evaluation_applied(*b, false);
@@ -496,7 +495,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
@@ -510,7 +509,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_updating_the_out_degree_applied_prop_access_it_yields_new_effect)
 {
     update_out_degree_evaluation_applied(*b, false);
@@ -519,7 +518,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_restoring_the_in_degree_evaluation_observers_are_notified)
 {
     b->connect_to_in_degree_evaluation(mock.AsStdFunction());
@@ -530,7 +529,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_restoring_the_in_degree_evaluation_access_to_it_yield_original)
 {
     update_in_degree_evaluation(*b, initial_data().out_data);
@@ -540,7 +539,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_restoring_the_out_degree_evaluation_observers_are_notified)
 {
     b->connect_to_out_degree_evaluation(mock.AsStdFunction());
@@ -551,7 +550,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_degrees_degrees_backend,
+    given_a_ranked_degrees_backend,
     after_restoring_the_out_degree_evaluation_access_to_it_yield_original)
 {
     update_out_degree_evaluation(*b, initial_data().in_data);
