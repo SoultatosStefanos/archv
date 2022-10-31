@@ -31,7 +31,7 @@ public:
     using graph_type = Graph;
     using vertex_type = typename graph_traits ::vertex_descriptor;
 
-    using cluster = int;
+    using cluster = unsigned long long;
     using cluster_map = std::unordered_map< vertex_type, cluster >;
 
     clusterer() = default;

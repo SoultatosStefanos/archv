@@ -8,12 +8,15 @@
 #include "detail/shared_nearest_neighbour_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 
 namespace clustering
 {
 
 // Generic SNN Clustering algorithm.
+// NOTE: Will produce weird clusters if the num of vertices exceeds the cluster
+// type max / 2
 template < typename Graph, typename ClusterMap >
 auto shared_nearest_neighbour_clustering(
     const Graph& g, int threshold, ClusterMap vertex_cluster) -> void
@@ -32,7 +35,7 @@ auto shared_nearest_neighbour_clustering(
         = std::unordered_map< edge_type, proximity_type, detail::edge_hash >;
     using cluster_map_traits = boost::property_traits< ClusterMap >;
     using cluster_type = typename cluster_map_traits::value_type;
-    using cluster_type_limits = std::numeric_limits< cluster_type >;
+    using cluster_limits = std::numeric_limits< cluster_type >;
 
     // Isolate edges
     for (cluster_type c = 0;
@@ -49,7 +52,7 @@ auto shared_nearest_neighbour_clustering(
         g, boost::make_assoc_property_map(edge_proximity));
 
     // Fill cluster map.
-    for (cluster_type shared = cluster_type_limits::max();
+    for (cluster_type shared = cluster_limits::max();
          auto e : boost::make_iterator_range(boost::edges(g)))
     {
         const auto iter = edge_proximity.find(e);
@@ -59,8 +62,20 @@ auto shared_nearest_neighbour_clustering(
 
         if (share_t_neighbours)
         {
-            boost::put(vertex_cluster, boost::source(e, g), shared);
-            boost::put(vertex_cluster, boost::target(e, g), shared--);
+            const auto c1 = boost::get(vertex_cluster, boost::source(e, g));
+            const auto c2 = boost::get(vertex_cluster, boost::target(e, g));
+
+            if (detail::is_shared(c1) or detail::is_shared(c2))
+            {
+                const auto c = detail::shared_between(c1, c2);
+                boost::put(vertex_cluster, boost::source(e, g), c);
+                boost::put(vertex_cluster, boost::target(e, g), c);
+            }
+            else
+            {
+                boost::put(vertex_cluster, boost::source(e, g), shared);
+                boost::put(vertex_cluster, boost::target(e, g), shared--);
+            }
         }
     }
 }

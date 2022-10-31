@@ -44,6 +44,26 @@ auto shared_nearest_neighbour(const Graph& g, ProximityMap edge_proximity)
     }
 }
 
+// Little heuristic, not complete by any means.
+// Should a graph naturally exceed this, no biggie.
+template < typename Cluster >
+constexpr auto shared_threshold()
+{
+    return std::numeric_limits< Cluster >::max() / 2;
+}
+
+template < typename Cluster >
+constexpr auto is_shared(Cluster c) -> bool
+{
+    return c > shared_threshold< Cluster >();
+}
+
+template < typename Cluster >
+constexpr auto shared_between(Cluster c1, Cluster c2)
+{
+    return std::max(c1, c2);
+}
+
 } // namespace clustering::detail
 
 #endif // CLUSTERING_DETAIL_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP

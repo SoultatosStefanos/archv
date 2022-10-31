@@ -91,7 +91,7 @@ auto k_spanning_tree_clustering(
             boost::put(vertex_cluster, v, isolated_cluster++);
     }
 
-    assert(isolated_cluster >= k);
+    assert(isolated_cluster >= static_cast< cluster_type >(k));
 }
 
 } // namespace clustering

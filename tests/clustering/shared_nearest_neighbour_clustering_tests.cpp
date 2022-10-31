@@ -59,7 +59,7 @@ TEST(
 
 TEST(
     shared_nearest_neighbour_tests,
-    given_graph_wth_edges_of_2_proximity_and_3_thres_then_vertices_are_isolated)
+    given_graph_wth_edges_of_1_proximity_and_3_thres_then_vertices_are_isolated)
 {
     graph g;
 
@@ -81,6 +81,32 @@ TEST(
     EXPECT_NE(clusters.at(v0), clusters.at(v1));
     EXPECT_NE(clusters.at(v0), clusters.at(v2));
     EXPECT_NE(clusters.at(v1), clusters.at(v2));
+}
+
+TEST(
+    shared_nearest_neighbour_tests,
+    given_graph_wth_edges_of_1_proximity_and_1_thres_then_vertices_are_clustered_together)
+{
+    graph g;
+
+    auto v0 = boost::add_vertex(0, g);
+    auto v1 = boost::add_vertex(1, g);
+    auto v2 = boost::add_vertex(2, g);
+
+    boost::add_edge(v0, v1, g);
+    boost::add_edge(v1, v2, g);
+    boost::add_edge(v0, v2, g);
+
+    constexpr auto threshold = 1;
+    auto clusters = cluster_map();
+
+    clustering::shared_nearest_neighbour_clustering(
+        g, threshold, boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.size(), 3);
+    EXPECT_EQ(clusters.at(v0), clusters.at(v1));
+    EXPECT_EQ(clusters.at(v0), clusters.at(v2));
+    EXPECT_EQ(clusters.at(v1), clusters.at(v2));
 }
 
 TEST(
