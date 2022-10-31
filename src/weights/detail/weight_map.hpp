@@ -20,7 +20,6 @@ public:
     using edge_type = typename graph_type ::edge_descriptor;
     using weight_type = backend::weight_type;
 
-    weight_dispatcher() = default;
     weight_dispatcher(const backend& b, dependency_map edge_dependency)
     : m_backend { &b }, m_edge_dependency { edge_dependency }
     {
@@ -28,6 +27,7 @@ public:
 
     auto operator()(edge_type e) const -> weight_type
     {
+        assert(m_backend);
         const auto& repo = m_backend->get_weight_repo();
         const auto dependency = boost::get(m_edge_dependency, e);
         return repo.get_weight(dependency);

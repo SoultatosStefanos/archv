@@ -42,17 +42,20 @@ public:
     using k_type = typename k_spanning_tree_type::k_type;
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
 
+    clusterer_builder(const graph_type& g, weight_map_type edge_weight);
+
+    auto graph() const -> const graph_type& { return m_g; }
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
     auto mst_finder() const -> mst_finder_type* { return m_mst_finder.get(); }
     auto k() const -> k_type { return m_k; }
 
-    auto set_edge_weight(weight_map_type edge_weight) -> self&;
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
 
     auto build_clusterer(id_type id) const -> pointer;
 
 private:
+    const graph_type& m_g;
     weight_map_type m_edge_weight;
     std::unique_ptr< mst_finder_type > m_mst_finder;
     k_type m_k { -1 };
@@ -63,11 +66,10 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline auto clusterer_builder< Graph, WeightMap >::set_edge_weight(
-    weight_map_type edge_weight) -> self&
+inline clusterer_builder< Graph, WeightMap >::clusterer_builder(
+    const graph_type& g, weight_map_type edge_weight)
+: m_g { g }, m_edge_weight { edge_weight }
 {
-    m_edge_weight = edge_weight;
-    return *this;
 }
 
 template < typename Graph, typename WeightMap >
@@ -106,6 +108,17 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
         assert(false);
         return nullptr;
     }
+}
+
+/***********************************************************
+ * Utilites                                                *
+ ***********************************************************/
+
+// For  type deduction
+template < typename Graph, typename WeightMap >
+inline auto make_clusterer_builder(const Graph& g, WeightMap edge_weight)
+{
+    return clusterer_builder< Graph, WeightMap > { g, edge_weight };
 }
 
 } // namespace clustering

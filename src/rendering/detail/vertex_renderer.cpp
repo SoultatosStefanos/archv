@@ -397,6 +397,8 @@ auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
     auto* e = m_scene.getEntity(id);
     assert(e);
     e->setMaterial(solid_color_material(col));
+
+    BOOST_LOG_TRIVIAL(trace) << "colored vertex for cluster";
 }
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)

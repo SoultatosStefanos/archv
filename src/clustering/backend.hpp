@@ -154,7 +154,10 @@ private:
 template < typename Graph, typename WeightMap >
 inline backend< Graph, WeightMap >::backend(
     const graph_type& g, weight_map_type edge_weight, config_data_type cfg)
-: m_g { g }, m_edge_weight { edge_weight }, m_cfg { std::move(cfg) }
+: m_g { g }
+, m_edge_weight { edge_weight }
+, m_cfg { std::move(cfg) }
+, m_builder { g, edge_weight }
 {
     verify_config_data();
 

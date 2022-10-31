@@ -475,6 +475,8 @@ auto edge_renderer::render_cluster(
     auto* e = m_scene.getEntity(id);
     assert(e);
     e->setMaterial(solid_color_material(col));
+
+    BOOST_LOG_TRIVIAL(trace) << "colored edge for cluster";
 }
 
 // NOTE: Performs only mutations, no allocations take place.
