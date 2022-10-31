@@ -32,6 +32,7 @@ auto shared_nearest_neighbour_clustering(
         = std::unordered_map< edge_type, proximity_type, detail::edge_hash >;
     using cluster_map_traits = boost::property_traits< ClusterMap >;
     using cluster_type = typename cluster_map_traits::value_type;
+    using cluster_type_limits = std::numeric_limits< cluster_type >;
 
     // Isolate edges
     for (cluster_type c = 0;
@@ -48,8 +49,8 @@ auto shared_nearest_neighbour_clustering(
         g, boost::make_assoc_property_map(edge_proximity));
 
     // Fill cluster map.
-    constexpr cluster_type shared = std::numeric_limits< cluster_type >::max();
-    for (auto e : boost::make_iterator_range(boost::edges(g)))
+    for (cluster_type shared = cluster_type_limits::max();
+         auto e : boost::make_iterator_range(boost::edges(g)))
     {
         const auto iter = edge_proximity.find(e);
         assert(iter != std::cend(edge_proximity));
@@ -59,7 +60,7 @@ auto shared_nearest_neighbour_clustering(
         if (share_t_neighbours)
         {
             boost::put(vertex_cluster, boost::source(e, g), shared);
-            boost::put(vertex_cluster, boost::target(e, g), shared);
+            boost::put(vertex_cluster, boost::target(e, g), shared--);
         }
     }
 }
