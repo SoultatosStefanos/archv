@@ -1,6 +1,6 @@
 #include "graph_configurator.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "resources.hpp"
 
 #include <imgui/imgui.h>
@@ -11,12 +11,12 @@ namespace gui
 
 graph_configurator::graph_configurator()
 {
-    using detail::to_char_view;
+    using misc::to_chars;
     using std::ranges::views::all;
 
-    to_char_view(all(resources::meshes()), std::back_inserter(meshes()));
-    to_char_view(all(resources::materials()), std::back_inserter(materials()));
-    to_char_view(all(resources::fonts()), std::back_inserter(fonts()));
+    to_chars(all(resources::meshes()), std::back_inserter(meshes()));
+    to_chars(all(resources::materials()), std::back_inserter(materials()));
+    to_chars(all(resources::fonts()), std::back_inserter(fonts()));
 }
 
 namespace
@@ -273,7 +273,7 @@ auto graph_configurator::edge_space_width() const -> space_width_type
 
 auto graph_configurator::set_node_mesh(name_type mesh) -> void
 {
-    m_node_mesh = detail::find_index(resources::meshes(), mesh);
+    m_node_mesh = misc::find_index(resources::meshes(), mesh);
 }
 
 auto graph_configurator::set_node_scale(scale_type scale) -> void
@@ -283,7 +283,7 @@ auto graph_configurator::set_node_scale(scale_type scale) -> void
 
 auto graph_configurator::set_node_font(name_type font) -> void
 {
-    m_node_font = detail::find_index(resources::fonts(), font);
+    m_node_font = misc::find_index(resources::fonts(), font);
 }
 
 auto graph_configurator::set_node_char_height(char_height_type height) -> void
@@ -303,12 +303,12 @@ auto graph_configurator::set_node_space_width(space_width_type width) -> void
 
 auto graph_configurator::set_edge_material(name_type material) -> void
 {
-    m_edge_material = detail::find_index(resources::materials(), material);
+    m_edge_material = misc::find_index(resources::materials(), material);
 }
 
 auto graph_configurator::set_edge_tip_mesh(name_type mesh) -> void
 {
-    m_edge_tip_mesh = detail::find_index(resources::meshes(), mesh);
+    m_edge_tip_mesh = misc::find_index(resources::meshes(), mesh);
 }
 
 auto graph_configurator::set_edge_tip_scale(scale_type scale) -> void
@@ -318,7 +318,7 @@ auto graph_configurator::set_edge_tip_scale(scale_type scale) -> void
 
 auto graph_configurator::set_edge_font(name_type font) -> void
 {
-    m_edge_font = detail::find_index(resources::fonts(), font);
+    m_edge_font = misc::find_index(resources::fonts(), font);
 }
 
 auto graph_configurator::set_edge_char_height(char_height_type height) -> void

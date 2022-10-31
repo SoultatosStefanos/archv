@@ -1,6 +1,6 @@
 #include "scaling_editor.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
 #include <cassert>
@@ -12,7 +12,7 @@ namespace gui
 
 scaling_editor::scaling_editor()
 {
-    detail::to_char_view(
+    misc::to_chars(
         std::ranges::views::all(plugins::factors()),
         std::back_inserter(factors()));
 }

@@ -1,6 +1,6 @@
 #include "weights_editor.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
@@ -12,7 +12,7 @@ namespace gui
 
 weights_editor::weights_editor()
 {
-    detail::to_char_view(
+    misc::to_chars(
         std::ranges::views::all(plugins::dependencies()),
         std::back_inserter(dependencies()));
 }

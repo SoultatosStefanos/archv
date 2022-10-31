@@ -1,6 +1,6 @@
 #include "layout_editor.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
@@ -12,11 +12,11 @@ namespace gui
 
 layout_editor::layout_editor()
 {
-    using detail::to_char_view;
+    using misc::to_chars;
     using std::ranges::views::all;
 
-    to_char_view(all(plugins::layouts()), std::back_inserter(layouts()));
-    to_char_view(all(plugins::topologies()), std::back_inserter(topologies()));
+    to_chars(all(plugins::layouts()), std::back_inserter(layouts()));
+    to_chars(all(plugins::topologies()), std::back_inserter(topologies()));
 }
 
 namespace
@@ -40,7 +40,7 @@ auto layout_editor::render() const -> void
 
 auto layout_editor::render_layout_editor() const -> void
 {
-    const auto dif = detail::find_assoc_index(plugins::layouts(), layout());
+    const auto dif = misc::find_assoc_index(plugins::layouts(), layout());
     auto index = static_cast< int >(dif);
 
     if (ImGui::Combo("Layout", &index, layouts().data(), layouts().size()))
@@ -49,8 +49,7 @@ auto layout_editor::render_layout_editor() const -> void
 
 auto layout_editor::render_topology_editor() const -> void
 {
-    const auto dif
-        = detail::find_assoc_index(plugins::topologies(), topology());
+    const auto dif = misc::find_assoc_index(plugins::topologies(), topology());
     auto index = static_cast< int >(dif);
 
     if (ImGui::Combo(

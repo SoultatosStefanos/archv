@@ -1,6 +1,6 @@
 #include "gui_configurator.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "resources.hpp"
 
 #include <imgui/imgui.h>
@@ -11,11 +11,10 @@ namespace gui
 
 gui_configurator::gui_configurator()
 {
-    using detail::to_char_view;
+    using misc::to_chars;
     using std::ranges::views::all;
 
-    to_char_view(
-        all(resources::color_themes), std::back_inserter(color_themes()));
+    to_chars(all(resources::color_themes), std::back_inserter(color_themes()));
 
     assert(resources::color_themes.size() == color_themes().size());
 }
@@ -138,7 +137,7 @@ auto gui_configurator::popup_bordered() const -> bordered_type
 
 auto gui_configurator::set_color_theme(name_type theme) -> void
 {
-    m_color_theme = detail::find_index(resources::color_themes, theme);
+    m_color_theme = misc::find_index(resources::color_themes, theme);
 }
 
 auto gui_configurator::set_frame_rounding(rounding_type value) -> void

@@ -1,6 +1,6 @@
 #include "degrees_editor.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "resources.hpp"
 
 #include <cassert>
@@ -13,7 +13,7 @@ namespace gui
 
 degrees_editor::degrees_editor()
 {
-    detail::to_char_view(
+    misc::to_chars(
         std::ranges::views::all(resources::particle_systems()),
         std::back_inserter(particles()));
 }
@@ -225,7 +225,7 @@ auto degrees_editor::render_thresholds_editor() const -> void
 
 auto degrees_editor::render_particles_editor() const -> void
 {
-    using detail::find_index;
+    using misc::find_index;
     using resources::particle_systems;
 
     const auto l_dif = find_index(particle_systems(), light_particles());

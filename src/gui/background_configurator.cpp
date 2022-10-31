@@ -1,6 +1,6 @@
 #include "background_configurator.hpp"
 
-#include "detail/utility.hpp"
+#include "misc/algorithm.hpp"
 #include "resources.hpp"
 
 #include <cassert>
@@ -12,10 +12,10 @@ namespace gui
 
 background_configurator::background_configurator()
 {
-    using detail::to_char_view;
+    using misc::to_chars;
     using std::ranges::views::all;
 
-    to_char_view(all(resources::materials()), std::back_inserter(materials()));
+    to_chars(all(resources::materials()), std::back_inserter(materials()));
     assert(resources::materials().size() == materials().size());
 }
 
@@ -189,7 +189,7 @@ auto background_configurator::cam_near_cip_distance() const -> distance_type
 
 auto background_configurator::set_skybox_material(name_type material) -> void
 {
-    m_skybox_material = detail::find_index(resources::materials(), material);
+    m_skybox_material = misc::find_index(resources::materials(), material);
 }
 
 auto background_configurator::set_skybox_distance(distance_type dist) -> void
