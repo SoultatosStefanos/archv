@@ -8,6 +8,7 @@
 #include "detail/k_spanning_tree_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graph_utility.hpp>
 #include <cassert>
 #include <type_traits>
 #include <unordered_set>
@@ -57,7 +58,7 @@ auto k_spanning_tree_clustering(
     assert(k >= 1 && "cannot form negative clusters");
 
     // Early exit.
-    if (detail::has_no_vertices(g))
+    if (boost::graph::has_no_vertices(g))
         return;
 
     // Fill mst edge set.

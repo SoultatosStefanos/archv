@@ -10,12 +10,6 @@
 namespace clustering::detail
 {
 
-template < typename Graph >
-inline auto has_no_vertices(const Graph& g) -> bool
-{
-    return boost::num_vertices(g) == 0;
-}
-
 // Returns the max weighted edge of an edge set.
 template < typename EdgeSet, typename WeightMap >
 inline auto max_weighted(const EdgeSet& edges, WeightMap edge_weight)

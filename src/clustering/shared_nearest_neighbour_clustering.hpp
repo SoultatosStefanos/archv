@@ -8,6 +8,7 @@
 #include "detail/shared_nearest_neighbour_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graph_utility.hpp>
 #include <cassert>
 
 namespace clustering
@@ -42,7 +43,7 @@ auto shared_nearest_neighbour_clustering(
         boost::put(vertex_cluster, v, c++);
 
     // Early exit.
-    if (detail::has_no_edges(g))
+    if (boost::graph::has_no_edges(g))
         return;
 
     // Fill edge proximity map.

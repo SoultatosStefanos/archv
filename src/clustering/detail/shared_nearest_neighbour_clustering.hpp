@@ -11,12 +11,6 @@
 namespace clustering::detail
 {
 
-template < typename Graph >
-inline auto has_no_edges(const Graph& g) -> bool
-{
-    return boost::num_edges(g) == 0;
-}
-
 // Fills a property map of edge keys with the number of shared neighbours of
 // each src and target.
 template < typename Graph, typename ProximityMap >
