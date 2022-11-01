@@ -621,3 +621,7 @@
 	+ [ ] Integrate the rest of the clusterers
 
 		+ [x] Strong Components
+
+		+ [ ] Maximal Clique Enumeration
+
+	+ [ ] GUI Configurable clusterers
