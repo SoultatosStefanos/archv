@@ -37,6 +37,10 @@ auto shared_nearest_neighbour_clustering(
     using cluster_type = typename cluster_map_traits::value_type;
     using cluster_limits = std::numeric_limits< cluster_type >;
 
+    // Early exit
+    if (boost::graph::has_no_vertices(g))
+        return;
+
     // Isolate edges
     for (cluster_type c = 0;
          auto v : boost::make_iterator_range(boost::vertices(g)))
