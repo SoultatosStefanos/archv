@@ -19,7 +19,8 @@ TEST(
                                      .mst_finders = {},
                                      .clusterer = "",
                                      .mst_finder = "",
-                                     .k = 1 }));
+                                     .k = 1,
+                                     .snn_threshold = 9 }));
 }
 
 TEST(
@@ -32,7 +33,8 @@ TEST(
             .mst_finders = {},
             .clusterer = "",
             .mst_finder = "",
-            .k = 1 }));
+            .k = 1,
+            .snn_threshold = 9 }));
 }
 
 TEST(
@@ -44,7 +46,8 @@ TEST(
                                      .mst_finders = {},
                                      .clusterer = "",
                                      .mst_finder = "",
-                                     .k = 1 }));
+                                     .k = 1,
+                                     .snn_threshold = 9 }));
 }
 
 TEST(
@@ -58,7 +61,8 @@ TEST(
             .mst_finders = {},
             .clusterer = "",
             .mst_finder = "",
-            .k = 1 }));
+            .k = 1,
+            .snn_threshold = 9 }));
 }
 
 TEST(
@@ -70,7 +74,8 @@ TEST(
                                      .mst_finders = {},
                                      .clusterer = "",
                                      .mst_finder = "",
-                                     .k = 1 }));
+                                     .k = 1,
+                                     .snn_threshold = 9 }));
 }
 
 TEST(
@@ -84,7 +89,8 @@ TEST(
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
             .mst_finder = "",
-            .k = 1 }));
+            .k = 1,
+            .snn_threshold = 9 }));
 }
 
 TEST(
@@ -96,7 +102,8 @@ TEST(
                                      .mst_finders = { "Bob" },
                                      .clusterer = "",
                                      .mst_finder = "",
-                                     .k = 1 }));
+                                     .k = 1,
+                                     .snn_threshold = 9 }));
 }
 
 TEST(
@@ -111,7 +118,8 @@ TEST(
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
             .mst_finder = "",
-            .k = 1 }));
+            .k = 1,
+            .snn_threshold = 9 }));
 }
 
 TEST(clustering_backend_config_tests, clusterer_from_config_is_listed)
@@ -120,7 +128,8 @@ TEST(clustering_backend_config_tests, clusterer_from_config_is_listed)
                                                   .mst_finders = {},
                                                   .clusterer = "Bob",
                                                   .mst_finder = "",
-                                                  .k = 1 };
+                                                  .k = 1,
+                                                  .snn_threshold = 9 };
 
     ASSERT_TRUE(clustering::is_clusterer_listed(cfg));
 }
@@ -132,7 +141,8 @@ TEST(clustering_backend_config_tests, clusterer_outside_config_is_not_listed)
         .mst_finders = {},
         .clusterer = id_t(clustering::k_spanning_tree_clusterer_id),
         .mst_finder = "",
-        .k = 1
+        .k = 1,
+        .snn_threshold = 9
     };
 
     ASSERT_FALSE(clustering::is_clusterer_listed(cfg));
@@ -144,7 +154,8 @@ TEST(clustering_backend_config_tests, mst_finder_from_config_is_listed)
                                                   .mst_finders = { "Bob" },
                                                   .clusterer = "",
                                                   .mst_finder = "Bob",
-                                                  .k = 1 };
+                                                  .k = 1,
+                                                  .snn_threshold = 9 };
 
     ASSERT_TRUE(clustering::is_mst_finder_listed(cfg));
 }
@@ -156,7 +167,8 @@ TEST(clustering_backend_config_tests, mst_finder_outside_config_is_not_listed)
                                                   .clusterer = "",
                                                   .mst_finder = id_t(
                                                       clustering::prim_mst_id),
-                                                  .k = 1 };
+                                                  .k = 1,
+                                                  .snn_threshold = 9 };
 
     ASSERT_FALSE(clustering::is_mst_finder_listed(cfg));
 }

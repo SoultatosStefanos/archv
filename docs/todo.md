@@ -615,4 +615,9 @@
 
 		+ [x] Shared nearest neighbour clustering
 
-	+ [ ] GUI configurable clustering color mapping
+
+# 01 / 11 / 2022
+
+	+ [ ] Integrate the rest of the clusterers
+
+		+ [x] Strong Components

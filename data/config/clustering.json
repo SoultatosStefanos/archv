@@ -2,7 +2,8 @@
 	"clusterers" : 
 	[
 		"k-Spanning Tree",
-		"Shared Nearest Neighbour"
+		"Shared Nearest Neighbour",
+		"Strong Components"
 	],
 	"min-spanning-tree-finders" : 
 	[

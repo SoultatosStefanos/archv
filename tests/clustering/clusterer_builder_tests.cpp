@@ -93,4 +93,20 @@ TEST_F(
     EXPECT_EQ(downcasted.threshold(), 0);
 }
 
+TEST_F(
+    clustering_cluster_builder_tests,
+    given_strong_components_clusterer_id_returns_appropriate_implementation)
+{
+    using expected_t = clustering::strong_components_clusterer< graph >;
+
+    constexpr auto id = clustering::strong_components_clusterer_id;
+    static_assert(clustering::is_clusterer_plugged_in(id));
+
+    const auto clusterer = builder->build_clusterer(id);
+
+    ASSERT_NE(clusterer, nullptr);
+    EXPECT_EQ(clusterer->id(), id);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
+}
+
 } // namespace

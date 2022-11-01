@@ -18,5 +18,6 @@
 #include "prim_min_spanning_tree.hpp"
 #include "shared_nearest_neighbour_clusterer.hpp"
 #include "shared_nearest_neighbour_clustering.hpp"
+#include "strong_components_clusterer.hpp"
 
 #endif // CLUSTERING_ALL_HPP

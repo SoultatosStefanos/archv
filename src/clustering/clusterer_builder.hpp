@@ -7,6 +7,7 @@
 #include "k_spanning_tree_clusterer.hpp"
 #include "plugin.hpp"
 #include "shared_nearest_neighbour_clusterer.hpp"
+#include "strong_components_clusterer.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/log/trivial.hpp>
@@ -45,6 +46,8 @@ public:
 
     using snn_type = shared_nearest_neighbour_clusterer< Graph >;
     using snn_thres_type = typename snn_type::threshold_type;
+
+    using strong_components_type = strong_components_clusterer< Graph >;
 
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
@@ -121,6 +124,10 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
         assert(snn_threshold() != -1);
 
         return std::make_unique< snn_type >(snn_threshold());
+    }
+    else if (id == strong_components_clusterer_id)
+    {
+        return std::make_unique< strong_components_type >();
     }
     else
     {
