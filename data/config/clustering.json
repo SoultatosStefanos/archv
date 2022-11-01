@@ -1,7 +1,8 @@
 {
 	"clusterers" : 
 	[
-		"k-Spanning Tree"
+		"k-Spanning Tree",
+		"Shared Nearest Neighbour"
 	],
 	"min-spanning-tree-finders" : 
 	[

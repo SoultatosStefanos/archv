@@ -34,7 +34,8 @@ TEST(
                 .mst_finders = { to_id(clustering::prim_mst_id) },
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1 }),
+                .k = 1,
+                .snn_threshold = 1 }),
         clustering::unknown_plugin);
 }
 
@@ -52,7 +53,8 @@ TEST(
                 .mst_finders = { "Bob" },
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1 }),
+                .k = 1,
+                .snn_threshold = 1 }),
         clustering::unknown_plugin);
 }
 
@@ -70,7 +72,8 @@ TEST(
                 .mst_finders = { to_id(clustering::prim_mst_id) },
                 .clusterer = "Bob",
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1 }),
+                .k = 1,
+                .snn_threshold = 1 }),
         clustering::unlisted_default);
 }
 
@@ -88,7 +91,8 @@ TEST(
                 .mst_finders = { to_id(clustering::prim_mst_id) },
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = "Bob",
-                .k = 1 }),
+                .k = 1,
+                .snn_threshold = 1 }),
         clustering::unlisted_default);
 }
 
@@ -105,9 +109,15 @@ TEST(
                 .mst_finders = all_mst_finders(),
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 0 }),
+                .k = 0,
+                .snn_threshold = 1 }),
         clustering::invalid_k);
+}
 
+TEST(
+    when_making_a_clustering_backend,
+    given_snn_thres_less_than_0_at_cfg_then_invalid_snn_threshold_error_is_thrown)
+{
     EXPECT_THROW(
         clustering::make_backend(
             graph(),
@@ -117,8 +127,9 @@ TEST(
                 .mst_finders = all_mst_finders(),
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = -1 }),
-        clustering::invalid_k);
+                .k = 2,
+                .snn_threshold = -1 }),
+        clustering::invalid_snn_threshold);
 }
 
 using backend_t = clustering::backend< graph, weight_map >;
@@ -133,7 +144,10 @@ using mock_mst_finder_slot_t = NiceMock<
     MockFunction< void(const typename backend_t::mst_finder_type&) > >;
 
 using mock_k_slot_t
-    = NiceMock< MockFunction< void(const typename backend_t::k_type&) > >;
+    = NiceMock< MockFunction< void(typename backend_t::k_type) > >;
+
+using mock_snn_thres_slot_t
+    = NiceMock< MockFunction< void(typename backend_t::snn_threshold_type) > >;
 
 class given_a_clustering_backend : public Test
 {
@@ -145,6 +159,8 @@ protected:
 
     static constexpr auto default_k = 1;
 
+    static constexpr auto default_snn_threshold = 99;
+
     static constexpr auto weight = 10;
 
     clustering::backend_config cfg { .clusterers = clustering::all_clusterers(),
@@ -152,7 +168,8 @@ protected:
                                      = clustering::all_mst_finders(),
                                      .clusterer = to_id(defualt_clusterer),
                                      .mst_finder = to_id(defualt_mst_finder),
-                                     .k = default_k };
+                                     .k = default_k,
+                                     .snn_threshold = default_snn_threshold };
 
     graph g;
     std::unique_ptr< backend_t > backend;
@@ -160,6 +177,7 @@ protected:
     mock_clusterer_slot_t clusterer_slot;
     mock_mst_finder_slot_t mst_finder_slot;
     mock_k_slot_t k_slot;
+    mock_snn_thres_slot_t snn_thres_slot;
 
     void SetUp() override
     {
@@ -191,6 +209,12 @@ TEST_F(given_a_clustering_backend, initially_given_default_mst_finder_is_held)
 TEST_F(given_a_clustering_backend, initially_given_default_k_is_held)
 {
     ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend, initially_given_default_snn_threshold_is_held)
+{
+    ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
 }
 
 TEST_F(
@@ -244,6 +268,28 @@ TEST_F(
 
     clustering::update_k(*backend, -10);
 
+    ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
+    ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
+    ASSERT_EQ(clustering::get_k(*backend), default_k);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_snn_threshold_with_invalid_value_nothing_happens)
+{
+    backend->connect_to_snn_threshold(snn_thres_slot.AsStdFunction());
+    backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
+    backend->connect_to_k(k_slot.AsStdFunction());
+    backend->connect_to_clusterer(clusterer_slot.AsStdFunction());
+
+    EXPECT_CALL(snn_thres_slot, Call(_)).Times(0);
+    EXPECT_CALL(mst_finder_slot, Call(_)).Times(0);
+    EXPECT_CALL(k_slot, Call(_)).Times(0);
+    EXPECT_CALL(clusterer_slot, Call(_)).Times(0);
+
+    clustering::update_snn_threshold(*backend, -1);
+
+    ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
     ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
     ASSERT_EQ(clustering::get_k(*backend), default_k);
@@ -330,25 +376,54 @@ TEST_F(
 
 TEST_F(
     given_a_clustering_backend,
+    after_updating_the_snn_threshold_new_val_is_held)
+{
+    constexpr auto t = 80;
+
+    clustering::update_snn_threshold(*backend, t);
+
+    ASSERT_EQ(clustering::get_snn_threshold(*backend), t);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_snn_threshold_observers_are_notified)
+{
+    constexpr auto t = 80;
+
+    backend->connect_to_snn_threshold(snn_thres_slot.AsStdFunction());
+
+    EXPECT_CALL(snn_thres_slot, Call(t)).Times(1);
+
+    clustering::update_snn_threshold(*backend, t);
+}
+
+TEST_F(
+    given_a_clustering_backend,
     when_restoring_to_defaults_default_data_are_given_after_querying)
 {
     constexpr auto id = clustering::kruskal_mst_id;
     constexpr auto k = 3000;
+    constexpr auto snn_thres = 3434;
 
     static_assert(id != defualt_mst_finder);
     static_assert(k != default_k);
+    static_assert(snn_thres != default_snn_threshold);
 
     clustering::update_k(*backend, k);
     clustering::update_mst_finder(*backend, id);
+    clustering::update_snn_threshold(*backend, snn_thres);
 
     EXPECT_EQ(clustering::get_k(*backend), k);
     EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), snn_thres);
 
     clustering::restore_defaults(*backend);
 
     ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
     ASSERT_EQ(clustering::get_k(*backend), default_k);
+    ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
 }
 
 TEST_F(
@@ -359,7 +434,8 @@ TEST_F(
         = clustering::k_spanning_tree_clusterer< graph, weight_map >;
 
     constexpr auto k = 300;
-    constexpr auto id = clustering::kruskal_mst_id;
+    constexpr auto id = clustering::k_spanning_tree_clusterer_id;
+    constexpr auto mst_id = clustering::kruskal_mst_id;
 
     backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
     backend->connect_to_k(k_slot.AsStdFunction());
@@ -370,22 +446,43 @@ TEST_F(
     EXPECT_CALL(clusterer_slot, Call(_)).Times(1);
 
     clustering::update_k(*backend, k);
-    clustering::update_mst_finder(*backend, id);
-    clustering::update_clusterer(
-        *backend, clustering::k_spanning_tree_clusterer_id);
+    clustering::update_mst_finder(*backend, mst_id);
+    clustering::update_clusterer(*backend, id);
 
     EXPECT_EQ(clustering::get_k(*backend), k);
-    EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
-    EXPECT_EQ(
-        clustering::get_clusterer_id(*backend),
-        clustering::k_spanning_tree_clusterer_id);
+    EXPECT_EQ(clustering::get_mst_finder_id(*backend), mst_id);
+    EXPECT_EQ(clustering::get_clusterer_id(*backend), id);
     ASSERT_EQ(typeid(backend->get_clusterer()), typeid(expected_t));
 
     const auto& downcasted
         = static_cast< const expected_t& >(backend->get_clusterer());
 
     EXPECT_EQ(downcasted.k(), k);
-    EXPECT_EQ(downcasted.mst_finder().id(), id);
+    EXPECT_EQ(downcasted.mst_finder().id(), mst_id);
+}
+
+TEST_F(given_a_clustering_backend, updating_snn_clustering_details_use_case)
+{
+    using expected_t = clustering::shared_nearest_neighbour_clusterer< graph >;
+
+    constexpr auto thres = 300;
+    constexpr auto id = clustering::snn_clusterer_id;
+
+    backend->connect_to_snn_threshold(snn_thres_slot.AsStdFunction());
+
+    EXPECT_CALL(snn_thres_slot, Call(_)).Times(1);
+
+    clustering::update_snn_threshold(*backend, thres);
+    clustering::update_clusterer(*backend, id);
+
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), thres);
+    EXPECT_EQ(clustering::get_clusterer_id(*backend), id);
+    ASSERT_EQ(typeid(backend->get_clusterer()), typeid(expected_t));
+
+    const auto& downcasted
+        = static_cast< const expected_t& >(backend->get_clusterer());
+
+    EXPECT_EQ(downcasted.threshold(), thres);
 }
 
 } // namespace clustering

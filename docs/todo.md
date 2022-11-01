@@ -611,8 +611,8 @@
 
 		+ [x] Do not draw materials on draw if clustered
 
-	+ [ ] Integrate the rest of the clusterers
+	+ [x] Integrate the rest of the clusterers
 
-		+ [ ] Shared nearest neighbour clustering
+		+ [x] Shared nearest neighbour clustering
 
 	+ [ ] GUI configurable clustering color mapping

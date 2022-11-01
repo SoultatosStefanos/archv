@@ -33,6 +33,7 @@ constexpr auto scale = 100;
 constexpr auto clusterer_type = clustering::k_spanning_tree_clusterer_id;
 constexpr auto mst_finder_type = clustering::prim_mst_id;
 constexpr auto k = 100;
+constexpr auto snn_thres = 23;
 
 inline auto make_structure(std::string id)
 {
@@ -84,7 +85,8 @@ inline auto make_clustering_cfg()
                                  clustering::all_mst_finders(),
                                  std::string(clusterer_type),
                                  std::string(mst_finder_type),
-                                 k };
+                                 k,
+                                 snn_thres };
 }
 
 class a_graph_interface : public Test

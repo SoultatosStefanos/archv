@@ -42,7 +42,8 @@ protected:
         .mst_finders = clustering::all_mst_finders(),
         .clusterer = std::string(clustering::k_spanning_tree_clusterer_id),
         .mst_finder = std::string(clustering::kruskal_mst_id),
-        .k = 3
+        .k = 3,
+        .snn_threshold = 2
     };
 
     graph g = make_graph();

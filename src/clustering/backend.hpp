@@ -39,6 +39,10 @@ struct invalid_k : virtual backend_error
 {
 };
 
+struct invalid_snn_threshold : virtual backend_error
+{
+};
+
 /***********************************************************
  * Error Info                                              *
  ***********************************************************/
@@ -48,6 +52,8 @@ using clusterer_info
 using mst_finder_info
     = boost::error_info< struct tag_mst_finder, backend_config::id_type >;
 using k_info = boost::error_info< struct tag_k, backend_config::k_type >;
+using snn_threshold_info = boost::
+    error_info< struct tag_snn_threshold, backend_config::snn_threshold_type >;
 
 /***********************************************************
  * Backend                                                 *
@@ -67,11 +73,12 @@ public:
 
     using id_type = id_t;
     using clusterer_type = clusterer< Graph >;
-    using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
-    using k_type = int;
-
     using cluster_type = typename clusterer_type::cluster;
     using cluster_map_type = typename clusterer_type::cluster_map;
+
+    using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
+    using k_type = int;
+    using snn_threshold_type = int;
 
 private:
     using clusters_signal
@@ -81,12 +88,15 @@ private:
     using mst_finder_signal
         = boost::signals2::signal< void(const mst_finder_type&) >;
     using k_signal = boost::signals2::signal< void(k_type) >;
+    using snn_thres_signal
+        = boost::signals2::signal< void(snn_threshold_type) >;
 
 public:
     using clusters_slot = clusters_signal::slot_type;
     using clusterer_slot = clusterer_signal::slot_type;
     using mst_finder_slot = mst_finder_signal::slot_type;
     using k_slot = k_signal::slot_type;
+    using snn_thres_slot = snn_thres_signal::slot_type;
     using connection = boost::signals2::connection;
 
     backend(
@@ -102,26 +112,31 @@ public:
     auto get_clusterer() const -> const clusterer_type& { return *m_clusterer; }
     auto get_mst_finder() const -> const mst_finder_type&;
     auto get_k() const -> k_type;
+    auto get_snn_threshold() const -> snn_threshold_type;
 
     auto update_clusters() -> void;
     auto update_clusterer(id_type id) -> void;
     auto update_mst_finder(id_type id) -> void;
     auto update_k(k_type k) -> void;
+    auto update_snn_threshold(snn_threshold_type thres) -> void;
 
     auto connect_to_clusters(const clusters_slot& f) -> connection;
     auto connect_to_clusterer(const clusterer_slot& f) -> connection;
     auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
     auto connect_to_k(const k_slot& f) -> connection;
+    auto connect_to_snn_threshold(const snn_thres_slot& f) -> connection;
 
 protected:
     auto set_clusterer(id_type id) -> void;
     auto set_mst_finder(id_type id) -> void;
     auto set_k(k_type k) -> void;
+    auto set_snn_threshold(snn_threshold_type thres) -> void;
 
     auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
     auto emit_mst_finder() const -> void;
     auto emit_k() const -> void;
+    auto emit_snn_threshold() const -> void;
 
 private:
     using clusterer_builder_type = clusterer_builder< Graph, WeightMap >;
@@ -145,6 +160,7 @@ private:
     clusterer_signal m_clusterer_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;
+    snn_thres_signal m_snn_thres_sig;
 };
 
 /***********************************************************
@@ -163,6 +179,7 @@ inline backend< Graph, WeightMap >::backend(
 
     set_mst_finder(config_data().mst_finder);
     set_k(config_data().k);
+    set_snn_threshold(config_data().snn_threshold);
     set_clusterer(config_data().clusterer);
 
     assert(m_clusterer);
@@ -192,6 +209,11 @@ inline auto backend< Graph, WeightMap >::verify_config_data() const -> void
     if (config_data().k < 1)
         BOOST_THROW_EXCEPTION(invalid_k() << k_info(config_data().k));
 
+    if (config_data().snn_threshold < 0)
+        BOOST_THROW_EXCEPTION(
+            invalid_snn_threshold()
+            << snn_threshold_info(config_data().snn_threshold));
+
     assert(are_clusterers_plugged_in(config_data()));
     assert(are_mst_finders_plugged_in(config_data()));
 }
@@ -207,6 +229,13 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::get_k() const -> k_type
 {
     return m_builder.k();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::get_snn_threshold() const
+    -> snn_threshold_type
+{
+    return m_builder.snn_threshold();
 }
 
 template < typename Graph, typename WeightMap >
@@ -261,6 +290,21 @@ inline auto backend< Graph, WeightMap >::update_k(k_type k) -> void
 
 template < typename Graph, typename WeightMap >
 inline auto
+backend< Graph, WeightMap >::update_snn_threshold(snn_threshold_type thres)
+    -> void
+{
+    if (thres < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "ignoring invalid snn thres: " << thres;
+        return;
+    }
+
+    set_snn_threshold(thres);
+    emit_snn_threshold();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
 backend< Graph, WeightMap >::connect_to_clusters(const clusters_slot& f)
     -> connection
 {
@@ -291,6 +335,14 @@ inline auto backend< Graph, WeightMap >::connect_to_k(const k_slot& f)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_snn_threshold(const snn_thres_slot& f)
+    -> connection
+{
+    return m_snn_thres_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 {
     m_clusterer = m_builder.build_clusterer(id);
@@ -306,6 +358,13 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_k(k_type k) -> void
 {
     m_builder.set_k(k);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::set_snn_threshold(snn_threshold_type thres) -> void
+{
+    m_builder.set_snn_threshold(thres);
 }
 
 template < typename Graph, typename WeightMap >
@@ -330,6 +389,12 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::emit_k() const -> void
 {
     m_k_sig(get_k());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_snn_threshold() const -> void
+{
+    m_snn_thres_sig(get_snn_threshold());
 }
 
 /***********************************************************
@@ -377,6 +442,12 @@ inline auto get_k(const backend< Graph, WeightMap >& b)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto get_snn_threshold(const backend< Graph, WeightMap >& b)
+{
+    return b.get_snn_threshold();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto update_clusters(backend< Graph, WeightMap >& b)
 {
     b.update_clusters();
@@ -407,9 +478,18 @@ inline auto update_k(
 }
 
 template < typename Graph, typename WeightMap >
+inline auto update_snn_threshold(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::snn_threshold_type thres)
+{
+    b.update_snn_threshold(thres);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto restore_defaults(backend< Graph, WeightMap >& b)
 {
     update_k(b, b.config_data().k);
+    update_snn_threshold(b, b.config_data().snn_threshold);
     update_mst_finder(b, b.config_data().mst_finder);
     update_clusterer(b, b.config_data().clusterer);
 }
