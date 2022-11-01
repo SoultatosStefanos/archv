@@ -37,6 +37,8 @@ auto shared_nearest_neighbour_clustering(
     using cluster_type = typename cluster_map_traits::value_type;
     using cluster_limits = std::numeric_limits< cluster_type >;
 
+    assert(threshold >= 0 && "negative thresholds make no sense");
+
     // Early exit
     if (boost::graph::has_no_vertices(g))
         return;
