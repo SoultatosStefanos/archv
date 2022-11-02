@@ -3,7 +3,8 @@
 	[
 		"k-Spanning Tree",
 		"Shared Nearest Neighbour",
-		"Strong Components"
+		"Strong Components",
+		"Maximal Clique Enumeration"
 	],
 	"min-spanning-tree-finders" : 
 	[

@@ -5,6 +5,7 @@
 #define CLUSTERING_CLUSTERER_BUILDER_HPP
 
 #include "k_spanning_tree_clusterer.hpp"
+#include "maximal_clique_enumeration_clusterer.hpp"
 #include "plugin.hpp"
 #include "shared_nearest_neighbour_clusterer.hpp"
 #include "strong_components_clusterer.hpp"
@@ -48,6 +49,8 @@ public:
     using snn_thres_type = typename snn_type::threshold_type;
 
     using strong_components_type = strong_components_clusterer< Graph >;
+
+    using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
 
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
@@ -128,6 +131,10 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     else if (id == strong_components_clusterer_id)
     {
         return std::make_unique< strong_components_type >();
+    }
+    else if (id == max_clique_enum_clusterer_id)
+    {
+        return std::make_unique< max_clique_enum_type >();
     }
     else
     {

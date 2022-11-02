@@ -57,7 +57,6 @@ TEST(
     EXPECT_NE(clusters.at(v2), clusters.at(v3));
 }
 
-
 TEST(
     maximal_clique_enumeration_tests,
     given_single_clique_then_all_vertices_all_placed_in_same_cluster)

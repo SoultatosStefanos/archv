@@ -579,7 +579,7 @@
 
 	+ [n] Compiler flags controlling wether to render degrees/clusters immediately
 
-	+ [ ] POC clustering rendering
+	+ [x] POC clustering rendering
 
 		+ [x] k-Spanning Tree clusterer
 
@@ -625,9 +625,9 @@
 
 # 02 / 11 / 2022
 
-	+ [ ] Integrate the rest of the clusterers
+	+ [x] Integrate the rest of the clusterers
 
-		+ [ ] Maximal Clique Enumeration
+		+ [x] Maximal Clique Enumeration
 
 	+ [ ] GUI Configurable clusterers
 	

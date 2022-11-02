@@ -11,16 +11,14 @@
 #include <deque>
 #include <map>
 
-// TODO Clique visitor interface with bron kerbosch implementation
-// TODO Clique visitor factory
-// TODO Update: plugin/backend/config
-
 namespace clustering
 {
 
 // Generic maximal clique enumeration clustering algorithm.
 // NOTE: the default min number of vertices per clique depends on the clique
 // visitor implementation.
+// NOTE: Confusingly the VisitCliques visitor is input an object of abstract
+// type: boost::CliqueVisitor (the applied function).
 template < typename Graph, typename VisitCliques, typename ClusterMap >
 auto maximal_clique_enumeration_clustering(
     const Graph& g, VisitCliques visit_cliques, ClusterMap vertex_cluster)
