@@ -78,6 +78,7 @@ auto application::setup() -> void
     prepare_layout_editor();
     prepare_scaling_editor();
     prepare_degrees_editor();
+    prepare_clustering_editor();
     prepare_background_configurator();
     prepare_graph_configurator();
     prepare_gui_configurator();
@@ -566,6 +567,28 @@ auto application::prepare_degrees_editor() -> void
         { return rendering::is_out_degree_evaluation_applied(backend); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared degrees editor";
+}
+
+auto application::prepare_clustering_editor() -> void
+{
+    assert(m_gui);
+    assert(m_graph_iface);
+
+    auto& backend = m_graph_iface->clustering_backend();
+
+    m_gui->get_clustering_editor().set_clusterer(
+        [this, &backend]() { return clustering::get_clusterer_id(backend); });
+
+    m_gui->get_clustering_editor().set_mst_finder(
+        [this, &backend]() { return clustering::get_mst_finder_id(backend); });
+
+    m_gui->get_clustering_editor().set_k(
+        [this, &backend]() { return clustering::get_k(backend); });
+
+    m_gui->get_clustering_editor().set_snn_thres(
+        [this, &backend]() { return clustering::get_snn_threshold(backend); });
+
+    BOOST_LOG_TRIVIAL(debug) << "prepared clustering editor";
 }
 
 namespace // presentation translations

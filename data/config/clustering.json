@@ -11,8 +11,8 @@
 		"Prim MST",
 		"Kruskal MST"
 	],
-	"clusterer" : "k-Spanning Tree",
-	"min-spanning-tree-finder" : "Prim MST",
+	"clusterer" : "Shared Nearest Neighbour",
+	"min-spanning-tree-finder" : "Kruskal MST",
 	"k" : 3,
-	"snn-threshold" : 3
+	"snn-threshold" : 5
 }

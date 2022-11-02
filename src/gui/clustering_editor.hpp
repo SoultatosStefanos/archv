@@ -63,6 +63,8 @@ public:
     auto connect_to_applied(const applied_slot& f) -> connection;
     auto connect_to_restore(const restore_slot& f) -> connection;
 
+    auto render() const -> void;
+
 protected:
     using render_vector = std::vector< const char* >;
 
@@ -78,8 +80,6 @@ protected:
     auto emit_snn_thres(snn_thres_type t) const -> void;
     auto emit_applied() const -> void;
     auto emit_restore() const -> void;
-
-    auto render() const -> void;
 
 private:
     auto render_clusterer_editor() const -> void;
@@ -104,7 +104,7 @@ private:
     k_accessor m_k;
     snn_thres_accessor m_snn_thres;
 
-    mutable applied_type m_applied;
+    mutable applied_type m_applied { false };
 
     mutable render_vector m_clusterers;
     mutable render_vector m_mst_finders;

@@ -168,7 +168,7 @@ auto clustering_editor::render() const -> void
     ImGui::Spacing();
     render_settings_for_nerds_button();
     render_settings_for_nerds();
-    ImGui::SameLine();
+    ImGui::Spacing();
     render_restore_button();
 }
 
@@ -207,11 +207,11 @@ auto clustering_editor::render_settings_for_nerds() const -> void
 {
     if (ImGui::BeginPopup("settings_for_nerds_popup##clustering"))
     {
-        spaced_text("k-Spanning Tree Details");
+        spaced_text("k-Spanning Tree");
         render_mst_finder_editor();
         render_k_editor();
         spaced_separator();
-        spaced_text("Shared Nearest Neighbour Details");
+        spaced_text("Shared Nearest Neighbour");
         render_snn_thres_editor();
 
         ImGui::EndPopup();

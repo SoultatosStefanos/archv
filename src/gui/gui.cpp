@@ -158,6 +158,9 @@ auto gui::render_editor() const -> void
         if (ImGui::MenuItem("Degrees", "", m_degrees_open, true))
             m_degrees_open = m_degrees_open ? false : true;
 
+        if (ImGui::MenuItem("Clustering", "", m_clustering_open, true))
+            m_clustering_open = m_clustering_open ? false : true;
+
         ImGui::EndMenu();
     }
 
@@ -202,6 +205,13 @@ auto gui::render_editor() const -> void
             ImGui::TreePop();
         }
 
+        ImGui::End();
+    }
+
+    if (m_clustering_open)
+    {
+        ImGui::Begin("Clustering Edit", &m_clustering_open);
+        get_clustering_editor().render();
         ImGui::End();
     }
 }
