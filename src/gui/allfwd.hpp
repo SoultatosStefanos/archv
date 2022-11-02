@@ -15,6 +15,7 @@ class gui;
 class layout_editor;
 class scaling_editor;
 class degrees_editor;
+class clustering_editor;
 
 } // namespace gui
 
