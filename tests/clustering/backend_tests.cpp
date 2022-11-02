@@ -1,3 +1,6 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 #include "clustering/backend.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
@@ -29,13 +32,7 @@ TEST(
         clustering::make_backend(
             graph(),
             weight_map(10),
-            clustering::backend_config {
-                .clusterers = { "Bob" },
-                .mst_finders = { to_id(clustering::prim_mst_id) },
-                .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
-                .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1,
-                .snn_threshold = 1 }),
+            clustering::backend_config { .clusterers = { "Bob" } }),
         clustering::unknown_plugin);
 }
 
@@ -50,11 +47,7 @@ TEST(
             clustering::backend_config {
                 .clusterers
                 = { to_id(clustering::k_spanning_tree_clusterer_id) },
-                .mst_finders = { "Bob" },
-                .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
-                .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1,
-                .snn_threshold = 1 }),
+                .mst_finders = { "Bob" } }),
         clustering::unknown_plugin);
 }
 
@@ -70,10 +63,7 @@ TEST(
                 .clusterers
                 = { to_id(clustering::k_spanning_tree_clusterer_id) },
                 .mst_finders = { to_id(clustering::prim_mst_id) },
-                .clusterer = "Bob",
-                .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 1,
-                .snn_threshold = 1 }),
+                .clusterer = "Bob" }),
         clustering::unlisted_default);
 }
 
@@ -90,9 +80,7 @@ TEST(
                 = { to_id(clustering::k_spanning_tree_clusterer_id) },
                 .mst_finders = { to_id(clustering::prim_mst_id) },
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
-                .mst_finder = "Bob",
-                .k = 1,
-                .snn_threshold = 1 }),
+                .mst_finder = "Bob" }),
         clustering::unlisted_default);
 }
 
@@ -109,8 +97,7 @@ TEST(
                 .mst_finders = all_mst_finders(),
                 .clusterer = to_id(clustering::k_spanning_tree_clusterer_id),
                 .mst_finder = to_id(clustering::prim_mst_id),
-                .k = 0,
-                .snn_threshold = 1 }),
+                .k = 0 }),
         clustering::invalid_k);
 }
 
@@ -157,19 +144,13 @@ protected:
 
     static constexpr auto defualt_mst_finder = clustering::prim_mst_id;
 
-    static constexpr auto default_k = 1;
+    static constexpr auto default_k = 3;
 
-    static constexpr auto default_snn_threshold = 99;
+    static constexpr auto default_snn_threshold = 3;
 
     static constexpr auto weight = 10;
 
-    clustering::backend_config cfg { .clusterers = clustering::all_clusterers(),
-                                     .mst_finders
-                                     = clustering::all_mst_finders(),
-                                     .clusterer = to_id(defualt_clusterer),
-                                     .mst_finder = to_id(defualt_mst_finder),
-                                     .k = default_k,
-                                     .snn_threshold = default_snn_threshold };
+    clustering::backend_config cfg = clustering::default_backend_config();
 
     graph g;
     std::unique_ptr< backend_t > backend;
@@ -486,3 +467,5 @@ TEST_F(given_a_clustering_backend, updating_snn_clustering_details_use_case)
 }
 
 } // namespace clustering
+
+#pragma GCC diagnostic pop

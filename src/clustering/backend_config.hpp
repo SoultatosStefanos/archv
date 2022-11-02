@@ -39,6 +39,8 @@ struct backend_config
  * Utilities                                               *
  ***********************************************************/
 
+auto default_backend_config() -> backend_config;
+
 auto are_clusterers_plugged_in(const backend_config& cfg) -> bool;
 auto are_mst_finders_plugged_in(const backend_config& cfg) -> bool;
 

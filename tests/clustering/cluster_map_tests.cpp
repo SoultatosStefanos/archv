@@ -37,14 +37,7 @@ inline auto make_graph()
 class a_clustering_property_map : public Test
 {
 protected:
-    clustering::backend_config cfg {
-        .clusterers = clustering::all_clusterers(),
-        .mst_finders = clustering::all_mst_finders(),
-        .clusterer = std::string(clustering::k_spanning_tree_clusterer_id),
-        .mst_finder = std::string(clustering::kruskal_mst_id),
-        .k = 3,
-        .snn_threshold = 2
-    };
+    clustering::backend_config cfg = clustering::default_backend_config();
 
     graph g = make_graph();
     std::unique_ptr< backend_t > backend;

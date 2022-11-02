@@ -30,10 +30,7 @@ constexpr auto layout_type = layout::gursoy_atun_id;
 constexpr auto topology_type = layout::cube_id;
 constexpr auto scale = 100;
 
-constexpr auto clusterer_type = clustering::k_spanning_tree_clusterer_id;
-constexpr auto mst_finder_type = clustering::prim_mst_id;
-constexpr auto k = 100;
-constexpr auto snn_thres = 23;
+constexpr auto clusterer_type = clustering::strong_components_clusterer_id;
 
 inline auto make_structure(std::string id)
 {
@@ -81,12 +78,7 @@ inline auto make_scaling_cfg()
 
 inline auto make_clustering_cfg()
 {
-    return clustering_config_t { clustering::all_clusterers(),
-                                 clustering::all_mst_finders(),
-                                 std::string(clusterer_type),
-                                 std::string(mst_finder_type),
-                                 k,
-                                 snn_thres };
+    return clustering::default_backend_config();
 }
 
 class a_graph_interface : public Test
@@ -149,6 +141,17 @@ TEST_F(a_graph_interface, can_be_queried_for_vertex_scale)
     ASSERT_EQ(
         boost::get(iface->vertex_scale(), v1),
         scaling::make_scale(0, 0, 0)); // 0 fields
+}
+
+TEST_F(a_graph_interface, can_be_queried_for_vertex_clusters)
+{
+    clustering::update_clusters(iface->clustering_backend());
+    const auto& clusters = iface->clustering_backend().get_clusters();
+    const auto map = iface->vertex_cluster();
+
+    for (auto v :
+         boost::make_iterator_range(boost::vertices(iface->get_graph())))
+        ASSERT_EQ(boost::get(map, v), clusters.at(v));
 }
 
 TEST_F(a_graph_interface, can_be_queried_for_edge_dependencies)

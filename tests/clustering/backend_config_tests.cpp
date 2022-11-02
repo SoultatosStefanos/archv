@@ -1,3 +1,6 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 #include "clustering/backend_config.hpp"
 #include "clustering/plugin.hpp"
 
@@ -14,13 +17,13 @@ TEST(
     clustering_backend_config_tests,
     clusterers_are_plugged_in_if_empty_clusterers)
 {
-    ASSERT_TRUE(clustering::are_clusterers_plugged_in(
-        clustering::backend_config { .clusterers = {},
-                                     .mst_finders = {},
-                                     .clusterer = "",
-                                     .mst_finder = "",
-                                     .k = 1,
-                                     .snn_threshold = 9 }));
+    ASSERT_TRUE(
+        clustering::are_clusterers_plugged_in(clustering::backend_config {
+            .clusterers = {},
+            .mst_finders = {},
+            .clusterer = "",
+            .mst_finder = "",
+        }));
 }
 
 TEST(
@@ -33,21 +36,20 @@ TEST(
             .mst_finders = {},
             .clusterer = "",
             .mst_finder = "",
-            .k = 1,
-            .snn_threshold = 9 }));
+        }));
 }
 
 TEST(
     clustering_backend_config_tests,
     clusterers_are_not_plugged_in_if_given_invalid_clusterers)
 {
-    ASSERT_FALSE(clustering::are_clusterers_plugged_in(
-        clustering::backend_config { .clusterers = { "Bob" },
-                                     .mst_finders = {},
-                                     .clusterer = "",
-                                     .mst_finder = "",
-                                     .k = 1,
-                                     .snn_threshold = 9 }));
+    ASSERT_FALSE(
+        clustering::are_clusterers_plugged_in(clustering::backend_config {
+            .clusterers = { "Bob" },
+            .mst_finders = {},
+            .clusterer = "",
+            .mst_finder = "",
+        }));
 }
 
 TEST(
@@ -61,21 +63,20 @@ TEST(
             .mst_finders = {},
             .clusterer = "",
             .mst_finder = "",
-            .k = 1,
-            .snn_threshold = 9 }));
+        }));
 }
 
 TEST(
     clustering_backend_config_tests,
     mst_finders_are_plugged_in_if_empty_finders)
 {
-    ASSERT_TRUE(clustering::are_mst_finders_plugged_in(
-        clustering::backend_config { .clusterers = {},
-                                     .mst_finders = {},
-                                     .clusterer = "",
-                                     .mst_finder = "",
-                                     .k = 1,
-                                     .snn_threshold = 9 }));
+    ASSERT_TRUE(
+        clustering::are_mst_finders_plugged_in(clustering::backend_config {
+            .clusterers = {},
+            .mst_finders = {},
+            .clusterer = "",
+            .mst_finder = "",
+        }));
 }
 
 TEST(
@@ -89,21 +90,20 @@ TEST(
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
             .mst_finder = "",
-            .k = 1,
-            .snn_threshold = 9 }));
+        }));
 }
 
 TEST(
     clustering_backend_config_tests,
     mst_finders_are_not_plugged_in_if_given_invalid_finders)
 {
-    ASSERT_FALSE(clustering::are_mst_finders_plugged_in(
-        clustering::backend_config { .clusterers = {},
-                                     .mst_finders = { "Bob" },
-                                     .clusterer = "",
-                                     .mst_finder = "",
-                                     .k = 1,
-                                     .snn_threshold = 9 }));
+    ASSERT_FALSE(
+        clustering::are_mst_finders_plugged_in(clustering::backend_config {
+            .clusterers = {},
+            .mst_finders = { "Bob" },
+            .clusterer = "",
+            .mst_finder = "",
+        }));
 }
 
 TEST(
@@ -118,18 +118,17 @@ TEST(
                              id_t(clustering::prim_mst_id) },
             .clusterer = "",
             .mst_finder = "",
-            .k = 1,
-            .snn_threshold = 9 }));
+        }));
 }
 
 TEST(clustering_backend_config_tests, clusterer_from_config_is_listed)
 {
-    const auto cfg = clustering::backend_config { .clusterers = { "Bob" },
-                                                  .mst_finders = {},
-                                                  .clusterer = "Bob",
-                                                  .mst_finder = "",
-                                                  .k = 1,
-                                                  .snn_threshold = 9 };
+    const auto cfg = clustering::backend_config {
+        .clusterers = { "Bob" },
+        .mst_finders = {},
+        .clusterer = "Bob",
+        .mst_finder = "",
+    };
 
     ASSERT_TRUE(clustering::is_clusterer_listed(cfg));
 }
@@ -141,8 +140,6 @@ TEST(clustering_backend_config_tests, clusterer_outside_config_is_not_listed)
         .mst_finders = {},
         .clusterer = id_t(clustering::k_spanning_tree_clusterer_id),
         .mst_finder = "",
-        .k = 1,
-        .snn_threshold = 9
     };
 
     ASSERT_FALSE(clustering::is_clusterer_listed(cfg));
@@ -150,27 +147,28 @@ TEST(clustering_backend_config_tests, clusterer_outside_config_is_not_listed)
 
 TEST(clustering_backend_config_tests, mst_finder_from_config_is_listed)
 {
-    const auto cfg = clustering::backend_config { .clusterers = {},
-                                                  .mst_finders = { "Bob" },
-                                                  .clusterer = "",
-                                                  .mst_finder = "Bob",
-                                                  .k = 1,
-                                                  .snn_threshold = 9 };
+    const auto cfg = clustering::backend_config {
+        .clusterers = {},
+        .mst_finders = { "Bob" },
+        .clusterer = "",
+        .mst_finder = "Bob",
+    };
 
     ASSERT_TRUE(clustering::is_mst_finder_listed(cfg));
 }
 
 TEST(clustering_backend_config_tests, mst_finder_outside_config_is_not_listed)
 {
-    const auto cfg = clustering::backend_config { .clusterers = {},
-                                                  .mst_finders = { "Bob" },
-                                                  .clusterer = "",
-                                                  .mst_finder = id_t(
-                                                      clustering::prim_mst_id),
-                                                  .k = 1,
-                                                  .snn_threshold = 9 };
+    const auto cfg = clustering::backend_config {
+        .clusterers = {},
+        .mst_finders = { "Bob" },
+        .clusterer = "",
+        .mst_finder = id_t(clustering::prim_mst_id),
+    };
 
     ASSERT_FALSE(clustering::is_mst_finder_listed(cfg));
 }
 
 } // namespace
+
+#pragma GCC diagnostic pop
