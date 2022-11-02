@@ -80,7 +80,16 @@ protected:
     auto emit_applied() const -> void;
     auto emit_restore() const -> void;
 
+    auto render() const -> void;
+
 private:
+    auto render_clusterer_editor() const -> void;
+    auto render_mst_finder_editor() const -> void;
+    auto render_k_editor() const -> void;
+    auto render_snn_thres_editor() const -> void;
+    auto render_applied_selector() const -> void;
+    auto render_restore_button() const -> void;
+
     clusterer_signal m_clusterer_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_signal;
