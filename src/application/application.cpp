@@ -150,12 +150,6 @@ auto application::setup_graph_renderer() -> void
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
 
-#if (0) // FIXME
-    clustering::update_clusters(m_graph_iface->clustering_backend());
-    m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
-    m_graph_renderer->hide_clusters();
-#endif
-
     BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
 }
 
@@ -176,13 +170,16 @@ namespace // gui setup
     inline auto install_gui_plugins(
         const weights::config_data& wcfg,
         const layout::config_data& lcf,
-        const scaling::config_data& scfg)
+        const scaling::config_data& scfg,
+        const clustering::config_data& ccfg)
     {
         using std::ranges::views::keys;
         gui::plugins::install_dependencies(to_plugin_set(keys(wcfg)));
         gui::plugins::install_layouts(to_plugin_set(lcf.layouts));
         gui::plugins::install_topologies(to_plugin_set(lcf.topologies));
         gui::plugins::install_factors(to_plugin_set(keys(scfg)));
+        gui::plugins::install_clusterers(to_plugin_set(ccfg.clusterers));
+        gui::plugins::install_mst_finders(to_plugin_set(ccfg.mst_finders));
     }
 
     inline auto from_archv_group(const Ogre::ResourcePtr& ptr)
@@ -287,7 +284,11 @@ namespace // gui setup
 
 auto application::setup_gui() -> void
 {
-    install_gui_plugins(m_weights_config, m_layout_config, m_scaling_config);
+    install_gui_plugins(
+        m_weights_config,
+        m_layout_config,
+        m_scaling_config,
+        m_clustering_config);
     load_gui_resources();
 
     setup_gui_overlay();
