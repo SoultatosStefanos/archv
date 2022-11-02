@@ -618,10 +618,16 @@
 
 # 01 / 11 / 2022
 
-	+ [ ] Integrate the rest of the clusterers
+	+ [x] Integrate the rest of the clusterers
 
 		+ [x] Strong Components
+
+
+# 02 / 11 / 2022
+
+	+ [ ] Integrate the rest of the clusterers
 
 		+ [ ] Maximal Clique Enumeration
 
 	+ [ ] GUI Configurable clusterers
+	

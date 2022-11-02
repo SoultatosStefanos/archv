@@ -5,6 +5,7 @@ set(FILES
 	clusterer_builder_tests.cpp
 	config_tests.cpp
 	k_spanning_tree_clustering_tests.cpp
+	maximal_clique_enumeration_clustering_tests.cpp
 	min_spanning_tree_finder_factory_tests.cpp
 	plugin_tests.cpp
 	shared_nearest_neighbour_clustering_tests.cpp

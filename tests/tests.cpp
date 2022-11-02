@@ -4,16 +4,23 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-static void init_logging()
+static void init_logging(bool enabled)
 {
     namespace logging = boost::log;
 
-    logging::core::get()->set_logging_enabled(false);
+    logging::core::get()->set_logging_enabled(enabled);
 }
 
 auto main(int argc, char* argv[]) -> int
 {
-    init_logging();
+    bool log = false;
+
+    if (argc == 2 && std::string_view(argv[1]) == "log")
+    {
+        log = true;
+    }
+
+    init_logging(log);
 
     ::testing::InitGoogleTest(&argc, argv);
 
