@@ -12,7 +12,6 @@
 namespace gui
 {
 
-// TODO
 class clustering_editor
 {
 public:
@@ -57,12 +56,12 @@ public:
     auto set_k(k_accessor f) -> void;
     auto set_snn_thres(snn_thres_accessor f) -> void;
 
-    auto connect_to_clusterer(const clustererer_slot& f) -> void;
-    auto connect_to_mst_finder(const mst_finder_slot& f) -> void;
-    auto connect_to_k(const k_slot& f) -> void;
-    auto connect_to_snn_thres(const snn_thres_slot& f) -> void;
-    auto connect_to_applied(const applied_slot& f) -> void;
-    auto connect_to_restore(const restore_slot& f) -> void;
+    auto connect_to_clusterer(const clustererer_slot& f) -> connection;
+    auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
+    auto connect_to_k(const k_slot& f) -> connection;
+    auto connect_to_snn_thres(const snn_thres_slot& f) -> connection;
+    auto connect_to_applied(const applied_slot& f) -> connection;
+    auto connect_to_restore(const restore_slot& f) -> connection;
 
 protected:
     using render_vector = std::vector< const char* >;
@@ -84,15 +83,18 @@ protected:
 
 private:
     auto render_clusterer_editor() const -> void;
-    auto render_mst_finder_editor() const -> void;
-    auto render_k_editor() const -> void;
-    auto render_snn_thres_editor() const -> void;
+    auto render_settings_for_nerds_button() const -> void;
     auto render_applied_selector() const -> void;
     auto render_restore_button() const -> void;
 
+    auto render_settings_for_nerds() const -> void;
+    auto render_mst_finder_editor() const -> void;
+    auto render_k_editor() const -> void;
+    auto render_snn_thres_editor() const -> void;
+
     clusterer_signal m_clusterer_sig;
     mst_finder_signal m_mst_finder_sig;
-    k_signal m_k_signal;
+    k_signal m_k_sig;
     snn_thres_signal m_snn_thres_sig;
     applied_signal m_applied_sig;
     restore_signal m_restore_sig;

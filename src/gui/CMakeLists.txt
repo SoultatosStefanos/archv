@@ -1,5 +1,6 @@
 set(FILES
 	background_configurator.cpp
+	clustering_editor.cpp
 	config.cpp
 	degrees_editor.cpp
 	graph_configurator.cpp
