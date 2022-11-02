@@ -18,6 +18,10 @@ namespace clustering
  * Kruskal Minimum Spanning Tree                           *
  ***********************************************************/
 
+// Kruskal mst algorithm.
+// Implementation details:
+// see
+// https://www.boost.org/doc/libs/1_66_0/libs/graph/doc/kruskal_min_spanning_tree.html
 template < typename Graph, typename WeightMap >
 class kruskal_min_spanning_tree
 : public min_spanning_tree_finder< Graph, WeightMap >

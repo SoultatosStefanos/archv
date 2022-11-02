@@ -17,6 +17,10 @@ namespace clustering
  * Prim Minimum Spanning Tree                              *
  ***********************************************************/
 
+// Prim mst algorithm.
+// Implementation details:
+// see
+// https://www.boost.org/doc/libs/1_53_0/libs/graph/doc/prim_minimum_spanning_tree.html
 template < typename Graph, typename WeightMap >
 class prim_min_spanning_tree
 : public min_spanning_tree_finder< Graph, WeightMap >

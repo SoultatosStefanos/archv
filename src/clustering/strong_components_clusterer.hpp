@@ -16,6 +16,10 @@ namespace clustering
  * Strong Components Clusterer                             *
  ***********************************************************/
 
+// Strongly connected components clustering algorithm.
+// Implementation details:
+// see
+// https://www.boost.org/doc/libs/1_64_0/libs/graph/doc/strong_components.html
 template < typename Graph >
 class strong_components_clusterer : public clusterer< Graph >
 {
