@@ -1058,10 +1058,31 @@ auto application::connect_clustering_presentation() -> void
         });
 
     backend.connect_to_clusters(
-        [this](const auto&)
+        [this](const auto& map)
         {
             m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
             BOOST_LOG_TRIVIAL(info) << "rendered clusters";
+        });
+
+    backend.connect_to_k(
+        [this, &backend](auto)
+        {
+            auto id = clustering::get_clusterer_id(backend);
+            clustering::update_clusterer(backend, id);
+        });
+
+    backend.connect_to_mst_finder(
+        [this, &backend](const auto&)
+        {
+            auto id = clustering::get_clusterer_id(backend);
+            clustering::update_clusterer(backend, id);
+        });
+
+    backend.connect_to_snn_threshold(
+        [this, &backend](auto)
+        {
+            auto id = clustering::get_clusterer_id(backend);
+            clustering::update_clusterer(backend, id);
         });
 
     BOOST_LOG_TRIVIAL(debug) << "connected clustering presentation";
