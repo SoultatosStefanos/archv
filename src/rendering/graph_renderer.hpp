@@ -511,6 +511,11 @@ inline auto graph_renderer<
                     boost::get(vertex_id(), trgt),
                     boost::get(edge_dependency(), e),
                     get_cluster_color_coder()(boost::get(vertex_cluster, src)));
+            else // in case of rendered cluster
+                m_edge_renderer.hide_cluster(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
         });
 }
 
