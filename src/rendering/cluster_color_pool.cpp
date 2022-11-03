@@ -194,7 +194,6 @@ namespace
 
 auto cluster_color_pool::operator()(cluster c) const -> rgba_type
 {
-    assert(c >= 0);
     return rgbas()[c % hexes.size()];
 }
 

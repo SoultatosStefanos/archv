@@ -98,6 +98,14 @@
 
 ## User input sanitizing
 
+# GUI
+
+## Features
+
+	+ [ ] Helpers with question marks
+
+	+ [ ] Mini Map
+
 	
 # 08 / 07 / 2022
 
@@ -636,5 +644,5 @@
 
 	+ [x] Clustering GUI Commands
 
-	+ [ ] Clustering GUI Connections
+	+ [x] Clustering GUI Connections
 	

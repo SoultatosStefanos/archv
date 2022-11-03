@@ -88,6 +88,7 @@ auto application::setup() -> void
     connect_layout_presentation();
     connect_scaling_presentation();
     connect_degrees_presentation();
+    connect_clustering_presentation();
     connect_background_presentation();
     connect_graph_presentation();
     connect_gui_presentation();
@@ -997,6 +998,73 @@ auto application::connect_degrees_presentation() -> void
         });
 
     BOOST_LOG_TRIVIAL(debug) << "connected degrees presentation";
+}
+
+auto application::connect_clustering_presentation() -> void
+{
+    assert(m_graph_renderer);
+    assert(m_graph_iface);
+
+    auto& backend = m_graph_iface->clustering_backend();
+    auto& editor = m_gui->get_clustering_editor();
+
+    editor.connect_to_cluster(
+        [this, &backend]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected cluster";
+            clustering::update_clusters(backend);
+        });
+
+    editor.connect_to_hide(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected hide clusters";
+            m_graph_renderer->hide_clusters();
+        });
+
+    editor.connect_to_clusterer(
+        [this, &backend](auto id)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clusterer: " << id;
+            commands::update_clusterer(*m_cmds, backend, id);
+        });
+
+    editor.connect_to_mst_finder(
+        [this, &backend](auto id)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected mst finder: " << id;
+            commands::update_clustering_mst_finder(*m_cmds, backend, id);
+        });
+
+    editor.connect_to_k(
+        [this, &backend](auto k)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering k: " << k;
+            commands::update_clustering_k(*m_cmds, backend, k);
+        });
+
+    editor.connect_to_snn_thres(
+        [this, &backend](auto t)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering snn t " << t;
+            commands::update_clustering_snn_threshold(*m_cmds, backend, t);
+        });
+
+    editor.connect_to_restore(
+        [this, &backend]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering restore";
+            commands::restore_clustering(*m_cmds, backend);
+        });
+
+    backend.connect_to_clusters(
+        [this](const auto&)
+        {
+            m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
+            BOOST_LOG_TRIVIAL(info) << "rendered clusters";
+        });
+
+    BOOST_LOG_TRIVIAL(debug) << "connected clustering presentation";
 }
 
 auto application::connect_background_presentation() -> void

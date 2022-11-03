@@ -13,7 +13,7 @@ namespace rendering
 // NOTE: Currently stateless, uses 1024 distinct different color values.
 struct cluster_color_pool
 {
-    using cluster = int;
+    using cluster = unsigned long long;
     using rgba_type = Ogre::ColourValue;
 
     auto operator()(cluster c) const -> rgba_type;
