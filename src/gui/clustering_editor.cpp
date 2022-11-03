@@ -46,11 +46,6 @@ auto clustering_editor::snn_thres() const -> snn_thres_type
     return m_snn_thres();
 }
 
-auto clustering_editor::applied() const -> applied_type
-{
-    return m_applied;
-}
-
 auto clustering_editor::set_clusterer(clusterer_accessor f) -> void
 {
     assert(f);
@@ -98,9 +93,14 @@ auto clustering_editor::connect_to_snn_thres(const snn_thres_slot& f)
     return m_snn_thres_sig.connect(f);
 }
 
-auto clustering_editor::connect_to_applied(const applied_slot& f) -> connection
+auto clustering_editor::connect_to_cluster(const cluster_slot& f) -> connection
 {
-    return m_applied_sig.connect(f);
+    return m_cluster_sig.connect(f);
+}
+
+auto clustering_editor::connect_to_hide(const hide_slot& f) -> connection
+{
+    return m_hide_sig.connect(f);
 }
 
 auto clustering_editor::connect_to_restore(const restore_slot& f) -> connection
@@ -128,9 +128,14 @@ auto clustering_editor::emit_snn_thres(snn_thres_type t) const -> void
     m_snn_thres_sig(t);
 }
 
-auto clustering_editor::emit_applied() const -> void
+auto clustering_editor::emit_cluster() const -> void
 {
-    m_applied_sig(applied());
+    m_cluster_sig();
+}
+
+auto clustering_editor::emit_hide() const -> void
+{
+    m_hide_sig();
 }
 
 auto clustering_editor::emit_restore() const -> void
@@ -160,14 +165,18 @@ namespace
 auto clustering_editor::render() const -> void
 {
     render_clusterer_editor();
+    spaced_separator();
     ImGui::Spacing();
     ImGui::Spacing();
     ImGui::Spacing();
-    render_applied_selector();
+    render_cluster_button();
     ImGui::Spacing();
+    render_hide_button();
     ImGui::Spacing();
     render_settings_for_nerds_button();
     render_settings_for_nerds();
+    ImGui::Spacing();
+    ImGui::Spacing();
     ImGui::Spacing();
     render_restore_button();
 }
@@ -191,10 +200,16 @@ auto clustering_editor::render_settings_for_nerds_button() const -> void
         ImGui::OpenPopup("settings_for_nerds_popup##clustering");
 }
 
-auto clustering_editor::render_applied_selector() const -> void
+auto clustering_editor::render_cluster_button() const -> void
 {
-    if (ImGui::Checkbox("Applied##clustering", &m_applied))
-        emit_applied();
+    if (ImGui::Button("Cluster##clustering"))
+        emit_cluster();
+}
+
+auto clustering_editor::render_hide_button() const -> void
+{
+    if (ImGui::Button("Hide Clusters##clustering"))
+        emit_hide();
 }
 
 auto clustering_editor::render_restore_button() const -> void
