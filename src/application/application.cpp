@@ -1058,7 +1058,7 @@ auto application::connect_clustering_presentation() -> void
         });
 
     backend.connect_to_clusters(
-        [this](const auto& map)
+        [this](const auto&)
         {
             m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
             BOOST_LOG_TRIVIAL(info) << "rendered clusters";
