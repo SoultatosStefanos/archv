@@ -37,14 +37,21 @@ public:
 
     using dependency_type = weights_backend_type::dependency_type;
     using weight_type = weights_backend_type::weight_type;
+
     using layout_id_type = layout_backend_type::id_type;
     using topology_id_type = layout_backend_type::id_type;
+
     using scale_type = layout_backend_type::scale_type;
     using scaling_tag_type = scaling_backend_type::tag_type;
     using scaling_baseline_type = scaling_backend_type::baseline_type;
     using scaling_dims_type = scaling_backend_type::dims_type;
     using scaling_enabled_type = scaling_backend_type::enabled_type;
     using scaling_ratio_type = scaling_backend_type::ratio_type;
+
+    using clusterer_id_type = clustering_backend_type::id_type;
+    using mst_finder_id_type = clustering_backend_type::id_type;
+    using k_type = clustering_backend_type::k_type;
+    using snn_thres_type = clustering_backend_type::snn_threshold_type;
 
     graph_interface(
         symbol_table st,

@@ -6,6 +6,7 @@
 #define APPLICATION_COMMANDS_HPP
 
 #include "architecture/graph_interface.hpp"
+#include "clustering/backend.hpp"
 #include "rendering/degrees_ranked_backend.hpp"
 #include "scaling/backend.hpp"
 #include "undo_redo/allfwd.hpp"
@@ -169,6 +170,34 @@ auto restore_in_degree_evaluation(
 auto restore_out_degree_evaluation(
     undo_redo::command_history& cmds,
     rendering::degrees_ranked_backend& backend) -> void;
+
+/***********************************************************
+ * Clustering                                              *
+ ***********************************************************/
+
+auto update_clusterer(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::clusterer_id_type id) -> void;
+
+auto update_clustering_mst_finder(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::mst_finder_id_type id) -> void;
+
+auto update_clustering_k(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::k_type k) -> void;
+
+auto update_clustering_snn_threshold(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::snn_thres_type t) -> void;
+
+auto restore_clustering(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend) -> void;
 
 } // namespace application::commands
 

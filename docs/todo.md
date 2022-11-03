@@ -634,7 +634,7 @@
 
 # 03 / 11 / 2022
 
-	+ [ ] Clustering GUI Commands
+	+ [x] Clustering GUI Commands
 
 	+ [ ] Clustering GUI Connections
 	

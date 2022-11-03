@@ -1285,4 +1285,202 @@ auto restore_out_degree_evaluation(
         std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));
 }
 
+/***********************************************************
+ * Clustering                                              *
+ ***********************************************************/
+
+namespace
+{
+    struct update_clusterer_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using id_type = graph_interface::clusterer_id_type;
+
+        backend_type& backend;
+        id_type new_id, old_id;
+
+        update_clusterer_cmd(backend_type& b, id_type id)
+        : backend { b }, new_id { id }
+        {
+        }
+        ~update_clusterer_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_id = clustering::get_clusterer_id(backend);
+            clustering::update_clusterer(backend, new_id);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_clusterer(backend, old_id);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_mst_finder_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using id_type = graph_interface::mst_finder_id_type;
+
+        backend_type& backend;
+        id_type new_id, old_id;
+
+        update_mst_finder_cmd(backend_type& b, id_type id)
+        : backend { b }, new_id { id }
+        {
+        }
+        ~update_mst_finder_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_id = clustering::get_mst_finder_id(backend);
+            clustering::update_mst_finder(backend, new_id);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_mst_finder(backend, old_id);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_clustering_k_cmd : public undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using k_type = graph_interface::k_type;
+
+        backend_type& backend;
+        k_type new_k, old_k;
+
+        update_clustering_k_cmd(backend_type& b, k_type k)
+        : backend { b }, new_k { k }
+        {
+        }
+        ~update_clustering_k_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_k = clustering::get_k(backend);
+            clustering::update_k(backend, new_k);
+        }
+
+        auto undo() -> void override { clustering::update_k(backend, old_k); }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_clustering_snn_t_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using snn_t_type = graph_interface::snn_thres_type;
+
+        backend_type& backend;
+        snn_t_type new_thres, old_thres;
+
+        update_clustering_snn_t_cmd(backend_type& b, snn_t_type t)
+        : backend { b }, new_thres { t }
+        {
+        }
+        ~update_clustering_snn_t_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_thres = clustering::get_snn_threshold(backend);
+            clustering::update_snn_threshold(backend, new_thres);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_snn_threshold(backend, old_thres);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct restore_clustering_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using clusterer_id_type = graph_interface::clusterer_id_type;
+        using mst_finder_id_type = graph_interface::mst_finder_id_type;
+        using k_type = graph_interface::k_type;
+        using snn_t_type = graph_interface::snn_thres_type;
+
+        backend_type& backend;
+        clusterer_id_type clusterer_id;
+        mst_finder_id_type mst_finder_id;
+        k_type k;
+        snn_t_type t;
+
+        explicit restore_clustering_cmd(backend_type& b) : backend { b } { }
+        ~restore_clustering_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            clusterer_id = clustering::get_clusterer_id(backend);
+            mst_finder_id = clustering::get_mst_finder_id(backend);
+            k = clustering::get_k(backend);
+            t = clustering::get_snn_threshold(backend);
+            clustering::restore_defaults(backend);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_clusterer(backend, clusterer_id);
+            clustering::update_mst_finder(backend, mst_finder_id);
+            clustering::update_k(backend, k);
+            clustering::update_snn_threshold(backend, t);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+} // namespace
+
+auto update_clusterer(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::clusterer_id_type id) -> void
+{
+    cmds.execute(std::make_unique< update_clusterer_cmd >(backend, id));
+}
+
+auto update_clustering_mst_finder(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::mst_finder_id_type id) -> void
+{
+    cmds.execute(std::make_unique< update_mst_finder_cmd >(backend, id));
+}
+
+auto update_clustering_k(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::k_type k) -> void
+{
+    cmds.execute(std::make_unique< update_clustering_k_cmd >(backend, k));
+}
+
+auto update_clustering_snn_threshold(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::snn_thres_type t) -> void
+{
+    cmds.execute(std::make_unique< update_clustering_snn_t_cmd >(backend, t));
+}
+
+auto restore_clustering(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend) -> void
+{
+    cmds.execute(std::make_unique< restore_clustering_cmd >(backend));
+}
+
 } // namespace application::commands
