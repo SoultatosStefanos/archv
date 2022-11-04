@@ -1,8 +1,10 @@
 #include "application.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "archive.hpp"
 #include "commands.hpp"
 #include "config.hpp"
+#include "misc/all.hpp"
 #include "ui/all.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
@@ -273,9 +275,32 @@ namespace // gui setup
         load_gui_particles();
     }
 
+    auto prepare_font_icons() -> void
+    {
+        using misc::resolve_source_path;
+
+        assert(ImGui::GetCurrentContext());
+
+        auto& io = ImGui::GetIO();
+        io.Fonts->AddFontDefault();
+
+        static const ImWchar ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+        ImFontConfig config;
+        config.MergeMode = true;
+        config.PixelSnapH = true;
+
+        const auto fonts = resolve_source_path("../../data/fonts/").string();
+        const auto fas = fonts + FONT_ICON_FILE_NAME_FAS;
+        const auto far = fonts + FONT_ICON_FILE_NAME_FAR;
+
+        io.Fonts->AddFontFromFileTTF(fas.c_str(), 16.0f, &config, ranges);
+        io.Fonts->AddFontFromFileTTF(far.c_str(), 16.0f, &config, ranges);
+    }
+
     inline auto setup_gui_overlay()
     {
         auto* imgui = new Ogre::ImGuiOverlay();
+        prepare_font_icons();
         imgui->show();
         assert(imgui->isInitialised());
         // takes ownership

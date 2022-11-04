@@ -4,7 +4,6 @@
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 #include <ranges>
 
 namespace gui
@@ -42,7 +41,8 @@ auto weights_editor::render_dependencies() const -> void
 
         if (ImGui::InputText(
                 dependency,
-                &w_str,
+                w_str.data(),
+                w_str.capacity() + 1,
                 ImGuiInputTextFlags_CharsDecimal
                     | ImGuiInputTextFlags_EnterReturnsTrue))
         {

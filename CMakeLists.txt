@@ -19,7 +19,7 @@ endif()
 
 add_library(${PROJECT_LIB})
 
-set(SUBDIRECTORIES src tests)
+set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
@@ -28,8 +28,10 @@ endforeach()
 # provide config path
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="/home/stef/Documents/Projects/archv/data/config")
 
+set(ICON_FONT_INCLUDE_DIR external/IconFontCppHeaders)
+
 # make the src/ directory visible for include directives
-target_include_directories(${PROJECT_LIB} PUBLIC src)
+target_include_directories(${PROJECT_LIB} PUBLIC src ${ICON_FONT_INCLUDE_DIR})
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
@@ -44,7 +46,6 @@ find_package(OgreProcedural REQUIRED)
 # define 3rd party targets
 set(BOOST_LIBRARIES ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 set(JSONCPP_LIBRARIES libjsoncpp.so)
-set(IMGUI_LIBRARIES libimgui.a)
 set(STB_LIBRARIES libstb.so)
 set(SDL2_LIBRARIES libSDL2.so)
 set(OGRE_PROCEDURAL_LIBRARIES ${OgreProcedural_LIBRARIES})
@@ -55,7 +56,6 @@ set(THIRD_PARTY_LIBRARIES
   ${OGRE_LIBRARIES}
   ${BOOST_LIBRARIES}
   ${SDL2_LIBRARIES}
-  ${IMGUI_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${FREETYPE_LIBRARIES}
   ${STB_LIBRARIES}
@@ -65,12 +65,10 @@ set(THIRD_PARTY_LIBRARIES
 # link 3rd party libraries
 target_link_libraries(${PROJECT_LIB} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
-set(IMGUI_INCLUDE_DIR "/usr/include/imgui")
 set(OGRE_PROCEDURAL_INCLUDE_DIR ${OgreProcedural_INCLUDE_DIRS})
 
 # define 3rd include directories
 set(THIRD_PARTY_INCLUDE_DIRS
-  ${IMGUI_INCLUDE_DIR}
   ${OGRE_PROCEDURAL_INCLUDE_DIR}
 )
 

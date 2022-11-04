@@ -4,7 +4,6 @@
 #include "plugins.hpp"
 
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 #include <ranges>
 
 namespace gui
