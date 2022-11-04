@@ -297,6 +297,9 @@ namespace // gui setup
         io.Fonts->AddFontFromFileTTF(far.c_str(), 16.0f, &config, ranges);
     }
 
+    // Named by Ogre Overlay component.
+    constexpr auto imgui_overlay_name = "ImGuiOverlay";
+
     inline auto setup_gui_overlay()
     {
         auto* imgui = new Ogre::ImGuiOverlay();
@@ -403,6 +406,7 @@ auto application::shutdown_input() -> void
 auto application::shutdown_gui() -> void
 {
     m_gui.reset();
+    Ogre::OverlayManager::getSingleton().destroy(imgui_overlay_name);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
 }
