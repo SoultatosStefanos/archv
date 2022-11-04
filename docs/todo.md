@@ -102,9 +102,11 @@
 
 ## Features
 
-	+ [ ] Helpers with question marks
+	+ [x] Helpers with question marks
 
 	+ [ ] Mini Map
+
+	+ [ ] More configurations (all of em)
 
 	
 # 08 / 07 / 2022
@@ -648,5 +650,5 @@
 
 	+ [x] GUI Help Markers
 
-	+ [ ] GUI Icons
+	+ [x] GUI Icons
 	

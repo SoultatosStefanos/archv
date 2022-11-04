@@ -1,5 +1,7 @@
 #include "utility.hpp"
 
+#include "IconsFontAwesome5.h"
+
 #include <imgui/imgui.h>
 
 namespace gui::detail
@@ -7,7 +9,7 @@ namespace gui::detail
 
 auto render_help_marker(std::string_view desc) -> void
 {
-    ImGui::TextDisabled("(?)");
+    ImGui::TextDisabled(ICON_FA_QUESTION_CIRCLE);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();

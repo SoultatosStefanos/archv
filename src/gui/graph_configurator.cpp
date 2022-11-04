@@ -1,5 +1,6 @@
 #include "graph_configurator.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
@@ -52,7 +53,7 @@ auto graph_configurator::render() const -> void
 
 auto graph_configurator::render_nodes_configurator() const -> void
 {
-    spaced_text("Nodes");
+    spaced_text(ICON_FA_CIRCLE " Nodes");
 
     render_node_mesh_selector();
     render_node_material_selector();
@@ -71,7 +72,7 @@ auto graph_configurator::render_nodes_caption_configurator() const -> void
 
 auto graph_configurator::render_edges_configurator() const -> void
 {
-    spaced_text("Edges");
+    spaced_text(ICON_FA_ARROW_RIGHT " Edges");
 
     render_edge_material_selector();
 

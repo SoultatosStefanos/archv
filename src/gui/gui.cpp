@@ -1,11 +1,11 @@
 #include "gui.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "resources.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <imgui/imgui.h>
-#include <imgui/imgui_stdlib.h>
 #include <memory>
 #include <string_view>
 
@@ -124,9 +124,9 @@ auto gui::render() const -> void
 // TODO
 auto gui::render_file_editor() const -> void
 {
-    if (ImGui::BeginMenu("File"))
+    if (ImGui::BeginMenu(ICON_FA_FILE " File"))
     {
-        if (ImGui::MenuItem("Quit", "Esc"))
+        if (ImGui::MenuItem(ICON_FA_WINDOW_CLOSE " Quit", "Esc"))
         {
         }
 
@@ -136,12 +136,12 @@ auto gui::render_file_editor() const -> void
 
 auto gui::render_editor() const -> void
 {
-    if (ImGui::BeginMenu("Edit"))
+    if (ImGui::BeginMenu(ICON_FA_PENCIL_ALT " Edit"))
     {
-        if (ImGui::MenuItem("Undo", "CTRL+Z", false, can_undo()))
+        if (ImGui::MenuItem(ICON_FA_UNDO " Undo", "CTRL+Z", false, can_undo()))
             emit_undo();
 
-        if (ImGui::MenuItem("Redo", "CTRL+Y", false, can_redo()))
+        if (ImGui::MenuItem(ICON_FA_REDO " Redo", "CTRL+Y", false, can_redo()))
             emit_redo();
 
         ImGui::Separator();
@@ -166,28 +166,28 @@ auto gui::render_editor() const -> void
 
     if (m_weights_open)
     {
-        ImGui::Begin("Weights Edit", &m_weights_open);
+        ImGui::Begin(ICON_FA_PENCIL_ALT " Weights Edit", &m_weights_open);
         get_weights_editor().render();
         ImGui::End();
     }
 
     if (m_layout_open)
     {
-        ImGui::Begin("Layout Edit", &m_layout_open);
+        ImGui::Begin(ICON_FA_PENCIL_ALT " Layout Edit", &m_layout_open);
         get_layout_editor().render();
         ImGui::End();
     }
 
     if (m_scaling_open)
     {
-        ImGui::Begin("Scaling Edit", &m_scaling_open);
+        ImGui::Begin(ICON_FA_PENCIL_ALT " Scaling Edit", &m_scaling_open);
         get_scaling_editor().render();
         ImGui::End();
     }
 
     if (m_degrees_open)
     {
-        ImGui::Begin("Degrees Edit", &m_degrees_open);
+        ImGui::Begin(ICON_FA_PENCIL_ALT " Degrees Edit", &m_degrees_open);
 
         if (ImGui::TreeNode("In-Degrees"))
         {
@@ -210,7 +210,7 @@ auto gui::render_editor() const -> void
 
     if (m_clustering_open)
     {
-        ImGui::Begin("Clustering Edit", &m_clustering_open);
+        ImGui::Begin(ICON_FA_PENCIL_ALT " Clustering Edit", &m_clustering_open);
         get_clustering_editor().render();
         ImGui::End();
     }
@@ -218,7 +218,7 @@ auto gui::render_editor() const -> void
 
 auto gui::render_configurator() const -> void
 {
-    if (ImGui::BeginMenu("Configuration"))
+    if (ImGui::BeginMenu(ICON_FA_TOOLS " Configuration"))
     {
         render_rendering_configurator();
         render_gui_configurator();
@@ -265,7 +265,7 @@ auto gui::render_gui_configurator() const -> void
 // TODO
 auto gui::render_helper() const -> void
 {
-    if (ImGui::BeginMenu("Help"))
+    if (ImGui::BeginMenu(ICON_FA_QUESTION " Help"))
     {
         ImGui::EndMenu();
     }

@@ -275,6 +275,7 @@ namespace // gui setup
         load_gui_particles();
     }
 
+    // TODO(?) Load from config?
     auto prepare_font_icons() -> void
     {
         using misc::resolve_source_path;
@@ -293,8 +294,8 @@ namespace // gui setup
         const auto fas = fonts + FONT_ICON_FILE_NAME_FAS;
         const auto far = fonts + FONT_ICON_FILE_NAME_FAR;
 
-        io.Fonts->AddFontFromFileTTF(fas.c_str(), 16.0f, &config, ranges);
-        io.Fonts->AddFontFromFileTTF(far.c_str(), 16.0f, &config, ranges);
+        io.Fonts->AddFontFromFileTTF(fas.c_str(), 12.0f, &config, ranges);
+        io.Fonts->AddFontFromFileTTF(far.c_str(), 12.0f, &config, ranges);
     }
 
     // Named by Ogre Overlay component.

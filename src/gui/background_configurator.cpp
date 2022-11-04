@@ -1,5 +1,6 @@
 #include "background_configurator.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
@@ -52,7 +53,7 @@ auto background_configurator::render() const -> void
 
 auto background_configurator::render_skybox_configurator() const -> void
 {
-    spaced_text("Skybox");
+    spaced_text(ICON_FA_CLOUD_SUN " Skybox");
 
     render_skybox_material_selector();
     render_skybox_distance_selector();
@@ -60,7 +61,7 @@ auto background_configurator::render_skybox_configurator() const -> void
 
 auto background_configurator::render_lighting_configurator() const -> void
 {
-    spaced_text("Lighting");
+    spaced_text(ICON_FA_LIGHTBULB " Lighting");
 
     render_ambient_color_selector();
     render_diffuse_color_selector();
@@ -69,7 +70,7 @@ auto background_configurator::render_lighting_configurator() const -> void
 
 auto background_configurator::render_camera_configurator() const -> void
 {
-    spaced_text("Camera");
+    spaced_text(ICON_FA_CAMERA " Camera");
 
     render_cam_far_clip_distance_selector();
     render_cam_near_clip_distance_selector();
