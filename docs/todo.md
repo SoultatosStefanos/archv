@@ -652,3 +652,8 @@
 
 	+ [x] GUI Icons
 	
+
+# 05 / 11 / 2022
+
+	+ [ ] Louvain Method
+
