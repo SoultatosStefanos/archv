@@ -1,49 +1,49 @@
 font Cousine-Regular
 {
 	type 		truetype
-	source 		Cousine-Regular.ttf
+	source 		cousine-regular.ttf
 	size 		150
 	resolution 	96
 }
 font Droid-Sans
 {
 	type 		truetype
-	source 		Droid-Sans.ttf
+	source 		droid-sans.ttf
 	size 		150
 	resolution 	96
 }
 font Fornire-Light
 {
 	type 		truetype
-	source 		Fornire-Light.ttf
+	source 		fornire-light.ttf
 	size 		150
 	resolution 	96
 }
 font Karla-Regular
 {
 	type 		truetype
-	source 		Karla-Regular.ttf
+	source 		karla-regular.ttf
 	size 		150
 	resolution 	96
 }
 font Proggy-Clean
 {
 	type 		truetype
-	source 		Proggy-Clean.ttf
+	source 		proggy-clean.ttf
 	size 		150
 	resolution 	96
 }
 font Proggy-Tiny
 {
 	type 		truetype
-	source 		Proggy-Tiny.ttf
+	source 		proggy-tiny.ttf
 	size 		150
 	resolution 	96
 }
 font Roboto-Medium
 {
 	type 		truetype
-	source 		Roboto-Medium.ttf
+	source 		roboto-medium.ttf
 	size 		100
 	resolution 	96
 }
