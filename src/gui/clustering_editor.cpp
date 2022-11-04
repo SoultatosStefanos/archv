@@ -1,5 +1,6 @@
 #include "clustering_editor.hpp"
 
+#include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
@@ -252,12 +253,10 @@ auto clustering_editor::render_k_editor() const -> void
     auto v = k();
 
     if (ImGui::InputInt(
-            "K (Number of clusters)##clustering",
-            &v,
-            1,
-            100,
-            ImGuiInputTextFlags_EnterReturnsTrue))
+            "K##clustering", &v, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
         emit_k(v);
+    ImGui::SameLine();
+    detail::render_help_marker("Number of clusters (k)");
 }
 
 auto clustering_editor::render_snn_thres_editor() const -> void
@@ -265,12 +264,10 @@ auto clustering_editor::render_snn_thres_editor() const -> void
     auto t = snn_thres();
 
     if (ImGui::InputInt(
-            "SNN Threshold (t)##clustering",
-            &t,
-            1,
-            100,
-            ImGuiInputTextFlags_EnterReturnsTrue))
+            "T##clustering", &t, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
         emit_snn_thres(t);
+    ImGui::SameLine();
+    detail::render_help_marker("SNN Threshold (t)");
 }
 
 } // namespace gui

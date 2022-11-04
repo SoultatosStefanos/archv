@@ -640,9 +640,13 @@
 	+ [x] GUI Configurable clusterers
 
 
-# 03 / 11 / 2022
+# 04 / 11 / 2022
 
 	+ [x] Clustering GUI Commands
 
 	+ [x] Clustering GUI Connections
+
+	+ [x] GUI Help Markers
+
+	+ [ ] GUI Icons
 	

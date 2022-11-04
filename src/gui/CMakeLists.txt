@@ -13,7 +13,7 @@ set(FILES
 	scaling_editor.cpp
 	weights_editor.cpp
 )
-set(SUBDIRECTORIES)
+set(SUBDIRECTORIES detail)
 
 foreach(VAR ${SUBDIRECTORIES})
 	add_subdirectory(${VAR})

@@ -1,5 +1,6 @@
 #include "background_configurator.hpp"
 
+#include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
 
@@ -94,18 +95,26 @@ auto background_configurator::render_ambient_color_selector() const -> void
 {
     if (ImGui::ColorEdit4("Ambient Color", m_ambient_col.data()))
         emit_ambient_color();
+    ImGui::SameLine();
+    detail::render_help_marker("Essentially indirect lighting");
 }
 
 auto background_configurator::render_diffuse_color_selector() const -> void
 {
     if (ImGui::ColorEdit4("Diffuse Color", m_diffuse_col.data()))
         emit_diffuse_color();
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "The color of the objects under pure white light");
 }
 
 auto background_configurator::render_specular_color_selector() const -> void
 {
     if (ImGui::ColorEdit4("Specular Color", m_specular_col.data()))
         emit_specular_color();
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "The reflected color of the object's highlights");
 }
 
 auto background_configurator::render_cam_far_clip_distance_selector() const
@@ -113,6 +122,8 @@ auto background_configurator::render_cam_far_clip_distance_selector() const
 {
     if (ImGui::InputFloat("Far Clip Distance", &m_cam_far_clip_distance, 1))
         emit_cam_far_clip_distance();
+    ImGui::SameLine();
+    detail::render_help_marker("0 means infinite");
 }
 
 auto background_configurator::render_cam_near_clip_distance_selector() const
@@ -120,6 +131,8 @@ auto background_configurator::render_cam_near_clip_distance_selector() const
 {
     if (ImGui::InputFloat("Near Clip Distance", &m_cam_near_clip_distance, 1))
         emit_cam_near_clip_distance();
+    ImGui::SameLine();
+    detail::render_help_marker("0 means infinite");
 }
 
 auto background_configurator::render_config_buttons() const -> void

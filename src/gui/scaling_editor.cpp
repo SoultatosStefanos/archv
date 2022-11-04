@@ -1,5 +1,6 @@
 #include "scaling_editor.hpp"
 
+#include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
@@ -67,6 +68,9 @@ auto scaling_editor::render_dims_editor(tag_type tag) const -> void
 
     if (ImGui::Checkbox("z", &z))
         emit_factor_dims(tag, { x, y, z });
+
+    ImGui::SameLine();
+    detail::render_help_marker("The applied axes of the scaling factor");
 }
 
 auto scaling_editor::render_baseline_editor(tag_type tag) const -> void
@@ -74,8 +78,10 @@ auto scaling_editor::render_baseline_editor(tag_type tag) const -> void
     auto f = baseline(tag);
     if (ImGui::InputFloat(
             "Baseline", &f, 1, 0, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue))
-        if (f >= 0)
-            emit_factor_baseline(tag, f);
+        emit_factor_baseline(tag, f);
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "The scaling is computed in relation to this average");
 }
 
 auto scaling_editor::render_enabled_editor(tag_type tag) const -> void
@@ -99,6 +105,9 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
             ImGuiInputTextFlags_EnterReturnsTrue))
         if (min >= 0)
             emit_factor_min_ratio(tag, min);
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "Can be set in order to never drop below this ratio when scaling");
 
     if (ImGui::InputFloat(
             "Max Ratio",
@@ -109,6 +118,9 @@ auto scaling_editor::render_ratios_editor(tag_type tag) const -> void
             ImGuiInputTextFlags_EnterReturnsTrue))
         if (max >= 0)
             emit_factor_max_ratio(tag, max);
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "Can be set in order to never exceed this ratio when scaling");
 }
 
 auto scaling_editor::render_restore_button() const -> void

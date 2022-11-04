@@ -1,5 +1,6 @@
 #include "graph_configurator.hpp"
 
+#include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
 
@@ -109,6 +110,8 @@ auto graph_configurator::render_node_scale_selector() const -> void
 {
     if (ImGui::InputFloat3("Scale##node", m_node_scale.data()))
         emit_node_scale();
+    ImGui::SameLine();
+    detail::render_help_marker("(X, Y, Z)");
 }
 
 auto graph_configurator::render_node_font_selector() const -> void
@@ -160,6 +163,8 @@ auto graph_configurator::render_edge_tip_scale_selector() const -> void
 {
     if (ImGui::InputFloat3("Tip Scale##edge", m_edge_tip_scale.data()))
         emit_edge_tip_scale();
+    ImGui::SameLine();
+    detail::render_help_marker("(X, Y, Z)");
 }
 
 auto graph_configurator::render_edge_font_selector() const -> void
