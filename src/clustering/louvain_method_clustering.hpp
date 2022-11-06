@@ -121,7 +121,7 @@ auto louvain_method_clustering(
         partitions.push_back(std::move(new_part));
 
         induced = detail::community_aggregation(
-            g,
+            induced.g,
             boost::make_assoc_property_map(induced.edge_weight),
             partition());
 
