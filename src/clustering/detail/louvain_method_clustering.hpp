@@ -8,6 +8,7 @@
 #include "misc/concepts.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graph_utility.hpp>
 #include <cassert>
 #include <cmath>
 #include <concepts>
@@ -18,6 +19,9 @@
 
 // See: https://en.wikipedia.org/wiki/Louvain_method
 // See: https://github.com/upphiminn/jLouvain/blob/master/src/jLouvain.js
+
+// NOTE: Currently only taking into account out edges.
+// Must we dispatch on bidirectional graphs?
 
 namespace clustering::detail
 {
@@ -41,20 +45,8 @@ inline auto make_vector(InputRange range)
 }
 
 /***********************************************************
- * Graph Utilites                                          *
+ * Graph Utilities                                         *
  ***********************************************************/
-
-// Safe edge access.
-template < typename Graph >
-inline auto edge(
-    typename boost::graph_traits< Graph >::vertex_descriptor u,
-    typename boost::graph_traits< Graph >::vertex_descriptor v,
-    const Graph& g)
-{
-    [[maybe_unused]] const auto [e, exists] = boost::edge(u, v, g);
-    assert(exists);
-    return e;
-}
 
 // Returns the weighted sum of all of the adjacent edges of a vertex.
 template < typename Graph, typename WeightMap >
@@ -66,10 +58,10 @@ inline auto weighted_degree(
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     return misc::accumulate(
-        std::ranges::subrange(boost::adjacent_vertices(u, g)),
+        std::ranges::subrange(boost::out_edges(u, g)),
         weight_type(0),
-        [edge_weight](auto sum, auto v)
-        { return sum + boost::get(edge_weight, edge(u, v, g)); });
+        [edge_weight](auto sum, auto e)
+        { return sum + boost::get(edge_weight, e); });
 }
 
 // Returns the weighted sum of all of the edges of a graph.
@@ -88,8 +80,6 @@ inline auto weight_sum(const Graph& g, WeightMap edge_weight)
 /***********************************************************
  * Community/Network Properties                            *
  ***********************************************************/
-
-// TODO: Add __neighcom, __renumber
 
 // Shared community type traits.
 template < misc::arithmetic Community >
@@ -110,6 +100,13 @@ struct community_traits
         return std::numeric_limits< Community >::max();
     }
 };
+
+// Advance community com. (Currently com <- com + 1).
+template < misc::arithmetic Community >
+constexpr auto community_advance(Community& com) -> void
+{
+    ++com;
+}
 
 // Network cache data, used for dynamic programming.
 template <
@@ -152,17 +149,18 @@ template <
     typename WeightMap,
     typename AdvanceCommunityFunc >
 auto update_network_status(
-    const Graph& g,
-    NetworkProperties& status,
-    WeightMap edge_weight,
-    typename NetworkProperties::community_type i
-    = community_traits< typename NetworkProperties::community_type >::first(),
-    AdvanceCommunityFunc advance = [](auto& com) { ++com; }) -> void
+    const Graph& g, NetworkProperties& status, WeightMap edge_weight) -> void
 {
+    using community_type = typename NetworkProperties::community_type;
+    using community_traits_type = community_traits< community_type >;
+
     status.total = weight_sum(g, edge_weight);
 
-    for (auto u : boost::make_iterator_range(boost::vertices(g)))
+    for (auto i = community_traits_type::first();
+         auto u : boost::make_iterator_range(boost::vertices(g)))
     {
+        assert(i != community_traits_type::nil());
+
         status.vertex_community[u] = i;
 
         const auto deg = weighted_degree(u, g);
@@ -174,13 +172,37 @@ auto update_network_status(
         status.vertex_loop[u] = loop_w;
         status.community_internal[i] = loop_w;
 
-        advance(i);
+        assert(i < community_traits_type::last());
+        community_advance(i);
     }
+}
+
+// Returns the neighbor communities of u, mapped with the weighted degrees.
+template < typename Graph, typename NetworkProperties, typename WeightMap >
+auto neighbor_communities(
+    typename boost::graph_traits< Graph >::vertex_descriptor u,
+    const Graph& g,
+    const NetworkProperties& status,
+    WeightMap edge_weight)
+{
+    using communities_type = typename NetworkProperties::community_weight_type;
+
+    communities_type res;
+    for (auto e : boost::make_iterator_range(boost::out_edges(u, g)))
+    {
+        const auto v = boost::target(e, g);
+        const auto w = boost::get(edge_weight, e);
+        assert(status.vertex_community.contains(v));
+        const auto com = status.vertex_community.at(v);
+        res[com] += w;
+    }
+
+    return res;
 }
 
 // Insert a vertex in community and modify network status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
-inline auto insert_vertex(
+inline auto insert_vertex_in_community(
     Vertex u,
     typename NetworkProperties::community_type com,
     Weight w,
@@ -193,18 +215,61 @@ inline auto insert_vertex(
 
 // Remove a vertex from a community and modify network status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
-inline auto remove_vertex(
+inline auto remove_vertex_from_community(
     Vertex u,
     typename NetworkProperties::community_type com,
     Weight w,
-    NetworkProperties& status,
-    typename NetworkProperties::community_type nil
-    = community_traits< typename NetworkProperties::community_type >::nil())
-    -> void
+    NetworkProperties& status) -> void
 {
+    using community_type = typename NetworkProperties::community_type;
+    using community_traits_type = community_traits< community_type >;
     status.community_incident[com] -= status.vertex_incident[u];
     status.community_internal[com] -= w - status.vertex_loop[u];
-    status.vertex_community[u] = nil;
+    status.vertex_community[u] = community_traits_type::nil();
+}
+
+// Orders each community.
+// Called after one level, effectively decreases number of communities.
+template < typename VertexCommunity >
+[[nodiscard]] auto renumber_communities(const VertexCommunity& vertex_community)
+{
+    using community_type = typename VertexCommunity::mapped_type;
+    using community_traits_type = community_traits< community_type >;
+    using temp_values = std::unordered_map< community_type, community_type >;
+
+    temp_values new_coms;
+    VertexCommunity res;
+
+    for (auto i = community_traits_type::first();
+         auto v : std::ranges::views::keys(vertex_community))
+    {
+        assert(i != community_traits_type::nil());
+
+        assert(vertex_community.contains(v));
+        const auto com = vertex_community.at(v);
+
+        const auto new_com = new_coms.contains(com)
+            ? community_traits_type::nil()
+            : new_coms.at(com);
+
+        if (new_com == community_traits_type::nil())
+        {
+            new_coms[com] = i;
+            new_com = i;
+            assert(i < community_traits_type::last());
+            community_advance(i);
+        }
+
+        res[v] = new_com;
+    }
+
+    assert(res.size() == vertex_community.size());
+    assert(std::all_of(
+        std::cbegin(vertex_community),
+        std::cend(vertex_community),
+        [&res](const auto& pair) { return res.contains(pair.first); }));
+
+    return res;
 }
 
 /***********************************************************
