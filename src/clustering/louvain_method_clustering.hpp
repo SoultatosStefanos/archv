@@ -127,7 +127,7 @@ auto louvain_method_clustering(
 
     } while (true);
 
-    detail::cluster_from_dendrogram(vertex_cluster, partitions);
+    detail::cluster_from_dendrogram(g, vertex_cluster, partitions);
 }
 
 } // namespace clustering

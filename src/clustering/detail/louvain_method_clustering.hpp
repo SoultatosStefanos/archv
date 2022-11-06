@@ -30,6 +30,13 @@
 namespace clustering::detail
 {
 
+// TODO Make the incident graph a different type? Fix the vertex descriptor
+// issue!
+// boost::add_vertex requires a vertex property! How am I passing a community?
+// Maybe hold a cache for each vertex? (requires default constructible vertex)
+// ^ Wont work probably, since we are playing with vertex descriptors everywhere
+// Maybe just pass a function object to convert?
+
 /***********************************************************
  * General                                                 *
  ***********************************************************/
@@ -501,9 +508,10 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
     using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
+    using community_type = typename VertexCommunityStorage::mapped_type;
+
     using weight_storage_type
         = std::unordered_map< edge_type, weight_type, edge_hash >;
-    using community_type = typename VertexCommunityStorage::mapped_type;
 
     static_assert(std::is_convertible_v< community_type, vertex_type >);
 
@@ -557,9 +565,10 @@ auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
 }
 
 // NOTE: Currently justs clusters from the fully optimized, last partition.
-template < typename ClusterMap, typename Dendrogram >
+template < typename Graph, typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(
-    ClusterMap vertex_cluster, const Dendrogram& partitions) -> void
+    const Graph& g, ClusterMap vertex_cluster, const Dendrogram& partitions)
+    -> void
 {
     using cluster_map_traits = boost::property_traits< ClusterMap >;
     using cluster_type = typename cluster_map_traits::value_type;
@@ -572,9 +581,11 @@ auto cluster_from_dendrogram(
     assert(!partitions.empty());
     const auto& partition = partitions.back();
 
+    assert(partition.size() == boost::num_vertices(g));
+
     // Copy communities from last partition to cluster map.
-    for (const auto& [v, com] : partition)
-        boost::put(vertex_cluster, v, com);
+    for (auto u : boost::make_iterator_range(boost::vertices(g)))
+        boost::put(vertex_cluster, u, get(partition, u));
 }
 
 } // namespace clustering::detail

@@ -10,8 +10,8 @@ namespace
 using graph = boost::
     adjacency_list< boost::vecS, boost::vecS, boost::undirectedS, int, int >;
 
-using cluster_id = int;
-using cluster_map = std::unordered_map< graph::vertex_descriptor, cluster_id >;
+using cluster = std::size_t;
+using cluster_map = std::unordered_map< graph::vertex_descriptor, cluster >;
 
 TEST(louvain_method_clustering_tests, given_0_vertices_then_0_clusters)
 {
