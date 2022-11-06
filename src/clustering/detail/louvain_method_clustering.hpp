@@ -19,8 +19,10 @@
 #include <unordered_map>
 #include <vector>
 
-// See: https://en.wikipedia.org/wiki/Louvain_method
-// See: https://github.com/upphiminn/jLouvain/blob/master/src/jLouvain.js
+// NOTE: Based on .js implementation from:
+// https://github.com/upphiminn/jLouvain/blob/master/src/jLouvain.js
+//
+// See also: https://en.wikipedia.org/wiki/Louvain_method
 
 // NOTE: Currently only taking into account out edges.
 // Must we dispatch on bidirectional graphs?
@@ -116,6 +118,7 @@ inline auto weight_sum(const Graph& g, WeightMap edge_weight)
 template < misc::arithmetic Community >
 struct community_traits
 {
+    // Used to mark non-existent communities.
     static constexpr auto nil() -> Community
     {
         return std::numeric_limits< Community >::min();
@@ -140,6 +143,7 @@ constexpr auto community_advance(Community& com) -> void
 }
 
 // Network cache data, used for dynamic programming.
+// NOTE: Each storage type must be an associative container.
 template <
     typename Vertex,
     typename Weight,
@@ -179,7 +183,6 @@ struct network_properties
 };
 
 // Initialize/update network properties after Louvain execution.
-// @
 template < typename Graph, typename NetworkProperties, typename WeightMap >
 auto update_network_status(
     const Graph& g, NetworkProperties& status, WeightMap edge_weight) -> void
@@ -397,12 +400,13 @@ template <
     typename NetworkProperties,
     typename WeightMap,
     std::floating_point Modularity = float,
-    typename Seed = std::random_device >
+    typename UGenerator = std::mt19937 >
 auto modularity_optimization(
     const Graph& g,
     NetworkProperties& status,
     WeightMap edge_weight,
-    Modularity resolution = 0.0) -> void
+    Modularity resolution = 0.0,
+    UGenerator rng = misc::rng()) -> void
 {
     auto do_loop = true;
     auto cur_mod = modularity(status);
@@ -414,11 +418,11 @@ auto modularity_optimization(
         do_loop = false;
 
         // Make a random vertex ordering.
-        auto nodes = make_vector(std::ranges::subrange(boost::vertices(g)));
-        std::shuffle(std::begin(nodes), std::end(nodes), misc::rng< Seed >());
+        auto vertices = make_vector(std::ranges::subrange(boost::vertices(g)));
+        std::shuffle(std::begin(vertices), std::end(vertices), std::move(rng));
 
         // Begin one level partition
-        for (auto i : nodes)
+        for (auto i : vertices)
         {
             const auto com = get(status.vertex_community, i);
             const auto jcoms = neighbor_communities(i, g, status, edge_weight);
