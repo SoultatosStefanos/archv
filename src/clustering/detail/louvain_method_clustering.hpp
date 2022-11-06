@@ -6,6 +6,7 @@
 
 #include "misc/algorithm.hpp"
 #include "misc/concepts.hpp"
+#include "misc/random.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_utility.hpp>
@@ -25,6 +26,35 @@
 
 namespace clustering::detail
 {
+
+/***********************************************************
+ * General                                                  *
+ ***********************************************************/
+
+// Emulate js: 'array[key] || alt' expression.
+// E.g: auto i = get_or< 0 >(arr, 0); -> let i = arr[0] || 0;
+template <
+    typename AssociativeContainer,
+    typename AssociativeContainer::mapped_type Alternative >
+[[maybe_unused]] inline auto get_or(
+    const AssociativeContainer& data,
+    typename AssociativeContainer::key_type key)
+{
+    const auto pos = data.find(key);
+    return pos != std::cend(data) ? pos->second : Alternative;
+}
+
+// Safe map access.
+// NOTE: Maybe use get_or< 0 >(data, key) here.
+template < typename AssociativeContainer >
+inline auto
+get(const AssociativeContainer& data,
+    typename AssociativeContainer::key_type key)
+{
+    const auto pos = data.find(key);
+    assert(pos != std::cend(data));
+    return pos->second;
+}
 
 /***********************************************************
  * Factories                                               *
@@ -192,8 +222,7 @@ auto neighbor_communities(
     {
         const auto v = boost::target(e, g);
         const auto w = boost::get(edge_weight, e);
-        assert(status.vertex_community.contains(v));
-        const auto com = status.vertex_community.at(v);
+        const auto com = get(status.vertex_community, v);
         res[com] += w;
     }
 
@@ -202,20 +231,20 @@ auto neighbor_communities(
 
 // Insert a vertex in community and modify network status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
-inline auto insert_vertex_in_community(
+inline auto community_insert(
     Vertex u,
     typename NetworkProperties::community_type com,
     Weight w,
     NetworkProperties& status) -> void
 {
     status.vertex_community[u] = com;
-    status.community_incident[com] += status.vertex_incident[u];
-    status.community_internal[com] += w + status.vertex_loop[u];
+    status.community_incident[com] += get(status.vertex_incident, u);
+    status.community_internal[com] += w + get(status.vertex_loop, u);
 }
 
 // Remove a vertex from a community and modify network status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
-inline auto remove_vertex_from_community(
+inline auto community_remove(
     Vertex u,
     typename NetworkProperties::community_type com,
     Weight w,
@@ -223,8 +252,8 @@ inline auto remove_vertex_from_community(
 {
     using community_type = typename NetworkProperties::community_type;
     using community_traits_type = community_traits< community_type >;
-    status.community_incident[com] -= status.vertex_incident[u];
-    status.community_internal[com] -= w - status.vertex_loop[u];
+    status.community_incident[com] -= get(status.vertex_incident, u);
+    status.community_internal[com] -= w - get(status.vertex_loop, u);
     status.vertex_community[u] = community_traits_type::nil();
 }
 
@@ -245,22 +274,18 @@ template < typename VertexCommunity >
     {
         assert(i != community_traits_type::nil());
 
-        assert(vertex_community.contains(v));
-        const auto com = vertex_community.at(v);
+        const auto com = get(vertex_community, v);
+        const auto com2 = get_or< community_traits_type::nil() >(new_coms, com);
 
-        const auto new_com = new_coms.contains(com)
-            ? community_traits_type::nil()
-            : new_coms.at(com);
-
-        if (new_com == community_traits_type::nil())
+        if (com2 == community_traits_type::nil())
         {
             new_coms[com] = i;
-            new_com = i;
+            com2 = i;
             assert(i < community_traits_type::last());
             community_advance(i);
         }
 
-        res[v] = new_com;
+        res[v] = com2;
     }
 
     assert(res.size() == vertex_community.size());
@@ -285,13 +310,11 @@ inline auto modularity(
     using community_type = typename NetworkProperties::community_type;
 
     assert(status.total > 0 && "why am I called?");
-    assert(status.community_internal.contains(c));
-    assert(status.community_incident.contains(c));
     assert(c != community_traits< community_type >::nil());
 
-    const Modularity s_in = status.community_internal.at(c);
+    const Modularity s_in = get(status.community_internal, c);
     const Modularity m = status.total;
-    const Modularity s_tot = status.community_incident.at(c);
+    const Modularity s_tot = get(status.community_incident, c);
     return (s_in / (2 * m)) - std::pow(s_tot / (2 * m), 2);
 }
 
@@ -312,11 +335,91 @@ inline auto modularity(const NetworkProperties& status) -> Modularity
             { return sum + modularity< Modularity >(status, c); });
 }
 
+// Delta modularity (DQ) of a vertex, within a network, given its neighbours and
+// a specific community.
+template < typename NetworkProperties, std::floating_point Modularity = float >
+inline auto delta_modularity(
+    const NetworkProperties& status,
+    typename NetworkProperties::vertex_type u,
+    const typename NetworkProperties::community_weight_type& neighbor_coms,
+    typename NetworkProperties::community_type neighbor_com) -> Modularity
+{
+    const Modularity k_in = get(status.vertex_incident, u);
+    const Modularity m = status.total;
+    const Modularity s_tot = get(status.community_incident, neighbor_com);
+    const Modularity w = get(neighbor_coms, neighbor_com);
+    return w - s_tot * (k_in / (2 * m));
+}
+
 /***********************************************************
  * Dendrogram                                              *
  ***********************************************************/
 
-// TODO __one_level, induced_graph, partition_at_level
+// TODO  induced_graph, partition_at_level
+
+// Computes one level of the communities dendrogram.
+template <
+    typename Graph,
+    typename NetworkProperties,
+    typename WeightMap,
+    typename Modularity = float,
+    typename Seed = std::random_device >
+auto modularity_optimization(
+    const Graph& g,
+    NetworkProperties& status,
+    WeightMap edge_weight,
+    Modularity min = 0) -> void
+{
+    auto do_loop = true;
+    auto cur_mod = modularity(status);
+    auto new_mod = cur_mod;
+
+    do
+    {
+        cur_mod = new_mod;
+        do_loop = false;
+
+        // Make a random vertex ordering.
+        auto nodes = make_vector(std::ranges::subrange(boost::vertices(g)));
+        std::shuffle(std::begin(nodes), std::end(nodes), misc::rng< Seed >());
+
+        // Begin one level partition
+        for (auto i : nodes)
+        {
+            const auto com = get(status.vertex_community, i);
+            const auto jcoms = neighbor_communities(i, g, status, edge_weight);
+
+            community_remove(i, com, get(status.vertex_incident, i), status);
+
+            auto best_com = com;
+            auto best_inc = 0;
+
+            // Compare DQ of i with each neighbor community.
+            for (const auto& [jcom, jw] : jcoms)
+            {
+                const auto dq = delta_modularity(status, i, jcoms, jcom);
+
+                if (dq > best_inc)
+                {
+                    best_inc = dq;
+                    best_com = jcom;
+                }
+            }
+
+            community_insert(i, best_com, get(jcoms, best_com), status);
+
+            if (best_com != com)
+                do_loop = false;
+        }
+
+        new_mod = modularity(status);
+
+        // Break cycle if DQ is below given threshold.
+        if (new_mod - cur_mod < min)
+            do_loop = false;
+
+    } while (do_loop);
+}
 
 } // namespace clustering::detail
 
