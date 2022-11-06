@@ -4,6 +4,7 @@
 #ifndef CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 
+#include "hash.hpp"
 #include "misc/algorithm.hpp"
 #include "misc/concepts.hpp"
 #include "misc/random.hpp"
@@ -388,8 +389,6 @@ using dendrogram = std::vector< VertexCommunityStorage >;
  * Steps                                                   *
  ***********************************************************/
 
-// TODO  induced_graph, partition_at_level
-
 // Computes one level of the communities dendrogram.
 template <
     typename Graph,
@@ -454,13 +453,53 @@ auto modularity_optimization(
     } while (do_loop);
 }
 
-// template < typename Graph, typename WeightMap, typename VertexCommunity >
-// auto community_aggregation(
-//     const Graph& g,
-//     WeightMap edge_weight,
-//     const VertexCommunity& vertex_community) -> void
-// {
-// }
+// Performs community aggregation on an induced/root graph.
+// Returns new one.
+// Weight map is expected to be either the initial, or an adaptor from the
+// cached storage.
+template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
+[[nodiscard]] auto community_aggregation(
+    const Graph& g,
+    WeightMap edge_weight,
+    const VertexCommunityStorage& partition)
+{
+    using graph_traits = boost::graph_traits< Graph >;
+    using vertex_type = typename graph_traits::vertex_descriptor;
+    using edge_type = typename graph_traits::edge_descriptor;
+    using weight_map_traits = boost::property_traits< WeightMap >;
+    using weight_type = typename weight_map_traits::value_type;
+    using weight_storage_type
+        = std::unordered_map< edge_type, weight_type, edge_hash >;
+    using community_type = typename VertexCommunityStorage::mapped_type;
+
+    static_assert(std::is_convertible_v< community_type, vertex_type >);
+
+    Graph new_g;
+    weight_storage_type new_weights;
+
+    // Fill vertices.
+    for (auto com : make_set(std::ranges::views::values(partition)))
+        boost::add_vertex(com, new_g);
+
+    // Fill edges.
+    for (auto e : boost::make_iterator_range(boost::edges(g)))
+    {
+        const auto w = boost::get(edge_weight, e);
+
+        const auto com1 = get(partition, boost::source(e, g));
+        const auto com2 = get(partition, boost::target(e, g));
+
+        const auto [com_e, com_exists] = boost::edge(com1, com2, new_g);
+        const auto com_w = com_exists ? com_e : 0;
+
+        const auto new_w = w + com_w;
+        const auto [new_e, new_exists] = boost::add_edge(com1, com2, new_g);
+        assert(new_exists);
+        new_weights[new_e] = new_w;
+    }
+
+    return make_induced_graph(std::move(new_g), std::move(new_weights));
+}
 
 } // namespace clustering::detail
 
