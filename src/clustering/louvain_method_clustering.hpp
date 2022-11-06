@@ -86,7 +86,7 @@ auto louvain_method_clustering(
     detail::update_network_status(g, status, edge_weight);
 
     detail::modularity_optimization(g, status, edge_weight, min, rng);
-    q = detail::modularity(status);
+    q = detail::modularity< Modularity >(status);
 
     auto&& lvl_one_part = detail::renumber_communities(status.vertex_community);
     partitions.push_back(std::move(lvl_one_part));
@@ -109,7 +109,7 @@ auto louvain_method_clustering(
             min,
             rng);
 
-        const auto new_q = detail::modularity(status);
+        const auto new_q = detail::modularity< Modularity >(status);
         const auto delta_q = new_q - q;
 
         if (delta_q < min)
@@ -127,7 +127,7 @@ auto louvain_method_clustering(
 
     } while (true);
 
-    detail::cluster_from_dendrogram(g, vertex_cluster, partitions);
+    detail::cluster_from_dendrogram(vertex_cluster, partitions);
 }
 
 } // namespace clustering

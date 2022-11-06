@@ -36,15 +36,14 @@ namespace clustering::detail
 
 // Emulate js: 'array[key] || alt' expression.
 // E.g: auto i = get_or< 0 >(arr, 0); -> let i = arr[0] || 0;
-template <
-    typename AssociativeContainer,
-    typename AssociativeContainer::mapped_type Alternative >
+template < typename AssociativeContainer >
 [[maybe_unused]] inline auto get_or(
     const AssociativeContainer& data,
-    typename AssociativeContainer::key_type key)
+    const typename AssociativeContainer::key_type& key,
+    const typename AssociativeContainer::mapped_type& alt)
 {
     const auto pos = data.find(key);
-    return pos != std::cend(data) ? pos->second : Alternative;
+    return pos != std::cend(data) ? pos->second : alt;
 }
 
 // Safe map access.
@@ -52,7 +51,7 @@ template <
 template < typename AssociativeContainer >
 inline auto
 get(const AssociativeContainer& data,
-    typename AssociativeContainer::key_type key)
+    const typename AssociativeContainer::key_type& key)
 {
     const auto pos = data.find(key);
     assert(pos != std::cend(data));
@@ -70,11 +69,33 @@ inline auto make_set(InputRange range)
     return std::set< value_type > { std::cbegin(range), std::cend(range) };
 }
 
+template < std::input_iterator InputIter >
+inline auto make_set(InputIter first, InputIter last)
+{
+    using value_type = typename std::iterator_traits< InputIter >::value_type;
+    return std::set< value_type > { first, last };
+}
+
 template < std::ranges::input_range InputRange >
 inline auto make_vector(InputRange range)
 {
     using value_type = std::ranges::range_value_t< InputRange >;
     return std::vector< value_type > { std::cbegin(range), std::cend(range) };
+}
+
+template < std::input_iterator InputIter >
+inline auto make_vector(InputIter first, InputIter last)
+{
+    using value_type = typename std::iterator_traits< InputIter >::value_type;
+    return std::vector< value_type > { first, last };
+}
+
+template < typename IteratorPair >
+requires std::input_iterator< typename IteratorPair::first_type > && std::
+    input_iterator< typename IteratorPair::second_type >
+inline auto subrange(IteratorPair pair)
+{
+    return std::ranges::subrange(pair.first, pair.second);
 }
 
 /***********************************************************
@@ -91,7 +112,7 @@ inline auto weighted_degree(
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     return misc::accumulate(
-        std::ranges::subrange(boost::out_edges(u, g)),
+        subrange(boost::out_edges(u, g)),
         weight_type(0),
         [edge_weight](auto sum, auto e)
         { return sum + boost::get(edge_weight, e); });
@@ -104,7 +125,7 @@ inline auto weight_sum(const Graph& g, WeightMap edge_weight)
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     return misc::accumulate(
-        std::ranges::subrange(boost::edges(g)),
+        subrange(boost::edges(g)),
         weight_type(0),
         [edge_weight](auto sum, auto e)
         { return sum + boost::get(edge_weight, e); });
@@ -199,7 +220,7 @@ auto update_network_status(
 
         status.vertex_community[u] = i;
 
-        const auto deg = weighted_degree(u, g);
+        const auto deg = weighted_degree(u, g, edge_weight);
         status.community_incident[i] = deg;
         status.vertex_incident[u] = deg;
 
@@ -282,7 +303,7 @@ renumber_communities(const VertexCommunityStorage& vertex_community)
         assert(i != community_traits_type::nil());
 
         const auto com = get(vertex_community, v);
-        const auto com2 = get_or< community_traits_type::nil() >(new_coms, com);
+        auto com2 = get_or(new_coms, com, community_traits_type::nil());
 
         if (com2 == community_traits_type::nil())
         {
@@ -309,7 +330,7 @@ renumber_communities(const VertexCommunityStorage& vertex_community)
  ***********************************************************/
 
 // Modularity (Q) of a community, given cached network properties.
-template < typename NetworkProperties, std::floating_point Modularity = float >
+template < std::floating_point Modularity, typename NetworkProperties >
 inline auto modularity(
     const NetworkProperties& status,
     typename NetworkProperties::community_type c) -> Modularity
@@ -327,24 +348,28 @@ inline auto modularity(
 
 // Total modularity (Q) of a network.
 // NOTE: Emit Kronecker delta func by using a set of unique communities.
-template < typename NetworkProperties, std::floating_point Modularity = float >
+template < std::floating_point Modularity, typename NetworkProperties >
 inline auto modularity(const NetworkProperties& status) -> Modularity
 {
-    using namespace std::ranges::views;
+    using std::ranges::views::all;
+    using std::ranges::views::values;
 
     if (status.total == 0) // Early exit.
         return Modularity(0);
     else
+    {
+        const auto coms = make_set(values(status.vertex_community));
         return misc::accumulate(
-            all(make_set(values(status.vertex_community))),
+            all(coms),
             Modularity(0),
             [&status](auto sum, auto c)
             { return sum + modularity< Modularity >(status, c); });
+    }
 }
 
 // Delta modularity (DQ) of a vertex, within a network, given its neighbours and
 // a specific community.
-template < typename NetworkProperties, std::floating_point Modularity = float >
+template < std::floating_point Modularity, typename NetworkProperties >
 inline auto delta_modularity(
     const NetworkProperties& status,
     typename NetworkProperties::vertex_type i,
@@ -409,7 +434,7 @@ auto modularity_optimization(
     UGenerator rng = misc::rng()) -> void
 {
     auto do_loop = true;
-    auto cur_mod = modularity(status);
+    auto cur_mod = modularity< Modularity >(status);
     auto new_mod = cur_mod;
 
     do
@@ -418,7 +443,7 @@ auto modularity_optimization(
         do_loop = false;
 
         // Make a random vertex ordering.
-        auto vertices = make_vector(std::ranges::subrange(boost::vertices(g)));
+        auto vertices = make_vector(subrange(boost::vertices(g)));
         std::shuffle(std::begin(vertices), std::end(vertices), std::move(rng));
 
         // Begin one level partition
@@ -435,7 +460,8 @@ auto modularity_optimization(
             // Compare DQ of i with each neighbor community.
             for (auto jcom : std::ranges::views::keys(jcoms))
             {
-                const auto dq = delta_modularity(status, i, jcoms, jcom);
+                const auto dq
+                    = delta_modularity< Modularity >(status, i, jcoms, jcom);
 
                 if (dq > best_inc)
                 {
@@ -450,7 +476,7 @@ auto modularity_optimization(
                 do_loop = false;
         }
 
-        new_mod = modularity(status);
+        new_mod = modularity< Modularity >(status);
 
         // Break cycle if DQ is below given threshold.
         if (new_mod - cur_mod < min)
@@ -496,7 +522,7 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
         const auto com2 = get(partition, boost::target(e, g));
 
         const auto [com_e, com_exists] = boost::edge(com1, com2, new_g);
-        const auto com_w = com_exists ? com_e : 0;
+        const auto com_w = com_exists ? get(new_weights, com_e) : 0;
 
         const auto new_w = w + com_w;
         const auto [new_e, new_exists] = boost::add_edge(com1, com2, new_g);
@@ -515,7 +541,7 @@ template < typename Graph, typename ClusterMap >
 auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
 {
     using cluster_map_traits = boost::property_traits< ClusterMap >;
-    using cluster_type = typename cluster_map_traits::cluster_type;
+    using cluster_type = typename cluster_map_traits::value_type;
 
     // { 0, 1, ..., boost::num_vertices(g) - 1 }
     for (cluster_type c = 0;
@@ -524,13 +550,12 @@ auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
 }
 
 // NOTE: Currently justs clusters from the fully optimized, last partition.
-template < typename Graph, typename ClusterMap, typename Dendrogram >
+template < typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(
-    const Graph& g, ClusterMap vertex_cluster, const Dendrogram& partitions)
-    -> void
+    ClusterMap vertex_cluster, const Dendrogram& partitions) -> void
 {
     using cluster_map_traits = boost::property_traits< ClusterMap >;
-    using cluster_type = typename cluster_map_traits::cluster_type;
+    using cluster_type = typename cluster_map_traits::value_type;
     using vertex_community_storage = typename Dendrogram::value_type;
     using community_type = typename vertex_community_storage::mapped_type;
 
