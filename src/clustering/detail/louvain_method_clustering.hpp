@@ -395,7 +395,7 @@ auto modularity_optimization(
             auto best_inc = 0;
 
             // Compare DQ of i with each neighbor community.
-            for (const auto& [jcom, jw] : jcoms)
+            for (auto jcom : std::ranges::views::keys(jcoms))
             {
                 const auto dq = delta_modularity(status, i, jcoms, jcom);
 
