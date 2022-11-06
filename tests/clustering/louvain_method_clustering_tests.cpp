@@ -47,4 +47,27 @@ TEST(louvain_method_clustering_tests, given_0_edges_then_vertices_are_isolated)
     EXPECT_EQ(clusters.at(v3), 3);
 }
 
+TEST(louvain_method_clustering_tests, poc)
+{
+    auto g = graph();
+    const auto v0 = boost::add_vertex(0, g);
+    const auto v1 = boost::add_vertex(1, g);
+    const auto v2 = boost::add_vertex(2, g);
+    const auto v3 = boost::add_vertex(3, g);
+    boost::add_edge(v0, v1, g);
+    boost::add_edge(v1, v2, g);
+    boost::add_edge(v2, v1, g);
+    boost::add_edge(v1, v3, g);
+    boost::add_edge(v3, v1, g);
+    boost::add_edge(v0, v3, g);
+    auto clusters = cluster_map();
+
+    clustering::louvain_method_clustering(
+        g,
+        boost::get(boost::edge_bundle, g),
+        boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.size(), 4);
+}
+
 } // namespace

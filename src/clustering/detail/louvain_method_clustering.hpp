@@ -489,6 +489,7 @@ auto modularity_optimization(
 // Returns new one.
 // Weight map is expected to be either the initial, or an adaptor from the
 // cached storage.
+// FIXME
 template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
 [[nodiscard]] auto community_aggregation(
     const Graph& g,
@@ -520,6 +521,12 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
 
         const auto com1 = get(partition, boost::source(e, g));
         const auto com2 = get(partition, boost::target(e, g));
+
+#ifndef NDEBUG
+        const auto new_verts = subrange(boost::vertices(new_g));
+        assert(std::ranges::find(new_verts, com1) != std::cend(new_verts));
+        assert(std::ranges::find(new_verts, com2) != std::cend(new_verts));
+#endif
 
         const auto [com_e, com_exists] = boost::edge(com1, com2, new_g);
         const auto com_w = com_exists ? get(new_weights, com_e) : 0;
