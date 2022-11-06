@@ -28,7 +28,7 @@ namespace clustering::detail
 {
 
 /***********************************************************
- * General                                                  *
+ * General                                                 *
  ***********************************************************/
 
 // Emulate js: 'array[key] || alt' expression.
@@ -143,28 +143,33 @@ template <
     typename Vertex,
     typename Weight,
     typename Community,
-    typename VertexCommunity = std::unordered_map< Vertex, Community >,
-    typename CommunityWeight = std::unordered_map< Community, Weight >,
-    typename VertexWeight = std::unordered_map< Vertex, Weight > >
+    typename VertexCommunityStorage = std::unordered_map< Vertex, Community >,
+    typename CommunityWeightStorage = std::unordered_map< Community, Weight >,
+    typename VertexWeightStorage = std::unordered_map< Vertex, Weight > >
 struct network_properties
 {
     using vertex_type = Vertex;
     using weight_type = Weight;
     using community_type = Community;
-    using vertex_community_type = VertexCommunity;
-    using community_weight_type = CommunityWeight;
-    using vertex_weight_type = VertexWeight;
+    using vertex_community_storage_type = VertexCommunityStorage;
+    using community_weight_storage_type = CommunityWeightStorage;
+    using vertex_weight_storage_type = VertexWeightStorage;
 
     // Linkage of each vertex to a community.
-    vertex_community_type vertex_community;
+    vertex_community_storage_type vertex_community;
+
     // Sum of the weights of all links inside each community.
-    community_weight_type community_internal;
+    community_weight_storage_type community_internal;
+
     // Sum of the weights of all links incident to each community.
-    community_weight_type community_incident;
+    community_weight_storage_type community_incident;
+
     // Sum of the weights of all links incident to each vertex.
-    vertex_weight_type vertex_incident;
+    vertex_weight_storage_type vertex_incident;
+
     // Loop weight (if existent) of to each vertex.
-    vertex_weight_type vertex_loop;
+    vertex_weight_storage_type vertex_loop;
+
     // Sum of all weights present in a graph.
     weight_type total {};
 
@@ -173,11 +178,8 @@ struct network_properties
 };
 
 // Initialize/update network properties after Louvain execution.
-template <
-    typename Graph,
-    typename NetworkProperties,
-    typename WeightMap,
-    typename AdvanceCommunityFunc >
+// @
+template < typename Graph, typename NetworkProperties, typename WeightMap >
 auto update_network_status(
     const Graph& g, NetworkProperties& status, WeightMap edge_weight) -> void
 {
@@ -215,9 +217,9 @@ auto neighbor_communities(
     const NetworkProperties& status,
     WeightMap edge_weight)
 {
-    using communities_type = typename NetworkProperties::community_weight_type;
+    using res_type = typename NetworkProperties::community_weight_storage_type;
 
-    communities_type res;
+    res_type res;
     for (auto e : boost::make_iterator_range(boost::out_edges(u, g)))
     {
         const auto v = boost::target(e, g);
@@ -259,15 +261,16 @@ inline auto community_remove(
 
 // Orders each community.
 // Called after one level, effectively decreases number of communities.
-template < typename VertexCommunity >
-[[nodiscard]] auto renumber_communities(const VertexCommunity& vertex_community)
+template < typename VertexCommunityStorage >
+[[nodiscard]] auto
+renumber_communities(const VertexCommunityStorage& vertex_community)
 {
-    using community_type = typename VertexCommunity::mapped_type;
+    using community_type = typename VertexCommunityStorage::mapped_type;
     using community_traits_type = community_traits< community_type >;
     using temp_values = std::unordered_map< community_type, community_type >;
 
     temp_values new_coms;
-    VertexCommunity res;
+    VertexCommunityStorage res;
 
     for (auto i = community_traits_type::first();
          auto v : std::ranges::views::keys(vertex_community))
@@ -340,19 +343,49 @@ inline auto modularity(const NetworkProperties& status) -> Modularity
 template < typename NetworkProperties, std::floating_point Modularity = float >
 inline auto delta_modularity(
     const NetworkProperties& status,
-    typename NetworkProperties::vertex_type u,
-    const typename NetworkProperties::community_weight_type& neighbor_coms,
-    typename NetworkProperties::community_type neighbor_com) -> Modularity
+    typename NetworkProperties::vertex_type i,
+    const typename NetworkProperties::community_weight_storage_type& jcoms,
+    typename NetworkProperties::community_type jcom) -> Modularity
 {
-    const Modularity k_in = get(status.vertex_incident, u);
+    const Modularity k_in = get(status.vertex_incident, i);
     const Modularity m = status.total;
-    const Modularity s_tot = get(status.community_incident, neighbor_com);
-    const Modularity w = get(neighbor_coms, neighbor_com);
+    const Modularity s_tot = get(status.community_incident, jcom);
+    const Modularity w = get(jcoms, jcom);
     return w - s_tot * (k_in / (2 * m));
 }
 
 /***********************************************************
+ * Induced Graph                                           *
+ ***********************************************************/
+
+// Special induced graph used on community aggregation
+template < typename Graph, typename EdgeWeightStorage >
+struct induced_graph
+{
+    using graph_type = Graph;
+    using edge_weight_storage_type = EdgeWeightStorage;
+    Graph g;
+    EdgeWeightStorage edge_weight;
+    auto operator==(const induced_graph&) const -> bool = default;
+    auto operator!=(const induced_graph&) const -> bool = default;
+};
+
+// Factory for type deduction.
+template < typename Graph, typename EdgeWeightStorage >
+inline auto make_induced_graph(Graph g, EdgeWeightStorage edge_weight)
+{
+    return induced_graph< Graph, EdgeWeightStorage >(std::move(g), edge_weight);
+}
+
+/***********************************************************
  * Dendrogram                                              *
+ ***********************************************************/
+
+template < typename VertexCommunityStorage >
+using dendrogram = std::vector< VertexCommunityStorage >;
+
+/***********************************************************
+ * Steps                                                   *
  ***********************************************************/
 
 // TODO  induced_graph, partition_at_level
@@ -362,13 +395,13 @@ template <
     typename Graph,
     typename NetworkProperties,
     typename WeightMap,
-    typename Modularity = float,
+    std::floating_point Modularity = float,
     typename Seed = std::random_device >
 auto modularity_optimization(
     const Graph& g,
     NetworkProperties& status,
     WeightMap edge_weight,
-    Modularity min = 0) -> void
+    Modularity resolution = 0.0) -> void
 {
     auto do_loop = true;
     auto cur_mod = modularity(status);
@@ -415,11 +448,19 @@ auto modularity_optimization(
         new_mod = modularity(status);
 
         // Break cycle if DQ is below given threshold.
-        if (new_mod - cur_mod < min)
+        if (new_mod - cur_mod < resolution)
             do_loop = false;
 
     } while (do_loop);
 }
+
+// template < typename Graph, typename WeightMap, typename VertexCommunity >
+// auto community_aggregation(
+//     const Graph& g,
+//     WeightMap edge_weight,
+//     const VertexCommunity& vertex_community) -> void
+// {
+// }
 
 } // namespace clustering::detail
 
