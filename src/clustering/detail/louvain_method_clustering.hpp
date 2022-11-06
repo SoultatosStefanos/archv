@@ -365,8 +365,10 @@ struct induced_graph
 {
     using graph_type = Graph;
     using edge_weight_storage_type = EdgeWeightStorage;
+
     Graph g;
     EdgeWeightStorage edge_weight;
+
     auto operator==(const induced_graph&) const -> bool = default;
     auto operator!=(const induced_graph&) const -> bool = default;
 };
@@ -499,6 +501,43 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
     }
 
     return make_induced_graph(std::move(new_g), std::move(new_weights));
+}
+
+/***********************************************************
+ * Utility Steps                                           *
+ ***********************************************************/
+
+template < typename Graph, typename ClusterMap >
+auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
+{
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::cluster_type;
+
+    // { 0, 1, ..., boost::num_vertices(g) - 1 }
+    for (cluster_type c = 0;
+         auto u : boost::make_iterator_range(boost::vertices(g)))
+        boost::put(vertex_cluster, u, c++);
+}
+
+template < typename Graph, typename ClusterMap, typename Dendrogram >
+auto cluster_from_dendrogram(
+    const Graph& g, ClusterMap vertex_cluster, const Dendrogram& partitions)
+    -> void
+{
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::cluster_type;
+    using vertex_community_storage = typename Dendrogram::value_type;
+    using community_type = typename vertex_community_storage::mapped_type;
+
+    static_assert(std::is_convertible_v< community_type, cluster_type >);
+
+    // Take fully optimized partition.
+    assert(!partitions.empty());
+    const auto& partition = partitions.back();
+
+    // Copy communities from last partition to cluster map.
+    for (const auto& [v, com] : partition)
+        boost::put(vertex_cluster, v, com);
 }
 
 } // namespace clustering::detail
