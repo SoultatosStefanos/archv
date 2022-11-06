@@ -30,7 +30,7 @@ auto louvain_method_clustering(
     const Graph& g,
     WeightMap edge_weight,
     ClusterMap vertex_cluster,
-    Modularity resolution = 0.0,
+    Modularity min = 0.0,
     UGenerator rng = misc::rng()) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -47,7 +47,6 @@ auto louvain_method_clustering(
 
     using graph_traits = boost::graph_traits< Graph >;
     using vertex_type = typename graph_traits::vertex_descriptor;
-    using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     using cluster_map_traits = boost::property_traits< ClusterMap >;
@@ -86,7 +85,7 @@ auto louvain_method_clustering(
 
     detail::update_network_status(g, status, edge_weight);
 
-    detail::modularity_optimization(g, status, edge_weight, resolution, rng);
+    detail::modularity_optimization(g, status, edge_weight, min, rng);
     q = detail::modularity(status);
 
     auto&& lvl_one_part = detail::renumber_communities(status.vertex_community);
@@ -107,14 +106,13 @@ auto louvain_method_clustering(
             induced.g,
             status,
             boost::make_assoc_property_map(induced.edge_weight),
-            resolution,
+            min,
             rng);
 
         const auto new_q = detail::modularity(status);
         const auto delta_q = new_q - q;
 
-        // Reached modularity resolution.
-        if (delta_q < resolution)
+        if (delta_q < min)
             break;
 
         q = new_q;

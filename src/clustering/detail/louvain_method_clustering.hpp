@@ -405,7 +405,7 @@ auto modularity_optimization(
     const Graph& g,
     NetworkProperties& status,
     WeightMap edge_weight,
-    Modularity resolution = 0.0,
+    Modularity min = 0.0,
     UGenerator rng = misc::rng()) -> void
 {
     auto do_loop = true;
@@ -453,7 +453,7 @@ auto modularity_optimization(
         new_mod = modularity(status);
 
         // Break cycle if DQ is below given threshold.
-        if (new_mod - cur_mod < resolution)
+        if (new_mod - cur_mod < min)
             do_loop = false;
 
     } while (do_loop);
