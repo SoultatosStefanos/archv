@@ -589,7 +589,6 @@ inline auto community(const Dendrogram& parts, Vertex u)
     return community(parts, std::cbegin(parts), u);
 }
 
-// NOTE: Currently justs clusters from the fully optimized, last partition.
 template < typename Graph, typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(
     const Graph& g, ClusterMap vertex_cluster, const Dendrogram& partitions)

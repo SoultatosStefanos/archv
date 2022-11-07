@@ -98,8 +98,7 @@ auto louvain_method_clustering(
     auto curr_sub = detail::community_aggregation(g, edge_weight, lvl1_part);
     partitions.push_back(std::move(lvl1_part));
 
-    // Keeps partitioning the graph until no significant modularity increase
-    // occurs.
+    // Keeps partitioning until no significant modularity increase occurs.
     do
     {
         auto new_status = detail::network_status< network >(
