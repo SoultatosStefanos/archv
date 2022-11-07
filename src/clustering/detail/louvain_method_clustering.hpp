@@ -30,19 +30,12 @@
 namespace clustering::detail
 {
 
-// TODO Make the incident graph a different type? Fix the vertex descriptor
-// issue!
-// boost::add_vertex requires a vertex property! How am I passing a community?
-// Maybe hold a cache for each vertex? (requires default constructible vertex)
-// ^ Wont work probably, since we are playing with vertex descriptors everywhere
-// Maybe just pass a function object to convert?
-
 /***********************************************************
  * General                                                 *
  ***********************************************************/
 
 // Emulate js: 'array[key] || alt' expression.
-// E.g: auto i = get_or< 0 >(arr, 0); -> let i = arr[0] || 0;
+// E.g: auto i = get_or(arr, 0, 0); -> let i = arr[0] || 0;
 template < typename AssociativeContainer >
 [[maybe_unused]] inline auto get_or(
     const AssociativeContainer& data,
@@ -210,14 +203,15 @@ struct network_properties
     auto operator!=(const network_properties&) const -> bool = default;
 };
 
-// Initialize/update network properties after Louvain execution.
-template < typename Graph, typename NetworkProperties, typename WeightMap >
-auto update_network_status(
-    const Graph& g, NetworkProperties& status, WeightMap edge_weight) -> void
+// Initialize network properties before/after Louvain execution.
+// Factory for any given network and graph with weighted edges.
+template < typename NetworkProperties, typename Graph, typename WeightMap >
+auto network_status(const Graph& g, WeightMap edge_weight) -> NetworkProperties
 {
     using community_type = typename NetworkProperties::community_type;
     using community_traits_type = community_traits< community_type >;
 
+    NetworkProperties status;
     status.total = weight_sum(g, edge_weight);
 
     for (auto i = community_traits_type::first();
@@ -239,9 +233,12 @@ auto update_network_status(
         assert(i < community_traits_type::last());
         community_advance(i);
     }
+
+    return status;
 }
 
-// Returns the neighbor communities of u, mapped with the weighted degrees.
+// Maps each neighbor community with the weighted degree of the node by taking
+// into account only links towards the community.
 template < typename Graph, typename NetworkProperties, typename WeightMap >
 auto neighbor_communities(
     typename boost::graph_traits< Graph >::vertex_descriptor u,
@@ -263,7 +260,8 @@ auto neighbor_communities(
     return res;
 }
 
-// Insert a vertex in community and modify network status.
+// Insert a vertex in community (connected by a given weight) and modify network
+// status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
 inline auto community_insert(
     Vertex u,
@@ -276,7 +274,8 @@ inline auto community_insert(
     status.community_internal[com] += w + get(status.vertex_loop, u);
 }
 
-// Remove a vertex from a community and modify network status.
+// Remove a vertex from a community (connected by a given weight) and modify
+// network status.
 template < typename Vertex, typename NetworkProperties, typename Weight >
 inline auto community_remove(
     Vertex u,
@@ -294,8 +293,7 @@ inline auto community_remove(
 // Orders each community.
 // Called after one level, effectively decreases number of communities.
 template < typename VertexCommunityStorage >
-[[nodiscard]] auto
-renumber_communities(const VertexCommunityStorage& vertex_community)
+auto renumber_communities(const VertexCommunityStorage& vertex_community)
 {
     using community_type = typename VertexCommunityStorage::mapped_type;
     using community_traits_type = community_traits< community_type >;
@@ -383,6 +381,8 @@ inline auto delta_modularity(
     const typename NetworkProperties::community_weight_storage_type& jcoms,
     typename NetworkProperties::community_type jcom) -> Modularity
 {
+    assert(status.total > 0 && "why am I called?");
+    assert(jcoms.contains(jcom));
     const Modularity k_in = get(status.vertex_incident, i);
     const Modularity m = status.total;
     const Modularity s_tot = get(status.community_incident, jcom);
@@ -412,7 +412,8 @@ struct induced_graph
 template < typename Graph, typename EdgeWeightStorage >
 inline auto make_induced_graph(Graph g, EdgeWeightStorage edge_weight)
 {
-    return induced_graph< Graph, EdgeWeightStorage >(std::move(g), edge_weight);
+    return induced_graph< Graph, EdgeWeightStorage >(
+        std::move(g), std::move(edge_weight));
 }
 
 /***********************************************************
@@ -437,7 +438,7 @@ auto modularity_optimization(
     const Graph& g,
     NetworkProperties& status,
     WeightMap edge_weight,
-    Modularity min = 0.0,
+    Modularity min = 0.1,
     UGenerator rng = misc::rng()) -> void
 {
     auto do_loop = true;
@@ -459,7 +460,7 @@ auto modularity_optimization(
             const auto com = get(status.vertex_community, i);
             const auto jcoms = neighbor_communities(i, g, status, edge_weight);
 
-            community_remove(i, com, get(status.vertex_incident, i), status);
+            community_remove(i, com, get_or(jcoms, i, 0), status);
 
             auto best_com = com;
             auto best_inc = 0;
@@ -477,7 +478,7 @@ auto modularity_optimization(
                 }
             }
 
-            community_insert(i, best_com, get(jcoms, best_com), status);
+            community_insert(i, best_com, get_or(jcoms, best_com, 0), status);
 
             if (best_com != com)
                 do_loop = false;
@@ -504,7 +505,6 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
     const VertexCommunityStorage& partition)
 {
     using graph_traits = boost::graph_traits< Graph >;
-    using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
@@ -513,14 +513,20 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
     using weight_storage_type
         = std::unordered_map< edge_type, weight_type, edge_hash >;
 
-    static_assert(std::is_convertible_v< community_type, vertex_type >);
-
     Graph new_g;
     weight_storage_type new_weights;
 
     // Fill vertices.
-    for (auto com : make_set(std::ranges::views::values(partition)))
-        boost::add_vertex(com, new_g);
+    // Results to 1-1 correspondence from communities to vertex descriptors.
+    // We just pad the graph.
+
+    const auto coms = make_set(std::ranges::views::values(partition));
+    assert(!coms.empty());
+    const auto ncoms = *(std::crbegin(coms));
+    assert(static_cast< community_type >(coms.size()) == ncoms);
+
+    for (community_type i = 0; i <= ncoms; ++i)
+        boost::add_vertex(new_g);
 
     // Fill edges.
     for (auto e : boost::make_iterator_range(boost::edges(g)))
@@ -564,6 +570,7 @@ auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
         boost::put(vertex_cluster, u, c++);
 }
 
+// FIXME Must fold
 // NOTE: Currently justs clusters from the fully optimized, last partition.
 template < typename Graph, typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(

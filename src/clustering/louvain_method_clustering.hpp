@@ -30,7 +30,7 @@ auto louvain_method_clustering(
     const Graph& g,
     WeightMap edge_weight,
     ClusterMap vertex_cluster,
-    Modularity min = 0.0,
+    Modularity min = 0.1,
     UGenerator rng = misc::rng()) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -73,7 +73,6 @@ auto louvain_method_clustering(
     }
 
     dendrogram partitions;
-    network status;
     Modularity q { 0 };
 
     // Returns the current partition.
@@ -83,12 +82,12 @@ auto louvain_method_clustering(
         return partitions.back();
     };
 
-    detail::update_network_status(g, status, edge_weight);
+    auto net = detail::network_status< network >(g, edge_weight);
 
-    detail::modularity_optimization(g, status, edge_weight, min, rng);
-    q = detail::modularity< Modularity >(status);
+    detail::modularity_optimization(g, net, edge_weight, min, rng);
+    q = detail::modularity< Modularity >(net);
 
-    auto&& lvl_one_part = detail::renumber_communities(status.vertex_community);
+    auto&& lvl_one_part = detail::renumber_communities(net.vertex_community);
     partitions.push_back(std::move(lvl_one_part));
 
     auto induced = detail::community_aggregation(g, edge_weight, partition());
@@ -97,28 +96,25 @@ auto louvain_method_clustering(
     // occurs.
     do
     {
-        detail::update_network_status(
-            induced.g,
-            status,
-            boost::make_assoc_property_map(induced.edge_weight));
+        auto new_net = detail::network_status< network >(
+            induced.g, boost::make_assoc_property_map(induced.edge_weight));
 
         detail::modularity_optimization(
             induced.g,
-            status,
+            new_net,
             boost::make_assoc_property_map(induced.edge_weight),
             min,
             rng);
 
-        const auto new_q = detail::modularity< Modularity >(status);
-        const auto delta_q = new_q - q;
+        const auto new_q = detail::modularity< Modularity >(new_net);
 
-        if (delta_q < min)
+        if (new_q - q < min)
             break;
 
         q = new_q;
 
-        auto&& new_part = detail::renumber_communities(status.vertex_community);
-        partitions.push_back(std::move(new_part));
+        auto&& new_p = detail::renumber_communities(new_net.vertex_community);
+        partitions.push_back(std::move(new_p));
 
         induced = detail::community_aggregation(
             induced.g,
