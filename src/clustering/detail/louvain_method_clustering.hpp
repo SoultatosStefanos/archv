@@ -140,21 +140,11 @@ inline auto weight_sum(const Graph& g, WeightMap edge_weight)
 template < misc::arithmetic Community >
 struct community_traits
 {
-    // Used to mark non-existent communities.
-    static constexpr auto nil() -> Community
-    {
-        return std::numeric_limits< Community >::min();
-    }
+    using numeric_limits = std::numeric_limits< Community >;
 
-    static constexpr auto first() -> Community
-    {
-        return std::numeric_limits< Community >::min() + 1;
-    }
-
-    static constexpr auto last() -> Community
-    {
-        return std::numeric_limits< Community >::max();
-    }
+    static constexpr auto nil() -> Community { return -1; }
+    static constexpr auto first() -> Community { return 0; }
+    static constexpr auto last() -> Community { return numeric_limits::max(); }
 };
 
 // Advance community com. (Currently com <- com + 1).
@@ -396,48 +386,25 @@ inline auto delta_modularity(
  ***********************************************************/
 
 // Special induced graph used on community aggregation
-template <
-    typename Graph,
-    typename EdgeWeightStorage,
-    typename CommunityVertexStorage,
-    typename VertexCommunityStorage >
+template < typename Graph, typename EdgeWeightStorage >
 struct induced_graph
 {
     using graph_type = Graph;
     using edge_weight_storage_type = EdgeWeightStorage;
-    using community_vertex_storage_type = CommunityVertexStorage;
-    using vertex_community_storage_type = VertexCommunityStorage;
 
     Graph g;
     EdgeWeightStorage edge_weight;
-    CommunityVertexStorage community_vertex;
-    const VertexCommunityStorage* partition { nullptr }; // Created by this.
 
     auto operator==(const induced_graph&) const -> bool = default;
     auto operator!=(const induced_graph&) const -> bool = default;
 };
 
 // Factory for type deduction.
-template <
-    typename Graph,
-    typename EdgeWeightStorage,
-    typename CommunityVertexStorage,
-    typename VertexCommunityStorage >
-inline auto make_induced_graph(
-    Graph g,
-    EdgeWeightStorage edge_weight,
-    CommunityVertexStorage community_vertex,
-    const VertexCommunityStorage* partition = nullptr)
+template < typename Graph, typename EdgeWeightStorage >
+inline auto make_induced_graph(Graph g, EdgeWeightStorage edge_weight)
 {
-    return induced_graph<
-        Graph,
-        EdgeWeightStorage,
-        CommunityVertexStorage,
-        VertexCommunityStorage >(
-        std::move(g),
-        std::move(edge_weight),
-        std::move(community_vertex),
-        partition);
+    return induced_graph< Graph, EdgeWeightStorage >(
+        std::move(g), std::move(edge_weight));
 }
 
 /***********************************************************
@@ -532,7 +499,6 @@ auto community_aggregation(
     using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
-    using community_type = typename VertexCommunityStorage::mapped_type;
 
     using weight_storage_type = std::unordered_map<
         edge_type,
@@ -540,16 +506,21 @@ auto community_aggregation(
         edge_vertices_hash,
         edge_vertices_equal_to >;
 
-    using community_vertex_storage_type
-        = std::unordered_map< community_type, vertex_type >;
+    using std::ranges::views::values;
+
+    static_assert(std::is_arithmetic_v< vertex_type >);
 
     Graph new_g;
     weight_storage_type new_weights;
-    community_vertex_storage_type new_vertices;
 
     // Fill vertices.
-    for (auto com : make_set(std::ranges::views::values(partition)))
-        new_vertices[com] = boost::add_vertex(new_g);
+    // There is an 1-1 correspondence between each vertex and community, since
+    // the communities are ordered.
+    for (auto c [[maybe_unused]] : make_set(values(partition)))
+    {
+        [[maybe_unused]] const auto v = boost::add_vertex(new_g);
+        assert(static_cast< vertex_type >(c) == v && "1-1 correspondence");
+    }
 
     // Fill edges.
     for (auto e : boost::make_iterator_range(boost::edges(g)))
@@ -559,16 +530,13 @@ auto community_aggregation(
         const auto com1 = get(partition, boost::source(e, g));
         const auto com2 = get(partition, boost::target(e, g));
 
-        const auto com1v = get(new_vertices, com1);
-        const auto com2v = get(new_vertices, com2);
-
 #ifndef NDEBUG
         const auto new_verts = subrange(boost::vertices(new_g));
-        assert(std::ranges::find(new_verts, com1v) != std::cend(new_verts));
-        assert(std::ranges::find(new_verts, com2v) != std::cend(new_verts));
+        assert(std::ranges::find(new_verts, com1) != std::cend(new_verts));
+        assert(std::ranges::find(new_verts, com2) != std::cend(new_verts));
 #endif
 
-        const auto [curr_e, curr_exists] = boost::edge(com1v, com2v, new_g);
+        const auto [curr_e, curr_exists] = boost::edge(com1, com2, new_g);
         if (curr_exists)
         {
             assert(new_weights.contains(curr_e));
@@ -576,16 +544,12 @@ auto community_aggregation(
             continue;
         }
 
-        const auto [new_e, new_exists] = boost::add_edge(com1v, com2v, new_g);
+        const auto [new_e, new_exists] = boost::add_edge(com1, com2, new_g);
         assert(new_exists);
         new_weights[new_e] = w;
     }
 
-    return make_induced_graph(
-        std::move(new_g),
-        std::move(new_weights),
-        std::move(new_vertices),
-        &partition);
+    return make_induced_graph(std::move(new_g), std::move(new_weights));
 }
 
 /***********************************************************

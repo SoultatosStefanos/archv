@@ -11,62 +11,11 @@ namespace
 using graph = boost::
     adjacency_list< boost::vecS, boost::vecS, boost::undirectedS, int, int >;
 
-using cluster = std::size_t;
+using cluster = int;
 using cluster_map = std::unordered_map< graph::vertex_descriptor, cluster >;
 
 using weight_map
     = decltype(boost::get(boost::edge_bundle, std::declval< graph >()));
-
-TEST(louvain_method_clustering_tests, given_0_vertices_then_0_clusters)
-{
-    auto g = graph();
-    auto clusters = cluster_map();
-
-    clustering::louvain_method_clustering(
-        g, weight_map(), boost::make_assoc_property_map(clusters));
-
-    ASSERT_EQ(clusters.size(), 0);
-}
-
-TEST(louvain_method_clustering_tests, given_0_edges_then_vertices_are_isolated)
-{
-    auto g = graph();
-    const auto v0 = boost::add_vertex(0, g);
-    const auto v1 = boost::add_vertex(1, g);
-    const auto v2 = boost::add_vertex(2, g);
-    const auto v3 = boost::add_vertex(3, g);
-    auto clusters = cluster_map();
-
-    clustering::louvain_method_clustering(
-        g, weight_map(), boost::make_assoc_property_map(clusters));
-
-    ASSERT_EQ(clusters.size(), 4);
-    EXPECT_EQ(clusters.at(v0), 0);
-    EXPECT_EQ(clusters.at(v1), 1);
-    EXPECT_EQ(clusters.at(v2), 2);
-    EXPECT_EQ(clusters.at(v3), 3);
-}
-
-// TEST(louvain_method_clustering_tests, poc)
-// {
-//     auto g = graph();
-//     const auto v0 = boost::add_vertex(0, g);
-//     const auto v1 = boost::add_vertex(1, g);
-//     const auto v2 = boost::add_vertex(2, g);
-//     const auto v3 = boost::add_vertex(3, g);
-//     boost::add_edge(v0, v1, 2, g);
-//     boost::add_edge(v1, v2, 3, g);
-//     boost::add_edge(v2, v1, 4, g);
-//     boost::add_edge(v1, v3, 1, g);
-//     boost::add_edge(v3, v1, 2, g);
-//     boost::add_edge(v0, v3, 0, g);
-//     auto clusters = cluster_map();
-
-//     clustering::louvain_method_clustering(
-//         g, weight_map(), boost::make_assoc_property_map(clusters));
-
-//     ASSERT_EQ(clusters.size(), 4);
-// }
 
 TEST(
     louvain_method_details_tests,
@@ -144,17 +93,6 @@ TEST(
 }
 
 TEST(
-    louvain_method_details_tests,
-    community_traits_of_unsigned_means_that_nil_is_0_first_is_1_and_last_is_max)
-{
-    EXPECT_EQ(clustering::detail::community_traits< cluster >::nil(), 0);
-    EXPECT_EQ(clustering::detail::community_traits< cluster >::first(), 1);
-    EXPECT_EQ(
-        clustering::detail::community_traits< cluster >::last(),
-        std::numeric_limits< cluster >::max());
-}
-
-TEST(
     louvain_method_details_tests, community_advance_increments_community_by_one)
 {
     cluster i = 0;
@@ -197,10 +135,10 @@ TEST(
     auto status = network_status< network >(g, weight_map());
 
     ASSERT_EQ(status.vertex_community.size(), 4);
-    EXPECT_EQ(status.vertex_community.at(v0), 1);
-    EXPECT_EQ(status.vertex_community.at(v1), 2);
-    EXPECT_EQ(status.vertex_community.at(v2), 3);
-    EXPECT_EQ(status.vertex_community.at(v3), 4);
+    EXPECT_EQ(status.vertex_community.at(v0), 0);
+    EXPECT_EQ(status.vertex_community.at(v1), 1);
+    EXPECT_EQ(status.vertex_community.at(v2), 2);
+    EXPECT_EQ(status.vertex_community.at(v3), 3);
 }
 
 TEST(
@@ -219,10 +157,10 @@ TEST(
     auto status = network_status< network >(g, weight_map());
 
     ASSERT_EQ(status.community_incident.size(), 4);
+    EXPECT_EQ(status.community_incident.at(0), 2);
     EXPECT_EQ(status.community_incident.at(1), 2);
-    EXPECT_EQ(status.community_incident.at(2), 2);
+    EXPECT_EQ(status.community_incident.at(2), 0);
     EXPECT_EQ(status.community_incident.at(3), 0);
-    EXPECT_EQ(status.community_incident.at(4), 0);
 }
 
 TEST(
@@ -288,10 +226,10 @@ TEST(
     auto status = network_status< network >(g, weight_map());
 
     ASSERT_EQ(status.community_internal.size(), 4);
-    EXPECT_EQ(status.community_internal.at(1), 69420);
+    EXPECT_EQ(status.community_internal.at(0), 69420);
+    EXPECT_EQ(status.community_internal.at(1), 0);
     EXPECT_EQ(status.community_internal.at(2), 0);
     EXPECT_EQ(status.community_internal.at(3), 0);
-    EXPECT_EQ(status.community_internal.at(4), 0);
 }
 
 TEST(
@@ -353,10 +291,10 @@ TEST(
     const auto coms = renumber_communities(status.vertex_community);
 
     ASSERT_EQ(coms.size(), 4);
-    EXPECT_EQ(coms.at(v0), 3);
-    EXPECT_EQ(coms.at(v1), 2);
-    EXPECT_EQ(coms.at(v2), 1);
-    EXPECT_EQ(coms.at(v3), 1);
+    EXPECT_EQ(coms.at(v0), 2);
+    EXPECT_EQ(coms.at(v1), 1);
+    EXPECT_EQ(coms.at(v2), 0);
+    EXPECT_EQ(coms.at(v3), 0);
 }
 
 TEST(louvain_method_details_tests, modularity_of_empty_network_is_zero)
@@ -459,7 +397,6 @@ TEST(
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_TRUE(boost::isomorphism(induced.g, g));
-    EXPECT_EQ(induced.partition, &part);
     EXPECT_EQ(induced.edge_weight.size(), 0);
 }
 
@@ -474,13 +411,12 @@ TEST(
     graph g;
     const auto v0 = boost::add_vertex(g);
     const auto v1 = boost::add_vertex(g);
-    vertex_community_storage part { { v0, 1 }, { v1, 1 } };
+    vertex_community_storage part { { v0, 0 }, { v1, 0 } };
 
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_EQ(boost::num_vertices(induced.g), 1);
     EXPECT_EQ(boost::num_edges(induced.g), 0);
-    EXPECT_EQ(induced.partition, &part);
     EXPECT_EQ(induced.edge_weight.size(), 0);
 }
 
@@ -496,13 +432,12 @@ TEST(
     const auto v0 = boost::add_vertex(g);
     const auto v1 = boost::add_vertex(g);
     boost::add_edge(v0, v1, 33, g);
-    vertex_community_storage part { { v0, 1 }, { v1, 1 } };
+    vertex_community_storage part { { v0, 0 }, { v1, 0 } };
 
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_EQ(boost::num_vertices(induced.g), 1);
     EXPECT_EQ(boost::num_edges(induced.g), 1);
-    EXPECT_EQ(induced.partition, &part);
     ASSERT_EQ(induced.edge_weight.size(), 1);
     ASSERT_TRUE(induced.edge_weight.contains(*boost::edges(induced.g).first));
     EXPECT_EQ(induced.edge_weight.at(*boost::edges(induced.g).first), 33);
@@ -525,13 +460,12 @@ TEST(
     const auto v2 = boost::add_vertex(g);
     boost::add_edge(v0, v1, 33, g);
     boost::add_edge(v0, v2, 22, g);
-    vertex_community_storage part { { v0, 1 }, { v1, 1 }, { v2, 1 } };
+    vertex_community_storage part { { v0, 0 }, { v1, 0 }, { v2, 0 } };
 
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_EQ(boost::num_vertices(induced.g), 1);
     EXPECT_EQ(boost::num_edges(induced.g), 1);
-    EXPECT_EQ(induced.partition, &part);
     ASSERT_EQ(induced.edge_weight.size(), 1);
     ASSERT_TRUE(induced.edge_weight.contains(*boost::edges(induced.g).first));
     EXPECT_EQ(induced.edge_weight.at(*boost::edges(induced.g).first), 55);
@@ -551,13 +485,12 @@ TEST(
     graph g;
     const auto v0 = boost::add_vertex(g);
     const auto v1 = boost::add_vertex(g);
-    vertex_community_storage part { { v0, 1 }, { v1, 2 } };
+    vertex_community_storage part { { v0, 0 }, { v1, 1 } };
 
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_EQ(boost::num_vertices(induced.g), 2);
     EXPECT_EQ(boost::num_edges(induced.g), 0);
-    EXPECT_EQ(induced.partition, &part);
     ASSERT_EQ(induced.edge_weight.size(), 0);
 }
 
@@ -578,18 +511,17 @@ TEST(
     boost::add_edge(v2, v3, 4, g);
     boost::add_edge(v2, v0, 6, g);
     vertex_community_storage part {
-        { v0, 1 }, { v1, 1 }, { v2, 2 }, { v3, 2 }
+        { v0, 0 }, { v1, 0 }, { v2, 1 }, { v3, 1 }
     };
 
     const auto induced = community_aggregation(g, weight_map(), part);
 
     EXPECT_EQ(boost::num_vertices(induced.g), 2);
     EXPECT_EQ(boost::num_edges(induced.g), 3);
-    EXPECT_EQ(induced.partition, &part);
     ASSERT_EQ(induced.edge_weight.size(), 3);
 
-    const auto vv0 = induced.community_vertex.at(1);
-    const auto vv1 = induced.community_vertex.at(2);
+    const auto vv0 = 0;
+    const auto vv1 = 1;
 
     const auto [ee0, ee0_ok] = boost::edge(vv0, vv0, induced.g);
     ASSERT_TRUE(ee0_ok);
@@ -606,5 +538,56 @@ TEST(
     ASSERT_TRUE(induced.edge_weight.contains(ee2));
     EXPECT_EQ(induced.edge_weight.at(ee2), 6);
 }
+
+TEST(louvain_method_clustering_tests, given_0_vertices_then_0_clusters)
+{
+    auto g = graph();
+    auto clusters = cluster_map();
+
+    clustering::louvain_method_clustering(
+        g, weight_map(), boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.size(), 0);
+}
+
+TEST(louvain_method_clustering_tests, given_0_edges_then_vertices_are_isolated)
+{
+    auto g = graph();
+    const auto v0 = boost::add_vertex(0, g);
+    const auto v1 = boost::add_vertex(1, g);
+    const auto v2 = boost::add_vertex(2, g);
+    const auto v3 = boost::add_vertex(3, g);
+    auto clusters = cluster_map();
+
+    clustering::louvain_method_clustering(
+        g, weight_map(), boost::make_assoc_property_map(clusters));
+
+    ASSERT_EQ(clusters.size(), 4);
+    EXPECT_EQ(clusters.at(v0), 0);
+    EXPECT_EQ(clusters.at(v1), 1);
+    EXPECT_EQ(clusters.at(v2), 2);
+    EXPECT_EQ(clusters.at(v3), 3);
+}
+
+// TEST(louvain_method_clustering_tests, poc)
+// {
+//     auto g = graph();
+//     const auto v0 = boost::add_vertex(0, g);
+//     const auto v1 = boost::add_vertex(1, g);
+//     const auto v2 = boost::add_vertex(2, g);
+//     const auto v3 = boost::add_vertex(3, g);
+//     boost::add_edge(v0, v1, 2, g);
+//     boost::add_edge(v1, v2, 3, g);
+//     boost::add_edge(v2, v1, 4, g);
+//     boost::add_edge(v1, v3, 1, g);
+//     boost::add_edge(v3, v1, 2, g);
+//     boost::add_edge(v0, v3, 0, g);
+//     auto clusters = cluster_map();
+
+//     clustering::louvain_method_clustering(
+//         g, weight_map(), boost::make_assoc_property_map(clusters));
+
+//     ASSERT_EQ(clusters.size(), 4);
+// }
 
 } // namespace

@@ -103,19 +103,19 @@ auto louvain_method_clustering(
     auto&& lvl_one_part = detail::renumber_communities(net.vertex_community);
     partitions.push_back(std::move(lvl_one_part));
 
-    auto induced = detail::community_aggregation(g, edge_weight, partition());
+    auto sub = detail::community_aggregation(g, edge_weight, partition());
 
     // Keeps partitioning the graph until no significant modularity increase
     // occurs.
     do
     {
         auto new_net = detail::network_status< network >(
-            induced.g, boost::make_assoc_property_map(induced.edge_weight));
+            sub.g, boost::make_assoc_property_map(sub.edge_weight));
 
         detail::modularity_optimization(
-            induced.g,
+            sub.g,
             new_net,
-            boost::make_assoc_property_map(induced.edge_weight),
+            boost::make_assoc_property_map(sub.edge_weight),
             min,
             rng);
 
@@ -129,9 +129,9 @@ auto louvain_method_clustering(
         auto&& new_p = detail::renumber_communities(new_net.vertex_community);
         partitions.push_back(std::move(new_p));
 
-        induced = detail::community_aggregation(
-            induced.g,
-            boost::make_assoc_property_map(induced.edge_weight),
+        sub = detail::community_aggregation(
+            sub.g,
+            boost::make_assoc_property_map(sub.edge_weight),
             partition());
 
     } while (true);
