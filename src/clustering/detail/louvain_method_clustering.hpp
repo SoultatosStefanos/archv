@@ -10,7 +10,6 @@
 #include "utility.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_utility.hpp>
 #include <cassert>
 #include <cmath>
 #include <concepts>
@@ -566,7 +565,7 @@ auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
         boost::put(vertex_cluster, u, c++);
 }
 
-// Utility, returns the community of a vertex from a unwrapped dendrogram.
+// Utility, returns the community of a vertex from an unwrapped dendrogram.
 template < typename Dendrogram, typename Vertex >
 auto community(
     const Dendrogram& parts,
@@ -583,7 +582,7 @@ auto community(
         return community(parts, part_iter + 1, get(*part_iter, u));
 }
 
-// Utility, returns the community of a vertex from a unwrapped dendrogram.
+// Utility, returns the community of a vertex from an unwrapped dendrogram.
 template < typename Dendrogram, typename Vertex >
 inline auto community(const Dendrogram& parts, Vertex u)
 {

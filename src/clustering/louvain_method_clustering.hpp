@@ -5,8 +5,8 @@
 #define CLUSTERING_LOUVAIN_METHOD_CLUSTERING_HPP
 
 #include "detail/louvain_method_clustering.hpp"
+#include "misc/random.hpp"
 
-#include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <concepts>
@@ -71,6 +71,7 @@ auto louvain_method_clustering(
     using dendrogram
         = detail::dendrogram< typename network::vertex_community_storage_type >;
 
+    static_assert(std::is_arithmetic_v< vertex_type >);
     static_assert(std::is_arithmetic_v< community_type >);
     static_assert(std::is_arithmetic_v< weight_type >);
 
@@ -86,53 +87,46 @@ auto louvain_method_clustering(
     }
 
     dendrogram partitions;
-    Modularity q { 0 };
+    Modularity curr_mod { 0 };
 
-    // Returns the current partition.
-    const auto partition = [&]() -> const auto&
-    {
-        assert(!partitions.empty());
-        return partitions.back();
-    };
+    auto status = detail::network_status< network >(g, edge_weight);
 
-    auto net = detail::network_status< network >(g, edge_weight);
+    detail::modularity_optimization(g, status, edge_weight, min, rng);
+    curr_mod = detail::modularity< Modularity >(status);
 
-    detail::modularity_optimization(g, net, edge_weight, min, rng);
-    q = detail::modularity< Modularity >(net);
-
-    auto&& lvl_one_part = detail::renumber_communities(net.vertex_community);
-    partitions.push_back(std::move(lvl_one_part));
-
-    auto sub = detail::community_aggregation(g, edge_weight, partition());
+    auto&& lvl1_part = detail::renumber_communities(status.vertex_community);
+    auto curr_sub = detail::community_aggregation(g, edge_weight, lvl1_part);
+    partitions.push_back(std::move(lvl1_part));
 
     // Keeps partitioning the graph until no significant modularity increase
     // occurs.
     do
     {
-        auto new_net = detail::network_status< network >(
-            sub.g, boost::make_assoc_property_map(sub.edge_weight));
+        auto new_status = detail::network_status< network >(
+            curr_sub.g, boost::make_assoc_property_map(curr_sub.edge_weight));
 
         detail::modularity_optimization(
-            sub.g,
-            new_net,
-            boost::make_assoc_property_map(sub.edge_weight),
+            curr_sub.g,
+            new_status,
+            boost::make_assoc_property_map(curr_sub.edge_weight),
             min,
             rng);
 
-        const auto new_q = detail::modularity< Modularity >(new_net);
+        const auto new_mod = detail::modularity< Modularity >(new_status);
 
-        if (new_q - q < min)
+        if (new_mod - curr_mod < min)
             break;
 
-        q = new_q;
+        curr_mod = new_mod;
 
-        auto&& new_p = detail::renumber_communities(new_net.vertex_community);
-        partitions.push_back(std::move(new_p));
+        auto&& part = detail::renumber_communities(new_status.vertex_community);
 
-        sub = detail::community_aggregation(
-            sub.g,
-            boost::make_assoc_property_map(sub.edge_weight),
-            partition());
+        curr_sub = detail::community_aggregation(
+            curr_sub.g,
+            boost::make_assoc_property_map(curr_sub.edge_weight),
+            part);
+
+        partitions.push_back(std::move(part));
 
     } while (true);
 
