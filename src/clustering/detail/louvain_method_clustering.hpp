@@ -603,7 +603,7 @@ auto cluster_from_dendrogram(
 
     assert(!partitions.empty());
 
-    // Copy communities from last partition to cluster map.
+    // Copy communities from dendrogram to cluster map.
     for (auto u : boost::make_iterator_range(boost::vertices(g)))
         boost::put(vertex_cluster, u, community(partitions, u));
 }
