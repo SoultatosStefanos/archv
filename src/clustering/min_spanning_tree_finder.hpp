@@ -4,7 +4,7 @@
 #ifndef CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 #define CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 
-#include "detail/hash.hpp"
+#include "detail/utility.hpp"
 
 #include <boost/graph/graph_concepts.hpp>
 #include <memory>

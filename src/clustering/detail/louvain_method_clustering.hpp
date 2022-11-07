@@ -4,13 +4,14 @@
 #ifndef CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 
-#include "hash.hpp"
 #include "misc/algorithm.hpp"
 #include "misc/concepts.hpp"
 #include "misc/random.hpp"
+#include "utility.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_utility.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
 #include <concepts>
@@ -395,25 +396,48 @@ inline auto delta_modularity(
  ***********************************************************/
 
 // Special induced graph used on community aggregation
-template < typename Graph, typename EdgeWeightStorage >
+template <
+    typename Graph,
+    typename EdgeWeightStorage,
+    typename CommunityVertexStorage,
+    typename VertexCommunityStorage >
 struct induced_graph
 {
     using graph_type = Graph;
     using edge_weight_storage_type = EdgeWeightStorage;
+    using community_vertex_storage_type = CommunityVertexStorage;
+    using vertex_community_storage_type = VertexCommunityStorage;
 
     Graph g;
     EdgeWeightStorage edge_weight;
+    CommunityVertexStorage community_vertex;
+    const VertexCommunityStorage* partition { nullptr }; // Created by this.
 
     auto operator==(const induced_graph&) const -> bool = default;
     auto operator!=(const induced_graph&) const -> bool = default;
 };
 
 // Factory for type deduction.
-template < typename Graph, typename EdgeWeightStorage >
-inline auto make_induced_graph(Graph g, EdgeWeightStorage edge_weight)
+template <
+    typename Graph,
+    typename EdgeWeightStorage,
+    typename CommunityVertexStorage,
+    typename VertexCommunityStorage >
+inline auto make_induced_graph(
+    Graph g,
+    EdgeWeightStorage edge_weight,
+    CommunityVertexStorage community_vertex,
+    const VertexCommunityStorage* partition = nullptr)
 {
-    return induced_graph< Graph, EdgeWeightStorage >(
-        std::move(g), std::move(edge_weight));
+    return induced_graph<
+        Graph,
+        EdgeWeightStorage,
+        CommunityVertexStorage,
+        VertexCommunityStorage >(
+        std::move(g),
+        std::move(edge_weight),
+        std::move(community_vertex),
+        partition);
 }
 
 /***********************************************************
@@ -497,36 +521,35 @@ auto modularity_optimization(
 // Returns new one.
 // Weight map is expected to be either the initial, or an adaptor from the
 // cached storage.
-// FIXME
 template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
-[[nodiscard]] auto community_aggregation(
+auto community_aggregation(
     const Graph& g,
     WeightMap edge_weight,
     const VertexCommunityStorage& partition)
 {
     using graph_traits = boost::graph_traits< Graph >;
+    using vertex_type = typename graph_traits::vertex_descriptor;
     using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     using community_type = typename VertexCommunityStorage::mapped_type;
 
-    using weight_storage_type
-        = std::unordered_map< edge_type, weight_type, edge_hash >;
+    using weight_storage_type = std::unordered_map<
+        edge_type,
+        weight_type,
+        edge_vertices_hash,
+        edge_vertices_equal_to >;
+
+    using community_vertex_storage_type
+        = std::unordered_map< community_type, vertex_type >;
 
     Graph new_g;
     weight_storage_type new_weights;
+    community_vertex_storage_type new_vertices;
 
     // Fill vertices.
-    // Results to 1-1 correspondence from communities to vertex descriptors.
-    // We just pad the graph.
-
-    const auto coms = make_set(std::ranges::views::values(partition));
-    assert(!coms.empty());
-    const auto ncoms = *(std::crbegin(coms));
-    assert(static_cast< community_type >(coms.size()) == ncoms);
-
-    for (community_type i = 0; i <= ncoms; ++i)
-        boost::add_vertex(new_g);
+    for (auto com : make_set(std::ranges::views::values(partition)))
+        new_vertices[com] = boost::add_vertex(new_g);
 
     // Fill edges.
     for (auto e : boost::make_iterator_range(boost::edges(g)))
@@ -536,22 +559,33 @@ template < typename Graph, typename WeightMap, typename VertexCommunityStorage >
         const auto com1 = get(partition, boost::source(e, g));
         const auto com2 = get(partition, boost::target(e, g));
 
+        const auto com1v = get(new_vertices, com1);
+        const auto com2v = get(new_vertices, com2);
+
 #ifndef NDEBUG
         const auto new_verts = subrange(boost::vertices(new_g));
-        assert(std::ranges::find(new_verts, com1) != std::cend(new_verts));
-        assert(std::ranges::find(new_verts, com2) != std::cend(new_verts));
+        assert(std::ranges::find(new_verts, com1v) != std::cend(new_verts));
+        assert(std::ranges::find(new_verts, com2v) != std::cend(new_verts));
 #endif
 
-        const auto [com_e, com_exists] = boost::edge(com1, com2, new_g);
-        const auto com_w = com_exists ? get(new_weights, com_e) : 0;
+        const auto [curr_e, curr_exists] = boost::edge(com1v, com2v, new_g);
+        if (curr_exists)
+        {
+            assert(new_weights.contains(curr_e));
+            new_weights[curr_e] += w;
+            continue;
+        }
 
-        const auto new_w = w + com_w;
-        const auto [new_e, new_exists] = boost::add_edge(com1, com2, new_g);
+        const auto [new_e, new_exists] = boost::add_edge(com1v, com2v, new_g);
         assert(new_exists);
-        new_weights[new_e] = new_w;
+        new_weights[new_e] = w;
     }
 
-    return make_induced_graph(std::move(new_g), std::move(new_weights));
+    return make_induced_graph(
+        std::move(new_g),
+        std::move(new_weights),
+        std::move(new_vertices),
+        &partition);
 }
 
 /***********************************************************

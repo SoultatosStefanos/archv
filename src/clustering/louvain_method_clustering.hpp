@@ -15,11 +15,24 @@ namespace clustering
 {
 
 // Generic Louvain Method clustering algorithm implementation.
+//
+// This algorithm is divided in 2 phases: Modularity Optimization and Community
+// Aggregation. Just after the first is completed, the second takes place.
+// Louvain will iteratively go through both until we get an optimized partition
+// of the network. Modularity Optimization - At the beginning of this phase, the
+// algorithm will randomly order all the nodes in the network such that, one by
+// one, it will remove and insert it in a different community. This will
+// continue until no significant variation in modularity is achieved (given by a
+// constant defined below - min). Community Aggregation - After finalizing the
+// first pass, every node belonging to the same community is merged into a
+// single giant one and the links connecting these will be formed by the sum of
+// the ones previously connecting nodes from the same different communities.
+// From now on, there will also exist self-loops that represent the sum of all
+// links in a given community (strictly connecting nodes inside of it) before
+// being collapsed into a single one.
+//
 // See: https://en.wikipedia.org/wiki/Louvain_method
-// Uses the .js implementation from:
-// https://github.com/upphiminn/jLouvain/blob/master/src/jLouvain.js
 // NOTE: Currently only taking into account out edges.
-// Must we dispatch on bidirectional graphs?
 template <
     typename Graph,
     typename WeightMap,

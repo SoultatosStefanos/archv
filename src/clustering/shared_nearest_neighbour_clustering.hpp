@@ -4,7 +4,7 @@
 #ifndef CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 #define CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 
-#include "detail/hash.hpp"
+#include "detail/utility.hpp"
 #include "detail/shared_nearest_neighbour_clustering.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
