@@ -655,5 +655,15 @@
 
 # 05 / 11 / 2022
 
-	+ [ ] Louvain Method
+	+ [x] Louvain Method
 
+
+# 07 / 11 / 2022
+
+	+ [ ] Fix cluster type typedef
+
+	+ [ ] Implement the rest of the backend objects for louvain clustering
+
+	+ [ ] Introduce the louvain min parameter on the clustering backend
+
+	+ [?] Alternatives to rendering materials for clustering
