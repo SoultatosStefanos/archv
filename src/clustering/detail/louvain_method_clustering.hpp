@@ -11,7 +11,6 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_utility.hpp>
-#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
 #include <concepts>
@@ -539,7 +538,6 @@ auto community_aggregation(
         const auto [curr_e, curr_exists] = boost::edge(com1, com2, new_g);
         if (curr_exists)
         {
-            assert(new_weights.contains(curr_e));
             new_weights[curr_e] += w;
             continue;
         }
@@ -568,7 +566,30 @@ auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
         boost::put(vertex_cluster, u, c++);
 }
 
-// FIXME Must fold
+// Utility, returns the community of a vertex from a unwrapped dendrogram.
+template < typename Dendrogram, typename Vertex >
+auto community(
+    const Dendrogram& parts,
+    typename Dendrogram::const_iterator part_iter,
+    Vertex u)
+{
+    assert(!parts.empty());
+    assert(part_iter != std::cend(parts));
+
+    const bool on_last_partition = (part_iter == std::cend(parts) - 1);
+    if (on_last_partition)
+        return get(*part_iter, u);
+    else
+        return community(parts, part_iter + 1, get(*part_iter, u));
+}
+
+// Utility, returns the community of a vertex from a unwrapped dendrogram.
+template < typename Dendrogram, typename Vertex >
+inline auto community(const Dendrogram& parts, Vertex u)
+{
+    return community(parts, std::cbegin(parts), u);
+}
+
 // NOTE: Currently justs clusters from the fully optimized, last partition.
 template < typename Graph, typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(
@@ -582,15 +603,11 @@ auto cluster_from_dendrogram(
 
     static_assert(std::is_convertible_v< community_type, cluster_type >);
 
-    // Take fully optimized partition.
     assert(!partitions.empty());
-    const auto& partition = partitions.back();
-
-    assert(partition.size() == boost::num_vertices(g));
 
     // Copy communities from last partition to cluster map.
     for (auto u : boost::make_iterator_range(boost::vertices(g)))
-        boost::put(vertex_cluster, u, get(partition, u));
+        boost::put(vertex_cluster, u, community(partitions, u));
 }
 
 } // namespace clustering::detail
