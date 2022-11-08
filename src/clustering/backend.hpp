@@ -92,11 +92,11 @@ private:
         = boost::signals2::signal< void(snn_threshold_type) >;
 
 public:
-    using clusters_slot = clusters_signal::slot_type;
-    using clusterer_slot = clusterer_signal::slot_type;
-    using mst_finder_slot = mst_finder_signal::slot_type;
-    using k_slot = k_signal::slot_type;
-    using snn_thres_slot = snn_thres_signal::slot_type;
+    using clusters_slot = typename clusters_signal::slot_type;
+    using clusterer_slot = typename clusterer_signal::slot_type;
+    using mst_finder_slot = typename mst_finder_signal::slot_type;
+    using k_slot = typename k_signal::slot_type;
+    using snn_thres_slot = typename snn_thres_signal::slot_type;
     using connection = boost::signals2::connection;
 
     backend(

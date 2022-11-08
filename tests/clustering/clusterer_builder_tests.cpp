@@ -126,4 +126,23 @@ TEST_F(
     ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
 }
 
+TEST_F(
+    clustering_cluster_builder_tests,
+    given_louvain_method_clusterer_id_returns_appropriate_implementation)
+{
+    using expected_t
+        = clustering::louvain_method_clusterer< graph, weight_map >;
+
+    constexpr auto id = clustering::louvain_method_clusterer_id;
+    static_assert(clustering::is_clusterer_plugged_in(id));
+
+    const auto clusterer = builder->build_clusterer(id);
+
+    ASSERT_NE(clusterer, nullptr);
+    EXPECT_EQ(clusterer->id(), id);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
+    const auto& downcasted = static_cast< const expected_t& >(*clusterer);
+    // TODO Assert for min
+}
+
 } // namespace

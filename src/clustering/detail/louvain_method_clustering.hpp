@@ -46,7 +46,7 @@ template < typename AssociativeContainer >
 }
 
 // Safe map access.
-// NOTE: Maybe use get_or< 0 >(data, key) here.
+// NOTE: Maybe use get_or(data, key, 0) here.
 template < typename AssociativeContainer >
 inline auto
 get(const AssociativeContainer& data,

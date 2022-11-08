@@ -5,6 +5,7 @@
 #define CLUSTERING_CLUSTERER_BUILDER_HPP
 
 #include "k_spanning_tree_clusterer.hpp"
+#include "louvain_method_clusterer.hpp"
 #include "maximal_clique_enumeration_clusterer.hpp"
 #include "plugin.hpp"
 #include "shared_nearest_neighbour_clusterer.hpp"

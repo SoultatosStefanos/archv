@@ -6,9 +6,9 @@ namespace rendering
 {
 
 degrees_ranked_backend::degrees_ranked_backend(config_data_type degree_data)
-: m_cfg { degree_data }
-, m_in_degree_data { degree_data.in_data }
-, m_out_degree_data { degree_data.out_data }
+: m_cfg { std::move(degree_data) }
+, m_in_degree_data { m_cfg.in_data }
+, m_out_degree_data { m_cfg.out_data }
 {
 }
 
