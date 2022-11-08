@@ -23,11 +23,13 @@ constexpr id_t k_spanning_tree_clusterer_id = "k-Spanning Tree";
 constexpr id_t snn_clusterer_id = "Shared Nearest Neighbour";
 constexpr id_t strong_components_clusterer_id = "Strong Components";
 constexpr id_t max_clique_enum_clusterer_id = "Maximal Clique Enumeration";
+constexpr id_t louvain_method_clusterer_id = "Louvain Method";
 
 constexpr auto clusterer_ids = std::array { k_spanning_tree_clusterer_id,
                                             snn_clusterer_id,
                                             strong_components_clusterer_id,
-                                            max_clique_enum_clusterer_id };
+                                            max_clique_enum_clusterer_id,
+                                            louvain_method_clusterer_id };
 
 constexpr auto is_clusterer_plugged_in(id_t id) -> bool
 {
@@ -38,6 +40,7 @@ static_assert(is_clusterer_plugged_in(k_spanning_tree_clusterer_id));
 static_assert(is_clusterer_plugged_in(snn_clusterer_id));
 static_assert(is_clusterer_plugged_in(strong_components_clusterer_id));
 static_assert(is_clusterer_plugged_in(max_clique_enum_clusterer_id));
+static_assert(is_clusterer_plugged_in(louvain_method_clusterer_id));
 
 /***********************************************************
  * Min Spanning Tree Finders                               *
