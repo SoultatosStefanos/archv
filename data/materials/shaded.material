@@ -1,0 +1,38 @@
+material Shaded/LightGreen
+{
+	receive_shadows on
+	
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			ambient 0.1 0.34 0.21
+			diffuse 0.4 0.64 0.51
+		}
+	}
+}
+material Shaded/MetalGray
+{
+	receive_shadows on
+	
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			ambient 0 0.1 0.1
+			diffuse 0.7 1 1
+
+			rtshader_system 
+            {
+                lighting_stage metal_roughness
+                texturing_stage late_add_blend
+            }
+		}
+	}
+}

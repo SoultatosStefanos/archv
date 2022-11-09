@@ -1,5 +1,7 @@
-material Mono/Black
+material Solid/Black
 {
+	receive_shadows off
+
 	technique
 	{
 		pass
@@ -14,8 +16,10 @@ material Mono/Black
 		}
 	}
 }
-material Mono/Gray
+material Solid/Gray
 {
+	receive_shadows off
+
 	technique
 	{
 		pass
@@ -30,8 +34,10 @@ material Mono/Gray
 		}
 	}
 }
-material Mono/DarkGray
+material Solid/DarkGray
 {
+	receive_shadows off
+
 	technique
 	{
 		pass
@@ -46,24 +52,10 @@ material Mono/DarkGray
 		}
 	}
 }
-material Mono/DarkGray2
+material Solid/White
 {
-	technique
-	{
-		pass
-		{
-			lighting off
-			depth_write off
+	receive_shadows off
 
-			texture_unit
-			{
-				colour_op_ex source1 src_manual src_current 0 0 0.06
-			}
-		}
-	}
-}
-material Mono/White
-{
 	technique
 	{
 		pass
@@ -78,8 +70,10 @@ material Mono/White
 		}
 	}
 }
-material Mono/Yellow
+material Solid/Yellow
 {
+	receive_shadows off
+
 	technique
 	{
 		pass
@@ -90,24 +84,6 @@ material Mono/Yellow
 			texture_unit
 			{
 				colour_op_ex source1 src_manual src_current 0.9 0.9 0
-			}
-		}
-	}
-}
-material Mono/LightGreen
-{
-	receive_shadows on
-	
-	technique
-	{
-		pass
-		{
-			lighting on
-			depth_write on
-
-			texture_unit
-			{
-				colour_op_ex source1 src_manual src_current 0.4 0.64 0.51
 			}
 		}
 	}

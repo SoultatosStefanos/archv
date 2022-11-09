@@ -674,6 +674,7 @@ auto application::prepare_graph_configurator() -> void
     const auto& cfg = m_graph_renderer->config_data();
 
     graph_gui.set_node_mesh(cfg.vertex_mesh);
+    graph_gui.set_node_material(cfg.vertex_material);
     graph_gui.set_node_scale(to_scale(cfg.vertex_scale));
     graph_gui.set_node_font(cfg.vertex_id_font_name);
     graph_gui.set_node_font_color(to_rgba(cfg.vertex_id_color));
