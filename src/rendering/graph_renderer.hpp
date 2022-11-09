@@ -484,8 +484,9 @@ inline auto graph_renderer<
     DegreesEvaluator,
     ClusterColorCoder >::render_clusters(ClusterMap vertex_cluster) -> void
 {
-    BOOST_CONCEPT_ASSERT(
-        (boost::ReadablePropertyMapConcept< ClusterMap, vertex_type >));
+    // NOTE this assert somehow derped g++-11 :(
+    // BOOST_CONCEPT_ASSERT(
+    //     (boost::ReadablePropertyMapConcept< ClusterMap, vertex_type >));
 
     visit_vertices(
         [this, vertex_cluster](auto v)

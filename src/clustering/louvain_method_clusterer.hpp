@@ -19,15 +19,9 @@ namespace clustering
 template < typename Graph, typename WeightMap >
 class louvain_method_clusterer : public clusterer< Graph >
 {
-    BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
-
-    BOOST_CONCEPT_ASSERT(
-        (boost::ReadablePropertyMapConcept<
-            WeightMap,
-            typename boost::graph_traits< Graph >::edge_descriptor >));
-
     using base = clusterer< Graph >;
     using self = louvain_method_clusterer< Graph, WeightMap >;
+    using graph_traits = boost::graph_traits< Graph >;
 
 public:
     using id_type = typename base::id_type;

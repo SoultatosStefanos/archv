@@ -27,7 +27,7 @@ public:
     using weights_backend_type = weights::backend;
     using weights_config_type = weights::backend::config_data_type;
     using layout_backend_type = layout::backend< graph, weight_map >;
-    using layout_config_type = layout_backend_type::config_data_type;
+    using layout_config_type = typename layout_backend_type::config_data_type;
     using scaling_backend_type = scaling::backend;
     using scaling_config_type = scaling_backend_type::config_data_type;
     using clustering_backend_type = clustering::backend< graph, weight_map >;
@@ -38,20 +38,20 @@ public:
     using dependency_type = weights_backend_type::dependency_type;
     using weight_type = weights_backend_type::weight_type;
 
-    using layout_id_type = layout_backend_type::id_type;
-    using topology_id_type = layout_backend_type::id_type;
+    using layout_id_type = typename layout_backend_type::id_type;
+    using topology_id_type = typename layout_backend_type::id_type;
 
-    using scale_type = layout_backend_type::scale_type;
+    using scale_type = typename layout_backend_type::scale_type;
     using scaling_tag_type = scaling_backend_type::tag_type;
     using scaling_baseline_type = scaling_backend_type::baseline_type;
     using scaling_dims_type = scaling_backend_type::dims_type;
     using scaling_enabled_type = scaling_backend_type::enabled_type;
     using scaling_ratio_type = scaling_backend_type::ratio_type;
 
-    using clusterer_id_type = clustering_backend_type::id_type;
-    using mst_finder_id_type = clustering_backend_type::id_type;
-    using k_type = clustering_backend_type::k_type;
-    using snn_thres_type = clustering_backend_type::snn_threshold_type;
+    using clusterer_id_type = typename clustering_backend_type::id_type;
+    using mst_finder_id_type = typename clustering_backend_type::id_type;
+    using k_type = typename clustering_backend_type::k_type;
+    using snn_thres_type = typename clustering_backend_type::snn_threshold_type;
 
     graph_interface(
         symbol_table st,

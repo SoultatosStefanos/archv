@@ -10,6 +10,8 @@ set(PROJECT ${PROJECT_NAME})
 set(PROJECT_LIB ${PROJECT}_lib)
 set(PROJECT_APP ${PROJECT}_app)
 
+add_compile_options(-ftemplate-backtrace-limit=0)
+
 # compiler flags
 if(MSVC)
   add_compile_options(/W4 /WX)

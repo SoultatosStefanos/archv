@@ -134,15 +134,16 @@ TEST_F(
         = clustering::louvain_method_clusterer< graph, weight_map >;
 
     constexpr auto id = clustering::louvain_method_clusterer_id;
+    constexpr auto min = 20.0f;
     static_assert(clustering::is_clusterer_plugged_in(id));
 
-    const auto clusterer = builder->build_clusterer(id);
+    const auto clusterer = builder->set_min_modularity(min).build_clusterer(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
     ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
     const auto& downcasted = static_cast< const expected_t& >(*clusterer);
-    // TODO Assert for min
+    ASSERT_EQ(downcasted.min(), min);
 }
 
 } // namespace

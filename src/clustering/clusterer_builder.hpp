@@ -53,6 +53,9 @@ public:
 
     using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
 
+    using louvain_method_type = louvain_method_clusterer< Graph, WeightMap >;
+    using modularity_type = float;
+
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
     auto graph() const -> const graph_type& { return m_g; }
@@ -60,10 +63,12 @@ public:
     auto mst_finder() const -> mst_finder_type* { return m_mst_finder.get(); }
     auto k() const -> k_type { return m_k; }
     auto snn_threshold() const -> snn_thres_type { return m_snn_t; }
+    auto min_modularity() const -> modularity_type { return m_min_q; }
 
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
     auto set_snn_threshold(snn_thres_type threshold) -> self&;
+    auto set_min_modularity(modularity_type min) -> self&;
 
     auto build_clusterer(id_type id) const -> pointer;
 
@@ -73,6 +78,7 @@ private:
     std::unique_ptr< mst_finder_type > m_mst_finder;
     k_type m_k { -1 };
     snn_thres_type m_snn_t { -1 };
+    modularity_type m_min_q { 0.2 };
 };
 
 /***********************************************************
@@ -112,6 +118,15 @@ inline auto clusterer_builder< Graph, WeightMap >::set_snn_threshold(
 
 template < typename Graph, typename WeightMap >
 inline auto
+clusterer_builder< Graph, WeightMap >::set_min_modularity(modularity_type min)
+    -> self&
+{
+    m_min_q = min;
+    return *this;
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
 clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     -> pointer
 {
@@ -136,6 +151,11 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
     else if (id == max_clique_enum_clusterer_id)
     {
         return std::make_unique< max_clique_enum_type >();
+    }
+    else if (id == louvain_method_clusterer_id)
+    {
+        return std::make_unique< louvain_method_type >(
+            edge_weight(), min_modularity());
     }
     else
     {
