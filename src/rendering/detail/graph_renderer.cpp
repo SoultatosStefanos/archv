@@ -446,8 +446,7 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
 
     auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
     assert(e);
-    if (!v.cluster_col) // do not draw configs if rendering cluster
-        e->setMaterialName(m_cfg->vertex_material);
+    e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 }
@@ -962,6 +961,12 @@ auto edge_renderer::render_cluster(
     assert(e);
     e->setMaterial(shaded_color_material(col));
 
+    const auto tip_name = make_edge_tip_name(name);
+    assert(m_scene.hasEntity(tip_name));
+    auto* tip_e = m_scene.getEntity(tip_name);
+    assert(tip_e);
+    tip_e->setMaterial(shaded_color_material(col));
+
     edge(name).cluster_col = col;
 
     BOOST_LOG_TRIVIAL(debug) << "rendered cluster for edge: " << name;
@@ -1003,6 +1008,12 @@ auto edge_renderer::hide_cluster(
     auto* e = m_scene.getEntity(name);
     assert(e);
     e->setMaterialName(m_cfg->edge_material);
+
+    const auto tip_name = make_edge_tip_name(name);
+    assert(m_scene.hasEntity(tip_name));
+    auto* tip_e = m_scene.getEntity(tip_name);
+    assert(tip_e);
+    tip_e->setMaterialName(m_cfg->edge_tip_material);
 
     edge(name).cluster_col = std::nullopt;
 

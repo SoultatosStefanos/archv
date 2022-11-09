@@ -660,10 +660,21 @@
 
 # 07 / 11 / 2022
 
-	+ [ ] Fix cluster type typedef
+	+ [n] Fix cluster type typedef
 
-	+ [ ] Implement the rest of the backend objects for louvain clustering
+	+ [x] Implement the rest of the backend objects for louvain clustering
+
+	+ [x] Alternatives to rendering materials for clustering
+
+
+# 09 / 11 / 2022
+
+	+ [x] Edge tip material configuration
+
+	+ [x] Configs tweaks
+	
+	+ [x] Clustering rendering update
+
+	+ [ ] Louvain method randomness fix
 
 	+ [ ] Introduce the louvain min parameter on the clustering backend
-
-	+ [?] Alternatives to rendering materials for clustering
