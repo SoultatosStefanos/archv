@@ -31,6 +31,7 @@ auto deserialize(const Json::Value& root) -> config_data
     using id_type = config_data::id_type;
     using k_type = config_data::k_type;
     using snn_thres_type = config_data::snn_threshold_type;
+    using modularity_type = config_data::modularity_type;
 
     auto&& clusterers = deserialize_ids(root["clusterers"]);
     auto&& mst_finders = deserialize_ids(root["min-spanning-tree-finders"]);
@@ -39,12 +40,17 @@ auto deserialize(const Json::Value& root) -> config_data
     auto k = root["k"].as< k_type >();
     auto snn_thres = root["snn-threshold"].as< snn_thres_type >();
 
+    static_assert(std::is_floating_point_v< modularity_type >);
+    auto min_q = root["min-modularity"].as< double >();
+
     return config_data { .clusterers = std::move(clusterers),
                          .mst_finders = std::move(mst_finders),
                          .clusterer = std::move(clusterer),
                          .mst_finder = std::move(mst_finder),
                          .k = k,
-                         .snn_threshold = snn_thres };
+                         .snn_threshold = snn_thres,
+                         .min_modularity
+                         = static_cast< modularity_type >(min_q) };
 }
 
 } // namespace clustering

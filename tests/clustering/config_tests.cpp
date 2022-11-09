@@ -17,7 +17,8 @@ inline auto make_sample_0() -> clustering::config_data
                                      .clusterer = "M",
                                      .mst_finder = "N",
                                      .k = 20,
-                                     .snn_threshold = 9 };
+                                     .snn_threshold = 9,
+                                     .min_modularity = 22 };
 }
 
 TEST(clustering_config_tests, clustering_sample_0)

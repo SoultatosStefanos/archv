@@ -22,6 +22,7 @@ struct backend_config
     using ids_type = std::vector< id_type >;
     using k_type = int;
     using snn_threshold_type = int;
+    using modularity_type = float;
 
     ids_type clusterers;
     ids_type mst_finders;
@@ -30,6 +31,7 @@ struct backend_config
     id_type mst_finder;
     k_type k;
     snn_threshold_type snn_threshold;
+    modularity_type min_modularity;
 
     auto operator==(const backend_config&) const -> bool = default;
     auto operator!=(const backend_config&) const -> bool = default;

@@ -11,5 +11,6 @@
 	"clusterer" : "M",
 	"min-spanning-tree-finder" : "N",
 	"k" : 20,
-	"snn-threshold" : 9
+	"snn-threshold" : 9,
+	"min-modularity" : 22
 }

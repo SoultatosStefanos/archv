@@ -15,5 +15,6 @@
 	"clusterer" : "Shared Nearest Neighbour",
 	"min-spanning-tree-finder" : "Kruskal MST",
 	"k" : 3,
-	"snn-threshold" : 5
+	"snn-threshold" : 5,
+	"min-modularity" : 0.2
 }
