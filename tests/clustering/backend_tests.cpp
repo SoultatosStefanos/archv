@@ -136,6 +136,9 @@ using mock_k_slot_t
 using mock_snn_thres_slot_t
     = NiceMock< MockFunction< void(typename backend_t::snn_threshold_type) > >;
 
+using mock_modularity_slot_t
+    = NiceMock< MockFunction< void(typename backend_t::modularity_type) > >;
+
 class given_a_clustering_backend : public Test
 {
 protected:
@@ -148,6 +151,8 @@ protected:
 
     static constexpr auto default_snn_threshold = 3;
 
+    static constexpr auto default_min_q = 0.5f;
+
     static constexpr auto weight = 10;
 
     clustering::backend_config cfg = clustering::default_backend_config();
@@ -159,6 +164,7 @@ protected:
     mock_mst_finder_slot_t mst_finder_slot;
     mock_k_slot_t k_slot;
     mock_snn_thres_slot_t snn_thres_slot;
+    mock_modularity_slot_t modularity_slot;
 
     void SetUp() override
     {
@@ -196,6 +202,11 @@ TEST_F(
     given_a_clustering_backend, initially_given_default_snn_threshold_is_held)
 {
     ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
+}
+
+TEST_F(given_a_clustering_backend, initially_given_min_modularity_is_held)
+{
+    ASSERT_EQ(clustering::get_min_modularity(*backend), default_min_q);
 }
 
 TEST_F(
@@ -377,6 +388,30 @@ TEST_F(
     EXPECT_CALL(snn_thres_slot, Call(t)).Times(1);
 
     clustering::update_snn_threshold(*backend, t);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    after_updating_the_min_modularity_new_val_is_held)
+{
+    constexpr auto q = 0.5f;
+
+    clustering::update_min_modularity(*backend, q);
+
+    ASSERT_EQ(clustering::get_min_modularity(*backend), q);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_min_modularity_observers_are_notified)
+{
+    constexpr auto q = 0.5f;
+
+    backend->connect_to_min_modularity(modularity_slot.AsStdFunction());
+
+    EXPECT_CALL(modularity_slot, Call(q)).Times(1);
+
+    clustering::update_min_modularity(*backend, q);
 }
 
 TEST_F(

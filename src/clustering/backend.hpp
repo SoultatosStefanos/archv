@@ -79,6 +79,7 @@ public:
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
     using k_type = int;
     using snn_threshold_type = int;
+    using modularity_type = float;
 
 private:
     using clusters_signal
@@ -90,6 +91,7 @@ private:
     using k_signal = boost::signals2::signal< void(k_type) >;
     using snn_thres_signal
         = boost::signals2::signal< void(snn_threshold_type) >;
+    using modularity_signal = boost::signals2::signal< void(modularity_type) >;
 
 public:
     using clusters_slot = typename clusters_signal::slot_type;
@@ -97,6 +99,7 @@ public:
     using mst_finder_slot = typename mst_finder_signal::slot_type;
     using k_slot = typename k_signal::slot_type;
     using snn_thres_slot = typename snn_thres_signal::slot_type;
+    using modularity_slot = typename modularity_signal::slot_type;
     using connection = boost::signals2::connection;
 
     backend(
@@ -113,30 +116,35 @@ public:
     auto get_mst_finder() const -> const mst_finder_type&;
     auto get_k() const -> k_type;
     auto get_snn_threshold() const -> snn_threshold_type;
+    auto get_min_modularity() const -> modularity_type;
 
     auto update_clusters() -> void;
     auto update_clusterer(id_type id) -> void;
     auto update_mst_finder(id_type id) -> void;
     auto update_k(k_type k) -> void;
     auto update_snn_threshold(snn_threshold_type thres) -> void;
+    auto update_min_modularity(modularity_type q) -> void;
 
     auto connect_to_clusters(const clusters_slot& f) -> connection;
     auto connect_to_clusterer(const clusterer_slot& f) -> connection;
     auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
     auto connect_to_k(const k_slot& f) -> connection;
     auto connect_to_snn_threshold(const snn_thres_slot& f) -> connection;
+    auto connect_to_min_modularity(const modularity_slot& f) -> connection;
 
 protected:
     auto set_clusterer(id_type id) -> void;
     auto set_mst_finder(id_type id) -> void;
     auto set_k(k_type k) -> void;
     auto set_snn_threshold(snn_threshold_type thres) -> void;
+    auto set_min_modularity(modularity_type q) -> void;
 
     auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
     auto emit_mst_finder() const -> void;
     auto emit_k() const -> void;
     auto emit_snn_threshold() const -> void;
+    auto emit_min_modularity() const -> void;
 
 private:
     using clusterer_builder_type = clusterer_builder< Graph, WeightMap >;
@@ -161,6 +169,7 @@ private:
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;
     snn_thres_signal m_snn_thres_sig;
+    modularity_signal m_min_mod_sig;
 };
 
 /***********************************************************
@@ -181,6 +190,7 @@ inline backend< Graph, WeightMap >::backend(
     set_k(config_data().k);
     set_snn_threshold(config_data().snn_threshold);
     set_clusterer(config_data().clusterer);
+    set_min_modularity(config_data().min_modularity);
 }
 
 template < typename Graph, typename WeightMap >
@@ -232,6 +242,13 @@ inline auto backend< Graph, WeightMap >::get_snn_threshold() const
     -> snn_threshold_type
 {
     return m_builder.snn_threshold();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::get_min_modularity() const
+    -> modularity_type
+{
+    return m_builder.min_modularity();
 }
 
 template < typename Graph, typename WeightMap >
@@ -301,6 +318,14 @@ backend< Graph, WeightMap >::update_snn_threshold(snn_threshold_type thres)
 
 template < typename Graph, typename WeightMap >
 inline auto
+backend< Graph, WeightMap >::update_min_modularity(modularity_type q) -> void
+{
+    set_min_modularity(q);
+    emit_min_modularity();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
 backend< Graph, WeightMap >::connect_to_clusters(const clusters_slot& f)
     -> connection
 {
@@ -339,6 +364,14 @@ backend< Graph, WeightMap >::connect_to_snn_threshold(const snn_thres_slot& f)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_min_modularity(const modularity_slot& f)
+    -> connection
+{
+    return m_min_mod_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 {
     m_clusterer = m_builder.result(id);
@@ -361,6 +394,13 @@ inline auto
 backend< Graph, WeightMap >::set_snn_threshold(snn_threshold_type thres) -> void
 {
     m_builder.set_snn_threshold(thres);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_min_modularity(modularity_type q)
+    -> void
+{
+    m_builder.set_min_modularity(q);
 }
 
 template < typename Graph, typename WeightMap >
@@ -391,6 +431,12 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::emit_snn_threshold() const -> void
 {
     m_snn_thres_sig(get_snn_threshold());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_min_modularity() const -> void
+{
+    m_min_mod_sig(get_min_modularity());
 }
 
 /***********************************************************
@@ -444,6 +490,12 @@ inline auto get_snn_threshold(const backend< Graph, WeightMap >& b)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto get_min_modularity(const backend< Graph, WeightMap >& b)
+{
+    return b.get_min_modularity();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto update_clusters(backend< Graph, WeightMap >& b)
 {
     b.update_clusters();
@@ -479,6 +531,14 @@ inline auto update_snn_threshold(
     typename backend< Graph, WeightMap >::snn_threshold_type thres)
 {
     b.update_snn_threshold(thres);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_min_modularity(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::modularity_type q)
+{
+    b.update_min_modularity(q);
 }
 
 template < typename Graph, typename WeightMap >

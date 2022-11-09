@@ -21,7 +21,7 @@ auto default_backend_config() -> backend_config
                             .mst_finder = id_type(prim_mst_id),
                             .k = 3,
                             .snn_threshold = 3,
-                            .min_modularity = 0.1 };
+                            .min_modularity = 0.5 };
 }
 
 auto are_clusterers_plugged_in(const backend_config& cfg) -> bool
