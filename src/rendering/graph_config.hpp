@@ -31,6 +31,7 @@ struct graph_config
 
     name_type edge_material;
     name_type edge_tip_mesh;
+    name_type edge_tip_material;
     scale_type edge_tip_scale;
     name_type edge_type_font_name;
     height_type edge_type_char_height;
@@ -73,6 +74,7 @@ public:
 
     auto set_edge_material(name_type name) -> void;
     auto set_edge_tip_mesh(name_type name) -> void;
+    auto set_edge_tip_material(name_type name) -> void;
     auto set_edge_tip_scale(scale_type scale) -> void;
     auto set_edge_type_font_name(name_type name) -> void;
     auto set_edge_type_char_height(height_type h) -> void;

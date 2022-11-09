@@ -77,6 +77,7 @@ auto graph_configurator::render_edges_configurator() const -> void
     render_edge_material_selector();
 
     render_edge_tip_mesh_selector();
+    render_edge_tip_material_selector();
     render_edge_tip_scale_selector();
 }
 
@@ -158,6 +159,16 @@ auto graph_configurator::render_edge_tip_mesh_selector() const -> void
             meshes().data(),
             meshes().size()))
         emit_edge_tip_mesh();
+}
+
+auto graph_configurator::render_edge_tip_material_selector() const -> void
+{
+    if (ImGui::Combo(
+            "Tip Material Name##edge",
+            &m_edge_tip_material,
+            materials().data(),
+            materials().size()))
+        emit_edge_tip_material();
 }
 
 auto graph_configurator::render_edge_tip_scale_selector() const -> void
@@ -268,6 +279,11 @@ auto graph_configurator::edge_tip_mesh() const -> name_type
     return resources::meshes().at(m_edge_tip_mesh);
 }
 
+auto graph_configurator::edge_tip_material() const -> name_type
+{
+    return resources::materials().at(m_edge_tip_material);
+}
+
 auto graph_configurator::edge_tip_scale() const -> const scale_type&
 {
     return m_edge_tip_scale;
@@ -336,6 +352,11 @@ auto graph_configurator::set_edge_material(name_type material) -> void
 auto graph_configurator::set_edge_tip_mesh(name_type mesh) -> void
 {
     m_edge_tip_mesh = misc::find_index(resources::meshes(), mesh);
+}
+
+auto graph_configurator::set_edge_tip_material(name_type mat) -> void
+{
+    m_edge_tip_material = misc::find_index(resources::materials(), mat);
 }
 
 auto graph_configurator::set_edge_tip_scale(scale_type scale) -> void
@@ -413,6 +434,12 @@ auto graph_configurator::connect_to_edge_tip_mesh(const name_slot& f)
     -> connection
 {
     return m_edge_tip_mesh_sig.connect(f);
+}
+
+auto graph_configurator::connect_to_edge_tip_material(const name_slot& f)
+    -> connection
+{
+    return m_edge_tip_material_sig.connect(f);
 }
 
 auto graph_configurator::connect_to_edge_tip_scale(const scale_slot& f)
@@ -507,6 +534,11 @@ auto graph_configurator::emit_edge_material() const -> void
 auto graph_configurator::emit_edge_tip_mesh() const -> void
 {
     m_edge_tip_mesh_sig(edge_tip_mesh());
+}
+
+auto graph_configurator::emit_edge_tip_material() const -> void
+{
+    m_edge_tip_material_sig(edge_tip_material());
 }
 
 auto graph_configurator::emit_edge_tip_scale() const -> void

@@ -102,6 +102,7 @@ namespace
 
         auto&& edge_material = val["edge-material"].as< string >();
         auto&& edge_tip_mesh = val["edge-tip-mesh"].as< string >();
+        auto&& edge_tip_mat = val["edge-tip-material"].as< string >();
         auto&& edge_tip_scale = deserialize_vector3(val["edge-tip-scale"]);
 
         const auto& edgetype_val = val["edge-type"];
@@ -121,6 +122,7 @@ namespace
                  static_cast< float >(vboard_space_width),
                  std::move(edge_material),
                  std::move(edge_tip_mesh),
+                 std::move(edge_tip_mat),
                  edge_tip_scale,
                  std::move(edgetype_font_name),
                  static_cast< float >(edgetype_char_height),

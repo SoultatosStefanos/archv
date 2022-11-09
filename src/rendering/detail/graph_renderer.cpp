@@ -754,6 +754,7 @@ auto edge_renderer::setup_tip(const edge_type& e, const path_type& path) -> void
         e.tip_name, m_cfg->edge_tip_mesh, m_resource_group);
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+    entity->setMaterialName(m_cfg->edge_tip_material);
 
     auto* node = m_scene.getRootSceneNode()->createChildSceneNode(e.tip_name);
     assert(node);
@@ -1046,6 +1047,7 @@ auto edge_renderer::draw_tip(const edge_type& e, const path_type& path) -> void
     auto* entity = m_scene.createEntity(
         e.tip_name, m_cfg->edge_tip_mesh, m_resource_group);
     assert(entity);
+    entity->setMaterialName(m_cfg->edge_tip_material);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(entity);
 }

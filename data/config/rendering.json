@@ -22,8 +22,9 @@
 			"space-width" : 0
 		},
 		"edge-material" : "Shaded/LightGreen",
-		"edge-tip-mesh" : "sphere.mesh",
-		"edge-tip-scale" : [ 0.005, 0.005, 0.005 ],
+		"edge-tip-mesh" : "triangle.mesh",
+		"edge-tip-material" : "Shaded/LightGreen",
+		"edge-tip-scale" : [ 0.5, 0.5, 0.5 ],
 		"edge-type" :
 		{
 			"font-name" : "Cousine-Regular",

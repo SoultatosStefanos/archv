@@ -682,6 +682,7 @@ auto application::prepare_graph_configurator() -> void
     graph_gui.set_node_space_width(cfg.vertex_id_space_width);
     graph_gui.set_edge_material(cfg.edge_material);
     graph_gui.set_edge_tip_mesh(cfg.edge_tip_mesh);
+    graph_gui.set_edge_tip_material(cfg.edge_tip_material);
     graph_gui.set_edge_tip_scale(to_scale(cfg.edge_tip_scale));
     graph_gui.set_edge_font(cfg.edge_type_font_name);
     graph_gui.set_edge_font_color(to_rgba(cfg.edge_type_color));
@@ -1277,6 +1278,13 @@ auto application::connect_graph_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected edge tip mesh: " << mesh;
             api.set_edge_tip_mesh(std::string(mesh));
+        });
+
+    iface.connect_to_edge_tip_material(
+        [this, &api](auto mat)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected edge tip material: " << mat;
+            api.set_edge_tip_material(std::string(mat));
         });
 
     iface.connect_to_edge_tip_scale(

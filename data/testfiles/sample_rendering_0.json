@@ -23,6 +23,7 @@
 		},
 		"edge-material" : "mat",
 		"edge-tip-mesh" : "a",
+		"edge-tip-material" : "bob",
 		"edge-tip-scale" : [1, 1, 1],
 		"edge-type" :
 		{

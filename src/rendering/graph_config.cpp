@@ -62,6 +62,11 @@ auto graph_config_api::set_edge_tip_mesh(name_type name) -> void
     config_data().edge_tip_mesh = std::move(name);
 }
 
+auto graph_config_api::set_edge_tip_material(name_type name) -> void
+{
+    config_data().edge_tip_material = std::move(name);
+}
+
 auto graph_config_api::set_edge_tip_scale(scale_type scale) -> void
 {
     config_data().edge_tip_scale = scale;
