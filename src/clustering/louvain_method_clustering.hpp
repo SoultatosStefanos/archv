@@ -44,7 +44,7 @@ auto louvain_method_clustering(
     WeightMap edge_weight,
     ClusterMap vertex_cluster,
     Modularity min = 0.1,
-    UGenerator rng = misc::rng()) -> void
+    UGenerator& rng = misc::rng()) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 

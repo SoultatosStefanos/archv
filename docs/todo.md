@@ -675,6 +675,8 @@
 	
 	+ [x] Clustering rendering update
 
-	+ [ ] Louvain method randomness fix
-
+	+ [x] Louvain method randomness fix
+	
 	+ [ ] Introduce the louvain min parameter on the clustering backend
+
+	+ [ ] GUI Configs

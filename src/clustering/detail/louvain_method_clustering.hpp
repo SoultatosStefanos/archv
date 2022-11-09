@@ -10,6 +10,7 @@
 #include "utility.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <cmath>
 #include <concepts>
@@ -90,8 +91,8 @@ inline auto make_vector(InputIter first, InputIter last)
 }
 
 template < typename IteratorPair >
-requires std::input_iterator< typename IteratorPair::first_type > && std::
-    input_iterator< typename IteratorPair::second_type >
+requires std::input_iterator< typename IteratorPair::first_type >
+    && std::input_iterator< typename IteratorPair::second_type >
 inline auto subrange(IteratorPair pair)
 {
     return std::ranges::subrange(pair.first, pair.second);
@@ -428,7 +429,7 @@ auto modularity_optimization(
     NetworkProperties& status,
     WeightMap edge_weight,
     Modularity min = 0.1,
-    UGenerator rng = misc::rng()) -> void
+    UGenerator& rng = misc::rng()) -> void
 {
     auto do_loop = true;
     auto cur_mod = modularity< Modularity >(status);
@@ -441,7 +442,7 @@ auto modularity_optimization(
 
         // Make a random vertex ordering.
         auto vertices = make_vector(subrange(boost::vertices(g)));
-        std::shuffle(std::begin(vertices), std::end(vertices), std::move(rng));
+        std::shuffle(std::begin(vertices), std::end(vertices), rng);
 
         // Begin one level partition
         for (auto i : vertices)
