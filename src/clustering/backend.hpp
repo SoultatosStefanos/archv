@@ -547,6 +547,7 @@ inline auto restore_defaults(backend< Graph, WeightMap >& b)
     update_k(b, b.config_data().k);
     update_snn_threshold(b, b.config_data().snn_threshold);
     update_mst_finder(b, b.config_data().mst_finder);
+    update_min_modularity(b, b.config_data().min_modularity);
     update_clusterer(b, b.config_data().clusterer);
 }
 

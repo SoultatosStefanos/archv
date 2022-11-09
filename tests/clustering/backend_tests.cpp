@@ -421,18 +421,22 @@ TEST_F(
     constexpr auto id = clustering::kruskal_mst_id;
     constexpr auto k = 3000;
     constexpr auto snn_thres = 3434;
+    constexpr auto q = 0.3f;
 
     static_assert(id != defualt_mst_finder);
     static_assert(k != default_k);
     static_assert(snn_thres != default_snn_threshold);
+    static_assert(q != default_min_q);
 
     clustering::update_k(*backend, k);
     clustering::update_mst_finder(*backend, id);
     clustering::update_snn_threshold(*backend, snn_thres);
+    clustering::update_min_modularity(*backend, q);
 
     EXPECT_EQ(clustering::get_k(*backend), k);
     EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
     EXPECT_EQ(clustering::get_snn_threshold(*backend), snn_thres);
+    EXPECT_EQ(clustering::get_min_modularity(*backend), q);
 
     clustering::restore_defaults(*backend);
 
@@ -440,6 +444,7 @@ TEST_F(
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
     ASSERT_EQ(clustering::get_k(*backend), default_k);
     ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
+    ASSERT_EQ(clustering::get_min_modularity(*backend), default_min_q);
 }
 
 TEST_F(

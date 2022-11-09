@@ -677,6 +677,8 @@
 
 	+ [x] Louvain method randomness fix
 	
-	+ [ ] Introduce the louvain min parameter on the clustering backend
+	+ [x] Introduce the Louvain min parameter on the clustering backend
+
+	+ [ ] Interactive Louvain Method settings for nerds
 
 	+ [ ] GUI Configs
