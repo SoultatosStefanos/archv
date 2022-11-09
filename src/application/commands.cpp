@@ -1404,6 +1404,35 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
+    struct update_clustering_min_q_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using modularity_type = graph_interface::modularity_type;
+
+        backend_type& backend;
+        modularity_type new_q, old_q;
+
+        update_clustering_min_q_cmd(backend_type& b, modularity_type q)
+        : backend { b }, new_q { q }
+        {
+        }
+        ~update_clustering_min_q_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_q = clustering::get_min_modularity(backend);
+            clustering::update_min_modularity(backend, new_q);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_min_modularity(backend, old_q);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
     struct restore_clustering_cmd : undo_redo::command
     {
         using graph_interface = architecture::graph_interface;
@@ -1474,6 +1503,14 @@ auto update_clustering_snn_threshold(
     architecture::graph_interface::snn_thres_type t) -> void
 {
     cmds.execute(std::make_unique< update_clustering_snn_t_cmd >(backend, t));
+}
+
+auto update_clustering_min_modularity(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::modularity_type q) -> void
+{
+    cmds.execute(std::make_unique< update_clustering_min_q_cmd >(backend, q));
 }
 
 auto restore_clustering(

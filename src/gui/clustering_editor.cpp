@@ -308,6 +308,9 @@ auto clustering_editor::render_min_modularity_editor() const -> void
             "%.3f",
             ImGuiInputTextFlags_EnterReturnsTrue))
         emit_min_modularity(q);
+    ImGui::SameLine();
+    detail::render_help_marker("Louvain Method minimum modularity increase "
+                               "required at each modularity optimization (dq)");
 }
 
 } // namespace gui

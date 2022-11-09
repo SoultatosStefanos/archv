@@ -679,6 +679,6 @@
 	
 	+ [x] Introduce the Louvain min parameter on the clustering backend
 
-	+ [ ] Interactive Louvain Method settings for nerds
+	+ [x] Interactive Louvain Method settings for nerds
 
 	+ [ ] GUI Configs

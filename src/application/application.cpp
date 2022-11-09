@@ -619,6 +619,9 @@ auto application::prepare_clustering_editor() -> void
     m_gui->get_clustering_editor().set_snn_thres(
         [this, &backend]() { return clustering::get_snn_threshold(backend); });
 
+    m_gui->get_clustering_editor().set_min_modularity(
+        [this, &backend]() { return clustering::get_min_modularity(backend); });
+
     BOOST_LOG_TRIVIAL(debug) << "prepared clustering editor";
 }
 
@@ -1082,6 +1085,13 @@ auto application::connect_clustering_presentation() -> void
             commands::update_clustering_snn_threshold(*m_cmds, backend, t);
         });
 
+    editor.connect_to_min_modularity(
+        [this, &backend](auto q)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering min q " << q;
+            commands::update_clustering_min_modularity(*m_cmds, backend, q);
+        });
+
     editor.connect_to_restore(
         [this, &backend]()
         {
@@ -1095,7 +1105,6 @@ auto application::connect_clustering_presentation() -> void
             m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
             BOOST_LOG_TRIVIAL(info) << "rendered clusters";
         });
-
 
     BOOST_LOG_TRIVIAL(debug) << "connected clustering presentation";
 }

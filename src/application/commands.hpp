@@ -195,6 +195,11 @@ auto update_clustering_snn_threshold(
     architecture::graph_interface::clustering_backend_type& backend,
     architecture::graph_interface::snn_thres_type t) -> void;
 
+auto update_clustering_min_modularity(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::modularity_type q) -> void;
+
 auto restore_clustering(
     undo_redo::command_history& cmds,
     architecture::graph_interface::clustering_backend_type& backend) -> void;
