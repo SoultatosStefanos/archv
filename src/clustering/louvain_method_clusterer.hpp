@@ -38,10 +38,9 @@ public:
     ~louvain_method_clusterer() override = default;
 
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
-    auto edge_weight() -> weight_map_type& { return m_edge_weight; }
 
     auto min() const -> modularity_type { return m_min; }
-    auto min() -> modularity_type& { return m_min; }
+    auto set_min(modularity_type q) -> void { m_min = q; }
 
     auto id() const -> id_type { return louvain_method_clusterer_id; }
     auto operator()(const graph_type& g) const -> cluster_map;

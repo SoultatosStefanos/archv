@@ -37,48 +37,46 @@ public:
 
     using graph_type = Graph;
     using weight_map_type = WeightMap;
-
     using clusterer_type = clusterer< Graph >;
     using id_type = typename clusterer_type::id_type;
-    using pointer = std::unique_ptr< clusterer_type >;
+    using pointer = const clusterer_type*;
 
-    using k_spanning_tree_type = k_spanning_tree_clusterer< Graph, WeightMap >;
-    using k_type = typename k_spanning_tree_type::k_type;
+    using k_type = int;
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
-
-    using snn_type = shared_nearest_neighbour_clusterer< Graph >;
-    using snn_thres_type = typename snn_type::threshold_type;
-
-    using strong_components_type = strong_components_clusterer< Graph >;
-
-    using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
-
-    using louvain_method_type = louvain_method_clusterer< Graph, WeightMap >;
+    using snn_thres_type = int;
     using modularity_type = float;
 
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
     auto graph() const -> const graph_type& { return m_g; }
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
-    auto mst_finder() const -> mst_finder_type* { return m_mst_finder.get(); }
-    auto k() const -> k_type { return m_k; }
-    auto snn_threshold() const -> snn_thres_type { return m_snn_t; }
-    auto min_modularity() const -> modularity_type { return m_min_q; }
+    auto mst_finder() const -> const mst_finder_type&;
+    auto k() const -> k_type;
+    auto snn_threshold() const -> snn_thres_type;
+    auto min_modularity() const -> modularity_type;
 
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
     auto set_snn_threshold(snn_thres_type threshold) -> self&;
     auto set_min_modularity(modularity_type min) -> self&;
 
-    auto build_clusterer(id_type id) const -> pointer;
+    auto result(id_type id) const -> pointer;
 
 private:
+    using k_spanning_tree_type = k_spanning_tree_clusterer< Graph, WeightMap >;
+    using snn_type = shared_nearest_neighbour_clusterer< Graph >;
+    using strong_components_type = strong_components_clusterer< Graph >;
+    using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
+    using louvain_method_type = louvain_method_clusterer< Graph, WeightMap >;
+
     const graph_type& m_g;
     weight_map_type m_edge_weight;
-    std::unique_ptr< mst_finder_type > m_mst_finder;
-    k_type m_k { -1 };
-    snn_thres_type m_snn_t { -1 };
-    modularity_type m_min_q { 0.2 };
+
+    k_spanning_tree_type m_k_spanning_tree;
+    snn_type m_snn;
+    strong_components_type m_strong_components;
+    max_clique_enum_type m_max_clique_enum;
+    louvain_method_type m_louvain_method;
 };
 
 /***********************************************************
@@ -88,14 +86,44 @@ private:
 template < typename Graph, typename WeightMap >
 inline clusterer_builder< Graph, WeightMap >::clusterer_builder(
     const graph_type& g, weight_map_type edge_weight)
-: m_g { g }, m_edge_weight { edge_weight }
+: m_g { g }
+, m_edge_weight { edge_weight }
+, m_k_spanning_tree { edge_weight }
+, m_louvain_method { edge_weight }
 {
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::mst_finder() const
+    -> const mst_finder_type&
+{
+    return m_k_spanning_tree.mst_finder();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::k() const -> k_type
+{
+    return m_k_spanning_tree.k();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::snn_threshold() const
+    -> snn_thres_type
+{
+    return m_snn.threshold();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::min_modularity() const
+    -> modularity_type
+{
+    return m_louvain_method.min();
 }
 
 template < typename Graph, typename WeightMap >
 inline auto clusterer_builder< Graph, WeightMap >::set_k(k_type k) -> self&
 {
-    m_k = k;
+    m_k_spanning_tree.set_k(k);
     return *this;
 }
 
@@ -103,8 +131,7 @@ template < typename Graph, typename WeightMap >
 inline auto clusterer_builder< Graph, WeightMap >::set_mst_finder(
     std::unique_ptr< mst_finder_type > finder) -> self&
 {
-    assert(finder);
-    m_mst_finder = std::move(finder);
+    m_k_spanning_tree.set_mst_finder(std::move(finder));
     return *this;
 }
 
@@ -112,7 +139,7 @@ template < typename Graph, typename WeightMap >
 inline auto clusterer_builder< Graph, WeightMap >::set_snn_threshold(
     snn_thres_type threshold) -> self&
 {
-    m_snn_t = threshold;
+    m_snn.set_threshold(threshold);
     return *this;
 }
 
@@ -121,41 +148,33 @@ inline auto
 clusterer_builder< Graph, WeightMap >::set_min_modularity(modularity_type min)
     -> self&
 {
-    m_min_q = min;
+    m_louvain_method.set_min(min);
     return *this;
 }
 
 template < typename Graph, typename WeightMap >
-inline auto
-clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
+inline auto clusterer_builder< Graph, WeightMap >::result(id_type id) const
     -> pointer
 {
     if (id == k_spanning_tree_clusterer_id)
     {
-        assert(m_mst_finder);
-        assert(k() != -1);
-
-        return std::make_unique< k_spanning_tree_type >(
-            k(), *mst_finder(), edge_weight());
+        return &m_k_spanning_tree;
     }
     else if (id == snn_clusterer_id)
     {
-        assert(snn_threshold() != -1);
-
-        return std::make_unique< snn_type >(snn_threshold());
+        return &m_snn;
     }
     else if (id == strong_components_clusterer_id)
     {
-        return std::make_unique< strong_components_type >();
+        return &m_strong_components;
     }
     else if (id == max_clique_enum_clusterer_id)
     {
-        return std::make_unique< max_clique_enum_type >();
+        return &m_max_clique_enum;
     }
     else if (id == louvain_method_clusterer_id)
     {
-        return std::make_unique< louvain_method_type >(
-            edge_weight(), min_modularity());
+        return &m_louvain_method;
     }
     else
     {
@@ -174,7 +193,7 @@ clusterer_builder< Graph, WeightMap >::build_clusterer(id_type id) const
 template < typename Graph, typename WeightMap >
 inline auto make_clusterer_builder(const Graph& g, WeightMap edge_weight)
 {
-    return clusterer_builder< Graph, WeightMap > { g, edge_weight };
+    return clusterer_builder< Graph, WeightMap >(g, edge_weight);
 }
 
 } // namespace clustering

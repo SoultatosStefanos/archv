@@ -37,31 +37,29 @@ public:
     using mst_finder_type = min_spanning_tree_finder< graph_type, WeightMap >;
     using weight_map_type = WeightMap;
 
-    k_spanning_tree_clusterer(
-        k_type k,
-        const mst_finder_type& mst_finder,
-        weight_map_type edge_weight);
+    explicit k_spanning_tree_clusterer(
+        weight_map_type edge_weight,
+        k_type k = 1,
+        std::unique_ptr< mst_finder_type > mst_finder = nullptr);
 
     ~k_spanning_tree_clusterer() override = default;
 
-    auto k() const -> k_type { return m_k; }
-    auto k() -> k_type& { return m_k; }
-
-    auto mst_finder() const -> const mst_finder_type& { return m_mst_finder; }
-
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
-    auto edge_weight() -> weight_map_type& { return m_edge_weight; }
+
+    auto k() const -> k_type { return m_k; }
+    auto set_k(k_type k) -> void;
+
+    auto mst_finder() const -> const mst_finder_type&;
+    auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> void;
 
     auto id() const -> id_type override { return k_spanning_tree_clusterer_id; }
-
     auto operator()(const graph_type& g) const -> cluster_map override;
-
     auto clone() const -> std::unique_ptr< base > override;
 
 private:
-    k_type m_k { 0 };
-    const mst_finder_type& m_mst_finder;
     weight_map_type m_edge_weight;
+    k_type m_k { 0 };
+    std::unique_ptr< mst_finder_type > m_mst_finder;
 };
 
 /***********************************************************
@@ -69,18 +67,46 @@ private:
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
-inline k_spanning_tree_clusterer< Graph, WeightMap >::k_spanning_tree_clusterer(
-    k_type k, const mst_finder_type& mst_finder, weight_map_type edge_weight)
-: m_k { k }
-, m_mst_finder { mst_finder }
-, m_edge_weight { std::move(edge_weight) }
+k_spanning_tree_clusterer< Graph, WeightMap >::k_spanning_tree_clusterer(
+    weight_map_type edge_weight,
+    k_type k,
+    std::unique_ptr< mst_finder_type > mst_finder)
+: m_edge_weight { edge_weight }
+, m_k { k }
+, m_mst_finder { std::move(mst_finder) }
 {
+    assert(m_k >= 1);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto k_spanning_tree_clusterer< Graph, WeightMap >::set_k(k_type k)
+    -> void
+{
+    assert(k >= 1);
+    m_k = k;
+}
+
+template < typename Graph, typename WeightMap >
+inline auto k_spanning_tree_clusterer< Graph, WeightMap >::mst_finder() const
+    -> const mst_finder_type&
+{
+    assert(m_mst_finder);
+    return *m_mst_finder;
+}
+
+template < typename Graph, typename WeightMap >
+inline auto k_spanning_tree_clusterer< Graph, WeightMap >::set_mst_finder(
+    std::unique_ptr< mst_finder_type > finder) -> void
+{
+    assert(finder);
+    m_mst_finder = std::move(finder);
 }
 
 template < typename Graph, typename WeightMap >
 inline auto k_spanning_tree_clusterer< Graph, WeightMap >::operator()(
     const graph_type& g) const -> cluster_map
 {
+    assert(m_mst_finder);
     auto res = cluster_map();
     k_spanning_tree_clustering(
         g,
@@ -95,7 +121,8 @@ template < typename Graph, typename WeightMap >
 inline auto k_spanning_tree_clusterer< Graph, WeightMap >::clone() const
     -> std::unique_ptr< base >
 {
-    return std::make_unique< self >(*this);
+    assert(false);
+    return nullptr;
 }
 
 } // namespace clustering

@@ -181,10 +181,6 @@ inline backend< Graph, WeightMap >::backend(
     set_k(config_data().k);
     set_snn_threshold(config_data().snn_threshold);
     set_clusterer(config_data().clusterer);
-
-    assert(m_clusterer);
-    assert(m_builder.mst_finder());
-    assert(get_k() == config_data().k);
 }
 
 template < typename Graph, typename WeightMap >
@@ -222,7 +218,7 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::get_mst_finder() const
     -> const mst_finder_type&
 {
-    return *m_builder.mst_finder();
+    return m_builder.mst_finder();
 }
 
 template < typename Graph, typename WeightMap >
@@ -345,7 +341,7 @@ backend< Graph, WeightMap >::connect_to_snn_threshold(const snn_thres_slot& f)
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 {
-    m_clusterer = m_builder.build_clusterer(id);
+    m_clusterer = m_builder.result(id);
 }
 
 template < typename Graph, typename WeightMap >

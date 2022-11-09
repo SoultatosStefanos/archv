@@ -31,15 +31,15 @@ public:
 
     using threshold_type = int;
 
-    explicit shared_nearest_neighbour_clusterer(threshold_type thres);
+    explicit shared_nearest_neighbour_clusterer(threshold_type thres = 2);
     ~shared_nearest_neighbour_clusterer() override = default;
+
+    auto threshold() const -> threshold_type { return m_thres; }
+    auto set_threshold(threshold_type t) -> void;
 
     auto id() const -> id_type override { return snn_clusterer_id; }
     auto operator()(const graph_type& g) const -> cluster_map override;
     auto clone() const -> std::unique_ptr< base > override;
-
-    auto threshold() const -> threshold_type { return m_thres; }
-    auto threshold() -> threshold_type& { return m_thres; }
 
 private:
     threshold_type m_thres;
@@ -54,7 +54,16 @@ inline shared_nearest_neighbour_clusterer<
     Graph >::shared_nearest_neighbour_clusterer(threshold_type thres)
 : m_thres { thres }
 {
-    assert(threshold() == thres);
+    assert(threshold() >= 0);
+}
+
+template < typename Graph >
+inline auto
+shared_nearest_neighbour_clusterer< Graph >::set_threshold(threshold_type t)
+    -> void
+{
+    assert(t >= 0);
+    m_thres = t;
 }
 
 template < typename Graph >

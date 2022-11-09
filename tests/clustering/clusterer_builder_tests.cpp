@@ -63,15 +63,15 @@ TEST_F(
     static_assert(clustering::is_clusterer_plugged_in(id));
 
     const auto clusterer
-        = builder->set_k(0)
+        = builder->set_k(1)
               .set_mst_finder(std::make_unique< dummy_mst_finder >())
-              .build_clusterer(id);
+              .result(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
     ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
     const auto& downcasted = static_cast< const expected_t& >(*clusterer);
-    EXPECT_EQ(downcasted.k(), 0);
+    EXPECT_EQ(downcasted.k(), 1);
     EXPECT_EQ(downcasted.mst_finder().id(), dummy_mst_finder::static_id);
 }
 
@@ -84,7 +84,7 @@ TEST_F(
     constexpr auto id = clustering::snn_clusterer_id;
     static_assert(clustering::is_clusterer_plugged_in(id));
 
-    const auto clusterer = builder->set_snn_threshold(0).build_clusterer(id);
+    const auto clusterer = builder->set_snn_threshold(0).result(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
@@ -102,7 +102,7 @@ TEST_F(
     constexpr auto id = clustering::strong_components_clusterer_id;
     static_assert(clustering::is_clusterer_plugged_in(id));
 
-    const auto clusterer = builder->build_clusterer(id);
+    const auto clusterer = builder->result(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
@@ -119,7 +119,7 @@ TEST_F(
     constexpr auto id = clustering::max_clique_enum_clusterer_id;
     static_assert(clustering::is_clusterer_plugged_in(id));
 
-    const auto clusterer = builder->build_clusterer(id);
+    const auto clusterer = builder->result(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
@@ -137,7 +137,7 @@ TEST_F(
     constexpr auto min = 20.0f;
     static_assert(clustering::is_clusterer_plugged_in(id));
 
-    const auto clusterer = builder->set_min_modularity(min).build_clusterer(id);
+    const auto clusterer = builder->set_min_modularity(min).result(id);
 
     ASSERT_NE(clusterer, nullptr);
     EXPECT_EQ(clusterer->id(), id);
