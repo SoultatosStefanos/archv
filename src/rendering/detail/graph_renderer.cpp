@@ -110,7 +110,8 @@ namespace
     }
 
     // Create or retrieve a solid coloured material
-    inline auto solid_color_material(const ColourValue& col)
+    // TODO Maybe mimic ambient, specular properties of original?
+    inline auto shaded_color_material(const ColourValue& col)
     {
         const auto id = Ogre::to_string(col);
         const auto* group = RGN_INTERNAL;
@@ -121,10 +122,10 @@ namespace
         {
             mat = manager.create(id, group);
             mat->setLightingEnabled(true);
-            mat->setAmbient(col);
+            mat->setDepthWriteEnabled(true);
+            mat->setReceiveShadows(true);
+            mat->setAmbient(ColourValue(0, 0, 0));
             mat->setDiffuse(col);
-            mat->setSpecular(col);
-            mat->setSelfIllumination(col);
         }
 
         return mat;
@@ -402,7 +403,7 @@ auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
     assert(m_scene.hasEntity(id));
     auto* e = m_scene.getEntity(id);
     assert(e);
-    e->setMaterial(solid_color_material(col));
+    e->setMaterial(shaded_color_material(col));
 
     vertex(id).cluster_col = col;
 
@@ -958,7 +959,7 @@ auto edge_renderer::render_cluster(
     assert(m_scene.hasEntity(name));
     auto* e = m_scene.getEntity(name);
     assert(e);
-    e->setMaterial(solid_color_material(col));
+    e->setMaterial(shaded_color_material(col));
 
     edge(name).cluster_col = col;
 
