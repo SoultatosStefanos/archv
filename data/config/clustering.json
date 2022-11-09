@@ -4,7 +4,8 @@
 		"k-Spanning Tree",
 		"Shared Nearest Neighbour",
 		"Strong Components",
-		"Maximal Clique Enumeration"
+		"Maximal Clique Enumeration",
+		"Louvain Method"
 	],
 	"min-spanning-tree-finders" : 
 	[
