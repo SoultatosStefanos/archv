@@ -66,6 +66,8 @@
 
 	+ [ ] Progress Bars
 
+	+ [ ] Blocked signals when running heavy algorithms
+
 	+ [ ] Interactive Configuration (deserialization/serialization/defaults)
 
 # Rendering
@@ -681,4 +683,9 @@
 
 	+ [x] Interactive Louvain Method settings for nerds
 
+
+# 10 / 11 / 2022
+
 	+ [ ] GUI Configs
+
+	+ [ ] Multithreaded clustering

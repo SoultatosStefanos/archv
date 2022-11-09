@@ -54,6 +54,8 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
     Ogre::ImGuiOverlay::NewFrame();
     if (m_pause_resume_handler->paused())
         m_gui->render();
+    // if (m_pause_resume_handler->paused())
+    //     ImGui::ShowDemoWindow();
     return true;
 }
 
