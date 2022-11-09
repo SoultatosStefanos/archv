@@ -47,6 +47,12 @@ auto clustering_editor::snn_thres() const -> snn_thres_type
     return m_snn_thres();
 }
 
+auto clustering_editor::min_modularity() const -> modularity_type
+{
+    assert(m_min_mod);
+    return m_min_mod();
+}
+
 auto clustering_editor::set_clusterer(clusterer_accessor f) -> void
 {
     assert(f);
@@ -71,6 +77,12 @@ auto clustering_editor::set_snn_thres(snn_thres_accessor f) -> void
     m_snn_thres = std::move(f);
 }
 
+auto clustering_editor::set_min_modularity(modularity_accessor f) -> void
+{
+    assert(f);
+    m_min_mod = std::move(f);
+}
+
 auto clustering_editor::connect_to_clusterer(const clustererer_slot& f)
     -> connection
 {
@@ -92,6 +104,12 @@ auto clustering_editor::connect_to_snn_thres(const snn_thres_slot& f)
     -> connection
 {
     return m_snn_thres_sig.connect(f);
+}
+
+auto clustering_editor::connect_to_min_modularity(const modularity_slot& f)
+    -> connection
+{
+    return m_min_mod_sig.connect(f);
 }
 
 auto clustering_editor::connect_to_cluster(const cluster_slot& f) -> connection
@@ -127,6 +145,11 @@ auto clustering_editor::emit_k(k_type k) const -> void
 auto clustering_editor::emit_snn_thres(snn_thres_type t) const -> void
 {
     m_snn_thres_sig(t);
+}
+
+auto clustering_editor::emit_min_modularity(modularity_type q) const -> void
+{
+    m_min_mod_sig(q);
 }
 
 auto clustering_editor::emit_cluster() const -> void
@@ -229,6 +252,9 @@ auto clustering_editor::render_settings_for_nerds() const -> void
         spaced_separator();
         spaced_text("Shared Nearest Neighbour");
         render_snn_thres_editor();
+        spaced_separator();
+        spaced_text("Louvain Method");
+        render_min_modularity_editor();
 
         ImGui::EndPopup();
     }
@@ -268,6 +294,20 @@ auto clustering_editor::render_snn_thres_editor() const -> void
         emit_snn_thres(t);
     ImGui::SameLine();
     detail::render_help_marker("SNN Threshold (t)");
+}
+
+auto clustering_editor::render_min_modularity_editor() const -> void
+{
+    auto q = min_modularity();
+
+    if (ImGui::InputFloat(
+            "Min Modularity##clustering",
+            &q,
+            1.0f,
+            100.0f,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_min_modularity(q);
 }
 
 } // namespace gui
