@@ -45,9 +45,9 @@
 			},
 			"particle-systems" : 
 			{
-				"light" : "Degrees/SmallRingWhite",
-				"medium" : "Degrees/SmallRingYellow",
-				"heavy" : "Degrees/SmallRingRed" 
+				"light" : "Degrees/Swarm",
+				"medium" : "Degrees/Swarm",
+				"heavy" : "Degrees/Swarm" 
 			},
 			"applied" : true
 		},
