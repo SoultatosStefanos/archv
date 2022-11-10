@@ -686,6 +686,6 @@
 
 # 10 / 11 / 2022
 
-	+ [ ] GUI Configs
+	+ [n] GUI Configs
 
 	+ [ ] Multithreaded clustering
