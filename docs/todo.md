@@ -688,4 +688,4 @@
 
 	+ [n] GUI Configs
 
-	+ [ ] Multithreaded clustering
+	+ [n/y] Multithreaded clustering
