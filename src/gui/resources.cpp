@@ -1,8 +1,5 @@
 #include "resources.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <imgui/imgui.h>
-
 namespace gui::resources
 {
 

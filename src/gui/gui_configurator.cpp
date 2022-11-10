@@ -3,7 +3,7 @@
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
 
-#include <imgui/imgui.h>
+#include <OGRE/Overlay/imgui.h>
 #include <ranges>
 
 namespace gui

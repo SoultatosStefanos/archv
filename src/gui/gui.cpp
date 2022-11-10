@@ -3,9 +3,9 @@
 #include "IconsFontAwesome5.h"
 #include "resources.hpp"
 
+#include <OGRE/Overlay/imgui.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>
-#include <imgui/imgui.h>
 #include <memory>
 #include <string_view>
 

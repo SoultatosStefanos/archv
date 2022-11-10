@@ -4,8 +4,8 @@
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
+#include <OGRE/Overlay/imgui.h>
 #include <cassert>
-#include <imgui/imgui.h>
 #include <ranges>
 
 namespace gui
