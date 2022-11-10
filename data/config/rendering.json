@@ -1,10 +1,10 @@
 {
 	"background" : 
 	{
-		"skybox-material" : "Solid/Black",
+		"skybox-material" : "Gradient/Dark",
 		"skybox-distance" : 5000,
 		"ambient-color" : [ 0, 0, 0 ],
-		"diffuse-color" : [ 0.3, 0.4, 0.5 ],
+		"diffuse-color" : [ 0.4, 0.43, 0.42 ],
 		"specular-color" : [ 0, 0, 0 ],
 		"cam-far-clip-distance" : 0,
 		"cam-near-clip-distance" : 5
@@ -12,7 +12,7 @@
 	"graph" : 
 	{
 		"vertex-mesh" : "sphere.mesh",
-		"vertex-material" : "Shaded/MetalGray",
+		"vertex-material" : "Shaded/MetalBlue",
 		"vertex-scale" :  [	0.09, 0.09, 0.09 ],
 		"vertex-id" : 
 		{

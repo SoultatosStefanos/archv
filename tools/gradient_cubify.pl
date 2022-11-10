@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 # Creative Commons Legal Code
 #
 # CC0 1.0 Universal
@@ -120,7 +122,6 @@
 #     party to this document and has no duty or obligation with respect to
 #     this CC0 or use of the Work.
 
-#!/usr/bin/env perl
 use strict;
 use warnings;
 
