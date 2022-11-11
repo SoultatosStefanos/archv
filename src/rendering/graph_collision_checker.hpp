@@ -5,6 +5,7 @@
 #ifndef RENDERING_GRAPH_COLLISION_CHECKER_HPP
 #define RENDERING_GRAPH_COLLISION_CHECKER_HPP
 
+#include <OGRE/OgreEntity.h>
 #include <OGRE/OgreRay.h>
 #include <OGRE/OgreSceneManager.h>
 #include <algorithm>

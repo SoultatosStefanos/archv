@@ -690,4 +690,8 @@
 
 	+ [n/y] Multithreaded clustering
 
-	+ [ ] Layered Label Propagation pre work
+	+ [n/y] Layered Label Propagation pre work
+
+	+ [x] Info overlays
+
+		+ [x] Clickable vertices

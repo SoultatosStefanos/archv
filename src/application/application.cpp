@@ -56,6 +56,7 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
         m_gui->render();
     // if (m_pause_resume_handler->paused())
     //     ImGui::ShowDemoWindow();
+
     return true;
 }
 
@@ -75,6 +76,7 @@ auto application::setup() -> void
     setup_commands();
     setup_background_renderer();
     setup_graph_renderer();
+    setup_graph_collision_checker();
     setup_gui();
     setup_input();
 
@@ -157,6 +159,17 @@ auto application::setup_graph_renderer() -> void
     m_graph_renderer->render_out_degree_particles();
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
+}
+
+auto application::setup_graph_collision_checker() -> void
+{
+    m_graph_collisions = std::make_unique< graph_collision_checker_type >(
+        m_graph_iface->get_graph(),
+        m_graph_iface->vertex_id(),
+        m_graph_iface->edge_dependency(),
+        m_background_renderer->scene());
+
+    BOOST_LOG_TRIVIAL(debug) << "setup graph collisions";
 }
 
 namespace // gui setup
@@ -354,12 +367,16 @@ auto application::setup_input() -> void
     m_shortcut_input_handler
         = std::make_unique< shortcut_input_handler_type >(*m_gui);
 
+    m_inspection_input_handler = std::make_unique< inspection_handler_type >(
+        *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
+
     addInputListener(m_tray.get());
     addInputListener(m_cameraman.get());
     addInputListener(m_hud_input_handler.get());
     addInputListener(m_pause_resume_handler.get());
     addInputListener(m_quit_handler.get());
     addInputListener(m_shortcut_input_handler.get());
+    addInputListener(m_inspection_input_handler.get());
 
 #ifdef NDEBUG
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -378,6 +395,7 @@ auto application::shutdown() -> void
 {
     shutdown_input();
     shutdown_gui();
+    shutdown_graph_collision_checker();
     shutdown_graph_renderer();
     shutdown_background_renderer();
     shutdown_commands();
@@ -389,6 +407,7 @@ auto application::shutdown() -> void
 
 auto application::shutdown_input() -> void
 {
+    removeInputListener(m_inspection_input_handler.get());
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
     removeInputListener(m_pause_resume_handler.get());
@@ -396,6 +415,7 @@ auto application::shutdown_input() -> void
     removeInputListener(m_cameraman.get());
     removeInputListener(m_tray.get());
 
+    m_inspection_input_handler.reset();
     m_shortcut_input_handler.reset();
     m_quit_handler.reset();
     m_pause_resume_handler.reset();
@@ -412,6 +432,13 @@ auto application::shutdown_gui() -> void
     Ogre::OverlayManager::getSingleton().destroy(imgui_overlay_name);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
+}
+
+auto application::shutdown_graph_collision_checker() -> void
+{
+    m_graph_collisions.reset();
+
+    BOOST_LOG_TRIVIAL(debug) << "shutdown graph collisions";
 }
 
 auto application::shutdown_graph_renderer() -> void

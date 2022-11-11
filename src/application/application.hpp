@@ -34,7 +34,13 @@ public:
     using command_history_type = undo_redo::command_history;
 
     using background_renderer_type = rendering::background_renderer;
+
     using graph_renderer_type = rendering::graph_renderer<
+        architecture::graph,
+        architecture::id_map,
+        architecture::dependency_map >;
+
+    using graph_collision_checker_type = rendering::graph_collision_checker<
         architecture::graph,
         architecture::id_map,
         architecture::dependency_map >;
@@ -66,16 +72,19 @@ private:
     using pause_resume_handler_type = input::pause_resume_handler;
     using quit_handler_type = input::quit_handler;
     using shortcut_input_handler_type = input::shortcut_handler;
+    using inspection_handler_type = input::inspection_handler;
 
     auto setup_graph_interface() -> void;
     auto setup_commands() -> void;
     auto setup_background_renderer() -> void;
     auto setup_graph_renderer() -> void;
+    auto setup_graph_collision_checker() -> void;
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;
+    auto shutdown_graph_collision_checker() -> void;
     auto shutdown_graph_renderer() -> void;
     auto shutdown_background_renderer() -> void;
     auto shutdown_commands() -> void;
@@ -114,6 +123,7 @@ private:
     std::unique_ptr< command_history_type > m_cmds;
 
     std::unique_ptr< graph_renderer_type > m_graph_renderer;
+    std::unique_ptr< graph_collision_checker_type > m_graph_collisions;
     std::unique_ptr< background_renderer_type > m_background_renderer;
 
     std::unique_ptr< gui_type > m_gui;
@@ -125,6 +135,7 @@ private:
     std::unique_ptr< pause_resume_handler_type > m_pause_resume_handler;
     std::unique_ptr< quit_handler_type > m_quit_handler;
     std::unique_ptr< shortcut_input_handler_type > m_shortcut_input_handler;
+    std::unique_ptr< inspection_handler_type > m_inspection_input_handler;
 };
 
 } // namespace application
