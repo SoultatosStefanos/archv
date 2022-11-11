@@ -7,6 +7,7 @@
 namespace gui
 {
 
+// TODO
 class structure_dialog
 {
 public:
