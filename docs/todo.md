@@ -695,3 +695,14 @@
 	+ [x] Info overlays
 
 		+ [x] Clickable vertices
+
+	+ [x] Gui structure dialog manager
+
+	+ [ ] Gui structure dialog
+
+
+# 11 / 11 / 2022
+
+	+ [ ] Presentation Layer
+
+	+ [ ] Input unit tests

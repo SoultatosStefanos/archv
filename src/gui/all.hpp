@@ -16,6 +16,8 @@
 #include "plugins.hpp"
 #include "resources.hpp"
 #include "scaling_editor.hpp"
+#include "structure_dialog.hpp"
+#include "structure_dialog_manager.hpp"
 #include "weights_editor.hpp"
 
 #endif // GUI_ALL_HPP

@@ -1,6 +1,7 @@
 set(FILES
 	config_tests.cpp
 	gui_tests.cpp
+	structure_dialog_manager_tests.cpp
 )
 set(SUBDIRECTORIES)
 

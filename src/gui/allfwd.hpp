@@ -17,6 +17,9 @@ class scaling_editor;
 class degrees_editor;
 class clustering_editor;
 
+class structure_dialog;
+class structure_dialog_manager;
+
 } // namespace gui
 
 #endif // GUI_ALLFWD_HPP
