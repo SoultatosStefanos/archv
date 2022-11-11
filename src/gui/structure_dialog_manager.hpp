@@ -6,6 +6,8 @@
 
 #include "structure_dialog.hpp"
 
+#include <cassert>
+#include <concepts>
 #include <string_view>
 #include <unordered_map>
 #include <unordered_set>
@@ -14,6 +16,10 @@ namespace gui
 {
 
 class structure_dialog;
+
+/***********************************************************
+ * Structure Dialog Manager                                *
+ ***********************************************************/
 
 // NOTE: Assumes that each structure has a unique id (ala C++).
 class structure_dialog_manager
@@ -32,7 +38,9 @@ public:
     auto activate(id_type id) -> void;
     auto deactivate(id_type id) -> void;
 
-    auto render_active_dialogs() const -> void;
+    template < typename Visitor >
+    requires std::invocable< Visitor, const structure_dialog& >
+    auto visit_active_dialogs(Visitor visitor) const -> void;
 
 private:
     using map_type = std::unordered_map< id_type, structure_dialog >;
@@ -41,6 +49,40 @@ private:
     map_type m_map;
     actives_type m_actives;
 };
+
+/***********************************************************
+ * Definitions                                             *
+ ***********************************************************/
+
+template < typename Visitor >
+requires std::invocable< Visitor, const structure_dialog& >
+inline auto
+structure_dialog_manager::visit_active_dialogs(Visitor visitor) const -> void
+{
+    for (auto id : m_actives)
+    {
+        assert(manages(id));
+        assert(is_active(id));
+        assert(m_map.contains(id));
+
+        const auto& dialog = m_map.at(id);
+        visitor(dialog);
+    }
+}
+
+/***********************************************************
+ * Utilities                                               *
+ ***********************************************************/
+
+// Convenience function to render one frame of all the active/open dialogs.
+inline auto render_active_dialogs(const structure_dialog_manager& manager)
+{
+    manager.visit_active_dialogs([](const auto& dialog) { dialog.render(); });
+}
+
+/***********************************************************
+ * Global instance                                         *
+ ***********************************************************/
 
 extern structure_dialog_manager structure_dialogs;
 

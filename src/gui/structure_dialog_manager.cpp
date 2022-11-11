@@ -54,19 +54,6 @@ auto structure_dialog_manager::deactivate(id_type id) -> void
     assert(!is_active(id));
 }
 
-auto structure_dialog_manager::render_active_dialogs() const -> void
-{
-    for (auto id : m_actives)
-    {
-        assert(manages(id));
-        assert(is_active(id));
-        assert(m_map.contains(id));
-
-        const auto& dialog = m_map.at(id);
-        dialog.render();
-    }
-}
-
 structure_dialog_manager structure_dialogs;
 
 } // namespace gui

@@ -1,6 +1,7 @@
 #include "gui/structure_dialog.hpp"
 #include "gui/structure_dialog_manager.hpp"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 
@@ -45,7 +46,11 @@ TEST(a_new_structure_dialog_manager, does_not_hold_active_dialog)
 class given_a_structure_dialog_manager : public Test
 {
 protected:
+    using mock_visitor
+        = NiceMock< MockFunction< void(const gui::structure_dialog&) > >;
+
     std::unique_ptr< gui::structure_dialog_manager > manager;
+    mock_visitor visitor;
 
     void SetUp() override
     {
@@ -325,6 +330,29 @@ TEST_F(
     manager->withdraw("A");
 
     EXPECT_EQ(manager->num_active_dialogs(), 1);
+}
+
+TEST_F(
+    given_a_structure_dialog_manager,
+    visit_active_dialogs_invokes_visitor_initially_zero_times)
+{
+    EXPECT_CALL(visitor, Call(_)).Times(0);
+
+    manager->visit_active_dialogs(visitor.AsStdFunction());
+}
+
+TEST_F(
+    given_a_structure_dialog_manager,
+    visit_active_dialogs_invokes_visitor_num_active_dialogs_times)
+{
+    manager->submit("A", gui::structure_dialog());
+    manager->submit("B", gui::structure_dialog());
+    manager->activate("A");
+    manager->activate("B");
+
+    EXPECT_CALL(visitor, Call(_)).Times(2);
+
+    manager->visit_active_dialogs(visitor.AsStdFunction());
 }
 
 } // namespace
