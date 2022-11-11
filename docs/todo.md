@@ -698,10 +698,10 @@
 
 	+ [x] Gui structure dialog manager
 
-	+ [ ] Gui structure dialog
-
 
 # 11 / 11 / 2022
+
+	+ [ ] Gui structure dialog
 
 	+ [ ] Presentation Layer
 
