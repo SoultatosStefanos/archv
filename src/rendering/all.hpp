@@ -10,6 +10,7 @@
 #include "config.hpp"
 #include "degrees_ranked_backend.hpp"
 #include "degrees_ranked_config.hpp"
+#include "graph_collision_checker.hpp"
 #include "degrees_ranked_evaluation.hpp"
 #include "degrees_ranked_evaluator.hpp"
 #include "graph_config.hpp"
