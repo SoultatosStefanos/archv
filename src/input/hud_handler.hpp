@@ -5,29 +5,34 @@
 #define INPUT_HUD_HANDLER_HPP
 
 #include <OGRE/Bites/OgreInput.h>
-#include <OGRE/Bites/OgreTrays.h>
+
+namespace gui
+{
+class overlay;
+} // namespace gui
 
 namespace input
 {
 
 class hud_handler : public OgreBites::InputListener
 {
-    using base = OgreBites::InputListener;
-
 public:
-    using tray_type = OgreBites::TrayManager;
+    using overlay_type = gui::overlay;
 
-    explicit hud_handler(tray_type& tray);
+    hud_handler(overlay_type& controls, overlay_type& frames);
+    ~hud_handler() override = default;
 
-    auto tray() const -> const auto& { return m_tray; }
-    auto tray() -> auto& { return m_tray; }
+    auto controls_hud() const -> const auto& { return m_ctrls; }
+    auto controls_hud() -> auto& { return m_ctrls; }
+
+    auto frames_hud() const -> const auto& { return m_frames; }
+    auto frames_hud() -> auto& { return m_frames; }
 
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
 
 private:
-    auto toggle_frame_stats() -> void;
-
-    tray_type& m_tray;
+    overlay_type& m_ctrls;
+    overlay_type& m_frames;
 };
 
 } // namespace input

@@ -54,6 +54,7 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
     Ogre::ImGuiOverlay::NewFrame();
     m_gui->render();
     // ImGui::ShowDemoWindow();
+    gui::render_overlays(gui::overlays);
 
     return true;
 }
@@ -324,6 +325,13 @@ namespace // gui setup
         Ogre::OverlayManager::getSingleton().addOverlay(imgui);
     }
 
+    inline auto prepare_huds() -> void
+    {
+        using std::make_unique;
+        gui::overlays.submit(make_unique< gui::controls_hud >());
+        gui::overlays.submit(make_unique< gui::frames_hud >());
+    }
+
 } // namespace
 
 auto application::setup_gui() -> void
@@ -340,6 +348,8 @@ auto application::setup_gui() -> void
     assert(ogre_overlay);
     m_background_renderer->scene().addRenderQueueListener(ogre_overlay);
 
+    prepare_huds();
+
     m_gui = std::make_unique< gui_type >(m_gui_config);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
@@ -347,22 +357,26 @@ auto application::setup_gui() -> void
 
 auto application::setup_input() -> void
 {
-    m_tray = std::make_unique< tray_type >("Bob", getRenderWindow());
+    using std::make_unique;
+
+    m_tray = make_unique< tray_type >("Bob", getRenderWindow());
     m_tray->showCursor();
 
-    m_cameraman = std::make_unique< cameraman_type >(
-        &m_background_renderer->cam_node());
+    m_cameraman
+        = make_unique< cameraman_type >(&m_background_renderer->cam_node());
 
-    m_gui_input_handler = std::make_unique< gui_input_handler_type >();
+    m_gui_input_handler = make_unique< gui_input_handler_type >();
 
-    m_hud_input_handler = std::make_unique< hud_input_handler_type >(*m_tray);
+    m_hud_input_handler = make_unique< hud_input_handler_type >(
+        gui::overlays.get(gui::controls_hud::type_id),
+        gui::overlays.get(gui::frames_hud::type_id));
 
-    m_quit_handler = std::make_unique< quit_handler_type >(*getRoot());
+    m_quit_handler = make_unique< quit_handler_type >(*getRoot());
 
     m_shortcut_input_handler
-        = std::make_unique< shortcut_input_handler_type >(*m_gui);
+        = make_unique< shortcut_input_handler_type >(*m_gui);
 
-    m_inspection_input_handler = std::make_unique< inspection_handler_type >(
+    m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
 
     addInputListener(m_tray.get());

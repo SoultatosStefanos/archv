@@ -1,4 +1,4 @@
-#include "controls_overlay.hpp"
+#include "controls_hud.hpp"
 
 #include "detail/utility.hpp"
 
@@ -7,8 +7,11 @@
 namespace gui
 {
 
-auto controls_overlay::render() const -> void
+auto controls_hud::render() const -> void
 {
+    if (!visible())
+        return;
+
     static constexpr auto corner = detail::top_right;
 
     // clang-format off

@@ -7,6 +7,9 @@
 namespace gui
 {
 
+class overlay;
+class overlay_manager;
+
 class background_configurator;
 class weights_editor;
 class graph_configurator;
@@ -16,6 +19,9 @@ class layout_editor;
 class scaling_editor;
 class degrees_editor;
 class clustering_editor;
+
+class frames_hud;
+class controls_hud;
 
 class structure_dialog;
 class structure_dialog_manager;

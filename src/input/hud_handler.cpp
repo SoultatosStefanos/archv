@@ -1,25 +1,23 @@
 #include "hud_handler.hpp"
 
+#include "gui/overlay.hpp"
+
 namespace input
 {
 
-hud_handler::hud_handler(tray_type& tray) : m_tray { tray }
+hud_handler::hud_handler(overlay_type& controls, overlay_type& frames)
+: m_ctrls { controls }, m_frames { frames }
 {
 }
 
 auto hud_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 {
-    if (e.keysym.sym == 'f')
-        toggle_frame_stats();
-    return true;
-}
+    if (e.keysym.sym == 'h')
+        gui::toggle_show_hide(controls_hud());
+    else if (e.keysym.sym == 'f')
+        gui::toggle_show_hide(frames_hud());
 
-auto hud_handler::toggle_frame_stats() -> void
-{
-    if (tray().areFrameStatsVisible())
-        tray().hideFrameStats();
-    else
-        tray().showFrameStats(OgreBites::TrayLocation::TL_BOTTOMLEFT);
+    return true;
 }
 
 } // namespace input

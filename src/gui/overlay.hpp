@@ -35,6 +35,18 @@ public:
     virtual auto render() const -> void = 0;
 };
 
+/***********************************************************
+ * Utilities                                               *
+ ***********************************************************/
+
+inline auto toggle_show_hide(overlay& o) -> void
+{
+    if (o.visible())
+        o.hide();
+    else
+        o.show();
+}
+
 } // namespace gui
 
 #endif // GUI_OVERLAY_HPP

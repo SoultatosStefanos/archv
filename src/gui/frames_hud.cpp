@@ -1,4 +1,4 @@
-#include "frames_overlay.hpp"
+#include "frames_hud.hpp"
 
 #include "detail/utility.hpp"
 
@@ -7,8 +7,11 @@
 namespace gui
 {
 
-auto frames_overlay::render() const -> void
+auto frames_hud::render() const -> void
 {
+    if (!visible())
+        return;
+
     static constexpr auto corner = detail::bottom_left;
 
     // clang-format off
