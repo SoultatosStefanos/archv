@@ -7,7 +7,6 @@
 #include "camera_handler.hpp"
 #include "hud_handler.hpp"
 #include "inspection_handler.hpp"
-#include "pause_resume_handler.hpp"
 #include "quit_handler.hpp"
 #include "shortcut_handler.hpp"
 

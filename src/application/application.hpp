@@ -69,7 +69,6 @@ private:
     using cameraman_type = input::camera_handler;
     using gui_input_handler_type = OgreBites::ImGuiInputListener;
     using hud_input_handler_type = input::hud_handler;
-    using pause_resume_handler_type = input::pause_resume_handler;
     using quit_handler_type = input::quit_handler;
     using shortcut_input_handler_type = input::shortcut_handler;
     using inspection_handler_type = input::inspection_handler;

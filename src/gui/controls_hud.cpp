@@ -33,7 +33,7 @@ auto controls_hud::render() const -> void
     ImGui::BulletText("Mouse (while unlocked) to look around.");
     ImGui::BulletText("W/A/S/D or arrow keys (while unlocked) to move around.");
     ImGui::BulletText("PgUp/PgDn (while unlocked) to move up/down.");
-    ImGui::BulletText("SHIFT (hold) (while unlocked) to speed up/down.");
+    ImGui::BulletText("LSHIFT (hold) (while unlocked) to speed up/down.");
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
