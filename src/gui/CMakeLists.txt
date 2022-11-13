@@ -10,6 +10,7 @@ set(FILES
 	gui_configurator.cpp
 	gui.cpp
 	layout_editor.cpp
+	overlay_manager.cpp
 	plugins.cpp
 	resources.cpp
 	scaling_editor.cpp

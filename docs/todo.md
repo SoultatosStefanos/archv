@@ -720,4 +720,10 @@
 
 	+ [ ] Gui cleanup, extract menu and global state
 
+		+ [x] Overlays hierarchy
+
+		+ [ ] Extract menu bar
+
+		+ [ ] Extract global state
+
 	+ [ ] Input cleanup
