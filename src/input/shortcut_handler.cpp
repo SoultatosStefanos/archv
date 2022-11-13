@@ -1,13 +1,13 @@
 #include "shortcut_handler.hpp"
 
-#include "gui/gui.hpp"
+#include "undo_redo/command_history.hpp"
 
 #include <SDL2/SDL_keycode.h>
 
 namespace input
 {
 
-shortcut_handler::shortcut_handler(gui_type& ui) : m_gui { ui }
+shortcut_handler::shortcut_handler(commands_type& cmds) : m_cmds { cmds }
 {
 }
 
@@ -63,13 +63,13 @@ auto shortcut_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 auto shortcut_handler::handle_undo_combination() -> void
 {
     if (m_lctrl_pressed and m_z_pressed)
-        m_gui.undo_shortcut();
+        commands().undo();
 }
 
 auto shortcut_handler::handle_redo_combination() -> void
 {
     if (m_lctrl_pressed and m_y_pressed)
-        m_gui.redo_shortcut();
+        commands().redo();
 }
 
 } // namespace input

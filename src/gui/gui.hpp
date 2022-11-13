@@ -111,9 +111,6 @@ public:
     auto set_can_undo(pred pred) -> void;
     auto set_can_redo(pred pred) -> void;
 
-    auto undo_shortcut() -> void;
-    auto redo_shortcut() -> void;
-
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
 

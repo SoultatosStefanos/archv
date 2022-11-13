@@ -14,6 +14,10 @@ class overlay;
 namespace input
 {
 
+/***********************************************************
+ * HUD Handler                                             *
+ ***********************************************************/
+
 class hud_handler : public OgreBites::InputListener
 {
 public:

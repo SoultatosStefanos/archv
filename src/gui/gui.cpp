@@ -73,17 +73,6 @@ auto gui::connect_to_redo(const redo_slot& f) -> connection
     return m_redo_sig.connect(f);
 }
 
-void gui::undo_shortcut()
-{
-    if (can_undo())
-        emit_undo();
-}
-void gui::redo_shortcut()
-{
-    if (can_redo())
-        emit_redo();
-}
-
 auto gui::emit_undo() const -> void
 {
     m_undo_sig();
