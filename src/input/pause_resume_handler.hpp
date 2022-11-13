@@ -12,6 +12,7 @@
 namespace input
 {
 
+// NOTE: Currently not used at all.
 class pause_resume_handler : public OgreBites::InputListener
 {
     using base = OgreBites::InputListener;

@@ -706,3 +706,14 @@
 	+ [ ] Presentation Layer
 
 	+ [ ] Input unit tests
+
+
+# 13 / 11 / 2022
+
+	+ [x] Cameraman input lock/unlock
+
+	+ [x] Display GUI always
+
+	+ [ ] HUD
+
+	+ [ ] Frames

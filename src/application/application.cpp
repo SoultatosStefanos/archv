@@ -52,8 +52,7 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
-    if (m_pause_resume_handler->paused())
-        m_gui->render();
+    m_gui->render();
     // if (m_pause_resume_handler->paused())
     //     ImGui::ShowDemoWindow();
 
@@ -359,9 +358,6 @@ auto application::setup_input() -> void
 
     m_hud_input_handler = std::make_unique< hud_input_handler_type >(*m_tray);
 
-    m_pause_resume_handler = std::make_unique< pause_resume_handler_type >(
-        *this, *m_cameraman, *m_gui_input_handler);
-
     m_quit_handler = std::make_unique< quit_handler_type >(*getRoot());
 
     m_shortcut_input_handler
@@ -371,9 +367,9 @@ auto application::setup_input() -> void
         *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
 
     addInputListener(m_tray.get());
+    addInputListener(m_gui_input_handler.get());
     addInputListener(m_cameraman.get());
     addInputListener(m_hud_input_handler.get());
-    addInputListener(m_pause_resume_handler.get());
     addInputListener(m_quit_handler.get());
     addInputListener(m_shortcut_input_handler.get());
     addInputListener(m_inspection_input_handler.get());
@@ -410,7 +406,7 @@ auto application::shutdown_input() -> void
     removeInputListener(m_inspection_input_handler.get());
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
-    removeInputListener(m_pause_resume_handler.get());
+    removeInputListener(m_gui_input_handler.get());
     removeInputListener(m_hud_input_handler.get());
     removeInputListener(m_cameraman.get());
     removeInputListener(m_tray.get());
@@ -418,7 +414,7 @@ auto application::shutdown_input() -> void
     m_inspection_input_handler.reset();
     m_shortcut_input_handler.reset();
     m_quit_handler.reset();
-    m_pause_resume_handler.reset();
+    m_gui_input_handler.reset();
     m_hud_input_handler.reset();
     m_cameraman.reset();
     m_tray.reset();

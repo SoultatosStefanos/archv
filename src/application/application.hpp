@@ -66,7 +66,7 @@ private:
     using gui_config_data_type = gui::config_data;
 
     using tray_type = OgreBites::TrayManager;
-    using cameraman_type = OgreBites::CameraMan;
+    using cameraman_type = input::camera_handler;
     using gui_input_handler_type = OgreBites::ImGuiInputListener;
     using hud_input_handler_type = input::hud_handler;
     using pause_resume_handler_type = input::pause_resume_handler;
@@ -132,7 +132,6 @@ private:
     std::unique_ptr< cameraman_type > m_cameraman;
     std::unique_ptr< gui_input_handler_type > m_gui_input_handler;
     std::unique_ptr< hud_input_handler_type > m_hud_input_handler;
-    std::unique_ptr< pause_resume_handler_type > m_pause_resume_handler;
     std::unique_ptr< quit_handler_type > m_quit_handler;
     std::unique_ptr< shortcut_input_handler_type > m_shortcut_input_handler;
     std::unique_ptr< inspection_handler_type > m_inspection_input_handler;

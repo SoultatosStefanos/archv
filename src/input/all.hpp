@@ -4,6 +4,7 @@
 #ifndef INPUT_ALL_HPP
 #define INPUT_ALL_HPP
 
+#include "camera_handler.hpp"
 #include "hud_handler.hpp"
 #include "inspection_handler.hpp"
 #include "pause_resume_handler.hpp"

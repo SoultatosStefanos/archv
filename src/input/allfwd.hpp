@@ -12,6 +12,7 @@ class pause_resume_handler;
 class quit_handler;
 class shortcut_handler;
 class inspection_handler;
+class camera_handler;
 
 } // namespace input
 

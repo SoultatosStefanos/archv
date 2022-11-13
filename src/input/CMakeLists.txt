@@ -1,4 +1,5 @@
 set(FILES
+	camera_handler.cpp
 	hud_handler.cpp
 	inspection_handler.cpp
 	pause_resume_handler.cpp
