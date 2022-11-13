@@ -2,6 +2,7 @@ set(FILES
 	background_configurator.cpp
 	clustering_editor.cpp
 	config.cpp
+	controls_overlay.cpp
 	degrees_editor.cpp
 	graph_configurator.cpp
 	gui_config.cpp

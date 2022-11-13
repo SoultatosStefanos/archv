@@ -714,6 +714,10 @@
 
 	+ [x] Display GUI always
 
-	+ [ ] HUD
+	+ [x] HUD
 
-	+ [ ] Frames
+	+ [n] Frames
+
+	+ [ ] Gui cleanup, extract menu and global state
+
+	+ [ ] Input cleanup

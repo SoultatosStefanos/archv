@@ -7,6 +7,7 @@
 #include "background_configurator.hpp"
 #include "clustering_editor.hpp"
 #include "config.hpp"
+#include "controls_overlay.hpp"
 #include "degrees_editor.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"
