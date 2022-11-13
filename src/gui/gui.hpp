@@ -14,35 +14,16 @@
 #include "scaling_editor.hpp"
 #include "weights_editor.hpp"
 
-#include <boost/exception/all.hpp>
-#include <stdexcept>
 #include <string>
 
 namespace gui
 {
 
 /***********************************************************
- * Errors                                                  *
- ***********************************************************/
-
-struct deserialization_error : virtual std::exception, virtual boost::exception
-{
-};
-
-struct unknown_color_theme : virtual deserialization_error
-{
-};
-
-/***********************************************************
- * Error Info                                              *
- ***********************************************************/
-
-using color_theme_info = boost::error_info< struct tag_theme, std::string >;
-
-/***********************************************************
  * GUI                                                     *
  ***********************************************************/
 
+// TODO Rename
 // The root widget of the gui.
 class gui
 {
@@ -50,24 +31,11 @@ class gui
     using redo_signal = boost::signals2::signal< void() >;
 
 public:
-    using config_data_type = gui_config;
-    using config_api_type = gui_config_api;
-
     using pred = std::function< bool() >;
 
     using undo_slot = undo_signal::slot_type;
     using redo_slot = redo_signal::slot_type;
     using connection = boost::signals2::connection;
-
-    explicit gui(config_data_type cfg = config_data_type());
-
-    auto default_data() const -> const config_data_type& { return m_defaults; }
-
-    auto config_data() const -> const config_data_type& { return m_cfg; }
-    auto config_data() -> config_data_type& { return m_cfg; }
-
-    auto config_api() const -> const config_api_type& { return m_api; }
-    auto config_api() -> config_api_type& { return m_api; }
 
     auto get_weights_editor() const -> const auto& { return m_weights_editor; }
     auto get_weights_editor() -> auto& { return m_weights_editor; }
@@ -78,23 +46,14 @@ public:
     auto get_scaling_editor() const -> const auto& { return m_scaling_editor; }
     auto get_scaling_editor() -> auto& { return m_scaling_editor; }
 
-    auto get_in_degrees_editor() const -> const auto&
-    {
-        return m_in_degrees_editor;
-    }
-    auto get_in_degrees_editor() -> auto& { return m_in_degrees_editor; }
+    auto get_in_degrees_editor() const -> const auto& { return m_in_edit; }
+    auto get_in_degrees_editor() -> auto& { return m_in_edit; }
 
-    auto get_out_degrees_editor() const -> const auto&
-    {
-        return m_out_degrees_editor;
-    }
-    auto get_out_degrees_editor() -> auto& { return m_out_degrees_editor; }
+    auto get_out_degrees_editor() const -> const auto& { return m_out_edit; }
+    auto get_out_degrees_editor() -> auto& { return m_out_edit; }
 
-    auto get_clustering_editor() const -> const auto&
-    {
-        return m_clustering_editor;
-    }
-    auto get_clustering_editor() -> auto& { return m_clustering_editor; }
+    auto get_clustering_editor() const -> const auto& { return m_c_editor; }
+    auto get_clustering_editor() -> auto& { return m_c_editor; }
 
     auto get_bkg_configurator() const -> const auto& { return m_bkg_cfg; }
     auto get_bkg_configurator() -> auto& { return m_bkg_cfg; }
@@ -114,8 +73,6 @@ public:
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
 
-    auto draw(const config_data_type& cfg) const -> void;
-
     auto render() const -> void;
 
 protected:
@@ -130,15 +87,12 @@ private:
     auto render_gui_configurator() const -> void;
     auto render_helper() const -> void;
 
-    config_data_type m_cfg, m_defaults;
-    config_api_type m_api;
-
     weights_editor m_weights_editor;
     layout_editor m_layout_editor;
     scaling_editor m_scaling_editor;
-    degrees_editor m_in_degrees_editor;
-    degrees_editor m_out_degrees_editor;
-    clustering_editor m_clustering_editor;
+    degrees_editor m_in_edit;
+    degrees_editor m_out_edit;
+    clustering_editor m_c_editor;
 
     background_configurator m_bkg_cfg;
     graph_configurator m_graph_cfg;

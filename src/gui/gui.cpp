@@ -1,43 +1,14 @@
 #include "gui.hpp"
 
 #include "IconsFontAwesome5.h"
-#include "resources.hpp"
 
 #include <OGRE/Overlay/imgui.h>
-#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <memory>
 #include <string_view>
 
 namespace gui
 {
-
-/***********************************************************
- * GUI                                                     *
- ***********************************************************/
-
-gui::gui(config_data_type cfg)
-: m_cfg { cfg }, m_defaults { cfg }, m_api { std::move(cfg) }
-{
-    draw(config_data());
-}
-
-namespace
-{
-    auto draw_color_theme(const std::string& theme)
-    {
-        if (theme == resources::dark_theme)
-            ImGui::StyleColorsDark();
-        else if (theme == resources::light_theme)
-            ImGui::StyleColorsLight();
-        else if (theme == resources::classic_theme)
-            ImGui::StyleColorsClassic();
-        else
-            BOOST_THROW_EXCEPTION(
-                unknown_color_theme() << color_theme_info(theme));
-    }
-
-} // namespace
 
 auto gui::can_undo() const -> bool
 {
@@ -81,20 +52,6 @@ auto gui::emit_undo() const -> void
 auto gui::emit_redo() const -> void
 {
     m_redo_sig();
-}
-
-auto gui::draw(const config_data_type& cfg) const -> void
-{
-    draw_color_theme(cfg.color_theme);
-
-    auto& style = ImGui::GetStyle();
-
-    style.GrabRounding = cfg.frame_rounding;
-    style.FrameRounding = cfg.frame_rounding;
-
-    style.WindowBorderSize = cfg.window_bordered ? 1.0f : 0.0f;
-    style.PopupBorderSize = cfg.popup_bordered ? 1.0f : 0.0f;
-    style.FrameBorderSize = cfg.frame_bordered ? 1.0f : 0.0f;
 }
 
 auto gui::render() const -> void

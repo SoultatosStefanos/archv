@@ -20,6 +20,7 @@
 #include "plugins.hpp"
 #include "resources.hpp"
 #include "scaling_editor.hpp"
+#include "ui_adaptor.hpp"
 #include "weights_editor.hpp"
 
 #endif // GUI_ALL_HPP

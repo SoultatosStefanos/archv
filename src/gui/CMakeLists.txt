@@ -14,6 +14,7 @@ set(FILES
 	plugins.cpp
 	resources.cpp
 	scaling_editor.cpp
+	ui_adaptor.cpp
 	weights_editor.cpp
 )
 set(SUBDIRECTORIES detail)

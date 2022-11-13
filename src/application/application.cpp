@@ -349,9 +349,11 @@ auto application::setup_gui() -> void
     assert(ogre_overlay);
     m_background_renderer->scene().addRenderQueueListener(ogre_overlay);
 
+    gui::set_configs(m_gui_config);
+
     prepare_huds();
 
-    m_gui = std::make_unique< gui_type >(m_gui_config);
+    m_gui = std::make_unique< gui_type >();
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
 }
@@ -731,7 +733,7 @@ auto application::prepare_gui_configurator() -> void
     assert(m_gui);
 
     auto& gui_configurator = m_gui->get_gui_configurator();
-    const auto& cfg = m_gui->config_data();
+    const auto& cfg = gui::get_configs();
 
     gui_configurator.set_color_theme(cfg.color_theme);
     gui_configurator.set_frame_rounding(cfg.frame_rounding);
@@ -1379,7 +1381,7 @@ auto application::connect_gui_presentation() -> void
     assert(m_gui);
 
     auto& iface = m_gui->get_gui_configurator();
-    auto& api = m_gui->config_api();
+    auto& api = gui::get_config_api();
 
     iface.connect_to_color_theme(
         [this, &api](auto theme)
@@ -1420,28 +1422,32 @@ auto application::connect_gui_presentation() -> void
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui apply";
-            ui::apply_configs(*m_gui);
+            gui::ui_adaptor adaptor;
+            ui::apply_configs(adaptor);
         });
 
     iface.connect_to_preview(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui preview";
-            ui::begin_preview(*m_gui);
+            gui::ui_adaptor adaptor;
+            ui::begin_preview(adaptor);
         });
 
     iface.connect_to_cancel(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui cancel";
-            ui::end_preview(*m_gui);
+            gui::ui_adaptor adaptor;
+            ui::end_preview(adaptor);
         });
 
     iface.connect_to_restore(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected gui restore";
-            ui::restore_defaults(*m_gui);
+            gui::ui_adaptor adaptor;
+            ui::restore_defaults(adaptor);
             prepare_gui_configurator();
         });
 

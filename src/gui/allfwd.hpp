@@ -10,6 +10,8 @@ namespace gui
 class overlay;
 class overlay_manager;
 
+class ui_adaptor;
+
 class background_configurator;
 class weights_editor;
 class graph_configurator;

@@ -41,6 +41,7 @@ public:
     using rounding_type = config_data_type::rounding_type;
     using bordered_type = config_data_type::bordered_type;
 
+    gui_config_api() = default;
     explicit gui_config_api(config_data_type cfg) : m_cfg { std::move(cfg) } { }
 
     auto config_data() const -> const config_data_type& { return m_cfg; }
