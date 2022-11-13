@@ -10,6 +10,7 @@
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreParticleSystemManager.h>
 #include <OGRE/OgreRoot.h>
+#include <OGRE/Overlay/OgreFontManager.h>
 #include <OGRE/Overlay/OgreImGuiOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
@@ -359,9 +360,6 @@ auto application::setup_input() -> void
 {
     using std::make_unique;
 
-    m_tray = make_unique< tray_type >("Bob", getRenderWindow());
-    m_tray->showCursor();
-
     m_cameraman
         = make_unique< cameraman_type >(&m_background_renderer->cam_node());
 
@@ -379,7 +377,6 @@ auto application::setup_input() -> void
     m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
 
-    addInputListener(m_tray.get());
     addInputListener(m_gui_input_handler.get());
     addInputListener(m_cameraman.get());
     addInputListener(m_hud_input_handler.get());
@@ -388,9 +385,7 @@ auto application::setup_input() -> void
     addInputListener(m_inspection_input_handler.get());
 
 #ifdef NDEBUG
-    SDL_SetRelativeMouseMode(SDL_TRUE);
-#else
-    SDL_ShowCursor(SDL_FALSE);
+    SDL_SetRelativeMouseMode(SDL_TRUE); // Constrain mouse in application
 #endif
 
     BOOST_LOG_TRIVIAL(debug) << "setup input";
@@ -422,7 +417,6 @@ auto application::shutdown_input() -> void
     removeInputListener(m_gui_input_handler.get());
     removeInputListener(m_hud_input_handler.get());
     removeInputListener(m_cameraman.get());
-    removeInputListener(m_tray.get());
 
     m_inspection_input_handler.reset();
     m_shortcut_input_handler.reset();
@@ -430,7 +424,6 @@ auto application::shutdown_input() -> void
     m_gui_input_handler.reset();
     m_hud_input_handler.reset();
     m_cameraman.reset();
-    m_tray.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown input";
 }
