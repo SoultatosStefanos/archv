@@ -4,6 +4,7 @@ set(FILES
 	config.cpp
 	controls_overlay.cpp
 	degrees_editor.cpp
+	frames_overlay.cpp
 	graph_configurator.cpp
 	gui_config.cpp
 	gui_configurator.cpp

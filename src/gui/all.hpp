@@ -9,6 +9,7 @@
 #include "config.hpp"
 #include "controls_overlay.hpp"
 #include "degrees_editor.hpp"
+#include "frames_overlay.hpp"
 #include "graph_configurator.hpp"
 #include "gui.hpp"
 #include "gui_config.hpp"

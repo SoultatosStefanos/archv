@@ -716,7 +716,7 @@
 
 	+ [x] HUD
 
-	+ [n] Frames
+	+ [x] Frames
 
 	+ [ ] Gui cleanup, extract menu and global state
 

@@ -24,6 +24,7 @@ auto controls_overlay::render() const -> void
     detail::render_overlay_pos(corner);
 
     ImGui::Begin("##controls_overlay", NULL, window_flags);
+
     ImGui::Text("CAMERA MOVEMENT:\n");
     ImGui::BulletText("C (press) or mouse wheel (hold) to lock/unlock.");
     ImGui::BulletText("Mouse (while unlocked) to look around.");
