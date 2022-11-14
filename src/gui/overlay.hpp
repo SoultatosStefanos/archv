@@ -1,10 +1,10 @@
-// Contains the base class for any renderable gui overlay.
+// Contains an abstract overlay concept
 // Soultatos Stefanos 2022
 
 #ifndef GUI_OVERLAY_HPP
 #define GUI_OVERLAY_HPP
 
-#include <string_view>
+#include <concepts>
 
 namespace gui
 {
@@ -13,33 +13,47 @@ namespace gui
  * Overlay                                                 *
  ***********************************************************/
 
-class overlay
+// clang-format off
+template < typename Class >
+concept overlay = requires(Class val)
 {
-public:
-    using id_type = std::string_view;
-
-    overlay() = default;
-    overlay(const overlay&) = default;
-    overlay(overlay&&) = default;
-    virtual ~overlay() = default;
-
-    auto operator=(const overlay&) -> overlay& = default;
-    auto operator=(overlay&&) -> overlay& = default;
-
-    virtual auto id() const -> id_type = 0;
-
-    virtual auto visible() const -> bool = 0;
-    virtual auto show() -> void = 0;
-    virtual auto hide() -> void = 0;
-
-    virtual auto render() const -> void = 0;
+    { val.render() } -> std::same_as< void >;
+    { val.visible() } -> std::same_as< bool >;
+    { val.show() } -> std::same_as< void >;
+    { val.hide() } -> std::same_as< void >;
 };
+// clang-format on
 
 /***********************************************************
  * Utilities                                               *
  ***********************************************************/
 
-inline auto toggle_show_hide(overlay& o) -> void
+template < overlay Overlay >
+inline auto render(Overlay& o) -> void
+{
+    o.render();
+}
+
+template < overlay Overlay >
+inline auto visible(Overlay& o) -> bool
+{
+    return o.visible();
+}
+
+template < overlay Overlay >
+inline auto show(Overlay& o) -> void
+{
+    o.show();
+}
+
+template < overlay Overlay >
+inline auto hide(Overlay& o) -> void
+{
+    o.hide();
+}
+
+template < overlay Overlay >
+inline auto toggle_show_hide(Overlay& o) -> void
 {
     if (o.visible())
         o.hide();

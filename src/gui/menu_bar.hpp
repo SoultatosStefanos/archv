@@ -4,7 +4,14 @@
 #ifndef GUI_MENU_BAR_HPP
 #define GUI_MENU_BAR_HPP
 
-#include "overlay.hpp"
+#include "background_configurator.hpp"
+#include "clustering_editor.hpp"
+#include "degrees_editor.hpp"
+#include "graph_configurator.hpp"
+#include "gui_configurator.hpp"
+#include "layout_editor.hpp"
+#include "scaling_editor.hpp"
+#include "weights_editor.hpp"
 
 #include <boost/signals2/signal.hpp>
 #include <functional>
@@ -17,7 +24,7 @@ namespace gui
  * Menu Bar                                                *
  ***********************************************************/
 
-class menu_bar : public overlay
+class menu_bar
 {
     using undo_signal = boost::signals2::signal< void() >;
     using redo_signal = boost::signals2::signal< void() >;
@@ -29,42 +36,37 @@ public:
     using redo_slot = redo_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "menu_bar";
-
     menu_bar() = default;
-    ~menu_bar() override = default;
 
-    auto id() const -> id_type override { return type_id; }
+    auto get_weights_editor() const -> const auto& { return m_weights_editor; }
+    auto get_weights_editor() -> auto& { return m_weights_editor; }
 
-    auto weights_editor() const -> auto* { return m_weights_editor; }
-    auto set_weights_editor(overlay* o) { m_weights_editor = o; }
+    auto get_layout_editor() const -> const auto& { return m_layout_editor; }
+    auto get_layout_editor() -> auto& { return m_layout_editor; }
 
-    auto layout_editor() const -> auto* { return m_layout_editor; }
-    auto set_layout_editor(overlay* o) { m_layout_editor = o; }
+    auto get_scaling_editor() const -> const auto& { return m_scaling_editor; }
+    auto get_scaling_editor() -> auto& { return m_scaling_editor; }
 
-    auto scaling_editor() const -> auto* { return m_scaling_editor; }
-    auto set_scaling_editor(overlay* o) { m_scaling_editor = o; }
+    auto get_degrees_editor() const -> const auto& { return m_degrees_editor; }
+    auto get_degrees_editor() -> auto& { return m_degrees_editor; }
 
-    auto degrees_editor() const -> auto* { return m_degrees_editor; }
-    auto set_degrees_editor(overlay* o) { m_degrees_editor = o; }
+    auto get_clustering_editor() const -> const auto& { return m_c_editor; }
+    auto get_clustering_editor() -> auto& { return m_c_editor; }
 
-    auto clustering_editor() const -> auto* { return m_c_editor; }
-    auto set_clustering_editor(overlay* o) { m_c_editor = o; }
+    auto get_bkg_configurator() const -> const auto& { return m_bkg_cfg; }
+    auto get_bkg_configurator() -> auto& { return m_bkg_cfg; }
 
-    auto background_configurator() const -> auto* { return m_bkg_cfg; }
-    auto set_background_configurator(overlay* o) { m_bkg_cfg = o; }
+    auto get_graph_configurator() const -> const auto& { return m_graph_cfg; }
+    auto get_graph_configurator() -> auto& { return m_graph_cfg; }
 
-    auto graph_configurator() const -> auto* { return m_graph_cfg; }
-    auto set_graph_configurator(overlay* o) { m_graph_cfg = o; }
+    auto get_gui_configurator() const -> const auto& { return m_gui_cfg; }
+    auto get_gui_configurator() -> auto& { return m_gui_cfg; }
 
-    auto gui_configurator() const -> auto* { return m_gui_cfg; }
-    auto set_gui_configurator(overlay* o) { m_gui_cfg = o; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
-
-    auto render() const -> void override;
+    auto render() const -> void;
 
     auto can_undo() const -> bool;
     auto can_redo() const -> bool;
@@ -88,14 +90,14 @@ private:
     auto render_helper() const -> void;
 
     bool m_visible { true };
-    overlay* m_weights_editor { nullptr };
-    overlay* m_layout_editor { nullptr };
-    overlay* m_scaling_editor { nullptr };
-    overlay* m_degrees_editor { nullptr };
-    overlay* m_c_editor { nullptr };
-    overlay* m_bkg_cfg { nullptr };
-    overlay* m_graph_cfg { nullptr };
-    overlay* m_gui_cfg { nullptr };
+    mutable weights_editor m_weights_editor;
+    mutable layout_editor m_layout_editor;
+    mutable scaling_editor m_scaling_editor;
+    mutable degrees_editor m_degrees_editor;
+    mutable clustering_editor m_c_editor;
+    background_configurator m_bkg_cfg;
+    graph_configurator m_graph_cfg;
+    gui_configurator m_gui_cfg;
 
     pred m_undo_enabled;
     pred m_redo_enabled;

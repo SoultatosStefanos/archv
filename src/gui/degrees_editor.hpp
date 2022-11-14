@@ -4,8 +4,6 @@
 #ifndef GUI_DEGREES_EDITOR_HPP
 #define GUI_DEGREES_EDITOR_HPP
 
-#include "overlay.hpp"
-
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string_view>
@@ -14,7 +12,7 @@
 namespace gui
 {
 
-class degrees_editor : public overlay
+class degrees_editor
 {
 public:
     using threshold_type = int;
@@ -38,16 +36,11 @@ public:
     using restore_slot = restore_sig::slot_type;
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "degrees_editor";
-
     degrees_editor();
-    ~degrees_editor() override = default;
 
-    auto id() const -> id_type override { return type_id; }
-
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
     auto in_light_threshold() const -> threshold_type;
     auto in_medium_threshold() const -> threshold_type;
@@ -128,8 +121,7 @@ private:
     auto render_out_applied_editor() const -> void;
     auto render_restore_button() const -> void;
 
-    id_type m_id;
-    mutable bool m_visible { true };
+    mutable bool m_visible { false };
     threshold_accessor m_in_light_thres;
     threshold_accessor m_in_medium_thres;
     threshold_accessor m_in_heavy_thres;

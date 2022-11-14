@@ -53,9 +53,8 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
-    m_gui->render();
     // ImGui::ShowDemoWindow();
-    gui::render_overlays(gui::overlays);
+    gui::render(*m_gui);
 
     return true;
 }
@@ -88,7 +87,7 @@ auto application::setup() -> void
     prepare_background_configurator();
     prepare_graph_configurator();
     prepare_gui_configurator();
-    prepare_gui_undo_redo();
+    prepare_menu_bar();
 
     connect_weights_presentation();
     connect_layout_presentation();
@@ -98,7 +97,7 @@ auto application::setup() -> void
     connect_background_presentation();
     connect_graph_presentation();
     connect_gui_presentation();
-    connect_undo_redo_presentation();
+    connect_menu_bar_presentation();
 
     BOOST_LOG_TRIVIAL(debug) << "setup";
 }
@@ -186,7 +185,7 @@ namespace // gui setup
         return res;
     }
 
-    inline auto install_gui_plugins(
+    inline auto prepare_gui_plugins(
         const weights::config_data& wcfg,
         const layout::config_data& lcf,
         const scaling::config_data& scfg,
@@ -282,7 +281,7 @@ namespace // gui setup
         gui::resources::load_particle_systems(std::move(systems));
     }
 
-    inline auto load_gui_resources()
+    inline auto prepare_gui_resources()
     {
         load_gui_meshes();
         load_gui_materials();
@@ -291,6 +290,7 @@ namespace // gui setup
     }
 
     // TODO(?) Load from config?
+    // NOTE: Must be called befor overlay->show
     auto prepare_font_icons() -> void
     {
         using misc::resolve_source_path;
@@ -316,42 +316,34 @@ namespace // gui setup
     // Named by Ogre Overlay component.
     constexpr auto imgui_overlay_name = "ImGuiOverlay";
 
-    inline auto setup_gui_overlay()
+    inline auto prepare_gui_overlay(Ogre::SceneManager& scene)
     {
-        auto* imgui = new Ogre::ImGuiOverlay();
+        auto* overlay = new Ogre::ImGuiOverlay();
         prepare_font_icons();
-        imgui->show();
-        assert(imgui->isInitialised());
+        overlay->show();
+        assert(overlay->isInitialised());
         // takes ownership
-        Ogre::OverlayManager::getSingleton().addOverlay(imgui);
-    }
+        Ogre::OverlayManager::getSingleton().addOverlay(overlay);
 
-    inline auto prepare_huds() -> void
-    {
-        using std::make_unique;
-        gui::overlays.submit(make_unique< gui::controls_hud >());
-        gui::overlays.submit(make_unique< gui::frames_hud >());
+        auto* system = Ogre::OverlaySystem::getSingletonPtr();
+        assert(system);
+        scene.addRenderQueueListener(system);
     }
 
 } // namespace
 
 auto application::setup_gui() -> void
 {
-    install_gui_plugins(
+    prepare_gui_plugins(
         m_weights_config,
         m_layout_config,
         m_scaling_config,
         m_clustering_config);
-    load_gui_resources();
 
-    setup_gui_overlay();
-    auto* ogre_overlay = Ogre::OverlaySystem::getSingletonPtr();
-    assert(ogre_overlay);
-    m_background_renderer->scene().addRenderQueueListener(ogre_overlay);
+    prepare_gui_resources();
+    prepare_gui_overlay(m_background_renderer->scene());
 
     gui::set_configs(m_gui_config);
-
-    prepare_huds();
 
     m_gui = std::make_unique< gui_type >();
 
@@ -368,8 +360,7 @@ auto application::setup_input() -> void
     m_gui_input_handler = make_unique< gui_input_handler_type >();
 
     m_hud_input_handler = make_unique< hud_input_handler_type >(
-        gui::overlays.get(gui::controls_hud::type_id),
-        gui::overlays.get(gui::frames_hud::type_id));
+        m_gui->get_controls_hud(), m_gui->get_frames_hud());
 
     m_quit_handler = make_unique< quit_handler_type >(*getRoot());
 
@@ -479,10 +470,11 @@ auto application::shutdown_graph_interface() -> void
 
 auto application::prepare_weights_editor() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    m_gui->get_weights_editor().set_weights(
+    auto& editor = m_gui->get_menu_bar().get_weights_editor();
+
+    editor.set_weights(
         [this](auto type) {
             return weights::get_weight(m_graph_iface->weights_backend(), type);
         });
@@ -492,18 +484,19 @@ auto application::prepare_weights_editor() -> void
 
 auto application::prepare_layout_editor() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    m_gui->get_layout_editor().set_layout(
+    auto& editor = m_gui->get_menu_bar().get_layout_editor();
+
+    editor.set_layout(
         [this]()
         { return layout::get_layout_id(m_graph_iface->layout_backend()); });
 
-    m_gui->get_layout_editor().set_topology(
+    editor.set_topology(
         [this]()
         { return layout::get_topology_id(m_graph_iface->layout_backend()); });
 
-    m_gui->get_layout_editor().set_scale(
+    editor.set_scale(
         [this]()
         { return layout::get_scale(m_graph_iface->layout_backend()); });
 
@@ -512,36 +505,37 @@ auto application::prepare_layout_editor() -> void
 
 auto application::prepare_scaling_editor() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    m_gui->get_scaling_editor().set_dims(
+    auto& editor = m_gui->get_menu_bar().get_scaling_editor();
+
+    editor.set_dims(
         [this](auto tag) {
             return scaling::get_factor_dims(
                 m_graph_iface->scaling_backend(), tag);
         });
 
-    m_gui->get_scaling_editor().set_baseline(
+    editor.set_baseline(
         [this](auto tag)
         {
             return scaling::get_factor_baseline(
                 m_graph_iface->scaling_backend(), tag);
         });
 
-    m_gui->get_scaling_editor().set_enabled(
+    editor.set_enabled(
         [this](auto tag) {
             return scaling::is_factor_enabled(
                 m_graph_iface->scaling_backend(), tag);
         });
 
-    m_gui->get_scaling_editor().set_min_ratio(
+    editor.set_min_ratio(
         [this](auto tag)
         {
             return scaling::get_factor_min_ratio(
                 m_graph_iface->scaling_backend(), tag);
         });
 
-    m_gui->get_scaling_editor().set_max_ratio(
+    editor.set_max_ratio(
         [this](auto tag)
         {
             return scaling::get_factor_max_ratio(
@@ -553,80 +547,74 @@ auto application::prepare_scaling_editor() -> void
 
 auto application::prepare_degrees_editor() -> void
 {
-    assert(m_gui);
     assert(m_graph_renderer);
 
     auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& frontend = m_gui->get_menu_bar().get_degrees_editor();
 
-    m_gui->get_in_degrees_editor().set_light_threshold(
+    frontend.set_in_light_threshold(
         [this, &backend]() {
             return rendering::get_in_degree_evaluation_light_threshold(backend);
         });
 
-    m_gui->get_out_degrees_editor().set_light_threshold(
+    frontend.set_out_light_threshold(
         [this, &backend]() {
             return rendering::get_out_degree_evaluation_light_threshold(
                 backend);
         });
 
-    m_gui->get_in_degrees_editor().set_medium_threshold(
+    frontend.set_in_medium_threshold(
         [this, &backend]() {
             return rendering::get_in_degree_evaluation_medium_threshold(
                 backend);
         });
 
-    m_gui->get_out_degrees_editor().set_medium_threshold(
+    frontend.set_out_medium_threshold(
         [this, &backend]() {
             return rendering::get_out_degree_evaluation_medium_threshold(
                 backend);
         });
 
-    m_gui->get_in_degrees_editor().set_heavy_threshold(
+    frontend.set_in_heavy_threshold(
         [this, &backend]() {
             return rendering::get_in_degree_evaluation_heavy_threshold(backend);
         });
 
-    m_gui->get_out_degrees_editor().set_heavy_threshold(
+    frontend.set_out_heavy_threshold(
         [this, &backend]() {
             return rendering::get_out_degree_evaluation_heavy_threshold(
                 backend);
         });
 
-    m_gui->get_in_degrees_editor().set_light_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_in_degree_evaluation_light_effect(backend);
-        });
+    frontend.set_in_light_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_in_degree_evaluation_light_effect(backend);
+    });
 
-    m_gui->get_out_degrees_editor().set_light_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_out_degree_evaluation_light_effect(backend);
-        });
+    frontend.set_out_light_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_out_degree_evaluation_light_effect(backend);
+    });
 
-    m_gui->get_in_degrees_editor().set_medium_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_in_degree_evaluation_medium_effect(backend);
-        });
+    frontend.set_in_medium_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_in_degree_evaluation_medium_effect(backend);
+    });
 
-    m_gui->get_out_degrees_editor().set_medium_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_out_degree_evaluation_medium_effect(backend);
-        });
+    frontend.set_out_medium_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_out_degree_evaluation_medium_effect(backend);
+    });
 
-    m_gui->get_in_degrees_editor().set_heavy_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_in_degree_evaluation_heavy_effect(backend);
-        });
+    frontend.set_in_heavy_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_in_degree_evaluation_heavy_effect(backend);
+    });
 
-    m_gui->get_out_degrees_editor().set_heavy_particles(
-        [ this, &backend ]() -> const auto& {
-            return rendering::get_out_degree_evaluation_heavy_effect(backend);
-        });
+    frontend.set_out_heavy_particles([ this, &backend ]() -> const auto& {
+        return rendering::get_out_degree_evaluation_heavy_effect(backend);
+    });
 
-    m_gui->get_in_degrees_editor().set_applied(
+    frontend.set_in_applied(
         [this, &backend]()
         { return rendering::is_in_degree_evaluation_applied(backend); });
 
-    m_gui->get_out_degrees_editor().set_applied(
+    frontend.set_out_applied(
         [this, &backend]()
         { return rendering::is_out_degree_evaluation_applied(backend); });
 
@@ -635,24 +623,23 @@ auto application::prepare_degrees_editor() -> void
 
 auto application::prepare_clustering_editor() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
     auto& backend = m_graph_iface->clustering_backend();
+    auto& frontend = m_gui->get_menu_bar().get_clustering_editor();
 
-    m_gui->get_clustering_editor().set_clusterer(
-        [this, &backend]() { return clustering::get_clusterer_id(backend); });
+    frontend.set_clusterer([this, &backend]()
+                           { return clustering::get_clusterer_id(backend); });
 
-    m_gui->get_clustering_editor().set_mst_finder(
-        [this, &backend]() { return clustering::get_mst_finder_id(backend); });
+    frontend.set_mst_finder([this, &backend]()
+                            { return clustering::get_mst_finder_id(backend); });
 
-    m_gui->get_clustering_editor().set_k(
-        [this, &backend]() { return clustering::get_k(backend); });
+    frontend.set_k([this, &backend]() { return clustering::get_k(backend); });
 
-    m_gui->get_clustering_editor().set_snn_thres(
-        [this, &backend]() { return clustering::get_snn_threshold(backend); });
+    frontend.set_snn_thres([this, &backend]()
+                           { return clustering::get_snn_threshold(backend); });
 
-    m_gui->get_clustering_editor().set_min_modularity(
+    frontend.set_min_modularity(
         [this, &backend]() { return clustering::get_min_modularity(backend); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared clustering editor";
@@ -684,10 +671,9 @@ namespace // presentation translations
 
 auto application::prepare_background_configurator() -> void
 {
-    assert(m_gui);
     assert(m_background_renderer);
 
-    auto& bkg_gui = m_gui->get_bkg_configurator();
+    auto& bkg_gui = m_gui->get_menu_bar().get_bkg_configurator();
     const auto& cfg = m_background_renderer->config_data();
 
     bkg_gui.set_skybox_material(cfg.skybox_material);
@@ -703,10 +689,9 @@ auto application::prepare_background_configurator() -> void
 
 auto application::prepare_graph_configurator() -> void
 {
-    assert(m_gui);
     assert(m_graph_renderer);
 
-    auto& graph_gui = m_gui->get_graph_configurator();
+    auto& graph_gui = m_gui->get_menu_bar().get_graph_configurator();
     const auto& cfg = m_graph_renderer->config_data();
 
     graph_gui.set_node_mesh(cfg.vertex_mesh);
@@ -730,26 +715,24 @@ auto application::prepare_graph_configurator() -> void
 
 auto application::prepare_gui_configurator() -> void
 {
-    assert(m_gui);
-
-    auto& gui_configurator = m_gui->get_gui_configurator();
+    auto& gui_cfg = m_gui->get_menu_bar().get_gui_configurator();
     const auto& cfg = gui::get_configs();
 
-    gui_configurator.set_color_theme(cfg.color_theme);
-    gui_configurator.set_frame_rounding(cfg.frame_rounding);
-    gui_configurator.set_frame_bordered(cfg.frame_bordered);
-    gui_configurator.set_window_bordered(cfg.window_bordered);
-    gui_configurator.set_popup_bordered(cfg.popup_bordered);
+    gui_cfg.set_color_theme(cfg.color_theme);
+    gui_cfg.set_frame_rounding(cfg.frame_rounding);
+    gui_cfg.set_frame_bordered(cfg.frame_bordered);
+    gui_cfg.set_window_bordered(cfg.window_bordered);
+    gui_cfg.set_popup_bordered(cfg.popup_bordered);
 
     BOOST_LOG_TRIVIAL(debug) << "prepared gui configurator";
 }
 
-auto application::prepare_gui_undo_redo() -> void
+auto application::prepare_menu_bar() -> void
 {
-    assert(m_gui);
+    auto& bar = m_gui->get_menu_bar();
 
-    m_gui->set_can_undo([this]() { return m_cmds->can_undo(); });
-    m_gui->set_can_redo([this]() { return m_cmds->can_redo(); });
+    bar.set_can_undo([this]() { return m_cmds->can_undo(); });
+    bar.set_can_redo([this]() { return m_cmds->can_redo(); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared undo redo gui";
 }
@@ -760,10 +743,9 @@ auto application::prepare_gui_undo_redo() -> void
 
 auto application::connect_weights_presentation() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    auto& editor = m_gui->get_weights_editor();
+    auto& editor = m_gui->get_menu_bar().get_weights_editor();
     auto& backend = m_graph_iface->weights_backend();
 
     editor.connect_to_dependency(
@@ -792,10 +774,9 @@ auto application::connect_weights_presentation() -> void
 
 auto application::connect_layout_presentation() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    auto& editor = m_gui->get_layout_editor();
+    auto& editor = m_gui->get_menu_bar().get_layout_editor();
     auto& backend = m_graph_iface->layout_backend();
 
     editor.connect_to_layout(
@@ -838,10 +819,9 @@ auto application::connect_layout_presentation() -> void
 
 auto application::connect_scaling_presentation() -> void
 {
-    assert(m_gui);
     assert(m_graph_iface);
 
-    auto& editor = m_gui->get_scaling_editor();
+    auto& editor = m_gui->get_menu_bar().get_scaling_editor();
     auto& backend = m_graph_iface->scaling_backend();
 
     editor.connect_to_baseline(
@@ -906,12 +886,12 @@ auto application::connect_scaling_presentation() -> void
 
 auto application::connect_degrees_presentation() -> void
 {
-    assert(m_gui);
     assert(m_graph_renderer);
 
     auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& editor = m_gui->get_menu_bar().get_degrees_editor();
 
-    m_gui->get_in_degrees_editor().connect_to_light_threshold(
+    editor.connect_to_in_light_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -920,7 +900,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_in_degrees_editor().connect_to_medium_threshold(
+    editor.connect_to_in_medium_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -929,7 +909,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_in_degrees_editor().connect_to_heavy_threshold(
+    editor.connect_to_in_heavy_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -938,7 +918,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_out_degrees_editor().connect_to_light_threshold(
+    editor.connect_to_out_light_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -947,7 +927,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_out_degrees_editor().connect_to_medium_threshold(
+    editor.connect_to_out_medium_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -956,7 +936,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_out_degrees_editor().connect_to_heavy_threshold(
+    editor.connect_to_out_heavy_threshold(
         [this, &backend](auto thres)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -965,7 +945,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, thres);
         });
 
-    m_gui->get_in_degrees_editor().connect_to_light_particles(
+    editor.connect_to_in_light_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -974,7 +954,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_in_degrees_editor().connect_to_medium_particles(
+    editor.connect_to_in_medium_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -983,7 +963,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_in_degrees_editor().connect_to_heavy_particles(
+    editor.connect_to_in_heavy_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -992,7 +972,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_out_degrees_editor().connect_to_light_particles(
+    editor.connect_to_out_light_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -1001,7 +981,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_out_degrees_editor().connect_to_medium_particles(
+    editor.connect_to_out_medium_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -1010,7 +990,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_out_degrees_editor().connect_to_heavy_particles(
+    editor.connect_to_out_heavy_particles(
         [this, &backend](auto particles)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -1019,7 +999,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, std::string(particles));
         });
 
-    m_gui->get_in_degrees_editor().connect_to_applied(
+    editor.connect_to_in_applied(
         [this, &backend](auto applied)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -1028,7 +1008,7 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, applied);
         });
 
-    m_gui->get_out_degrees_editor().connect_to_applied(
+    editor.connect_to_out_applied(
         [this, &backend](auto applied)
         {
             BOOST_LOG_TRIVIAL(info)
@@ -1037,18 +1017,11 @@ auto application::connect_degrees_presentation() -> void
                 *m_cmds, backend, applied);
         });
 
-    m_gui->get_in_degrees_editor().connect_to_restore(
+    editor.connect_to_restore(
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected in degrees restore";
-            commands::restore_in_degree_evaluation(*m_cmds, backend);
-        });
-
-    m_gui->get_out_degrees_editor().connect_to_restore(
-        [this, &backend]()
-        {
-            BOOST_LOG_TRIVIAL(info) << "selected out degrees restore";
-            commands::restore_out_degree_evaluation(*m_cmds, backend);
+            commands::restore_degrees(*m_cmds, backend);
         });
 
     backend.connect_to_in_degree_evaluation(
@@ -1074,7 +1047,7 @@ auto application::connect_clustering_presentation() -> void
     assert(m_graph_iface);
 
     auto& backend = m_graph_iface->clustering_backend();
-    auto& editor = m_gui->get_clustering_editor();
+    auto& editor = m_gui->get_menu_bar().get_clustering_editor();
 
     editor.connect_to_cluster(
         [this, &backend]()
@@ -1144,10 +1117,9 @@ auto application::connect_clustering_presentation() -> void
 
 auto application::connect_background_presentation() -> void
 {
-    assert(m_gui);
     assert(m_background_renderer);
 
-    auto& iface = m_gui->get_bkg_configurator();
+    auto& iface = m_gui->get_menu_bar().get_bkg_configurator();
     auto& api = m_background_renderer->config_api();
 
     iface.connect_to_skybox_material(
@@ -1233,10 +1205,9 @@ auto application::connect_background_presentation() -> void
 
 auto application::connect_graph_presentation() -> void
 {
-    assert(m_gui);
     assert(m_graph_renderer);
 
-    auto& iface = m_gui->get_graph_configurator();
+    auto& iface = m_gui->get_menu_bar().get_graph_configurator();
     auto& api = m_graph_renderer->config_api();
 
     iface.connect_to_node_mesh(
@@ -1378,9 +1349,7 @@ auto application::connect_graph_presentation() -> void
 
 auto application::connect_gui_presentation() -> void
 {
-    assert(m_gui);
-
-    auto& iface = m_gui->get_gui_configurator();
+    auto& iface = m_gui->get_menu_bar().get_gui_configurator();
     auto& api = gui::get_config_api();
 
     iface.connect_to_color_theme(
@@ -1454,18 +1423,18 @@ auto application::connect_gui_presentation() -> void
     BOOST_LOG_TRIVIAL(debug) << "connected gui presentation";
 }
 
-auto application::connect_undo_redo_presentation() -> void
+auto application::connect_menu_bar_presentation() -> void
 {
-    assert(m_gui);
+    auto& bar = m_gui->get_menu_bar();
 
-    m_gui->connect_to_undo(
+    bar.connect_to_undo(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected undo";
             m_cmds->undo();
         });
 
-    m_gui->connect_to_redo(
+    bar.connect_to_redo(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected redo";

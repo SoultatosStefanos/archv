@@ -5,15 +5,13 @@
 #ifndef GUI_BACKGROUND_CONFIGURATOR_HPP
 #define GUI_BACKGROUND_CONFIGURATOR_HPP
 
-#include "overlay.hpp"
-
 #include <boost/signals2/signal.hpp>
 #include <string_view>
 
 namespace gui
 {
 
-class background_configurator : public overlay
+class background_configurator
 {
 public:
     using name_type = std::string_view;
@@ -42,18 +40,13 @@ public:
 
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "background_configurator";
-
     background_configurator();
-    ~background_configurator() override = default;
 
-    auto id() const -> id_type override { return type_id; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
-
-    auto render() const -> void override;
+    auto render() const -> void;
 
     auto skybox_material() const -> name_type;
     auto skybox_distance() const -> distance_type;

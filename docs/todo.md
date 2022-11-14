@@ -718,12 +718,15 @@
 
 	+ [x] Frames
 
-	+ [ ] Gui cleanup, extract menu and global state
+	+ [x] Gui cleanup, extract menu and global state
 
 		+ [x] Overlays hierarchy
 
-		+ [ ] Extract menu bar
+		+ [x] Extract menu bar
 
-		+ [ ] Extract global state
+		+ [x] Extract global state
+
+
+# 14 / 11 / 2022
 
 	+ [ ] Input cleanup

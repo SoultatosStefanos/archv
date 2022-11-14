@@ -4,8 +4,6 @@
 #ifndef GUI_SCALING_EDITOR_HPP
 #define GUI_SCALING_EDITOR_HPP
 
-#include "overlay.hpp"
-
 #include <array>
 #include <boost/signals2/signal.hpp>
 #include <functional>
@@ -15,7 +13,7 @@
 namespace gui
 {
 
-class scaling_editor : public overlay
+class scaling_editor
 {
 public:
     using tag_type = std::string_view;
@@ -49,18 +47,13 @@ public:
 
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "scaling_editor";
-
     scaling_editor();
-    ~scaling_editor() override = default;
 
-    auto id() const -> id_type override { return type_id; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
-
-    auto render() const -> void override;
+    auto render() const -> void;
 
     auto dims(tag_type tag) const -> dims_type;
     auto baseline(tag_type tag) const -> baseline_type;
@@ -103,7 +96,7 @@ private:
     auto render_ratios_editor(tag_type tag) const -> void;
     auto render_restore_button() const -> void;
 
-    mutable bool m_visible { true };
+    mutable bool m_visible { false };
     dims_signal m_dims_sig;
     baseline_signal m_baseline_sig;
     enabled_signal m_enabled_sig;

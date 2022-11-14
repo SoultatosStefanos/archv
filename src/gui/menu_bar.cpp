@@ -1,6 +1,7 @@
 #include "menu_bar.hpp"
 
 #include "IconsFontAwesome5.h"
+#include "overlay.hpp"
 
 #include <OGRE/Overlay/imgui.h>
 #include <cassert>
@@ -56,15 +57,6 @@ auto menu_bar::emit_redo() const -> void
 
 auto menu_bar::render() const -> void
 {
-    assert(layout_editor());
-    assert(weights_editor());
-    assert(scaling_editor());
-    assert(degrees_editor());
-    assert(clustering_editor());
-    assert(background_configurator());
-    assert(graph_configurator());
-    assert(gui_configurator());
-
     if (ImGui::BeginMainMenuBar())
     {
         render_file_editor();
@@ -101,30 +93,33 @@ auto menu_bar::render_editor() const -> void
 
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Weights", "", weights_editor()->visible(), true))
-            toggle_show_hide(*weights_editor());
+        if (ImGui::MenuItem(
+                "Weights", "", get_weights_editor().visible(), true))
+            toggle_show_hide(m_weights_editor);
 
-        if (ImGui::MenuItem("Layout", "", layout_editor()->visible(), true))
-            toggle_show_hide(*layout_editor());
-
-        if (ImGui::MenuItem("Scaling", "", scaling_editor()->visible(), true))
-            toggle_show_hide(*scaling_editor());
-
-        if (ImGui::MenuItem("Degrees", "", degrees_editor()->visible(), true))
-            toggle_show_hide(*degrees_editor());
+        if (ImGui::MenuItem("Layout", "", get_layout_editor().visible(), true))
+            toggle_show_hide(m_layout_editor);
 
         if (ImGui::MenuItem(
-                "Clustering", "", clustering_editor()->visible(), true))
-            toggle_show_hide(*clustering_editor());
+                "Scaling", "", get_scaling_editor().visible(), true))
+            toggle_show_hide(m_scaling_editor);
+
+        if (ImGui::MenuItem(
+                "Degrees", "", get_degrees_editor().visible(), true))
+            toggle_show_hide(m_degrees_editor);
+
+        if (ImGui::MenuItem(
+                "Clustering", "", get_clustering_editor().visible(), true))
+            toggle_show_hide(m_c_editor);
 
         ImGui::EndMenu();
     }
 
-    weights_editor()->render();
-    layout_editor()->render();
-    scaling_editor()->render();
-    degrees_editor()->render();
-    clustering_editor()->render();
+    get_weights_editor().render();
+    get_layout_editor().render();
+    get_scaling_editor().render();
+    get_degrees_editor().render();
+    get_clustering_editor().render();
 }
 
 auto menu_bar::render_configurator() const -> void
@@ -145,13 +140,13 @@ auto menu_bar::render_rendering_configurator() const -> void
         {
             if (ImGui::BeginTabItem("Background"))
             {
-                background_configurator()->render();
+                get_bkg_configurator().render();
                 ImGui::EndTabItem();
             }
 
             if (ImGui::BeginTabItem("Graph"))
             {
-                graph_configurator()->render();
+                get_graph_configurator().render();
                 ImGui::EndTabItem();
             }
 
@@ -166,7 +161,7 @@ auto menu_bar::render_gui_configurator() const -> void
 {
     if (ImGui::BeginMenu("GUI"))
     {
-        gui_configurator()->render();
+        get_gui_configurator().render();
         ImGui::EndMenu();
     }
 }

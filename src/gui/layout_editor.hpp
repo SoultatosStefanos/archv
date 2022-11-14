@@ -4,8 +4,6 @@
 #ifndef GUI_LAYOUT_EDITOR_HPP
 #define GUI_LAYOUT_EDITOR_HPP
 
-#include "overlay.hpp"
-
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string_view>
@@ -14,7 +12,7 @@
 namespace gui
 {
 
-class layout_editor : public overlay
+class layout_editor
 {
 public:
     using layout_type = std::string_view;
@@ -38,17 +36,13 @@ public:
     using restore_slot = restore_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "layout_editor";
-
     layout_editor();
 
-    auto id() const -> id_type override { return type_id; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
-
-    auto render() const -> void override;
+    auto render() const -> void;
 
     auto layout() const -> layout_type;
     auto topology() const -> topology_type;
@@ -83,7 +77,7 @@ private:
     auto render_scale_editor() const -> void;
     auto render_restore_button() const -> void;
 
-    mutable bool m_visible { true };
+    mutable bool m_visible { false };
     layout_signal m_layout_sig;
     topology_signal m_topology_sig;
     scale_signal m_scale_sig;

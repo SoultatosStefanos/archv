@@ -4,8 +4,6 @@
 #ifndef GUI_CLUSTERING_EDITOR_HPP
 #define GUI_CLUSTERING_EDITOR_HPP
 
-#include "overlay.hpp"
-
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string_view>
@@ -14,7 +12,7 @@
 namespace gui
 {
 
-class clustering_editor : public overlay
+class clustering_editor
 {
 public:
     using clusterer_type = std::string_view;
@@ -50,18 +48,13 @@ public:
     using restore_slot = restore_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    static constexpr auto type_id = "clustering_editor";
-
     clustering_editor();
-    ~clustering_editor() override = default;
 
-    auto id() const -> id_type override { return type_id; }
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
-    auto visible() const -> bool override { return m_visible; }
-    auto show() -> void override { m_visible = true; }
-    auto hide() -> void override { m_visible = false; }
-
-    auto render() const -> void override;
+    auto render() const -> void;
 
     auto clusterer() const -> clusterer_type;
     auto mst_finder() const -> mst_finder_type;
@@ -115,7 +108,7 @@ private:
     auto render_snn_thres_editor() const -> void;
     auto render_min_modularity_editor() const -> void;
 
-    mutable bool m_visible { true };
+    mutable bool m_visible { false };
     clusterer_signal m_clusterer_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;

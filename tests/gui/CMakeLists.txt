@@ -1,6 +1,5 @@
 set(FILES
 	config_tests.cpp
-	overlay_manager_tests.cpp
 )
 set(SUBDIRECTORIES)
 

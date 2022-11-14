@@ -1,70 +1,33 @@
 #include "overlay_manager.hpp"
 
-#include "overlay.hpp"
-
-#include <cassert>
-
 namespace gui
 {
 
-auto overlay_manager::manages(id_type id) const -> bool
+auto overlay_manager::render() const -> void
 {
-    return m_map.find(id) != std::cend(m_map);
+    get_menu_bar().render();
+    get_controls_hud().render();
+    get_frames_hud().render();
 }
 
-auto overlay_manager::num_overlays() const -> size_type
+auto overlay_manager::visible() const -> bool
 {
-    return m_map.size();
+    return get_menu_bar().visible() or get_controls_hud().visible()
+        or get_frames_hud().visible();
 }
 
-auto overlay_manager::get(id_type id) const -> const overlay&
+auto overlay_manager::show() -> void
 {
-    assert(manages(id));
-    assert(m_map.at(id));
-    return *m_map.at(id);
+    get_menu_bar().show();
+    get_controls_hud().show();
+    get_frames_hud().show();
 }
 
-auto overlay_manager::get(id_type id) -> overlay&
+auto overlay_manager::hide() -> void
 {
-    assert(manages(id));
-    assert(m_map.at(id));
-    return *m_map.at(id);
+    get_menu_bar().hide();
+    get_controls_hud().hide();
+    get_frames_hud().hide();
 }
-
-auto overlay_manager::submit(std::unique_ptr< overlay > o) -> void
-{
-    assert(o);
-    const auto id = o->id();
-    m_map[id] = std::move(o);
-    assert(manages(id));
-}
-
-auto overlay_manager::withdraw(id_type id) -> void
-{
-    m_map.erase(id);
-    assert(!manages(id));
-}
-
-auto overlay_manager::clear() -> void
-{
-    m_map.clear();
-}
-
-auto show_overlays(overlay_manager& manager) -> void
-{
-    manager.visit([](auto& o) { o.show(); });
-}
-
-auto hide_overlays(overlay_manager& manager) -> void
-{
-    manager.visit([](auto& o) { o.hide(); });
-}
-
-auto render_overlays(overlay_manager& manager) -> void
-{
-    manager.visit([](const auto& o) { o.render(); });
-}
-
-overlay_manager overlays;
 
 } // namespace gui

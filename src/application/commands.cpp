@@ -1128,6 +1128,33 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
+    struct restore_degrees_cmd : undo_redo::command
+    {
+        using backend_type = rendering::degrees_ranked_backend;
+        using data_type = rendering::degrees_ranked_evaluation_data;
+
+        backend_type& backend;
+        data_type old_in, old_out;
+
+        restore_degrees_cmd(backend_type& b) : backend { b } { }
+        ~restore_degrees_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_in = rendering::get_in_degree_evaluation_data(backend);
+            old_out = rendering::get_out_degree_evaluation_data(backend);
+            rendering::restore_defaults(backend);
+        }
+
+        auto undo() -> void override
+        {
+            rendering::update_in_degree_evaluation(backend, old_in);
+            rendering::update_out_degree_evaluation(backend, old_out);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
 } // namespace
 
 auto update_in_degree_evaluation_light_threshold(
@@ -1283,6 +1310,13 @@ auto restore_out_degree_evaluation(
 {
     cmds.execute(
         std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));
+}
+
+auto restore_degrees(
+    undo_redo::command_history& cmds,
+    rendering::degrees_ranked_backend& backend) -> void
+{
+    cmds.execute(std::make_unique< restore_degrees_cmd >(backend));
 }
 
 /***********************************************************

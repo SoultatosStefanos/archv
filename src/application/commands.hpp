@@ -171,6 +171,10 @@ auto restore_out_degree_evaluation(
     undo_redo::command_history& cmds,
     rendering::degrees_ranked_backend& backend) -> void;
 
+auto restore_degrees(
+    undo_redo::command_history& cmds,
+    rendering::degrees_ranked_backend& backend) -> void;
+
 /***********************************************************
  * Clustering                                              *
  ***********************************************************/

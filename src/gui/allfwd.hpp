@@ -7,7 +7,6 @@
 namespace gui
 {
 
-class overlay;
 class overlay_manager;
 
 class ui_adaptor;

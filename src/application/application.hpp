@@ -44,7 +44,7 @@ public:
         architecture::id_map,
         architecture::dependency_map >;
 
-    using gui_type = gui::gui;
+    using gui_type = gui::overlay_manager;
 
     application(int argc, const char* argv[]);
     virtual ~application() override = default;
@@ -66,7 +66,8 @@ private:
 
     using cameraman_type = input::camera_handler;
     using gui_input_handler_type = OgreBites::ImGuiInputListener;
-    using hud_input_handler_type = input::hud_handler;
+    using hud_input_handler_type
+        = input::hud_handler< gui::controls_hud, gui::frames_hud >;
     using quit_handler_type = input::quit_handler;
     using shortcut_input_handler_type = input::shortcut_handler;
     using inspection_handler_type = input::inspection_handler;
@@ -95,7 +96,7 @@ private:
     auto prepare_background_configurator() -> void;
     auto prepare_graph_configurator() -> void;
     auto prepare_gui_configurator() -> void;
-    auto prepare_gui_undo_redo() -> void;
+    auto prepare_menu_bar() -> void;
 
     auto connect_weights_presentation() -> void;
     auto connect_layout_presentation() -> void;
@@ -105,7 +106,7 @@ private:
     auto connect_background_presentation() -> void;
     auto connect_graph_presentation() -> void;
     auto connect_gui_presentation() -> void;
-    auto connect_undo_redo_presentation() -> void;
+    auto connect_menu_bar_presentation() -> void;
 
     const char* m_graph_path { nullptr };
 
