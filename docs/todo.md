@@ -729,4 +729,15 @@
 
 # 14 / 11 / 2022
 
-	+ [ ] Input cleanup
+	+ [x] Finished up refactored input
+
+	+ [x] Input cleanup
+
+
+# 15 / 11 / 2022
+
+	+ [ ] Vertex effect on hover
+
+	+ [ ] Structure popups
+
+	+ [ ] GUI configs
