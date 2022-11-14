@@ -4,6 +4,8 @@
 #ifndef GUI_WEIGHTS_EDITOR_HPP
 #define GUI_WEIGHTS_EDITOR_HPP
 
+#include "overlay.hpp"
+
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string>
@@ -13,7 +15,7 @@
 namespace gui
 {
 
-class weights_editor
+class weights_editor : public overlay
 {
 public:
     using dependency_type = std::string_view;
@@ -32,9 +34,18 @@ public:
     using restore_slot = restore_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    weights_editor();
+    static constexpr auto type_id = "weights_editor";
 
-    auto render() const -> void;
+    weights_editor();
+    ~weights_editor() override = default;
+
+    auto id() const -> id_type override { return type_id; }
+
+    auto visible() const -> bool override { return m_visible; }
+    auto show() -> void override { m_visible = true; }
+    auto hide() -> void override { m_visible = false; }
+
+    auto render() const -> void override;
 
     auto weight(dependency_type dependency) const -> weight_type;
 
@@ -56,6 +67,7 @@ private:
     auto render_dependencies() const -> void;
     auto render_restore_button() const -> void;
 
+    mutable bool m_visible { true };
     dependency_signal m_dependency_sig;
     restore_signal m_restore_sig;
     weight_accessor m_weight;

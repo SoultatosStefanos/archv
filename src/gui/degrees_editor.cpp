@@ -1,5 +1,6 @@
 #include "degrees_editor.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "misc/algorithm.hpp"
 #include "resources.hpp"
 
@@ -17,129 +18,254 @@ degrees_editor::degrees_editor()
         std::back_inserter(particles()));
 }
 
-auto degrees_editor::light_threshold() const -> threshold_type
+auto degrees_editor::in_light_threshold() const -> threshold_type
 {
-    assert(m_light_thres);
-    return m_light_thres();
+    assert(m_in_light_thres);
+    return m_in_light_thres();
 }
 
-auto degrees_editor::medium_threshold() const -> threshold_type
+auto degrees_editor::in_medium_threshold() const -> threshold_type
 {
-    assert(m_medium_thres);
-    return m_medium_thres();
+    assert(m_in_medium_thres);
+    return m_in_medium_thres();
 }
 
-auto degrees_editor::heavy_threshold() const -> threshold_type
+auto degrees_editor::in_heavy_threshold() const -> threshold_type
 {
-    assert(m_heavy_thres);
-    return m_heavy_thres();
+    assert(m_in_heavy_thres);
+    return m_in_heavy_thres();
 }
 
-auto degrees_editor::light_particles() const -> particle_system_type
+auto degrees_editor::in_light_particles() const -> particles_type
 {
-    assert(m_light_particles);
-    return m_light_particles();
+    assert(m_in_light_particles);
+    return m_in_light_particles();
 }
 
-auto degrees_editor::medium_particles() const -> particle_system_type
+auto degrees_editor::in_medium_particles() const -> particles_type
 {
-    assert(m_medium_particles);
-    return m_medium_particles();
+    assert(m_in_medium_particles);
+    return m_in_medium_particles();
 }
 
-auto degrees_editor::heavy_particles() const -> particle_system_type
+auto degrees_editor::in_heavy_particles() const -> particles_type
 {
-    assert(m_heavy_particles);
-    return m_heavy_particles();
+    assert(m_in_heavy_particles);
+    return m_in_heavy_particles();
 }
 
-auto degrees_editor::applied() const -> applied_type
+auto degrees_editor::in_applied() const -> applied_type
 {
-    assert(m_applied);
-    return m_applied();
+    assert(m_in_applied);
+    return m_in_applied();
 }
 
-auto degrees_editor::set_light_threshold(threshold_accessor f) -> void
+auto degrees_editor::out_light_threshold() const -> threshold_type
+{
+    assert(m_out_light_thres);
+    return m_out_light_thres();
+}
+
+auto degrees_editor::out_medium_threshold() const -> threshold_type
+{
+    assert(m_out_medium_thres);
+    return m_out_medium_thres();
+}
+
+auto degrees_editor::out_heavy_threshold() const -> threshold_type
+{
+    assert(m_out_heavy_thres);
+    return m_out_heavy_thres();
+}
+
+auto degrees_editor::out_light_particles() const -> particles_type
+{
+    assert(m_out_light_particles);
+    return m_out_light_particles();
+}
+
+auto degrees_editor::out_medium_particles() const -> particles_type
+{
+    assert(m_out_medium_particles);
+    return m_out_medium_particles();
+}
+
+auto degrees_editor::out_heavy_particles() const -> particles_type
+{
+    assert(m_out_heavy_particles);
+    return m_out_heavy_particles();
+}
+
+auto degrees_editor::out_applied() const -> applied_type
+{
+    assert(m_out_applied);
+    return m_out_applied();
+}
+
+auto degrees_editor::set_in_light_threshold(threshold_accessor f) -> void
 {
     assert(f);
-    m_light_thres = std::move(f);
+    m_in_light_thres = std::move(f);
 }
 
-auto degrees_editor::set_medium_threshold(threshold_accessor f) -> void
+auto degrees_editor::set_in_medium_threshold(threshold_accessor f) -> void
 {
     assert(f);
-    m_medium_thres = std::move(f);
+    m_in_medium_thres = std::move(f);
 }
 
-auto degrees_editor::set_heavy_threshold(threshold_accessor f) -> void
+auto degrees_editor::set_in_heavy_threshold(threshold_accessor f) -> void
 {
     assert(f);
-    m_heavy_thres = std::move(f);
+    m_in_heavy_thres = std::move(f);
 }
 
-auto degrees_editor::set_light_particles(particle_system_accessor f) -> void
+auto degrees_editor::set_in_light_particles(particles_accessor f) -> void
 {
     assert(f);
-    m_light_particles = std::move(f);
+    m_in_light_particles = std::move(f);
 }
 
-auto degrees_editor::set_medium_particles(particle_system_accessor f) -> void
+auto degrees_editor::set_in_medium_particles(particles_accessor f) -> void
 {
     assert(f);
-    m_medium_particles = std::move(f);
+    m_in_medium_particles = std::move(f);
 }
 
-auto degrees_editor::set_heavy_particles(particle_system_accessor f) -> void
+auto degrees_editor::set_in_heavy_particles(particles_accessor f) -> void
 {
     assert(f);
-    m_heavy_particles = std::move(f);
+    m_in_heavy_particles = std::move(f);
 }
 
-auto degrees_editor::set_applied(applied_accessor f) -> void
+auto degrees_editor::set_in_applied(applied_accessor f) -> void
 {
     assert(f);
-    m_applied = std::move(f);
+    m_in_applied = std::move(f);
 }
 
-auto degrees_editor::connect_to_light_threshold(const threshold_slot& f)
+auto degrees_editor::set_out_light_threshold(threshold_accessor f) -> void
+{
+    assert(f);
+    m_out_light_thres = std::move(f);
+}
+
+auto degrees_editor::set_out_medium_threshold(threshold_accessor f) -> void
+{
+    assert(f);
+    m_out_medium_thres = std::move(f);
+}
+
+auto degrees_editor::set_out_heavy_threshold(threshold_accessor f) -> void
+{
+    assert(f);
+    m_out_heavy_thres = std::move(f);
+}
+
+auto degrees_editor::set_out_light_particles(particles_accessor f) -> void
+{
+    assert(f);
+    m_out_light_particles = std::move(f);
+}
+
+auto degrees_editor::set_out_medium_particles(particles_accessor f) -> void
+{
+    assert(f);
+    m_out_medium_particles = std::move(f);
+}
+
+auto degrees_editor::set_out_heavy_particles(particles_accessor f) -> void
+{
+    assert(f);
+    m_out_heavy_particles = std::move(f);
+}
+
+auto degrees_editor::set_out_applied(applied_accessor f) -> void
+{
+    assert(f);
+    m_out_applied = std::move(f);
+}
+
+auto degrees_editor::connect_to_in_light_threshold(const threshold_slot& f)
     -> connection
 {
-    return m_light_thres_sig.connect(f);
+    return m_in_light_thres_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_medium_threshold(const threshold_slot& f)
+auto degrees_editor::connect_to_in_medium_threshold(const threshold_slot& f)
     -> connection
 {
-    return m_medium_thres_sig.connect(f);
+    return m_in_medium_thres_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_heavy_threshold(const threshold_slot& f)
+auto degrees_editor::connect_to_in_heavy_threshold(const threshold_slot& f)
     -> connection
 {
-    return m_heavy_thres_sig.connect(f);
+    return m_in_heavy_thres_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_light_particles(const particle_system_slot& f)
+auto degrees_editor::connect_to_in_light_particles(const particles_slot& f)
     -> connection
 {
-    return m_light_particles_sig.connect(f);
+    return m_in_light_particles_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_medium_particles(const particle_system_slot& f)
+auto degrees_editor::connect_to_in_medium_particles(const particles_slot& f)
     -> connection
 {
-    return m_medium_particles_sig.connect(f);
+    return m_in_medium_particles_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_heavy_particles(const particle_system_slot& f)
+auto degrees_editor::connect_to_in_heavy_particles(const particles_slot& f)
     -> connection
 {
-    return m_heavy_particles_sig.connect(f);
+    return m_in_heavy_particles_sig.connect(f);
 }
 
-auto degrees_editor::connect_to_applied(const applied_slot& f) -> connection
+auto degrees_editor::connect_to_in_applied(const applied_slot& f) -> connection
 {
-    return m_applied_sig.connect(f);
+    return m_in_applied_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_light_threshold(const threshold_slot& f)
+    -> connection
+{
+    return m_out_light_thres_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_medium_threshold(const threshold_slot& f)
+    -> connection
+{
+    return m_out_medium_thres_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_heavy_threshold(const threshold_slot& f)
+    -> connection
+{
+    return m_out_heavy_thres_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_light_particles(const particles_slot& f)
+    -> connection
+{
+    return m_out_light_particles_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_medium_particles(const particles_slot& f)
+    -> connection
+{
+    return m_out_medium_particles_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_heavy_particles(const particles_slot& f)
+    -> connection
+{
+    return m_out_heavy_particles_sig.connect(f);
+}
+
+auto degrees_editor::connect_to_out_applied(const applied_slot& f) -> connection
+{
+    return m_out_applied_sig.connect(f);
 }
 
 auto degrees_editor::connect_to_restore(const restore_slot& f) -> connection
@@ -173,152 +299,302 @@ namespace
 
 auto degrees_editor::render() const -> void
 {
-    spaced_text("Thresholds");
-    render_thresholds_editor();
-    spaced_separator();
+    if (!visible())
+        return;
 
-    spaced_text("Particle Systems");
-    render_particles_editor();
-    spaced_separator();
+    ImGui::Begin(ICON_FA_PENCIL_ALT " Degrees Edit", &m_visible);
 
-    render_applied_editor();
+    if (ImGui::TreeNode("In-Degrees"))
+    {
+        spaced_text("Thresholds");
+        render_in_thresholds_editor();
+        spaced_separator();
+
+        spaced_text("Particle Systems");
+        render_in_particles_editor();
+        spaced_separator();
+
+        render_in_applied_editor();
+
+        ImGui::TreePop();
+    }
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    if (ImGui::TreeNode("Out-Degrees"))
+    {
+        spaced_text("Thresholds");
+        render_out_thresholds_editor();
+        spaced_separator();
+
+        spaced_text("Particle Systems");
+        render_out_particles_editor();
+        spaced_separator();
+
+        render_out_applied_editor();
+
+        ImGui::TreePop();
+    }
+
     spaces();
 
     render_restore_button();
+
+    ImGui::End();
 }
 
-auto degrees_editor::render_thresholds_editor() const -> void
+namespace
 {
-    auto light = light_threshold();
-    auto medium = medium_threshold();
-    auto heavy = heavy_threshold();
+    template < typename EmitFunc >
+    requires std::invocable< EmitFunc, degrees_editor::threshold_type >
+    auto render_thresholds_editor(
+        degrees_editor::threshold_type light,
+        degrees_editor::threshold_type medium,
+        degrees_editor::threshold_type heavy,
+        EmitFunc emit_light,
+        EmitFunc emit_medium,
+        EmitFunc emit_heavy,
+        const degrees_editor& self) -> void
+    {
+        ImGui::PushID(&self);
 
-    ImGui::PushID(this);
+        if (ImGui::InputInt(
+                "Light threshold",
+                &light,
+                1,
+                0,
+                ImGuiInputTextFlags_EnterReturnsTrue))
+            emit_light(light);
 
-    if (ImGui::InputInt(
-            "Light threshold",
-            &light,
-            1,
-            0,
-            ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_light_threshold(light);
+        if (ImGui::InputInt(
+                "Medium threshold",
+                &medium,
+                1,
+                0,
+                ImGuiInputTextFlags_EnterReturnsTrue))
+            emit_medium(medium);
 
-    if (ImGui::InputInt(
-            "Medium threshold",
-            &medium,
-            1,
-            0,
-            ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_medium_threshold(medium);
+        if (ImGui::InputInt(
+                "Heavy threshold",
+                &heavy,
+                1,
+                0,
+                ImGuiInputTextFlags_EnterReturnsTrue))
+            emit_heavy(heavy);
 
-    if (ImGui::InputInt(
-            "Heavy threshold",
-            &heavy,
-            1,
-            0,
-            ImGuiInputTextFlags_EnterReturnsTrue))
-        emit_heavy_threshold(heavy);
+        ImGui::PopID();
+    }
 
-    ImGui::PopID();
+    template < typename EmitFunc >
+    requires std::invocable< EmitFunc, degrees_editor::particles_type >
+    auto render_particles_editor(
+        degrees_editor::particles_type light,
+        degrees_editor::particles_type medium,
+        degrees_editor::particles_type heavy,
+        EmitFunc emit_light,
+        EmitFunc emit_medium,
+        EmitFunc emit_heavy,
+        const degrees_editor& self) -> void
+    {
+        using misc::find_index;
+        using resources::particle_systems;
+
+        const auto l_dif = find_index(particle_systems(), light);
+        const auto m_dif = find_index(particle_systems(), medium);
+        const auto h_dif = find_index(particle_systems(), heavy);
+
+        auto l_index = static_cast< int >(l_dif);
+        auto m_index = static_cast< int >(m_dif);
+        auto h_index = static_cast< int >(h_dif);
+
+        ImGui::PushID(&self);
+
+        if (ImGui::Combo(
+                "Light particle system",
+                &l_index,
+                particles().data(),
+                particles().size()))
+            emit_light(particles().at(l_index));
+
+        if (ImGui::Combo(
+                "Medium particle system",
+                &m_index,
+                particles().data(),
+                particles().size()))
+            emit_medium(particles().at(m_index));
+
+        if (ImGui::Combo(
+                "Heavy particle system",
+                &h_index,
+                particles().data(),
+                particles().size()))
+            emit_heavy(particles().at(h_index));
+
+        ImGui::PopID();
+    }
+
+    template < typename EmitFunc >
+    requires std::invocable< EmitFunc, degrees_editor::applied_type >
+    auto render_applied_editor(
+        degrees_editor::applied_type applied,
+        EmitFunc emit,
+        const degrees_editor& self)
+    {
+        ImGui::PushID(&self);
+
+        if (ImGui::Checkbox("Applied", &applied))
+            emit(applied);
+
+        ImGui::PopID();
+    }
+} // namespace
+
+auto degrees_editor::render_in_thresholds_editor() const -> void
+{
+    render_thresholds_editor(
+        in_light_threshold(),
+        in_medium_threshold(),
+        in_heavy_threshold(),
+        [this](auto t) { emit_in_light_threshold(t); },
+        [this](auto t) { emit_in_medium_threshold(t); },
+        [this](auto t) { emit_in_heavy_threshold(t); },
+        *this);
 }
 
-auto degrees_editor::render_particles_editor() const -> void
+auto degrees_editor::render_in_particles_editor() const -> void
 {
-    using misc::find_index;
-    using resources::particle_systems;
-
-    const auto l_dif = find_index(particle_systems(), light_particles());
-    const auto m_dif = find_index(particle_systems(), medium_particles());
-    const auto h_dif = find_index(particle_systems(), heavy_particles());
-
-    auto l_index = static_cast< int >(l_dif);
-    auto m_index = static_cast< int >(m_dif);
-    auto h_index = static_cast< int >(h_dif);
-
-    ImGui::PushID(this);
-
-    if (ImGui::Combo(
-            "Light particle system",
-            &l_index,
-            particles().data(),
-            particles().size()))
-        emit_light_particles(particles().at(l_index));
-
-    if (ImGui::Combo(
-            "Medium particle system",
-            &m_index,
-            particles().data(),
-            particles().size()))
-        emit_medium_particles(particles().at(m_index));
-
-    if (ImGui::Combo(
-            "Heavy particle system",
-            &h_index,
-            particles().data(),
-            particles().size()))
-        emit_heavy_particles(particles().at(h_index));
-
-    ImGui::PopID();
+    render_particles_editor(
+        in_light_particles(),
+        in_medium_particles(),
+        in_heavy_particles(),
+        [this](auto p) { emit_in_light_particles(p); },
+        [this](auto p) { emit_in_medium_particles(p); },
+        [this](auto p) { emit_in_heavy_particles(p); },
+        *this);
 }
 
-auto degrees_editor::render_applied_editor() const -> void
+auto degrees_editor::render_in_applied_editor() const -> void
 {
-    auto v = applied();
+    render_applied_editor(
+        in_applied(), [this](auto a) { emit_in_applied(a); }, *this);
+}
 
-    ImGui::PushID(this);
+auto degrees_editor::render_out_thresholds_editor() const -> void
+{
+    render_thresholds_editor(
+        out_light_threshold(),
+        out_medium_threshold(),
+        out_heavy_threshold(),
+        [this](auto t) { emit_out_light_threshold(t); },
+        [this](auto t) { emit_out_medium_threshold(t); },
+        [this](auto t) { emit_out_heavy_threshold(t); },
+        *this);
+}
 
-    if (ImGui::Checkbox("Applied", &v))
-        emit_applied(v);
+auto degrees_editor::render_out_particles_editor() const -> void
+{
+    render_particles_editor(
+        out_light_particles(),
+        out_medium_particles(),
+        out_heavy_particles(),
+        [this](auto p) { emit_out_light_particles(p); },
+        [this](auto p) { emit_out_medium_particles(p); },
+        [this](auto p) { emit_out_heavy_particles(p); },
+        *this);
+}
 
-    ImGui::PopID();
+auto degrees_editor::render_out_applied_editor() const -> void
+{
+    render_applied_editor(
+        out_applied(), [this](auto a) { emit_out_applied(a); }, *this);
 }
 
 auto degrees_editor::render_restore_button() const -> void
 {
-    ImGui::PushID(this);
-
     if (ImGui::Button("Restore Defaults"))
         emit_restore();
-
-    ImGui::PopID();
 }
 
-auto degrees_editor::emit_light_threshold(threshold_type thres) const -> void
+auto degrees_editor::emit_in_light_threshold(threshold_type thres) const -> void
 {
-    m_light_thres_sig(thres);
+    m_in_light_thres_sig(thres);
 }
 
-auto degrees_editor::emit_medium_threshold(threshold_type thres) const -> void
-{
-    m_medium_thres_sig(thres);
-}
-
-auto degrees_editor::emit_heavy_threshold(threshold_type thres) const -> void
-{
-    m_heavy_thres_sig(thres);
-}
-
-auto degrees_editor::emit_light_particles(particle_system_type particles) const
+auto degrees_editor::emit_in_medium_threshold(threshold_type thres) const
     -> void
 {
-    m_light_particles_sig(particles);
+    m_in_medium_thres_sig(thres);
 }
 
-auto degrees_editor::emit_medium_particles(particle_system_type particles) const
+auto degrees_editor::emit_in_heavy_threshold(threshold_type thres) const -> void
+{
+    m_in_heavy_thres_sig(thres);
+}
+
+auto degrees_editor::emit_in_light_particles(particles_type particles) const
     -> void
 {
-    m_medium_particles_sig(particles);
+    m_in_light_particles_sig(particles);
 }
 
-auto degrees_editor::emit_heavy_particles(particle_system_type particles) const
+auto degrees_editor::emit_in_medium_particles(particles_type particles) const
     -> void
 {
-    m_heavy_particles_sig(particles);
+    m_in_medium_particles_sig(particles);
 }
 
-auto degrees_editor::emit_applied(applied_type val) const -> void
+auto degrees_editor::emit_in_heavy_particles(particles_type particles) const
+    -> void
 {
-    m_applied_sig(val);
+    m_in_heavy_particles_sig(particles);
+}
+
+auto degrees_editor::emit_in_applied(applied_type val) const -> void
+{
+    m_in_applied_sig(val);
+}
+
+auto degrees_editor::emit_out_light_threshold(threshold_type thres) const
+    -> void
+{
+    m_out_light_thres_sig(thres);
+}
+
+auto degrees_editor::emit_out_medium_threshold(threshold_type thres) const
+    -> void
+{
+    m_out_medium_thres_sig(thres);
+}
+
+auto degrees_editor::emit_out_heavy_threshold(threshold_type thres) const
+    -> void
+{
+    m_out_heavy_thres_sig(thres);
+}
+
+auto degrees_editor::emit_out_light_particles(particles_type particles) const
+    -> void
+{
+    m_out_light_particles_sig(particles);
+}
+
+auto degrees_editor::emit_out_medium_particles(particles_type particles) const
+    -> void
+{
+    m_out_medium_particles_sig(particles);
+}
+
+auto degrees_editor::emit_out_heavy_particles(particles_type particles) const
+    -> void
+{
+    m_out_heavy_particles_sig(particles);
+}
+
+auto degrees_editor::emit_out_applied(applied_type val) const -> void
+{
+    m_out_applied_sig(val);
 }
 
 auto degrees_editor::emit_restore() const -> void

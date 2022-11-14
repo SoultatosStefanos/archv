@@ -32,6 +32,9 @@ namespace
 
 auto gui_configurator::render() const -> void
 {
+    if (!visible())
+        return;
+
     render_color_theme_selector();
     render_frame_rounding_selector();
     spaced_separator();

@@ -5,6 +5,8 @@
 #ifndef GUI_GRAPH_CONFIGURATOR_HPP
 #define GUI_GRAPH_CONFIGURATOR_HPP
 
+#include "overlay.hpp"
+
 #include <array>
 #include <boost/signals2/signal.hpp>
 #include <string_view>
@@ -12,7 +14,7 @@
 namespace gui
 {
 
-class graph_configurator
+class graph_configurator : public overlay
 {
 public:
     using name_type = std::string_view;
@@ -49,9 +51,18 @@ public:
 
     using connection = boost::signals2::connection;
 
-    graph_configurator();
+    static constexpr auto type_id = "graph_configurator";
 
-    auto render() const -> void;
+    graph_configurator();
+    ~graph_configurator() override = default;
+
+    auto id() const -> id_type override { return type_id; }
+
+    auto visible() const -> bool override { return m_visible; }
+    auto show() -> void override { m_visible = true; }
+    auto hide() -> void override { m_visible = false; }
+
+    auto render() const -> void override;
 
     auto node_mesh() const -> name_type;
     auto node_material() const -> name_type;
@@ -162,6 +173,7 @@ private:
     auto render_edge_font_color_selector() const -> void;
     auto render_edge_space_width_selector() const -> void;
 
+    bool m_visible { true };
     name_signal m_node_mesh_sig;
     name_signal m_node_material_sig;
     name_signal m_node_font_sig;

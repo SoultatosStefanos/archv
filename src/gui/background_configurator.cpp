@@ -42,6 +42,9 @@ namespace
 
 auto background_configurator::render() const -> void
 {
+    if (!visible())
+        return;
+
     render_skybox_configurator();
     spaced_separator();
     render_lighting_configurator();

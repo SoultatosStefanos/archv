@@ -1,5 +1,6 @@
 #include "clustering_editor.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
@@ -187,6 +188,10 @@ namespace
 
 auto clustering_editor::render() const -> void
 {
+    if (!visible())
+        return;
+
+    ImGui::Begin(ICON_FA_PENCIL_ALT " Clustering Edit", &m_visible);
     render_clusterer_editor();
     spaced_separator();
     ImGui::Spacing();
@@ -202,6 +207,7 @@ auto clustering_editor::render() const -> void
     ImGui::Spacing();
     ImGui::Spacing();
     render_restore_button();
+    ImGui::End();
 }
 
 auto clustering_editor::render_clusterer_editor() const -> void

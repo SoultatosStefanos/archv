@@ -1,5 +1,6 @@
 #include "layout_editor.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
@@ -30,11 +31,16 @@ namespace
 
 auto layout_editor::render() const -> void
 {
+    if (!visible())
+        return;
+
+    ImGui::Begin(ICON_FA_PENCIL_ALT " Layout Edit", &m_visible);
     render_layout_editor();
     render_topology_editor();
     render_scale_editor();
     spaces();
     render_restore_button();
+    ImGui::End();
 }
 
 auto layout_editor::render_layout_editor() const -> void

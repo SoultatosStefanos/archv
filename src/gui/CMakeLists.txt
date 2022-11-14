@@ -8,8 +8,8 @@ set(FILES
 	graph_configurator.cpp
 	gui_config.cpp
 	gui_configurator.cpp
-	gui.cpp
 	layout_editor.cpp
+	menu_bar.cpp
 	overlay_manager.cpp
 	plugins.cpp
 	resources.cpp

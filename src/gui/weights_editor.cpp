@@ -1,5 +1,6 @@
 #include "weights_editor.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
@@ -28,9 +29,14 @@ namespace
 
 auto weights_editor::render() const -> void
 {
+    if (!visible())
+        return;
+
+    ImGui::Begin(ICON_FA_PENCIL_ALT " Weights Edit", &m_visible);
     render_dependencies();
     spaces();
     render_restore_button();
+    ImGui::End();
 }
 
 auto weights_editor::render_dependencies() const -> void

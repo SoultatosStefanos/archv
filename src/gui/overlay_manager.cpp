@@ -31,8 +31,9 @@ auto overlay_manager::get(id_type id) -> overlay&
     return *m_map.at(id);
 }
 
-auto overlay_manager::submit(pointer o) -> void
+auto overlay_manager::submit(std::unique_ptr< overlay > o) -> void
 {
+    assert(o);
     const auto id = o->id();
     m_map[id] = std::move(o);
     assert(manages(id));
@@ -42,6 +43,11 @@ auto overlay_manager::withdraw(id_type id) -> void
 {
     m_map.erase(id);
     assert(!manages(id));
+}
+
+auto overlay_manager::clear() -> void
+{
+    m_map.clear();
 }
 
 auto show_overlays(overlay_manager& manager) -> void

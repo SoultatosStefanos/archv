@@ -4,13 +4,15 @@
 #ifndef GUI_GUI_CONFIGURATOR_HPP
 #define GUI_GUI_CONFIGURATOR_HPP
 
+#include "overlay.hpp"
+
 #include <boost/signals2/signal.hpp>
 #include <string_view>
 
 namespace gui
 {
 
-class gui_configurator
+class gui_configurator : public overlay
 {
 public:
     using name_type = std::string_view;
@@ -39,9 +41,18 @@ public:
 
     using connection = boost::signals2::connection;
 
-    gui_configurator();
+    static constexpr auto type_id = "gui_configurator";
 
-    auto render() const -> void;
+    gui_configurator();
+    ~gui_configurator() override = default;
+
+    auto id() const -> id_type override { return type_id; }
+
+    auto visible() const -> bool override { return m_visible; }
+    auto show() -> void override { m_visible = true; }
+    auto hide() -> void override { m_visible = false; }
+
+    auto render() const -> void override;
 
     auto color_theme() const -> name_type;
     auto frame_rounding() const -> rounding_type;
@@ -92,6 +103,7 @@ private:
     auto render_popup_bordered_selector() const -> void;
     auto render_config_buttons() const -> void;
 
+    bool m_visible { true };
     name_signal m_color_theme_sig;
     rounding_signal m_frame_rounding_sig;
     bordered_signal m_window_bordered_sig;

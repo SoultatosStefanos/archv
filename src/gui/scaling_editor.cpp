@@ -1,5 +1,6 @@
 #include "scaling_editor.hpp"
 
+#include "IconsFontAwesome5.h"
 #include "detail/utility.hpp"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
@@ -20,9 +21,14 @@ scaling_editor::scaling_editor()
 
 auto scaling_editor::render() const -> void
 {
+    if (!visible())
+        return;
+
+    ImGui::Begin(ICON_FA_PENCIL_ALT " Scaling Edit", &m_visible);
     render_factors();
     ImGui::Spacing();
     render_restore_button();
+    ImGui::End();
 }
 
 auto scaling_editor::render_factors() const -> void
