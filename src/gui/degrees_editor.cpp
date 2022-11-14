@@ -347,15 +347,21 @@ auto degrees_editor::render() const -> void
 
 namespace
 {
-    template < typename EmitFunc >
-    requires std::invocable< EmitFunc, degrees_editor::threshold_type >
+    template <
+        typename EmitLightFunc,
+        typename EmitMediumFunc,
+        typename EmitHeavyFunc >
+    requires std::
+        invocable< EmitLightFunc, degrees_editor::threshold_type > && std::
+            invocable< EmitMediumFunc, degrees_editor::threshold_type > && std::
+                invocable< EmitHeavyFunc, degrees_editor::threshold_type >
     auto render_thresholds_editor(
         degrees_editor::threshold_type light,
         degrees_editor::threshold_type medium,
         degrees_editor::threshold_type heavy,
-        EmitFunc emit_light,
-        EmitFunc emit_medium,
-        EmitFunc emit_heavy,
+        EmitLightFunc emit_light,
+        EmitMediumFunc emit_medium,
+        EmitHeavyFunc emit_heavy,
         const degrees_editor& self) -> void
     {
         ImGui::PushID(&self);
@@ -387,15 +393,22 @@ namespace
         ImGui::PopID();
     }
 
-    template < typename EmitFunc >
-    requires std::invocable< EmitFunc, degrees_editor::particles_type >
+    template <
+        typename EmitLightFunc,
+        typename EmitMediumFunc,
+        typename EmitHeavyFunc >
+    requires std::
+        invocable< EmitLightFunc, degrees_editor::particles_type > && std::
+            invocable< EmitMediumFunc, degrees_editor::particles_type > && std::
+                invocable< EmitHeavyFunc, degrees_editor::particles_type >
     auto render_particles_editor(
         degrees_editor::particles_type light,
         degrees_editor::particles_type medium,
         degrees_editor::particles_type heavy,
-        EmitFunc emit_light,
-        EmitFunc emit_medium,
-        EmitFunc emit_heavy,
+        EmitLightFunc emit_light,
+        EmitMediumFunc emit_medium,
+        EmitHeavyFunc emit_heavy,
+        const std::vector< const char* >& particles,
         const degrees_editor& self) -> void
     {
         using misc::find_index;
@@ -414,23 +427,23 @@ namespace
         if (ImGui::Combo(
                 "Light particle system",
                 &l_index,
-                particles().data(),
-                particles().size()))
-            emit_light(particles().at(l_index));
+                particles.data(),
+                particles.size()))
+            emit_light(particles.at(l_index));
 
         if (ImGui::Combo(
                 "Medium particle system",
                 &m_index,
-                particles().data(),
-                particles().size()))
-            emit_medium(particles().at(m_index));
+                particles.data(),
+                particles.size()))
+            emit_medium(particles.at(m_index));
 
         if (ImGui::Combo(
                 "Heavy particle system",
                 &h_index,
-                particles().data(),
-                particles().size()))
-            emit_heavy(particles().at(h_index));
+                particles.data(),
+                particles.size()))
+            emit_heavy(particles.at(h_index));
 
         ImGui::PopID();
     }
@@ -472,6 +485,7 @@ auto degrees_editor::render_in_particles_editor() const -> void
         [this](auto p) { emit_in_light_particles(p); },
         [this](auto p) { emit_in_medium_particles(p); },
         [this](auto p) { emit_in_heavy_particles(p); },
+        particles(),
         *this);
 }
 
@@ -502,6 +516,7 @@ auto degrees_editor::render_out_particles_editor() const -> void
         [this](auto p) { emit_out_light_particles(p); },
         [this](auto p) { emit_out_medium_particles(p); },
         [this](auto p) { emit_out_heavy_particles(p); },
+        particles(),
         *this);
 }
 
