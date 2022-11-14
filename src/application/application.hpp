@@ -17,6 +17,7 @@
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
 #include <OGRE/Bites/OgreImGuiInputListener.h>
+#include <OGRE/Bites/OgreTrays.h>
 #include <memory>
 
 namespace application
@@ -64,6 +65,7 @@ private:
     using rendering_config_data_type = rendering::config_data;
     using gui_config_data_type = gui::config_data;
 
+    using trays_type = OgreBites::TrayManager;
     using cameraman_type = input::camera_handler;
     using gui_input_handler_type = OgreBites::ImGuiInputListener;
     using hud_input_handler_type
@@ -126,6 +128,7 @@ private:
 
     std::unique_ptr< gui_type > m_gui;
 
+    std::unique_ptr< trays_type > m_trays;
     std::unique_ptr< cameraman_type > m_cameraman;
     std::unique_ptr< gui_input_handler_type > m_gui_input_handler;
     std::unique_ptr< hud_input_handler_type > m_hud_input_handler;

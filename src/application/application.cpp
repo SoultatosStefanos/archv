@@ -354,6 +354,9 @@ auto application::setup_input() -> void
 {
     using std::make_unique;
 
+    m_trays = std::make_unique< trays_type >("Bob", getRenderWindow());
+    m_trays->showCursor();
+
     m_cameraman
         = make_unique< cameraman_type >(&m_background_renderer->cam_node());
 
@@ -370,6 +373,7 @@ auto application::setup_input() -> void
     m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
 
+    addInputListener(m_trays.get());
     addInputListener(m_gui_input_handler.get());
     addInputListener(m_cameraman.get());
     addInputListener(m_hud_input_handler.get());
@@ -379,6 +383,8 @@ auto application::setup_input() -> void
 
 #ifdef NDEBUG
     SDL_SetRelativeMouseMode(SDL_TRUE); // Constrain mouse in application
+#else
+    SDL_ShowCursor(SDL_FALSE);
 #endif
 
     BOOST_LOG_TRIVIAL(debug) << "setup input";
@@ -404,6 +410,7 @@ auto application::shutdown() -> void
 
 auto application::shutdown_input() -> void
 {
+    removeInputListener(m_trays.get());
     removeInputListener(m_inspection_input_handler.get());
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
@@ -411,6 +418,7 @@ auto application::shutdown_input() -> void
     removeInputListener(m_hud_input_handler.get());
     removeInputListener(m_cameraman.get());
 
+    m_trays.reset();
     m_inspection_input_handler.reset();
     m_shortcut_input_handler.reset();
     m_quit_handler.reset();
