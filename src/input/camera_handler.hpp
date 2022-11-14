@@ -17,10 +17,6 @@ class camera_handler : public OgreBites::InputListener
 {
 public:
     using cameraman_type = OgreBites::CameraMan;
-    using frame_event_type = Ogre::FrameEvent;
-    using keyboard_event_type = OgreBites::KeyboardEvent;
-    using mouse_motion_event_type = OgreBites::MouseMotionEvent;
-    using mouse_button_event_type = OgreBites::MouseButtonEvent;
 
     explicit camera_handler(cameraman_type cameraman);
     ~camera_handler() override = default;
@@ -30,12 +26,12 @@ public:
 
     auto locked() const -> bool { return m_locked; }
 
-    auto frameRendered(const frame_event_type& evt) -> void override;
-    auto keyPressed(const keyboard_event_type& evt) -> bool override;
-    auto keyReleased(const keyboard_event_type& evt) -> bool override;
-    auto mouseMoved(const mouse_motion_event_type& evt) -> bool override;
-    auto mousePressed(const mouse_button_event_type& evt) -> bool override;
-    auto mouseReleased(const mouse_button_event_type& evt) -> bool override;
+    auto frameRendered(const Ogre::FrameEvent& evt) -> void override;
+    auto keyPressed(const OgreBites::KeyboardEvent& evt) -> bool override;
+    auto keyReleased(const OgreBites::KeyboardEvent& evt) -> bool override;
+    auto mouseMoved(const OgreBites::MouseMotionEvent& evt) -> bool override;
+    auto mousePressed(const OgreBites::MouseButtonEvent& evt) -> bool override;
+    auto mouseReleased(const OgreBites::MouseButtonEvent& evt) -> bool override;
 
 protected:
     auto toggle_lock_unlock() -> void;

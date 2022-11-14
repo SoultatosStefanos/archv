@@ -29,8 +29,6 @@ public:
     using render_window_type = Ogre::RenderWindow;
     using camera_type = Ogre::Camera;
 
-    using mouse_button_event_type = OgreBites::MouseButtonEvent;
-
     inspection_handler(
         const graph_collision_checker_type& collisions,
         const render_window_type& window,
@@ -42,7 +40,7 @@ public:
     auto window() const -> const auto& { return m_win; }
     auto camera() const -> const auto& { return m_cam; }
 
-    auto mousePressed(const mouse_button_event_type& e) -> bool;
+    auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool;
 
 private:
     const graph_collision_checker_type& m_collisions;

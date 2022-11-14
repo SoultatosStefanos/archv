@@ -19,7 +19,7 @@ namespace
     inline auto mouse_ray(
         const inspection_handler::render_window_type& win,
         const inspection_handler::camera_type& cam,
-        const inspection_handler::mouse_button_event_type& e) -> Ogre::Ray
+        const OgreBites::MouseButtonEvent& e) -> Ogre::Ray
     {
         using Ogre::Real;
         return cam.getCameraToViewportRay(
@@ -28,7 +28,8 @@ namespace
     }
 } // namespace
 
-auto inspection_handler::mousePressed(const mouse_button_event_type& e) -> bool
+auto inspection_handler::mousePressed(const OgreBites::MouseButtonEvent& e)
+    -> bool
 {
     const auto ray = mouse_ray(window(), camera(), e);
     const auto collision = collisions().vertex_collision(ray);
