@@ -15,6 +15,7 @@ set(FILES
 	popup_holder.cpp
 	resources.cpp
 	scaling_editor.cpp
+	structure_popup.cpp
 	ui_adaptor.cpp
 	weights_editor.cpp
 )

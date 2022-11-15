@@ -21,6 +21,7 @@
 #include "popup_holder.hpp"
 #include "resources.hpp"
 #include "scaling_editor.hpp"
+#include "structure_popup.hpp"
 #include "ui_adaptor.hpp"
 #include "weights_editor.hpp"
 

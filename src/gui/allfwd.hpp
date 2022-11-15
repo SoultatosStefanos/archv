@@ -24,6 +24,7 @@ class clustering_editor;
 class frames_hud;
 class controls_hud;
 
+class structure_popup;
 class popup_holder;
 
 } // namespace gui
