@@ -18,6 +18,7 @@
 #include "overlay.hpp"
 #include "overlay_manager.hpp"
 #include "plugins.hpp"
+#include "popup_holder.hpp"
 #include "resources.hpp"
 #include "scaling_editor.hpp"
 #include "ui_adaptor.hpp"

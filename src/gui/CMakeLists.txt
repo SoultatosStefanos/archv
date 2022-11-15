@@ -12,6 +12,7 @@ set(FILES
 	menu_bar.cpp
 	overlay_manager.cpp
 	plugins.cpp
+	popup_holder.cpp
 	resources.cpp
 	scaling_editor.cpp
 	ui_adaptor.cpp
