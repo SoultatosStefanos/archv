@@ -17,7 +17,7 @@
 
 ## Algorithms
 
-	+ [ ] Louvain method
+	+ [x] Louvain method
 
 	+ [ ] Layered label propagation
  
@@ -25,7 +25,7 @@
 
 ## Features
 
-	+ [ ] Cluster with algorithm
+	+ [x] Cluster with algorithm
 
 
 # Layout / Topology
@@ -68,7 +68,7 @@
 
 	+ [ ] Blocked signals when running heavy algorithms
 
-	+ [ ] Interactive Configuration (deserialization/serialization/defaults)
+	+ [x] Interactive Configuration (deserialization/serialization/defaults)
 
 # Rendering
 
@@ -78,24 +78,22 @@
 
 	+ [x] Illumintation
 
-	+ [ ] Texts
+	+ [x] Texts
 
-	+ [ ] Controlls Hud
+	+ [x] Controlls Hud
 
 
 # Controls
 
 	+ [x] Free Camera 
 
-	+ [ ] Control Hud on/off
+	+ [x] Control Hud on/off
 
-	+ [ ] Frame Hud on/off
+	+ [x] Frame Hud on/off
 
 	+ [x] Pause/Resume
 
 	+ [x] Quit
-
-	+ [ ] Camera speed
 
 
 ## User input sanitizing
@@ -736,8 +734,8 @@
 
 # 15 / 11 / 2022
 
-	+ [ ] Vertex effect on hover
+	+ [x] Structure popups
 
-	+ [ ] Structure popups
+	+ [ ] Vertex effect on hover
 
 	+ [ ] GUI configs
