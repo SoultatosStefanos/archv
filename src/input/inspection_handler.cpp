@@ -6,20 +6,25 @@ namespace input
 {
 
 inspection_handler::inspection_handler(
+    graph_renderer_type& renderer,
     const graph_collision_checker_type& collisions,
     const render_window_type& window,
     const camera_type& camera)
-: m_collisions { collisions }, m_win { window }, m_cam { camera }
+: m_renderer { renderer }
+, m_collisions { collisions }
+, m_win { window }
+, m_cam { camera }
 {
 }
 
 namespace
 {
     // Returns a ray in world coordinates from a mouse event.
+    template < typename MouseEvent >
     inline auto mouse_ray(
         const inspection_handler::render_window_type& win,
         const inspection_handler::camera_type& cam,
-        const OgreBites::MouseButtonEvent& e) -> Ogre::Ray
+        const MouseEvent& e) -> Ogre::Ray
     {
         using Ogre::Real;
         return cam.getCameraToViewportRay(
@@ -27,6 +32,37 @@ namespace
             static_cast< Real >(e.y) / static_cast< Real >(win.getHeight()));
     }
 } // namespace
+
+auto inspection_handler::mouseMoved(const OgreBites::MouseMotionEvent& e)
+    -> bool
+{
+    const auto ray = mouse_ray(window(), camera(), e);
+    const auto collision = collisions().vertex_collision(ray);
+
+    if (collision)
+    {
+        // Did not dispatch collision.
+        if (m_collision_stack.empty() || m_collision_stack.top() != *collision)
+        {
+            BOOST_LOG_TRIVIAL(debug) << "hovered inside: " << *collision;
+            m_collision_stack.push(*collision);
+            renderer().render_vertex_bounding_box(*collision);
+        }
+    }
+    else
+    {
+        // Stopped colliding with vertex.
+        if (!m_collision_stack.empty())
+        {
+            const auto prev = m_collision_stack.top();
+            m_collision_stack.pop();
+            BOOST_LOG_TRIVIAL(debug) << "hovered outside: " << prev;
+            renderer().hide_vertex_bounding_box(prev);
+        }
+    }
+
+    return true;
+}
 
 auto inspection_handler::mousePressed(const OgreBites::MouseButtonEvent& e)
     -> bool

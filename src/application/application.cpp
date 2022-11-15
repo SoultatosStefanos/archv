@@ -371,7 +371,10 @@ auto application::setup_input() -> void
         = make_unique< shortcut_input_handler_type >(*m_cmds);
 
     m_inspection_input_handler = make_unique< inspection_handler_type >(
-        *m_graph_collisions, *getRenderWindow(), m_background_renderer->cam());
+        *m_graph_renderer,
+        *m_graph_collisions,
+        *getRenderWindow(),
+        m_background_renderer->cam());
 
     addInputListener(m_trays.get());
     addInputListener(m_gui_input_handler.get());

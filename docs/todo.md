@@ -736,6 +736,6 @@
 
 	+ [x] Structure popups
 
-	+ [ ] Vertex effect on hover
+	+ [x] Vertex effect on hover
 
 	+ [ ] GUI configs

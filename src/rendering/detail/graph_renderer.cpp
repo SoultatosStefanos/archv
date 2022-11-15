@@ -52,6 +52,32 @@ vertex_renderer::vertex_renderer(
     assert(m_cfg);
 }
 
+auto vertex_renderer::is_bounding_box_rendered(const id_type& id) const -> bool
+{
+    assert(m_scene.hasSceneNode(id));
+    auto* node = m_scene.getSceneNode(id);
+    assert(node);
+    return node->getShowBoundingBox();
+}
+
+auto vertex_renderer::render_bounding_box(const id_type& id) -> void
+{
+    assert(m_scene.hasSceneNode(id));
+    auto* node = m_scene.getSceneNode(id);
+    assert(node);
+    node->showBoundingBox(true);
+    BOOST_LOG_TRIVIAL(debug) << "rendered bounding box for vertex: " << id;
+}
+
+auto vertex_renderer::hide_bounding_box(const id_type& id) -> void
+{
+    assert(m_scene.hasSceneNode(id));
+    auto* node = m_scene.getSceneNode(id);
+    assert(node);
+    node->showBoundingBox(false);
+    BOOST_LOG_TRIVIAL(debug) << "hid bounding box for vertex: " << id;
+}
+
 vertex_renderer::~vertex_renderer() = default;
 
 // Vertex renderer helpers.

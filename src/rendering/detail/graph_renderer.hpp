@@ -85,6 +85,10 @@ public:
     auto setup(const id_type& id, position_type pos) -> void;
     auto shutdown(const id_type& id) -> void;
 
+    auto is_bounding_box_rendered(const id_type& id) const -> bool;
+    auto render_bounding_box(const id_type& id) -> void;
+    auto hide_bounding_box(const id_type& id) -> void;
+
     auto render_position(const id_type& id, position_type pos) -> void;
 
     auto render_scale(const id_type& id, scale_type scale) -> void;
@@ -97,7 +101,6 @@ public:
     auto render_cluster(const id_type& id, const rgba_type& col) -> void;
 
     auto hide_scale(const id_type& id) -> void;
-
     auto hide_cluster(const id_type& id) -> void;
 
     auto draw(const id_type& id, const config_data_type& cfg) -> void;
