@@ -743,6 +743,10 @@
 
 	+ [x] Poc popup code inspection
 
-	+ [ ] Popup code inspection with all info
+	+ [x] Popup code inspection with all info
+
+	+ [ ] Fix button click resolution on inspection
 
 	+ [ ] Menu bar num vertices/edges
+
+	+ [ ] Hide clusters before drawing graph

@@ -7,6 +7,7 @@
 #include "point.hpp"
 
 #include <string_view>
+#include <vector>
 
 namespace gui
 {
@@ -15,9 +16,33 @@ namespace gui
  * Structure View                                          *
  ***********************************************************/
 
-// TODO Pass more structure data
-using id_type = std::string_view;
-using structure_info = id_type;
+struct structure_info
+{
+    using id_type = std::string_view;
+    using name_type = std::string_view;
+    using type = std::string_view;
+    using namespace_type = std::string_view;
+    using file_type = std::string_view;
+    using methods_type = std::vector< id_type >;
+    using fields_type = std::vector< id_type >;
+    using bases_type = std::vector< id_type >;
+    using nested_type = std::vector< id_type >;
+    using friends_type = std::vector< id_type >;
+
+    id_type id;
+    name_type name;
+    type t;
+    namespace_type name_space;
+    file_type file;
+    methods_type methods;
+    fields_type fields;
+    bases_type bases;
+    nested_type nested;
+    friends_type friends;
+
+    auto operator==(const structure_info&) const -> bool = default;
+    auto operator!=(const structure_info&) const -> bool = default;
+};
 
 /***********************************************************
  * Structure Popup                                         *

@@ -330,10 +330,45 @@ namespace // gui setup
         scene.addRenderQueueListener(system);
     }
 
-    // FIXME
+    inline auto string_views(const std::vector< std::string >& strs)
+    {
+        using result_type = std::vector< std::string_view >;
+        auto res = result_type { std::cbegin(strs), std::cend(strs) };
+        std::sort(std::begin(res), std::end(res));
+        return res;
+    }
+
+    template < architecture::symbol_composed T >
+    inline auto string_views(const std::vector< T >& syms)
+    {
+        using result_type = std::vector< std::string_view >;
+        result_type res;
+        std::transform(
+            std::cbegin(syms),
+            std::cend(syms),
+            std::back_inserter(res),
+            [](const auto& s) { return s.sym.id.c_str(); });
+        std::sort(std::begin(res), std::end(res));
+        return res;
+    }
+
+    inline auto structure_info(const architecture::structure& s)
+    {
+        return gui::structure_info { .id = s.sym.id,
+                                     .name = s.sym.name,
+                                     .t = s.t,
+                                     .name_space = s.sym.name_space,
+                                     .file = s.sym.source.file,
+                                     .methods = string_views(s.methods),
+                                     .fields = string_views(s.fields),
+                                     .bases = string_views(s.bases),
+                                     .nested = string_views(s.nested),
+                                     .friends = string_views(s.friends) };
+    }
+
     auto structure_popup(const architecture::structure& s)
     {
-        return gui::structure_popup(s.sym.id);
+        return gui::structure_popup(structure_info(s));
     }
 
     auto prepare_gui_popups(
@@ -345,7 +380,7 @@ namespace // gui setup
         {
             auto&& popup = structure_popup(sym);
             popups.insert(id, std::move(popup));
-            overlays.submit(&popups.get(id));
+            overlays.submit(&popups.get(id)); // Queue for rendering
         }
     }
 

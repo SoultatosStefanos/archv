@@ -4,6 +4,7 @@
 #ifndef ARCHITECTURE_ALL_HPP
 #define ARCHITECTURE_ALL_HPP
 
+#include "concepts.hpp"
 #include "config.hpp"
 #include "graph.hpp"
 #include "graph_interface.hpp"
