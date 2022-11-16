@@ -63,6 +63,7 @@ auto menu_bar::render() const -> void
         render_editor();
         render_configurator();
         render_helper();
+        render_graph_sizes();
 
         ImGui::EndMainMenuBar();
     }
@@ -173,6 +174,14 @@ auto menu_bar::render_helper() const -> void
     {
         ImGui::EndMenu();
     }
+}
+
+auto menu_bar::render_graph_sizes() const -> void
+{
+    static constexpr auto rmargin = 200;
+    ImGui::SameLine(ImGui::GetWindowWidth() - rmargin);
+    ImGui::Text(ICON_FA_CIRCLE " %lu ", num_vertices());
+    ImGui::Text(ICON_FA_ARROW_RIGHT " %lu", num_edges());
 }
 
 } // namespace gui

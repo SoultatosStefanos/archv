@@ -31,6 +31,7 @@ class menu_bar
 
 public:
     using pred = std::function< bool() >;
+    using size_type = std::size_t;
 
     using undo_slot = undo_signal::slot_type;
     using redo_slot = redo_signal::slot_type;
@@ -74,6 +75,12 @@ public:
     auto set_can_undo(pred pred) -> void;
     auto set_can_redo(pred pred) -> void;
 
+    auto num_vertices() const -> const size_type& { return m_num_vertices; }
+    auto num_vertices() -> size_type& { return m_num_vertices; }
+
+    auto num_edges() const -> const size_type& { return m_num_edges; }
+    auto num_edges() -> size_type& { return m_num_edges; }
+
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
 
@@ -88,6 +95,7 @@ private:
     auto render_rendering_configurator() const -> void;
     auto render_gui_configurator() const -> void;
     auto render_helper() const -> void;
+    auto render_graph_sizes() const -> void;
 
     bool m_visible { true };
     mutable weights_editor m_weights_editor;
@@ -104,6 +112,9 @@ private:
 
     undo_signal m_undo_sig;
     redo_signal m_redo_sig;
+
+    size_type m_num_vertices {};
+    size_type m_num_edges {};
 };
 
 } // namespace gui

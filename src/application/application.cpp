@@ -801,10 +801,13 @@ auto application::prepare_menu_bar() -> void
 {
     auto& bar = m_gui->get_menu_bar();
 
+    bar.num_vertices() = boost::num_vertices(m_graph_iface->get_graph());
+    bar.num_edges() = boost::num_edges(m_graph_iface->get_graph());
+
     bar.set_can_undo([this]() { return m_cmds->can_undo(); });
     bar.set_can_redo([this]() { return m_cmds->can_redo(); });
 
-    BOOST_LOG_TRIVIAL(debug) << "prepared undo redo gui";
+    BOOST_LOG_TRIVIAL(debug) << "prepared menu bar";
 }
 
 /***********************************************************
