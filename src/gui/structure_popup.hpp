@@ -4,6 +4,8 @@
 #ifndef GUI_STRUCTURE_POPUP_HPP
 #define GUI_STRUCTURE_POPUP_HPP
 
+#include "point.hpp"
+
 #include <string_view>
 
 namespace gui
@@ -25,11 +27,11 @@ class structure_popup
 {
 public:
     structure_popup() = default;
-    explicit structure_popup(structure_info s);
+    structure_popup(structure_info s, point pos);
 
-    // FIXME
-    auto id() const -> const id_type& { return m_structure; }
     auto structure() const -> const structure_info& { return m_structure; }
+    auto pos() const -> const point& { return m_pos; }
+    auto pos() -> point& { return m_pos; }
 
     auto render() const -> void;
     auto visible() const -> bool;
@@ -38,6 +40,7 @@ public:
 
 private:
     structure_info m_structure;
+    point m_pos;
 };
 
 } // namespace gui

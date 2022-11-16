@@ -6,6 +6,7 @@
 #define INPUT_INSPECTION_HANDLER_HPP
 
 #include "architecture/all.hpp"
+#include "gui/allfwd.hpp"
 #include "rendering/graph_collision_checker.hpp"
 #include "rendering/graph_renderer.hpp"
 
@@ -33,12 +34,17 @@ public:
         architecture::id_map,
         architecture::dependency_map >;
 
+    using overlay_manager_type = gui::overlay_manager;
+    using popup_holder_type = gui::popup_holder;
+
     using render_window_type = Ogre::RenderWindow;
     using camera_type = Ogre::Camera;
 
     inspection_handler(
         graph_renderer_type& renderer,
         const graph_collision_checker_type& collisions,
+        overlay_manager_type& overlays,
+        popup_holder_type& popups,
         const render_window_type& window,
         const camera_type& camera);
 
@@ -47,6 +53,10 @@ public:
     auto renderer() const -> const auto& { return m_renderer; }
     auto renderer() -> auto& { return m_renderer; }
     auto collisions() const -> const auto& { return m_collisions; }
+    auto overlays() const -> const auto& { return m_overlays; }
+    auto overlays() -> auto& { return m_overlays; }
+    auto popups() const -> const auto& { return m_popups; }
+    auto popups() -> auto& { return m_popups; }
     auto window() const -> const auto& { return m_win; }
     auto camera() const -> const auto& { return m_cam; }
 
@@ -59,8 +69,11 @@ private:
 
     graph_renderer_type& m_renderer;
     const graph_collision_checker_type& m_collisions;
+    overlay_manager_type& m_overlays;
+    popup_holder_type& m_popups;
     const render_window_type& m_win;
     const camera_type& m_cam;
+
     collision_stack m_collision_stack;
 };
 

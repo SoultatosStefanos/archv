@@ -373,6 +373,8 @@ auto application::setup_input() -> void
     m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_renderer,
         *m_graph_collisions,
+        *m_gui,
+        gui::popups,
         *getRenderWindow(),
         m_background_renderer->cam());
 
