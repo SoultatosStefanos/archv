@@ -745,8 +745,10 @@
 
 	+ [x] Popup code inspection with all info
 
-	+ [ ] Fix button click resolution on inspection
+	+ [x] Fix button click resolution on inspection
 
 	+ [ ] Menu bar num vertices/edges
+
+	+ [ ] Menu bar TODO
 
 	+ [ ] Hide clusters before drawing graph

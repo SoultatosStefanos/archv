@@ -493,6 +493,7 @@ auto application::shutdown_input() -> void
 auto application::shutdown_gui() -> void
 {
     m_gui.reset();
+    gui::popups.clear();
     Ogre::OverlayManager::getSingleton().destroy(imgui_overlay_name);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
