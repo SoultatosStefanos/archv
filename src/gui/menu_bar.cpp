@@ -35,6 +35,11 @@ auto menu_bar::set_can_redo(pred pred) -> void
     m_redo_enabled = std::move(pred);
 }
 
+auto menu_bar::connect_to_quit(const quit_slot& f) -> connection
+{
+    return m_quit.connect(f);
+}
+
 auto menu_bar::connect_to_undo(const undo_slot& f) -> connection
 {
     return m_undo_sig.connect(f);
@@ -43,6 +48,11 @@ auto menu_bar::connect_to_undo(const undo_slot& f) -> connection
 auto menu_bar::connect_to_redo(const redo_slot& f) -> connection
 {
     return m_redo_sig.connect(f);
+}
+
+auto menu_bar::emit_quit() const -> void
+{
+    m_quit();
 }
 
 auto menu_bar::emit_undo() const -> void
@@ -69,14 +79,12 @@ auto menu_bar::render() const -> void
     }
 }
 
-// TODO
 auto menu_bar::render_file_editor() const -> void
 {
     if (ImGui::BeginMenu(ICON_FA_FILE " File"))
     {
         if (ImGui::MenuItem(ICON_FA_WINDOW_CLOSE " Quit", "Esc"))
-        {
-        }
+            emit_quit();
 
         ImGui::EndMenu();
     }
@@ -167,11 +175,34 @@ auto menu_bar::render_gui_configurator() const -> void
     }
 }
 
-// TODO
 auto menu_bar::render_helper() const -> void
 {
     if (ImGui::BeginMenu(ICON_FA_QUESTION " Help"))
     {
+        ImGui::Text("ABOUT:\n");
+        ImGui::Text("Architecture visualization in 3D space!\n");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+        ImGui::Text("CAMERA MOVEMENT:\n");
+        ImGui::BulletText("C (press) or mouse wheel (hold) to lock/unlock.");
+        ImGui::BulletText("Mouse (while unlocked) to look around.");
+        ImGui::BulletText(
+            "W/A/S/D or arrow keys (while unlocked) to move around.");
+        ImGui::BulletText("PgUp/PgDn (while unlocked) to move up/down.");
+        ImGui::BulletText("LSHIFT (hold) (while unlocked) to speed up/down.");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+        ImGui::Text("HUD:\n");
+        ImGui::BulletText("F to show/hide frame stats.");
+        ImGui::BulletText("H to show/hide controls.");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+        ImGui::Text("QUIT:\n");
+        ImGui::BulletText("ESC to exit.");
+
         ImGui::EndMenu();
     }
 }

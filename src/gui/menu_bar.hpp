@@ -26,6 +26,7 @@ namespace gui
 
 class menu_bar
 {
+    using quit_signal = boost::signals2::signal< void() >;
     using undo_signal = boost::signals2::signal< void() >;
     using redo_signal = boost::signals2::signal< void() >;
 
@@ -33,6 +34,7 @@ public:
     using pred = std::function< bool() >;
     using size_type = std::size_t;
 
+    using quit_slot = quit_signal::slot_type;
     using undo_slot = undo_signal::slot_type;
     using redo_slot = redo_signal::slot_type;
     using connection = boost::signals2::connection;
@@ -81,10 +83,12 @@ public:
     auto num_edges() const -> const size_type& { return m_num_edges; }
     auto num_edges() -> size_type& { return m_num_edges; }
 
+    auto connect_to_quit(const quit_slot& f) -> connection;
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
 
 protected:
+    auto emit_quit() const -> void;
     auto emit_undo() const -> void;
     auto emit_redo() const -> void;
 
@@ -110,6 +114,7 @@ private:
     pred m_undo_enabled;
     pred m_redo_enabled;
 
+    quit_signal m_quit;
     undo_signal m_undo_sig;
     redo_signal m_redo_sig;
 

@@ -1500,6 +1500,13 @@ auto application::connect_menu_bar_presentation() -> void
 {
     auto& bar = m_gui->get_menu_bar();
 
+    bar.connect_to_quit(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected quit";
+            getRoot()->queueEndRendering();
+        });
+
     bar.connect_to_undo(
         [this]()
         {

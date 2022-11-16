@@ -106,6 +106,8 @@
 
 	+ [ ] Mini Map
 
+	+ [ ] Search Bar
+
 	+ [ ] More configurations (all of em)
 
 	
@@ -747,8 +749,12 @@
 
 	+ [x] Fix button click resolution on inspection
 
-	+ [ ] Menu bar num vertices/edges
+	+ [x] Menu bar num vertices/edges
 
-	+ [ ] Menu bar TODO
+	+ [x] Menu bar TODO
+
+		+ [x] Menu bar helper
+
+		+ [x] Menu bar Quit
 
 	+ [ ] Hide clusters before drawing graph
