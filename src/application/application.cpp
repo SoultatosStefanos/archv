@@ -1392,6 +1392,7 @@ auto application::connect_graph_presentation() -> void
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph apply";
+            m_graph_renderer->hide_clusters();
             ui::apply_configs(*m_graph_renderer);
         });
 
@@ -1399,6 +1400,7 @@ auto application::connect_graph_presentation() -> void
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph preview";
+            m_graph_renderer->hide_clusters();
             ui::begin_preview(*m_graph_renderer);
         });
 
@@ -1406,6 +1408,7 @@ auto application::connect_graph_presentation() -> void
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph cancel";
+            m_graph_renderer->hide_clusters();
             ui::end_preview(*m_graph_renderer);
         });
 
@@ -1413,6 +1416,7 @@ auto application::connect_graph_presentation() -> void
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected graph restore";
+            m_graph_renderer->hide_clusters();
             ui::restore_defaults(*m_graph_renderer);
             prepare_graph_configurator();
         });

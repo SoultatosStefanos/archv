@@ -757,4 +757,4 @@
 
 		+ [x] Menu bar Quit
 
-	+ [ ] Hide clusters before drawing graph
+	+ [x] Hide clusters before drawing graph
