@@ -46,7 +46,7 @@ auto inspection_handler::mouseMoved(const OgreBites::MouseMotionEvent& e)
         {
             BOOST_LOG_TRIVIAL(debug) << "hovered inside: " << *collision;
             m_collision_stack.push(*collision);
-            renderer().render_vertex_bounding_box(*collision);
+            renderer().render_vertex_pop_out_effect(*collision);
         }
     }
     else
@@ -57,7 +57,7 @@ auto inspection_handler::mouseMoved(const OgreBites::MouseMotionEvent& e)
             const auto prev = m_collision_stack.top();
             m_collision_stack.pop();
             BOOST_LOG_TRIVIAL(debug) << "hovered outside: " << prev;
-            renderer().hide_vertex_bounding_box(prev);
+            renderer().hide_vertex_pop_out_effect(prev);
         }
     }
 

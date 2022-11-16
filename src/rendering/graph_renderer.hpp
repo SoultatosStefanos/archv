@@ -171,9 +171,11 @@ public:
     auto hide_weights() -> void;
     auto hide_clusters() -> void;
 
-    auto is_vertex_bounding_box_rendered(const id_type& id) const -> bool;
     auto render_vertex_bounding_box(const id_type& id) -> void;
     auto hide_vertex_bounding_box(const id_type& id) -> void;
+
+    auto render_vertex_pop_out_effect(const id_type& id) -> void;
+    auto hide_vertex_pop_out_effect(const id_type& id) -> void;
 
     auto draw(const config_data_type& cfg) -> void;
     auto draw(config_data_type&&) -> void = delete; // disallow temporaries
@@ -587,23 +589,6 @@ inline auto graph_renderer<
     VertexID,
     DependencyMap,
     DegreesEvaluator,
-    ClusterColorCoder >::is_vertex_bounding_box_rendered(const id_type& id)
-    const -> bool
-{
-    return m_vertex_renderer.is_bounding_box_rendered(id);
-}
-
-template <
-    typename Graph,
-    typename VertexID,
-    typename DependencyMap,
-    degrees_evaluator DegreesEvaluator,
-    cluster_color_coder ClusterColorCoder >
-inline auto graph_renderer<
-    Graph,
-    VertexID,
-    DependencyMap,
-    DegreesEvaluator,
     ClusterColorCoder >::render_vertex_bounding_box(const id_type& id) -> void
 {
     m_vertex_renderer.render_bounding_box(id);
@@ -623,6 +608,38 @@ inline auto graph_renderer<
     ClusterColorCoder >::hide_vertex_bounding_box(const id_type& id) -> void
 {
     m_vertex_renderer.hide_bounding_box(id);
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    degrees_evaluator DegreesEvaluator,
+    cluster_color_coder ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_vertex_pop_out_effect(const id_type& id) -> void
+{
+    m_vertex_renderer.render_pop_out_effect(id);
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    degrees_evaluator DegreesEvaluator,
+    cluster_color_coder ClusterColorCoder >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::hide_vertex_pop_out_effect(const id_type& id) -> void
+{
+    m_vertex_renderer.hide_pop_out_effect(id);
 }
 
 template <

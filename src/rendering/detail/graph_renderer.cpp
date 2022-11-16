@@ -52,13 +52,7 @@ vertex_renderer::vertex_renderer(
     assert(m_cfg);
 }
 
-auto vertex_renderer::is_bounding_box_rendered(const id_type& id) const -> bool
-{
-    assert(m_scene.hasSceneNode(id));
-    auto* node = m_scene.getSceneNode(id);
-    assert(node);
-    return node->getShowBoundingBox();
-}
+vertex_renderer::~vertex_renderer() = default;
 
 auto vertex_renderer::render_bounding_box(const id_type& id) -> void
 {
@@ -78,7 +72,25 @@ auto vertex_renderer::hide_bounding_box(const id_type& id) -> void
     BOOST_LOG_TRIVIAL(debug) << "hid bounding box for vertex: " << id;
 }
 
-vertex_renderer::~vertex_renderer() = default;
+static constexpr auto pop_out_scale = 1.5f;
+
+auto vertex_renderer::render_pop_out_effect(const id_type& id) -> void
+{
+    assert(m_scene.hasSceneNode(id));
+    auto* node = m_scene.getSceneNode(id);
+    assert(node);
+    node->setScale(node->getScale() * pop_out_scale);
+    BOOST_LOG_TRIVIAL(debug) << "rendered pop out effect for vertex: " << id;
+}
+
+auto vertex_renderer::hide_pop_out_effect(const id_type& id) -> void
+{
+    assert(m_scene.hasSceneNode(id));
+    auto* node = m_scene.getSceneNode(id);
+    assert(node);
+    node->setScale(node->getScale() / pop_out_scale);
+    BOOST_LOG_TRIVIAL(debug) << "hid pop out effect for vertex: " << id;
+}
 
 // Vertex renderer helpers.
 namespace
