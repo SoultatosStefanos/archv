@@ -758,3 +758,10 @@
 		+ [x] Menu bar Quit
 
 	+ [x] Hide clusters before drawing graph
+
+
+# 17 / 11 / 2022
+
+	+ [ ] GUI Configs
+
+	+ [ ] Layered label propagation
