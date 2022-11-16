@@ -330,6 +330,25 @@ namespace // gui setup
         scene.addRenderQueueListener(system);
     }
 
+    // FIXME
+    auto structure_popup(const architecture::structure& s)
+    {
+        return gui::structure_popup(s.sym.id);
+    }
+
+    auto prepare_gui_popups(
+        const architecture::symbol_table& st,
+        gui::popup_holder& popups,
+        gui::overlay_manager& overlays)
+    {
+        for (const auto& [id, sym] : st)
+        {
+            auto&& popup = structure_popup(sym);
+            popups.insert(id, std::move(popup));
+            overlays.submit(&popups.get(id));
+        }
+    }
+
 } // namespace
 
 auto application::setup_gui() -> void
@@ -346,6 +365,8 @@ auto application::setup_gui() -> void
     gui::set_configs(m_gui_config);
 
     m_gui = std::make_unique< gui_type >();
+
+    prepare_gui_popups(m_graph_iface->get_symbol_table(), gui::popups, *m_gui);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
 }

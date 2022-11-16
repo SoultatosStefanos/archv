@@ -27,15 +27,7 @@ auto popup_holder::size() const -> size_type
     return m_popups.size();
 }
 
-auto popup_holder::insert(id_type id, const popup_type& popup) -> void
-{
-    // NOTE: deliberately not modifying the state of the map if popup is managed
-    m_popups.insert(std::make_pair(id, popup));
-    assert(contains(id));
-    assert(size() > 0);
-}
-
-auto popup_holder::insert(id_type id, popup_type&& popup) -> void
+auto popup_holder::insert(id_type id, popup_type popup) -> void
 {
     // NOTE: deliberately not modifying the state of the map if popup is managed
     m_popups.insert(std::make_pair(id, std::move(popup)));

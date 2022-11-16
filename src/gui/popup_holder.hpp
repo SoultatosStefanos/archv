@@ -29,8 +29,7 @@ public:
     auto contains(id_type id) const -> bool;
     auto size() const -> size_type;
 
-    auto insert(id_type id, const popup_type& popup) -> void;
-    auto insert(id_type id, popup_type&& popup) -> void;
+    auto insert(id_type id, popup_type popup) -> void;
     auto remove(id_type id) -> void;
     auto clear() -> void;
 

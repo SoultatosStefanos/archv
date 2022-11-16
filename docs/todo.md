@@ -738,4 +738,11 @@
 
 	+ [x] Vertex effect on hover
 
-	+ [ ] GUI configs
+
+# 16 / 11 / 2022
+
+	+ [x] Poc popup code inspection
+
+	+ [ ] Popup code inspection with all info
+
+	+ [ ] Menu bar num vertices/edges

@@ -5,8 +5,8 @@
 namespace gui
 {
 
-structure_popup::structure_popup(structure_info s, point pos)
-: m_structure { std::move(s) }, m_pos { std::move(pos) }
+structure_popup::structure_popup(structure_info s)
+: m_structure { std::move(s) }
 {
 }
 
@@ -22,28 +22,19 @@ namespace
 // TODO
 auto structure_popup::render() const -> void
 {
-    ImGui::SetNextWindowPos({ pos().x, pos().y });
-    const ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
-    if (ImGui::BeginPopupModal(id(structure()), NULL, flags))
-    {
-        ImGui::Text("AAAAAAAA\n\n");
-        ImGui::EndPopup();
-    }
-}
+    if (!visible())
+        return;
 
-auto structure_popup::visible() const -> bool
-{
-    return ImGui::IsPopupOpen(id(structure()));
-}
+    ImGui::SetNextWindowPos({ pos().x, pos().y }, ImGuiCond_Appearing);
 
-auto structure_popup::show() -> void
-{
-    ImGui::OpenPopup(id(structure()));
-}
+    ImGui::Begin(
+        id(structure()),
+        &m_visible,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
 
-auto structure_popup::hide() -> void
-{
-    ImGui::CloseCurrentPopup();
+    ImGui::Text("%s", id(structure()));
+
+    ImGui::End();
 }
 
 } // namespace gui

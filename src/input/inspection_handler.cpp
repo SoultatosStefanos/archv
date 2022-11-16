@@ -28,12 +28,12 @@ namespace
 {
     // Returns a ray in world coordinates from a mouse event.
     template < typename MouseEvent >
-    requires std::same_as< MouseEvent, OgreBites::MouseMotionEvent > || std::
-        same_as< MouseEvent, OgreBites::MouseButtonEvent >
-    inline auto mouse_ray(
-        const inspection_handler::render_window_type& win,
-        const inspection_handler::camera_type& cam,
-        const MouseEvent& e) -> Ogre::Ray
+    requires std::same_as< MouseEvent, OgreBites::MouseMotionEvent >
+        || std::same_as< MouseEvent, OgreBites::MouseButtonEvent >
+        inline auto mouse_ray(
+                 const inspection_handler::render_window_type& win,
+                 const inspection_handler::camera_type& cam,
+                 const MouseEvent& e) -> Ogre::Ray
     {
         using Ogre::Real;
         return cam.getCameraToViewportRay(
@@ -43,9 +43,9 @@ namespace
 
     // Convertes a mouse event position into a gui position.
     template < typename MouseEvent >
-    requires std::same_as< MouseEvent, OgreBites::MouseMotionEvent > || std::
-        same_as< MouseEvent, OgreBites::MouseButtonEvent >
-    inline auto gui_pos(const MouseEvent& e) -> gui::point
+    requires std::same_as< MouseEvent, OgreBites::MouseMotionEvent >
+        || std::same_as< MouseEvent, OgreBites::MouseButtonEvent >
+        inline auto gui_pos(const MouseEvent& e) -> gui::point
     {
         using coord = gui::point::coord;
         return { static_cast< coord >(e.x), static_cast< coord >(e.y) };
@@ -93,9 +93,8 @@ auto inspection_handler::mousePressed(const OgreBites::MouseButtonEvent& e)
     {
         BOOST_LOG_TRIVIAL(debug) << "colliding with: " << *collision;
         auto& popup = popups().get(*collision);
-        popup.show();
         popup.pos() = gui_pos(e);
-        overlays().submit(&popup); // Queued to be rendered now.
+        popup.show();
     }
 
     return true;

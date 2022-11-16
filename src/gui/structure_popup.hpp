@@ -27,18 +27,19 @@ class structure_popup
 {
 public:
     structure_popup() = default;
-    structure_popup(structure_info s, point pos);
+    explicit structure_popup(structure_info s);
 
     auto structure() const -> const structure_info& { return m_structure; }
     auto pos() const -> const point& { return m_pos; }
     auto pos() -> point& { return m_pos; }
 
     auto render() const -> void;
-    auto visible() const -> bool;
-    auto show() -> void;
-    auto hide() -> void;
+    auto visible() const -> bool { return m_visible; }
+    auto show() -> void { m_visible = true; }
+    auto hide() -> void { m_visible = false; }
 
 private:
+    mutable bool m_visible { false };
     structure_info m_structure;
     point m_pos;
 };
