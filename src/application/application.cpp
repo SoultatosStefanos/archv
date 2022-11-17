@@ -53,7 +53,7 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
     base::frameStarted(e);
     Ogre::ImGuiOverlay::NewFrame();
-    // ImGui::ShowDemoWindow();
+  //  ImGui::ShowDemoWindow();
     gui::render(*m_gui);
 
     return true;
@@ -309,8 +309,8 @@ namespace // gui setup
         const auto fas = fonts + FONT_ICON_FILE_NAME_FAS;
         const auto far = fonts + FONT_ICON_FILE_NAME_FAR;
 
-        io.Fonts->AddFontFromFileTTF(fas.c_str(), 12.0f, &config, ranges);
-        io.Fonts->AddFontFromFileTTF(far.c_str(), 12.0f, &config, ranges);
+        io.Fonts->AddFontFromFileTTF(fas.c_str(), 14.0f, &config, ranges);
+        io.Fonts->AddFontFromFileTTF(far.c_str(), 14.0f, &config, ranges);
     }
 
     // Named by Ogre Overlay component.

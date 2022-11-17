@@ -1,6 +1,7 @@
 #include "ui_adaptor.hpp"
 
 #include "gui_config.hpp"
+#include "misc/source.hpp"
 #include "resources.hpp"
 
 #include <OGRE/Overlay/imgui.h>
@@ -65,6 +66,12 @@ auto draw_configs(const gui_config& cfg) -> void
     style.WindowBorderSize = cfg.window_bordered ? 1.0f : 0.0f;
     style.PopupBorderSize = cfg.popup_bordered ? 1.0f : 0.0f;
     style.FrameBorderSize = cfg.frame_bordered ? 1.0f : 0.0f;
+
+    // TODO Get from config
+    style.FramePadding.y = 4;
+    style.DisplaySafeAreaPadding.y = 10;
+    style.WindowTitleAlign.x = 0.04;
+    style.ItemSpacing.x = 11;
 }
 
 } // namespace gui

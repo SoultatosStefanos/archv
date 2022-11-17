@@ -762,6 +762,6 @@
 
 # 17 / 11 / 2022
 
-	+ [ ] GUI Configs
+	+ [n/y] GUI Configs
 
 	+ [ ] Layered label propagation
