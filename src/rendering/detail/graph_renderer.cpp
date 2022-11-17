@@ -484,7 +484,12 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
 
     auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
     assert(e);
-    e->setMaterialName(m_cfg->vertex_material);
+
+    if (v.cluster_col)
+        e->setMaterial(shaded_color_material(*v.cluster_col));
+    else
+        e->setMaterialName(m_cfg->vertex_material);
+
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 }
@@ -929,8 +934,12 @@ auto edge_renderer::render_model_pos(const edge_type& e, const path_type& path)
 
     auto* entity = m_scene.createEntity(e.name, e.name);
     assert(entity);
-    if (!e.cluster_col) // omit material draw if rendering clusters
+
+    if (!e.cluster_col)
         entity->setMaterialName(m_cfg->edge_material);
+    else
+        entity->setMaterial(shaded_color_material(*e.cluster_col));
+
     node->attachObject(entity);
 
     assert(m_scene.hasSceneNode(e.name));
