@@ -235,7 +235,7 @@ particle_system Degrees/BigRingRed
         force_application add
     }
 }
-particle_system Degrees/Swarm
+particle_system Degrees/SwarmLight
 {
 	quota	3000
 	material	Misc/Flare
@@ -254,10 +254,158 @@ particle_system Degrees/Swarm
 		direction	0 1 0
 		emission_rate	50
 		position	0 0 0
-		velocity	40
-		velocity_min	50
-		velocity_max	1
-		time_to_live	6
+		velocity	20
+		time_to_live	3.4
+		duration	0
+		repeat_delay	0
+		width	80
+		height	80
+		depth	80
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 -50 0
+		plane_normal	0 1 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 50 0
+		plane_normal	0 -1 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	-50 0 0
+		plane_normal	1 0 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 0 50
+		plane_normal	0 0 -1
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 0 -50
+		plane_normal	0 0 1
+		bounce	1
+	}
+
+	affector DirectionRandomiser
+	{
+		randomness	60
+	}
+}
+particle_system Degrees/SwarmMedium
+{
+	quota	3000
+	material	Misc/Flare
+	particle_width	2.6
+	particle_height	2.6
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	false
+	billboard_type	oriented_self
+
+	emitter Box
+	{
+		angle	180
+		colour	1 1 1 1
+		direction	0 1 0
+		emission_rate	70
+		position	0 0 0
+		velocity	20
+		time_to_live	3.4
+		duration	0
+		repeat_delay	0
+		width	80
+		height	80
+		depth	80
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 -50 0
+		plane_normal	0 1 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 50 0
+		plane_normal	0 -1 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	-50 0 0
+		plane_normal	1 0 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 0 50
+		plane_normal	0 0 -1
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 0 -50
+		plane_normal	0 0 1
+		bounce	1
+	}
+
+	affector DirectionRandomiser
+	{
+		randomness	60
+	}
+}
+particle_system Degrees/SwarmHeavy
+{
+	quota	3000
+	material	Misc/Flare
+	particle_width	2.6
+	particle_height	2.6
+	cull_each	true
+	renderer	billboard
+	sorted	true
+	local_space	false
+	billboard_type	oriented_self
+
+	emitter Box
+	{
+		angle	180
+		colour	1 1 1 1
+		direction	0 1 0
+		emission_rate	100
+		position	0 0 0
+		velocity	20
+		time_to_live	3.4
 		duration	0
 		repeat_delay	0
 		width	80
