@@ -66,10 +66,11 @@ auto louvain_method_clustering(
     using cluster_type = typename cluster_map_traits::value_type;
     using community_type = cluster_type;
 
-    using network = detail::
-        network_properties< vertex_type, weight_type, community_type >;
+    namespace impl = louvain_detail;
+    using network
+        = impl::network_properties< vertex_type, weight_type, community_type >;
     using dendrogram
-        = detail::dendrogram< typename network::vertex_community_storage_type >;
+        = impl::dendrogram< typename network::vertex_community_storage_type >;
 
     static_assert(std::is_arithmetic_v< vertex_type >);
     static_assert(std::is_arithmetic_v< community_type >);
@@ -82,45 +83,45 @@ auto louvain_method_clustering(
     // Early exit.
     if (boost::graph::has_no_edges(g))
     {
-        detail::cluster_in_isolation(g, vertex_cluster);
+        impl::cluster_in_isolation(g, vertex_cluster);
         return;
     }
 
     dendrogram partitions;
     Modularity curr_mod { 0 };
 
-    auto status = detail::network_status< network >(g, edge_weight);
+    auto status = impl::network_status< network >(g, edge_weight);
 
-    detail::modularity_optimization(g, status, edge_weight, min, rng);
-    curr_mod = detail::modularity< Modularity >(status);
+    impl::modularity_optimization(g, status, edge_weight, min, rng);
+    curr_mod = impl::modularity< Modularity >(status);
 
-    auto&& lvl1_part = detail::renumber_communities(status.vertex_community);
-    auto curr_sub = detail::community_aggregation(g, edge_weight, lvl1_part);
+    auto&& lvl1_part = impl::renumber_communities(status.vertex_community);
+    auto curr_sub = impl::community_aggregation(g, edge_weight, lvl1_part);
     partitions.push_back(std::move(lvl1_part));
 
     // Keeps partitioning until no significant modularity increase occurs.
     do
     {
-        auto new_status = detail::network_status< network >(
+        auto new_status = impl::network_status< network >(
             curr_sub.g, boost::make_assoc_property_map(curr_sub.edge_weight));
 
-        detail::modularity_optimization(
+        impl::modularity_optimization(
             curr_sub.g,
             new_status,
             boost::make_assoc_property_map(curr_sub.edge_weight),
             min,
             rng);
 
-        const auto new_mod = detail::modularity< Modularity >(new_status);
+        const auto new_mod = impl::modularity< Modularity >(new_status);
 
         if (new_mod - curr_mod < min)
             break;
 
         curr_mod = new_mod;
 
-        auto&& part = detail::renumber_communities(new_status.vertex_community);
+        auto&& part = impl::renumber_communities(new_status.vertex_community);
 
-        curr_sub = detail::community_aggregation(
+        curr_sub = impl::community_aggregation(
             curr_sub.g,
             boost::make_assoc_property_map(curr_sub.edge_weight),
             part);
@@ -129,7 +130,7 @@ auto louvain_method_clustering(
 
     } while (true);
 
-    detail::cluster_from_dendrogram(g, vertex_cluster, partitions);
+    impl::cluster_from_dendrogram(g, vertex_cluster, partitions);
 }
 
 } // namespace clustering

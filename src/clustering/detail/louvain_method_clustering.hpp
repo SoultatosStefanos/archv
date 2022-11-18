@@ -27,7 +27,7 @@
 // NOTE: Currently only taking into account out edges.
 // Must we dispatch on bidirectional graphs?
 
-namespace clustering::detail
+namespace clustering::louvain_detail
 {
 
 /***********************************************************
@@ -502,8 +502,8 @@ auto community_aggregation(
     using weight_storage_type = std::unordered_map<
         edge_type,
         weight_type,
-        edge_vertices_hash,
-        edge_vertices_equal_to >;
+        detail::edge_vertices_hash,
+        detail::edge_vertices_equal_to >;
 
     using std::ranges::views::values;
 
@@ -609,6 +609,6 @@ auto cluster_from_dendrogram(
         boost::put(vertex_cluster, u, community(partitions, u));
 }
 
-} // namespace clustering::detail
+} // namespace clustering::louvain_detail
 
 #endif // CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP

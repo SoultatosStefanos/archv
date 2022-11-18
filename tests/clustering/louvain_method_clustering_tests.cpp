@@ -8,6 +8,8 @@ using namespace testing;
 namespace
 {
 
+namespace impl = clustering::louvain_detail;
+
 using graph = boost::
     adjacency_list< boost::vecS, boost::vecS, boost::undirectedS, int, int >;
 
@@ -25,7 +27,7 @@ TEST(
     boost::add_vertex(0, g);
     const auto v1 = boost::add_vertex(1, g);
 
-    ASSERT_EQ(clustering::detail::weighted_degree(v1, g, weight_map()), 0);
+    ASSERT_EQ(impl::weighted_degree(v1, g, weight_map()), 0);
 }
 
 TEST(
@@ -37,8 +39,8 @@ TEST(
     const auto v1 = boost::add_vertex(1, g);
     boost::add_edge(v0, v1, 3, g);
 
-    ASSERT_EQ(clustering::detail::weighted_degree(v1, g, weight_map()), 3);
-    ASSERT_EQ(clustering::detail::weighted_degree(v0, g, weight_map()), 3);
+    ASSERT_EQ(impl::weighted_degree(v1, g, weight_map()), 3);
+    ASSERT_EQ(impl::weighted_degree(v0, g, weight_map()), 3);
 }
 
 TEST(
@@ -54,8 +56,8 @@ TEST(
     boost::add_edge(v0, v1, 2, g);
     boost::add_edge(v0, v1, 2, g);
 
-    ASSERT_EQ(clustering::detail::weighted_degree(v1, g, weight_map()), 10);
-    ASSERT_EQ(clustering::detail::weighted_degree(v0, g, weight_map()), 10);
+    ASSERT_EQ(impl::weighted_degree(v1, g, weight_map()), 10);
+    ASSERT_EQ(impl::weighted_degree(v0, g, weight_map()), 10);
 }
 
 TEST(
@@ -66,14 +68,14 @@ TEST(
     const auto v0 = boost::add_vertex(0, g);
     boost::add_edge(v0, v0, 5, g);
 
-    ASSERT_EQ(clustering::detail::weighted_degree(v0, g, weight_map()), 10);
+    ASSERT_EQ(impl::weighted_degree(v0, g, weight_map()), 10);
 }
 
 TEST(louvain_method_details_tests, weight_sum_of_graph_with_0_edges_is_0)
 {
     auto g = graph();
 
-    ASSERT_EQ(clustering::detail::weight_sum(g, weight_map()), 0);
+    ASSERT_EQ(impl::weight_sum(g, weight_map()), 0);
 }
 
 TEST(
@@ -89,25 +91,25 @@ TEST(
     boost::add_edge(v0, v1, 2, g);
     boost::add_edge(v0, v1, 2, g);
 
-    ASSERT_EQ(clustering::detail::weight_sum(g, weight_map()), 10);
+    ASSERT_EQ(impl::weight_sum(g, weight_map()), 10);
 }
 
 TEST(
     louvain_method_details_tests, community_advance_increments_community_by_one)
 {
     cluster i = 0;
-    clustering::detail::community_advance(i);
+    impl::community_advance(i);
     EXPECT_EQ(i, 1);
 }
 
-using network = clustering::detail::
-    network_properties< graph::vertex_descriptor, int, cluster >;
+using network
+    = impl::network_properties< graph::vertex_descriptor, int, cluster >;
 
 TEST(
     louvain_method_details_tests,
     network_status_of_empty_graphleaves_as_with_empty_status)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     auto status = network();
@@ -119,7 +121,7 @@ TEST(
     louvain_method_details_tests,
     network_status_of_graph_puts_each_vertex_into_a_different_community)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -145,7 +147,7 @@ TEST(
     louvain_method_details_tests,
     network_status_of_graph_maps_each_community_with_each_vertex_weighted_degree)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -167,7 +169,7 @@ TEST(
     louvain_method_details_tests,
     network_status_of_graph_maps_each_vertex_with_its_weighted_degree)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -190,7 +192,7 @@ TEST(
     louvain_method_details_tests,
     network_status_of_graph_maps_each_vertex_with_its_loop_weight)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -213,7 +215,7 @@ TEST(
     louvain_method_details_tests,
     update_network_status_of_graph_maps_each_community_with_each_vertex_loop_weight)
 {
-    using clustering::detail::network_status;
+    using impl::network_status;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -236,7 +238,7 @@ TEST(
     louvain_method_details_tests,
     neighbor_communities_of_a_node_maps_each_neighbor_community_with_the_weighted_degree_of_the_links_of_the_node_towards_the_community)
 {
-    using clustering::detail::neighbor_communities;
+    using impl::neighbor_communities;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(0, g);
@@ -260,7 +262,7 @@ TEST(
     louvain_method_details_tests,
     renumber_empty_communities_will_produce_empty_communities)
 {
-    using clustering::detail::renumber_communities;
+    using impl::renumber_communities;
 
     auto g = graph();
     auto status = network();
@@ -274,7 +276,7 @@ TEST(
     louvain_method_details_tests,
     renumber_communities_will_produce_ordered_communities)
 {
-    using clustering::detail::renumber_communities;
+    using impl::renumber_communities;
 
     auto g = graph();
     const auto v0 = boost::add_vertex(30, g);
@@ -299,14 +301,14 @@ TEST(
 
 TEST(louvain_method_details_tests, modularity_of_empty_network_is_zero)
 {
-    using clustering::detail::modularity;
+    using impl::modularity;
 
     ASSERT_EQ(modularity< double >(network()), 0);
 }
 
 TEST(louvain_method_details_tests, modularity_of_c)
 {
-    using clustering::detail::modularity;
+    using impl::modularity;
 
     const double expected = -0.5;
     network net;
@@ -321,7 +323,7 @@ TEST(louvain_method_details_tests, modularity_of_c)
 
 TEST(louvain_method_details_tests, modularity_of_network_with_one_community)
 {
-    using clustering::detail::modularity;
+    using impl::modularity;
 
     const double expected = -0.5;
     network net;
@@ -337,7 +339,7 @@ TEST(louvain_method_details_tests, modularity_of_network_with_one_community)
 
 TEST(louvain_method_details_tests, modularity_of_network_with_two_communities)
 {
-    using clustering::detail::modularity;
+    using impl::modularity;
 
     const double expected = -1;
     network net;
@@ -358,9 +360,9 @@ TEST(
     louvain_method_details_tests,
     delta_modularity_of_communities_with_same_modularity_is_zero)
 {
-    using clustering::detail::delta_modularity;
-    using clustering::detail::modularity;
-    using clustering::detail::neighbor_communities;
+    using impl::delta_modularity;
+    using impl::modularity;
+    using impl::neighbor_communities;
 
     graph g;
     const auto v0 = boost::add_vertex(g);
@@ -387,7 +389,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_yields_empty_graph_given_empty)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -404,7 +406,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_with_two_vertices_in_same_partition_and_no_edges_results_to_single_vertex_induced)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -424,7 +426,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_with_two_vertices_in_same_partition_and_one_edge_results_to_single_vertex_and_edge_induced)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -450,7 +452,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_wraps_edges_within_community_to_one_self_loop_with_combined_weight)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -478,7 +480,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_with_two_vertices_in_different_partition_results_to_two_vertices_induced)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -498,7 +500,7 @@ TEST(
     louvain_method_details_tests,
     community_aggregation_with_two_communities_inter_community_edges_and_self_loops)
 {
-    using clustering::detail::community_aggregation;
+    using impl::community_aggregation;
     using vertex_community_storage
         = std::unordered_map< graph::vertex_descriptor, cluster >;
 
@@ -545,8 +547,8 @@ TEST(
 {
     using vertex = graph::vertex_descriptor;
     using vertex_community = std::unordered_map< vertex, cluster >;
-    using dendrogram = clustering::detail::dendrogram< vertex_community >;
-    using clustering::detail::community;
+    using dendrogram = impl::dendrogram< vertex_community >;
+    using impl::community;
 
     dendrogram parts { { { 0, 1 }, { 1, 4 }, { 5, 7 } } };
 
@@ -561,8 +563,8 @@ TEST(
 {
     using vertex = graph::vertex_descriptor;
     using vertex_community = std::unordered_map< vertex, cluster >;
-    using dendrogram = clustering::detail::dendrogram< vertex_community >;
-    using clustering::detail::community;
+    using dendrogram = impl::dendrogram< vertex_community >;
+    using impl::community;
 
     dendrogram parts { { { 0, 1 }, { 1, 4 } }, { { 1, 2 }, { 4, 5 } } };
 
@@ -576,8 +578,8 @@ TEST(
 {
     using vertex = graph::vertex_descriptor;
     using vertex_community = std::unordered_map< vertex, cluster >;
-    using dendrogram = clustering::detail::dendrogram< vertex_community >;
-    using clustering::detail::community;
+    using dendrogram = impl::dendrogram< vertex_community >;
+    using impl::community;
 
     dendrogram parts { { { 0, 1 }, { 1, 4 } },
                        { { 1, 2 }, { 4, 5 } },
