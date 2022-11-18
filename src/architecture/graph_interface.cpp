@@ -5,7 +5,7 @@ namespace architecture
 
 graph_interface::graph_interface(
     symbol_table st,
-    graph g,
+    graph&& g,
     weights_config_type weights_cfg,
     layout_config_type layout_cfg,
     scaling_config_type scaling_cfg,
