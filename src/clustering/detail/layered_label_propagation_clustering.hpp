@@ -15,6 +15,9 @@
 #include <unordered_map>
 #include <vector>
 
+// NOTE: Based on .js implementation from:
+// https://github.com/warcraft12321/Thesis
+
 namespace clustering::llp_detail
 {
 
@@ -115,7 +118,6 @@ auto network_status(const Graph& g, WeightMap edge_weight) -> NetworkProperties
 template < typename VertexCommunityStorage >
 auto community_num_members(const VertexCommunityStorage& vertex_community)
 {
-    using vertex_type = typename VertexCommunityStorage::key_type;
     using community_type = typename VertexCommunityStorage::mapped_type;
     using size_type = typename VertexCommunityStorage::size_type;
     using result_type = std::unordered_map< community_type, size_type >;
@@ -255,7 +257,7 @@ inline auto dominant_community(
 {
     const auto jcoms = neighbor_communities(u, g, status, edge_weight, gamma);
     const auto max_coms = make_vector(max_value_keys(jcoms));
-    return max_coms.at(gen(0, max_coms.size()));
+    return max_coms.at(gen(0, max_coms.size() - 1));
 }
 
 } // namespace clustering::llp_detail
