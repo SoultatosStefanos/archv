@@ -38,13 +38,13 @@ template <
     typename WeightMap,
     typename ClusterMap,
     std::floating_point Modularity = float,
-    typename UGenerator = std::mt19937 >
+    typename RNG = std::mt19937 >
 auto louvain_method_clustering(
     const Graph& g,
     WeightMap edge_weight,
     ClusterMap vertex_cluster,
     Modularity min = 0.1,
-    UGenerator& rng = misc::rng()) -> void
+    RNG& rng = misc::rng()) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 

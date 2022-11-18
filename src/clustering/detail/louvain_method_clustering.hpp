@@ -90,14 +90,6 @@ inline auto make_vector(InputIter first, InputIter last)
     return std::vector< value_type > { first, last };
 }
 
-template < typename IteratorPair >
-requires std::input_iterator< typename IteratorPair::first_type >
-    && std::input_iterator< typename IteratorPair::second_type >
-inline auto subrange(IteratorPair pair)
-{
-    return std::ranges::subrange(pair.first, pair.second);
-}
-
 /***********************************************************
  * Graph Utilities                                         *
  ***********************************************************/
@@ -112,7 +104,7 @@ inline auto weighted_degree(
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     return misc::accumulate(
-        subrange(boost::out_edges(u, g)),
+        misc::subrange(boost::out_edges(u, g)),
         weight_type(0),
         [edge_weight](auto sum, auto e)
         { return sum + boost::get(edge_weight, e); });
@@ -125,7 +117,7 @@ inline auto weight_sum(const Graph& g, WeightMap edge_weight)
     using weight_map_traits = boost::property_traits< WeightMap >;
     using weight_type = typename weight_map_traits::value_type;
     return misc::accumulate(
-        subrange(boost::edges(g)),
+        misc::subrange(boost::edges(g)),
         weight_type(0),
         [edge_weight](auto sum, auto e)
         { return sum + boost::get(edge_weight, e); });
@@ -423,13 +415,13 @@ template <
     typename NetworkProperties,
     typename WeightMap,
     std::floating_point Modularity = float,
-    typename UGenerator = std::mt19937 >
+    typename RNG = std::mt19937 >
 auto modularity_optimization(
     const Graph& g,
     NetworkProperties& status,
     WeightMap edge_weight,
     Modularity min = 0.1,
-    UGenerator& rng = misc::rng()) -> void
+    RNG& rng = misc::rng()) -> void
 {
     auto do_loop = true;
     auto cur_mod = modularity< Modularity >(status);
@@ -441,7 +433,7 @@ auto modularity_optimization(
         do_loop = false;
 
         // Make a random vertex ordering.
-        auto vertices = make_vector(subrange(boost::vertices(g)));
+        auto vertices = make_vector(misc::subrange(boost::vertices(g)));
         std::shuffle(std::begin(vertices), std::end(vertices), rng);
 
         // Begin one level partition
@@ -530,7 +522,7 @@ auto community_aggregation(
         const auto com2 = get(partition, boost::target(e, g));
 
 #ifndef NDEBUG
-        const auto new_verts = subrange(boost::vertices(new_g));
+        const auto new_verts = misc::subrange(boost::vertices(new_g));
         assert(std::ranges::find(new_verts, com1) != std::cend(new_verts));
         assert(std::ranges::find(new_verts, com2) != std::cend(new_verts));
 #endif

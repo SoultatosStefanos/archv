@@ -9,11 +9,25 @@
 #include <algorithm>
 #include <cassert>
 #include <concepts>
+#include <iterator>
 #include <numeric>
 #include <ranges>
 
 namespace misc
 {
+
+/***********************************************************
+ * Ranges                                                  *
+ ***********************************************************/
+
+// Returns a range from a pair of input iterators.
+template < typename IteratorPair >
+requires std::input_iterator< typename IteratorPair::first_type > && std::
+    input_iterator< typename IteratorPair::second_type >
+inline auto subrange(IteratorPair pair)
+{
+    return std::ranges::subrange(pair.first, pair.second);
+}
 
 /***********************************************************
  * Containers                                              *
