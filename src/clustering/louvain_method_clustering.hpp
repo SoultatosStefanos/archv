@@ -67,6 +67,7 @@ auto louvain_method_clustering(
     using community_type = cluster_type;
 
     namespace impl = louvain_detail;
+
     using network
         = impl::network_properties< vertex_type, weight_type, community_type >;
     using dendrogram

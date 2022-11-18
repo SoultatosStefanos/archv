@@ -12,6 +12,7 @@
 #include "k_spanning_tree_clusterer.hpp"
 #include "k_spanning_tree_clustering.hpp"
 #include "kruskal_min_spanning_tree.hpp"
+#include "layered_label_propagation_clustering.hpp"
 #include "louvain_method_clusterer.hpp"
 #include "louvain_method_clustering.hpp"
 #include "maximal_clique_enumeration_clusterer.hpp"
