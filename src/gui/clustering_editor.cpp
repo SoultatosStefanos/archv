@@ -53,6 +53,18 @@ auto clustering_editor::min_modularity() const -> modularity_type
     return m_min_mod();
 }
 
+auto clustering_editor::llp_gamma() const -> gamma_type
+{
+    assert(m_llp_gamma);
+    return m_llp_gamma();
+}
+
+auto clustering_editor::llp_steps() const -> steps_type
+{
+    assert(m_llp_steps);
+    return m_llp_steps();
+}
+
 auto clustering_editor::set_clusterer(clusterer_accessor f) -> void
 {
     assert(f);
@@ -83,6 +95,18 @@ auto clustering_editor::set_min_modularity(modularity_accessor f) -> void
     m_min_mod = std::move(f);
 }
 
+auto clustering_editor::set_llp_gamma(gamma_accessor f) -> void
+{
+    assert(f);
+    m_llp_gamma = std::move(f);
+}
+
+auto clustering_editor::set_llp_steps(steps_accessor f) -> void
+{
+    assert(f);
+    m_llp_steps = std::move(f);
+}
+
 auto clustering_editor::connect_to_clusterer(const clustererer_slot& f)
     -> connection
 {
@@ -110,6 +134,16 @@ auto clustering_editor::connect_to_min_modularity(const modularity_slot& f)
     -> connection
 {
     return m_min_mod_sig.connect(f);
+}
+
+auto clustering_editor::connect_to_llp_gamma(const gamma_slot& f) -> connection
+{
+    return m_llp_gamma_sig.connect(f);
+}
+
+auto clustering_editor::connect_to_llp_steps(const steps_slot& f) -> connection
+{
+    return m_llp_steps_sig.connect(f);
 }
 
 auto clustering_editor::connect_to_cluster(const cluster_slot& f) -> connection
@@ -150,6 +184,16 @@ auto clustering_editor::emit_snn_thres(snn_thres_type t) const -> void
 auto clustering_editor::emit_min_modularity(modularity_type q) const -> void
 {
     m_min_mod_sig(q);
+}
+
+auto clustering_editor::emit_llp_gamma(gamma_type g) const -> void
+{
+    m_llp_gamma_sig(g);
+}
+
+auto clustering_editor::emit_llp_steps(steps_type s) const -> void
+{
+    m_llp_steps_sig(s);
 }
 
 auto clustering_editor::emit_cluster() const -> void
@@ -260,6 +304,11 @@ auto clustering_editor::render_settings_for_nerds() const -> void
         spaced_separator();
         spaced_text("Louvain Method");
         render_min_modularity_editor();
+        spaced_separator();
+        spaced_text("Layered Label Propagation");
+        render_llp_gamma_editor();
+        render_llp_steps_editor();
+        spaced_separator();
 
         ImGui::EndPopup();
     }
@@ -316,6 +365,33 @@ auto clustering_editor::render_min_modularity_editor() const -> void
     ImGui::SameLine();
     detail::render_help_marker("Louvain Method minimum modularity increase "
                                "required at each modularity optimization (dq)");
+}
+
+auto clustering_editor::render_llp_gamma_editor() const -> void
+{
+    auto gamma = llp_gamma();
+
+    if (ImGui::InputFloat(
+            "Gamma##clustering",
+            &gamma,
+            1.0f,
+            100.0f,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_llp_gamma(gamma);
+}
+
+auto clustering_editor::render_llp_steps_editor() const -> void
+{
+    auto steps = llp_steps();
+
+    if (ImGui::InputInt(
+            "Steps##clustering",
+            &steps,
+            1,
+            100,
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_llp_steps(steps);
 }
 
 } // namespace gui

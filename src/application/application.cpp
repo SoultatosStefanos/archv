@@ -712,6 +712,12 @@ auto application::prepare_clustering_editor() -> void
     frontend.set_min_modularity(
         [this, &backend]() { return clustering::get_min_modularity(backend); });
 
+    frontend.set_llp_gamma([this, &backend]()
+                           { return clustering::get_llp_gamma(backend); });
+
+    frontend.set_llp_steps([this, &backend]()
+                           { return clustering::get_llp_steps(backend); });
+
     BOOST_LOG_TRIVIAL(debug) << "prepared clustering editor";
 }
 
@@ -1169,6 +1175,20 @@ auto application::connect_clustering_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering min q " << q;
             commands::update_clustering_min_modularity(*m_cmds, backend, q);
+        });
+
+    editor.connect_to_llp_gamma(
+        [this, &backend](auto g)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering llp gamma " << g;
+            // TODO
+        });
+
+    editor.connect_to_llp_steps(
+        [this, &backend](auto s)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering llp steps " << s;
+            // TODO
         });
 
     editor.connect_to_restore(
