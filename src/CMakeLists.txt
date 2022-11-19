@@ -7,6 +7,7 @@ set(SUBDIRECTORIES
 	input
 	layout
 	misc
+	presentation
 	rendering
 	scaling
 	ui
