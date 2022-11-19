@@ -139,6 +139,12 @@ using mock_snn_thres_slot_t
 using mock_modularity_slot_t
     = NiceMock< MockFunction< void(typename backend_t::modularity_type) > >;
 
+using mock_gamma_slot_t
+    = NiceMock< MockFunction< void(typename backend_t::gamma_type) > >;
+
+using mock_steps_slot_t
+    = NiceMock< MockFunction< void(typename backend_t::steps_type) > >;
+
 class given_a_clustering_backend : public Test
 {
 protected:
@@ -146,12 +152,11 @@ protected:
         = clustering::k_spanning_tree_clusterer_id;
 
     static constexpr auto defualt_mst_finder = clustering::prim_mst_id;
-
     static constexpr auto default_k = 3;
-
     static constexpr auto default_snn_threshold = 3;
-
     static constexpr auto default_min_q = 0.5f;
+    static constexpr auto default_llp_gamma = 0.0f;
+    static constexpr auto default_llp_steps = 1;
 
     static constexpr auto weight = 10;
 
@@ -165,6 +170,8 @@ protected:
     mock_k_slot_t k_slot;
     mock_snn_thres_slot_t snn_thres_slot;
     mock_modularity_slot_t modularity_slot;
+    mock_gamma_slot_t gamma_slot;
+    mock_steps_slot_t steps_slot;
 
     void SetUp() override
     {
@@ -207,6 +214,11 @@ TEST_F(
 TEST_F(given_a_clustering_backend, initially_given_min_modularity_is_held)
 {
     ASSERT_EQ(clustering::get_min_modularity(*backend), default_min_q);
+}
+
+TEST_F(given_a_clustering_backend, initially_given_llp_gamma_is_held)
+{
+    ASSERT_EQ(clustering::get_llp_gamma(*backend), default_llp_gamma);
 }
 
 TEST_F(
@@ -414,6 +426,50 @@ TEST_F(
     clustering::update_min_modularity(*backend, q);
 }
 
+TEST_F(given_a_clustering_backend, after_updating_the_llp_gamma_new_val_is_held)
+{
+    constexpr auto gamma = 0.5f;
+
+    clustering::update_llp_gamma(*backend, gamma);
+
+    ASSERT_EQ(clustering::get_llp_gamma(*backend), gamma);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_llp_gamma_observers_are_notified)
+{
+    constexpr auto gamma = 0.5f;
+
+    backend->connect_to_llp_gamma(gamma_slot.AsStdFunction());
+
+    EXPECT_CALL(gamma_slot, Call(gamma)).Times(1);
+
+    clustering::update_llp_gamma(*backend, gamma);
+}
+
+TEST_F(given_a_clustering_backend, after_updating_the_llp_steps_new_val_is_held)
+{
+    constexpr auto steps = 0;
+
+    clustering::update_llp_steps(*backend, steps);
+
+    ASSERT_EQ(clustering::get_llp_steps(*backend), steps);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_llp_steps_observers_are_notified)
+{
+    constexpr auto steps = 0;
+
+    backend->connect_to_llp_steps(steps_slot.AsStdFunction());
+
+    EXPECT_CALL(steps_slot, Call(steps)).Times(1);
+
+    clustering::update_llp_steps(*backend, steps);
+}
+
 TEST_F(
     given_a_clustering_backend,
     when_restoring_to_defaults_default_data_are_given_after_querying)
@@ -422,21 +478,29 @@ TEST_F(
     constexpr auto k = 3000;
     constexpr auto snn_thres = 3434;
     constexpr auto q = 0.3f;
+    constexpr auto gamma = 0.34f;
+    constexpr auto steps = 999;
 
     static_assert(id != defualt_mst_finder);
     static_assert(k != default_k);
     static_assert(snn_thres != default_snn_threshold);
     static_assert(q != default_min_q);
+    static_assert(gamma != default_llp_gamma);
+    static_assert(steps != default_llp_steps);
 
     clustering::update_k(*backend, k);
     clustering::update_mst_finder(*backend, id);
     clustering::update_snn_threshold(*backend, snn_thres);
     clustering::update_min_modularity(*backend, q);
+    clustering::update_llp_gamma(*backend, gamma);
+    clustering::update_llp_steps(*backend, steps);
 
     EXPECT_EQ(clustering::get_k(*backend), k);
     EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
     EXPECT_EQ(clustering::get_snn_threshold(*backend), snn_thres);
     EXPECT_EQ(clustering::get_min_modularity(*backend), q);
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), gamma);
+    EXPECT_EQ(clustering::get_llp_steps(*backend), steps);
 
     clustering::restore_defaults(*backend);
 
@@ -445,6 +509,8 @@ TEST_F(
     ASSERT_EQ(clustering::get_k(*backend), default_k);
     ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
     ASSERT_EQ(clustering::get_min_modularity(*backend), default_min_q);
+    ASSERT_EQ(clustering::get_llp_gamma(*backend), default_llp_gamma);
+    ASSERT_EQ(clustering::get_llp_steps(*backend), default_llp_steps);
 }
 
 TEST_F(

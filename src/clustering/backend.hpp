@@ -80,6 +80,8 @@ public:
     using k_type = int;
     using snn_threshold_type = int;
     using modularity_type = float;
+    using gamma_type = float;
+    using steps_type = int;
 
 private:
     using clusters_signal
@@ -92,6 +94,8 @@ private:
     using snn_thres_signal
         = boost::signals2::signal< void(snn_threshold_type) >;
     using modularity_signal = boost::signals2::signal< void(modularity_type) >;
+    using gamma_signal = boost::signals2::signal< void(gamma_type) >;
+    using steps_signal = boost::signals2::signal< void(steps_type) >;
 
 public:
     using clusters_slot = typename clusters_signal::slot_type;
@@ -100,6 +104,8 @@ public:
     using k_slot = typename k_signal::slot_type;
     using snn_thres_slot = typename snn_thres_signal::slot_type;
     using modularity_slot = typename modularity_signal::slot_type;
+    using gamma_slot = typename gamma_signal::slot_type;
+    using steps_slot = typename steps_signal::slot_type;
     using connection = boost::signals2::connection;
 
     backend(
@@ -117,6 +123,8 @@ public:
     auto get_k() const -> k_type;
     auto get_snn_threshold() const -> snn_threshold_type;
     auto get_min_modularity() const -> modularity_type;
+    auto get_llp_gamma() const -> gamma_type;
+    auto get_llp_steps() const -> steps_type;
 
     auto update_clusters() -> void;
     auto update_clusterer(id_type id) -> void;
@@ -124,6 +132,8 @@ public:
     auto update_k(k_type k) -> void;
     auto update_snn_threshold(snn_threshold_type thres) -> void;
     auto update_min_modularity(modularity_type q) -> void;
+    auto update_llp_gamma(gamma_type gamma) -> void;
+    auto update_llp_steps(steps_type steps) -> void;
 
     auto connect_to_clusters(const clusters_slot& f) -> connection;
     auto connect_to_clusterer(const clusterer_slot& f) -> connection;
@@ -131,6 +141,8 @@ public:
     auto connect_to_k(const k_slot& f) -> connection;
     auto connect_to_snn_threshold(const snn_thres_slot& f) -> connection;
     auto connect_to_min_modularity(const modularity_slot& f) -> connection;
+    auto connect_to_llp_gamma(const gamma_slot& f) -> connection;
+    auto connect_to_llp_steps(const steps_slot& f) -> connection;
 
 protected:
     auto set_clusterer(id_type id) -> void;
@@ -138,6 +150,8 @@ protected:
     auto set_k(k_type k) -> void;
     auto set_snn_threshold(snn_threshold_type thres) -> void;
     auto set_min_modularity(modularity_type q) -> void;
+    auto set_llp_gamma(gamma_type gamma) -> void;
+    auto set_llp_steps(steps_type steps) -> void;
 
     auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
@@ -145,6 +159,8 @@ protected:
     auto emit_k() const -> void;
     auto emit_snn_threshold() const -> void;
     auto emit_min_modularity() const -> void;
+    auto emit_llp_gamma() const -> void;
+    auto emit_llp_steps() const -> void;
 
 private:
     using clusterer_builder_type = clusterer_builder< Graph, WeightMap >;
@@ -170,6 +186,8 @@ private:
     k_signal m_k_sig;
     snn_thres_signal m_snn_thres_sig;
     modularity_signal m_min_mod_sig;
+    gamma_signal m_llp_gamma_sig;
+    steps_signal m_llp_steps_sig;
 };
 
 /***********************************************************
@@ -191,6 +209,8 @@ inline backend< Graph, WeightMap >::backend(
     set_snn_threshold(config_data().snn_threshold);
     set_clusterer(config_data().clusterer);
     set_min_modularity(config_data().min_modularity);
+    set_llp_gamma(config_data().llp_gamma);
+    set_llp_steps(config_data().llp_steps);
 }
 
 template < typename Graph, typename WeightMap >
@@ -249,6 +269,18 @@ inline auto backend< Graph, WeightMap >::get_min_modularity() const
     -> modularity_type
 {
     return m_builder.min_modularity();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::get_llp_gamma() const -> gamma_type
+{
+    return m_builder.llp_gamma();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::get_llp_steps() const -> steps_type
+{
+    return m_builder.llp_steps();
 }
 
 template < typename Graph, typename WeightMap >
@@ -325,6 +357,22 @@ backend< Graph, WeightMap >::update_min_modularity(modularity_type q) -> void
 }
 
 template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_llp_gamma(gamma_type gamma)
+    -> void
+{
+    set_llp_gamma(gamma);
+    emit_llp_gamma();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_llp_steps(steps_type steps)
+    -> void
+{
+    set_llp_steps(steps);
+    emit_llp_steps();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto
 backend< Graph, WeightMap >::connect_to_clusters(const clusters_slot& f)
     -> connection
@@ -372,6 +420,22 @@ backend< Graph, WeightMap >::connect_to_min_modularity(const modularity_slot& f)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_llp_gamma(const gamma_slot& f)
+    -> connection
+{
+    return m_llp_gamma_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::connect_to_llp_steps(const steps_slot& f)
+    -> connection
+{
+    return m_llp_steps_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 {
     m_clusterer = m_builder.result(id);
@@ -401,6 +465,18 @@ inline auto backend< Graph, WeightMap >::set_min_modularity(modularity_type q)
     -> void
 {
     m_builder.set_min_modularity(q);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_llp_gamma(gamma_type gamma) -> void
+{
+    m_builder.set_llp_gamma(gamma);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_llp_steps(steps_type steps) -> void
+{
+    m_builder.set_llp_steps(steps);
 }
 
 template < typename Graph, typename WeightMap >
@@ -437,6 +513,18 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::emit_min_modularity() const -> void
 {
     m_min_mod_sig(get_min_modularity());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_llp_gamma() const -> void
+{
+    m_llp_gamma_sig(get_llp_gamma());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_llp_steps() const -> void
+{
+    m_llp_steps_sig(get_llp_steps());
 }
 
 /***********************************************************
@@ -496,6 +584,18 @@ inline auto get_min_modularity(const backend< Graph, WeightMap >& b)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto get_llp_gamma(const backend< Graph, WeightMap >& b)
+{
+    return b.get_llp_gamma();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto get_llp_steps(const backend< Graph, WeightMap >& b)
+{
+    return b.get_llp_steps();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto update_clusters(backend< Graph, WeightMap >& b)
 {
     b.update_clusters();
@@ -542,12 +642,30 @@ inline auto update_min_modularity(
 }
 
 template < typename Graph, typename WeightMap >
+inline auto update_llp_gamma(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::gamma_type gamma)
+{
+    b.update_llp_gamma(gamma);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_llp_steps(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::steps_type steps)
+{
+    b.update_llp_steps(steps);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto restore_defaults(backend< Graph, WeightMap >& b)
 {
     update_k(b, b.config_data().k);
     update_snn_threshold(b, b.config_data().snn_threshold);
     update_mst_finder(b, b.config_data().mst_finder);
     update_min_modularity(b, b.config_data().min_modularity);
+    update_llp_gamma(b, b.config_data().llp_gamma);
+    update_llp_steps(b, b.config_data().llp_steps);
     update_clusterer(b, b.config_data().clusterer);
 }
 
