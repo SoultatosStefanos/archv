@@ -772,3 +772,5 @@
 	+ [x] Layered label propagation plugin
 
 	+ [ ] Layered label propagation details
+
+	+ [ ] Clustering undo/redo

@@ -23,6 +23,8 @@ struct backend_config
     using k_type = int;
     using snn_threshold_type = int;
     using modularity_type = float;
+    using gamma_type = float;
+    using steps_type = int;
 
     ids_type clusterers;
     ids_type mst_finders;
@@ -32,6 +34,8 @@ struct backend_config
     k_type k;
     snn_threshold_type snn_threshold;
     modularity_type min_modularity;
+    gamma_type llp_gamma;
+    steps_type llp_steps;
 
     auto operator==(const backend_config&) const -> bool = default;
     auto operator!=(const backend_config&) const -> bool = default;

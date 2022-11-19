@@ -12,5 +12,7 @@
 	"min-spanning-tree-finder" : "N",
 	"k" : 20,
 	"snn-threshold" : 9,
-	"min-modularity" : 22
+	"min-modularity" : 22,
+	"llp-gamma" : 0.12,
+	"llp-steps" : 3
 }
