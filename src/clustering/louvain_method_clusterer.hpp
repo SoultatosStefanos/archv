@@ -42,9 +42,9 @@ public:
     auto min() const -> modularity_type { return m_min; }
     auto set_min(modularity_type q) -> void { m_min = q; }
 
-    auto id() const -> id_type { return louvain_method_clusterer_id; }
-    auto operator()(const graph_type& g) const -> cluster_map;
-    auto clone() const -> std::unique_ptr< base >;
+    auto id() const -> id_type override { return louvain_method_clusterer_id; }
+    auto operator()(const graph_type& g) const -> cluster_map override;
+    auto clone() const -> std::unique_ptr< base > override;
 
 private:
     weight_map_type m_edge_weight;
