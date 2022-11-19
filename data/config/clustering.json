@@ -5,7 +5,8 @@
 		"Shared Nearest Neighbour",
 		"Strong Components",
 		"Maximal Clique Enumeration",
-		"Louvain Method"
+		"Louvain Method",
+		"Layered Label Propagation"
 	],
 	"min-spanning-tree-finders" : 
 	[

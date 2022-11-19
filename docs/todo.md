@@ -764,4 +764,11 @@
 
 	+ [n/y] GUI Configs
 
-	+ [ ] Layered label propagation
+	+ [x] Layered label propagation
+
+
+# 19 / 11 / 2022
+
+	+ [x] Layered label propagation plugin
+
+	+ [ ] Layered label propagation details
