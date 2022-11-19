@@ -775,6 +775,6 @@
 
 	+ [x] Layered label propagation gui details
 
-	+ [ ] Layered label propagation commands
+	+ [x] Layered label propagation commands
 
 	+ [ ] Clustering undo/redo
