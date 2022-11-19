@@ -53,6 +53,8 @@ public:
     using k_type = typename clustering_backend_type::k_type;
     using snn_thres_type = typename clustering_backend_type::snn_threshold_type;
     using modularity_type = typename clustering_backend_type::modularity_type;
+    using gamma_type = typename clustering_backend_type::gamma_type;
+    using steps_type = typename clustering_backend_type::steps_type;
 
     graph_interface(
         symbol_table st,

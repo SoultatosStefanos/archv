@@ -1181,14 +1181,14 @@ auto application::connect_clustering_presentation() -> void
         [this, &backend](auto g)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering llp gamma " << g;
-            // TODO
+            commands::update_clustering_llp_gamma(*m_cmds, backend, g);
         });
 
     editor.connect_to_llp_steps(
         [this, &backend](auto s)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering llp steps " << s;
-            // TODO
+            commands::update_clustering_llp_steps(*m_cmds, backend, s);
         });
 
     editor.connect_to_restore(

@@ -1467,6 +1467,66 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
+    struct update_clustering_llp_gamma_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using gamma_type = graph_interface::gamma_type;
+
+        backend_type& backend;
+        gamma_type new_g, old_g;
+
+        update_clustering_llp_gamma_cmd(backend_type& b, gamma_type g)
+        : backend { b }, new_g { g }
+        {
+        }
+
+        ~update_clustering_llp_gamma_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_g = clustering::get_llp_gamma(backend);
+            clustering::update_llp_gamma(backend, new_g);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_llp_gamma(backend, old_g);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct update_clustering_llp_steps_cmd : undo_redo::command
+    {
+        using graph_interface = architecture::graph_interface;
+        using backend_type = graph_interface::clustering_backend_type;
+        using steps_type = graph_interface::steps_type;
+
+        backend_type& backend;
+        steps_type new_s, old_s;
+
+        update_clustering_llp_steps_cmd(backend_type& b, steps_type s)
+        : backend { b }, new_s { s }
+        {
+        }
+
+        ~update_clustering_llp_steps_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_s = clustering::get_llp_steps(backend);
+            clustering::update_llp_steps(backend, new_s);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_llp_steps(backend, old_s);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
     struct restore_clustering_cmd : undo_redo::command
     {
         using graph_interface = architecture::graph_interface;
@@ -1545,6 +1605,24 @@ auto update_clustering_min_modularity(
     architecture::graph_interface::modularity_type q) -> void
 {
     cmds.execute(std::make_unique< update_clustering_min_q_cmd >(backend, q));
+}
+
+auto update_clustering_llp_gamma(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::gamma_type gamma) -> void
+{
+    cmds.execute(
+        std::make_unique< update_clustering_llp_gamma_cmd >(backend, gamma));
+}
+
+auto update_clustering_llp_steps(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::steps_type steps) -> void
+{
+    cmds.execute(
+        std::make_unique< update_clustering_llp_steps_cmd >(backend, steps));
 }
 
 auto restore_clustering(

@@ -204,6 +204,16 @@ auto update_clustering_min_modularity(
     architecture::graph_interface::clustering_backend_type& backend,
     architecture::graph_interface::modularity_type q) -> void;
 
+auto update_clustering_llp_gamma(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::gamma_type gamma) -> void;
+
+auto update_clustering_llp_steps(
+    undo_redo::command_history& cmds,
+    architecture::graph_interface::clustering_backend_type& backend,
+    architecture::graph_interface::steps_type steps) -> void;
+
 auto restore_clustering(
     undo_redo::command_history& cmds,
     architecture::graph_interface::clustering_backend_type& backend) -> void;
