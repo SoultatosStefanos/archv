@@ -5,6 +5,7 @@
 #define CLUSTERING_CLUSTERER_BUILDER_HPP
 
 #include "k_spanning_tree_clusterer.hpp"
+#include "layered_label_propagation_clusterer.hpp"
 #include "louvain_method_clusterer.hpp"
 #include "maximal_clique_enumeration_clusterer.hpp"
 #include "plugin.hpp"
@@ -45,6 +46,8 @@ public:
     using mst_finder_type = min_spanning_tree_finder< Graph, WeightMap >;
     using snn_thres_type = int;
     using modularity_type = float;
+    using gamma_type = float;
+    using steps_type = int;
 
     clusterer_builder(const graph_type& g, weight_map_type edge_weight);
 
@@ -54,11 +57,15 @@ public:
     auto k() const -> k_type;
     auto snn_threshold() const -> snn_thres_type;
     auto min_modularity() const -> modularity_type;
+    auto llp_gamma() const -> gamma_type;
+    auto llp_steps() const -> steps_type;
 
     auto set_mst_finder(std::unique_ptr< mst_finder_type > finder) -> self&;
     auto set_k(k_type k) -> self&;
     auto set_snn_threshold(snn_thres_type threshold) -> self&;
     auto set_min_modularity(modularity_type min) -> self&;
+    auto set_llp_gamma(gamma_type gamma) -> self&;
+    auto set_llp_steps(steps_type steps) -> self&;
 
     auto result(id_type id) const -> pointer;
 
@@ -68,6 +75,7 @@ private:
     using strong_components_type = strong_components_clusterer< Graph >;
     using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
     using louvain_method_type = louvain_method_clusterer< Graph, WeightMap >;
+    using llp_type = layered_label_propagation_clusterer< Graph, WeightMap >;
 
     const graph_type& m_g;
     weight_map_type m_edge_weight;
@@ -77,6 +85,7 @@ private:
     strong_components_type m_strong_components;
     max_clique_enum_type m_max_clique_enum;
     louvain_method_type m_louvain_method;
+    llp_type m_llp;
 };
 
 /***********************************************************
@@ -90,6 +99,7 @@ inline clusterer_builder< Graph, WeightMap >::clusterer_builder(
 , m_edge_weight { edge_weight }
 , m_k_spanning_tree { edge_weight }
 , m_louvain_method { edge_weight }
+, m_llp { edge_weight }
 {
 }
 
@@ -118,6 +128,20 @@ inline auto clusterer_builder< Graph, WeightMap >::min_modularity() const
     -> modularity_type
 {
     return m_louvain_method.min();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::llp_gamma() const
+    -> gamma_type
+{
+    return m_llp.gamma();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto clusterer_builder< Graph, WeightMap >::llp_steps() const
+    -> steps_type
+{
+    return m_llp.steps();
 }
 
 template < typename Graph, typename WeightMap >
@@ -153,6 +177,22 @@ clusterer_builder< Graph, WeightMap >::set_min_modularity(modularity_type min)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto
+clusterer_builder< Graph, WeightMap >::set_llp_gamma(gamma_type gamma) -> self&
+{
+    m_llp.set_gamma(gamma);
+    return *this;
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+clusterer_builder< Graph, WeightMap >::set_llp_steps(steps_type steps) -> self&
+{
+    m_llp.set_steps(steps);
+    return *this;
+}
+
+template < typename Graph, typename WeightMap >
 inline auto clusterer_builder< Graph, WeightMap >::result(id_type id) const
     -> pointer
 {
@@ -175,6 +215,10 @@ inline auto clusterer_builder< Graph, WeightMap >::result(id_type id) const
     else if (id == louvain_method_clusterer_id)
     {
         return &m_louvain_method;
+    }
+    else if (id == llp_clusterer_id)
+    {
+        return &m_llp;
     }
     else
     {

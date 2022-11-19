@@ -57,7 +57,7 @@ private:
     weight_map_type m_edge_weight;
     gamma_type m_gamma {};
     steps_type m_steps {};
-}
+};
 
 /***********************************************************
  * Definitions                                             *

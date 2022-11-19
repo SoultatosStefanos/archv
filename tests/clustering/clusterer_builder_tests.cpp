@@ -146,4 +146,27 @@ TEST_F(
     ASSERT_EQ(downcasted.min(), min);
 }
 
+TEST_F(
+    clustering_cluster_builder_tests,
+    given_llp_clusterer_id_returns_appropriate_implementation)
+{
+    using expected_t
+        = clustering::layered_label_propagation_clusterer< graph, weight_map >;
+
+    constexpr auto id = clustering::llp_clusterer_id;
+    constexpr auto gamma = 20.0f;
+    constexpr auto steps = 4;
+    static_assert(clustering::is_clusterer_plugged_in(id));
+
+    const auto clusterer
+        = builder->set_llp_gamma(gamma).set_llp_steps(steps).result(id);
+
+    ASSERT_NE(clusterer, nullptr);
+    EXPECT_EQ(clusterer->id(), id);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
+    const auto& downcasted = static_cast< const expected_t& >(*clusterer);
+    ASSERT_EQ(downcasted.gamma(), gamma);
+    ASSERT_EQ(downcasted.steps(), steps);
+}
+
 } // namespace

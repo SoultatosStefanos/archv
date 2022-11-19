@@ -255,8 +255,6 @@ inline auto dominates(
     Gamma gamma) -> bool
 {
     using std::ranges::views::values;
-    using community_type = typename NetworkProperties::community_type;
-    using community_traits_type = community_traits< community_type >;
 
     const auto jcoms = neighbor_communities(u, g, status, edge_weight, gamma);
     const bool has_no_neighbours = jcoms.empty();
@@ -268,7 +266,7 @@ inline auto dominates(
     else
     {
         const auto com = get(status.vertex_community, u);
-        const auto num_js = get_or(jcoms, com, community_traits_type::nil());
+        const auto num_js = get_or(jcoms, com, 0);
         const auto max_iter = std::ranges::max_element(values(jcoms));
         assert(max_iter != std::cend(values(jcoms)));
         const auto max_num_members = *max_iter;
