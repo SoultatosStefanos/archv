@@ -28,6 +28,7 @@ template <
     std::floating_point Gamma = float,
     typename UGenerator = decltype(misc::urandom< std::size_t >),
     typename RNG = std::mt19937 >
+requires std::invocable< UGenerator, std::size_t, std::size_t >
 auto layered_label_propagation_clustering(
     const Graph& g,
     WeightMap edge_weight,
@@ -63,9 +64,16 @@ auto layered_label_propagation_clustering(
     if (boost::graph::has_no_vertices(g))
         return;
 
+    // Early exit.
+    if (boost::graph::has_no_edges(g))
+    {
+        impl::cluster_in_isolation(g, vertex_cluster);
+        return;
+    }
+
     // Core LLP
 
-    auto net = impl::network_status< network >(g, edge_weight);
+    auto net = impl::network_status< network >(g);
 
     // This cycle is not the one that removes or inserts nodes.
     for (decltype(steps) i = 0; i < steps; ++i)
@@ -85,12 +93,8 @@ auto layered_label_propagation_clustering(
     }
 
     // Cluster from final partition.
-    for (const auto part = impl::renumber_communities(net.vertex_community);
-         auto u : boost::make_iterator_range(boost::vertices(g)))
-    {
-        assert(part.contains(u));
-        boost::put(vertex_cluster, u, part.at(u));
-    }
+    const auto part = impl::renumber_communities(net.vertex_community);
+    impl::cluster_from_partition(g, part, vertex_cluster);
 }
 
 } // namespace clustering

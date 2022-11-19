@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <limits>
 #include <ranges>
@@ -25,6 +26,30 @@ namespace clustering::llp_detail
  * Utilities                                               *
  ***********************************************************/
 
+// Emulate js: 'array[key] || alt' expression.
+// E.g: auto i = get_or(arr, 0, 0); -> let i = arr[0] || 0;
+template < typename AssociativeContainer >
+[[maybe_unused]] inline auto get_or(
+    const AssociativeContainer& data,
+    const typename AssociativeContainer::key_type& key,
+    const typename AssociativeContainer::mapped_type& alt)
+{
+    const auto pos = data.find(key);
+    return pos != std::cend(data) ? pos->second : alt;
+}
+
+// Safe map access.
+// NOTE: Maybe use get_or(data, key, 0) here.
+template < typename AssociativeContainer >
+inline auto
+get(const AssociativeContainer& data,
+    const typename AssociativeContainer::key_type& key)
+{
+    const auto pos = data.find(key);
+    assert(pos != std::cend(data));
+    return pos->second;
+}
+
 // Returns a range of the keys of an associative container that are mapped with
 // the maximum value.
 template < typename AssociativeContainer >
@@ -37,7 +62,7 @@ inline auto max_value_keys(const AssociativeContainer& data)
     const auto max_iter = std::ranges::max_element(values);
     assert(max_iter != std::cend(values));
     const auto& max = *max_iter;
-    const auto max_valued = [&](const auto& k) { return data.at(k) == max; };
+    const auto max_valued = [&](const auto& k) { return get(data, k) == max; };
     return keys | std::ranges::views::filter(max_valued);
 }
 
@@ -46,7 +71,7 @@ template < std::ranges::input_range InputRange >
 inline auto make_vector(InputRange range)
 {
     using value_type = std::ranges::range_value_t< InputRange >;
-    return std::vector< value_type > { std::cbegin(range), std::cend(range) };
+    return std::vector< value_type > { std::begin(range), std::end(range) };
 }
 
 /***********************************************************
@@ -92,8 +117,8 @@ struct network_properties
 
 // Initialize network properties before/after Louvain execution.
 // Factory for any given network and graph with weighted edges.
-template < typename NetworkProperties, typename Graph, typename WeightMap >
-auto network_status(const Graph& g, WeightMap edge_weight) -> NetworkProperties
+template < typename NetworkProperties, typename Graph >
+auto network_status(const Graph& g) -> NetworkProperties
 {
     using community_type = typename NetworkProperties::community_type;
     using community_traits_type = community_traits< community_type >;
@@ -126,11 +151,11 @@ auto community_num_members(const VertexCommunityStorage& vertex_community)
 
     for (auto u : std::ranges::views::keys(vertex_community))
     {
-        const auto com = vertex_community.at(u);
+        const auto com = get(vertex_community, u);
         res[com] += 1;
     }
 
-    assert(std::all_of(
+    assert(std::ranges::all_of(
         std::ranges::views::values(vertex_community),
         [&res](auto com) { return res.contains(com); }));
     return res;
@@ -138,6 +163,7 @@ auto community_num_members(const VertexCommunityStorage& vertex_community)
 
 // Maps each neighbor community with the weighted degree of the node by taking
 // into account only links towards the community, while using the gamma value.
+// Modified version.
 template <
     typename Graph,
     typename NetworkProperties,
@@ -169,8 +195,7 @@ auto neighbor_communities(
     for (const auto counter = community_num_members(status.vertex_community);
          const auto& [com, w] : weights)
     {
-        assert(counter.contains(com));
-        const auto num_members = counter.at(com);
+        const auto num_members = get(counter, com);
         res[com] = w - gamma * (num_members - w);
     }
 
@@ -230,14 +255,25 @@ inline auto dominates(
     Gamma gamma) -> bool
 {
     using std::ranges::views::values;
+    using community_type = typename NetworkProperties::community_type;
+    using community_traits_type = community_traits< community_type >;
+
     const auto jcoms = neighbor_communities(u, g, status, edge_weight, gamma);
-    assert(!jcoms.empty());
-    const auto com = status.vertex_community.at(u);
-    const auto num_members = jcoms.at(com);
-    const auto max_iter = std::ranges::max_element(values(jcoms));
-    assert(max_iter != std::cend(values(jcoms)));
-    const auto max_num_members = *max_iter;
-    return num_members == max_num_members;
+    const bool has_no_neighbours = jcoms.empty();
+
+    if (has_no_neighbours)
+    {
+        return false;
+    }
+    else
+    {
+        const auto com = get(status.vertex_community, u);
+        const auto num_js = get_or(jcoms, com, community_traits_type::nil());
+        const auto max_iter = std::ranges::max_element(values(jcoms));
+        assert(max_iter != std::cend(values(jcoms)));
+        const auto max_num_members = *max_iter;
+        return num_js == max_num_members;
+    }
 }
 
 // Randomly returns one of the dominant neighbour communities of a vertex.
@@ -247,6 +283,7 @@ template <
     typename WeightMap,
     std::floating_point Gamma = float,
     typename UGenerator = decltype(misc::urandom< std::size_t >) >
+requires std::invocable< UGenerator, std::size_t, std::size_t >
 inline auto dominant_community(
     typename boost::graph_traits< Graph >::vertex_descriptor u,
     const Graph& g,
@@ -255,9 +292,57 @@ inline auto dominant_community(
     Gamma gamma,
     UGenerator gen = misc::urandom< std::size_t >)
 {
+    using community_type = typename NetworkProperties::community_type;
+    using community_traits_type = community_traits< community_type >;
+
     const auto jcoms = neighbor_communities(u, g, status, edge_weight, gamma);
-    const auto max_coms = make_vector(max_value_keys(jcoms));
-    return max_coms.at(gen(0, max_coms.size() - 1));
+    const bool has_no_neighbours = jcoms.empty();
+
+    if (has_no_neighbours)
+    {
+        return community_traits_type::nil();
+    }
+    else
+    {
+        const auto max_coms = make_vector(max_value_keys(jcoms));
+        assert(!max_coms.empty());
+        return max_coms.at(gen(0, max_coms.size() - 1));
+    }
+}
+
+/***********************************************************
+ * Utility Steps                                           *
+ ***********************************************************/
+
+template < typename Graph, typename ClusterMap >
+auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
+{
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::value_type;
+
+    // { 0, 1, ..., boost::num_vertices(g) - 1 }
+    for (cluster_type c = 0;
+         auto u : boost::make_iterator_range(boost::vertices(g)))
+        boost::put(vertex_cluster, u, c++);
+}
+
+template <
+    typename Graph,
+    typename VertexCommunityStorage,
+    typename ClusterMap >
+auto cluster_from_partition(
+    const Graph& g,
+    const VertexCommunityStorage& partition,
+    ClusterMap vertex_cluster) -> void
+{
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::value_type;
+    using community_type = typename VertexCommunityStorage::mapped_type;
+
+    static_assert(std::is_convertible_v< community_type, cluster_type >);
+
+    for (auto u : boost::make_iterator_range(boost::vertices(g)))
+        boost::put(vertex_cluster, u, get(partition, u));
 }
 
 } // namespace clustering::llp_detail
