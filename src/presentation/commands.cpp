@@ -1288,6 +1288,35 @@ auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void
 
 namespace
 {
+    struct update_clusters_cmd : undo_redo::command
+    {
+        using backend_type = clustering_backend;
+        using cluster_map = backend_type::cluster_map_type;
+
+        backend_type& backend;
+        cluster_map old_clusters, new_clusters;
+
+        update_clusters_cmd(backend_type& b) : backend { b } { }
+        ~update_clusters_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_clusters = clustering::get_clusters(backend);
+            clustering::update_clusters(backend);
+            new_clusters = clustering::get_clusters(backend);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_clusters(backend, old_clusters);
+        }
+
+        auto redo() -> void override
+        {
+            clustering::update_clusters(backend, new_clusters);
+        }
+    };
+
     struct update_clusterer_cmd : undo_redo::command
     {
         using backend_type = clustering_backend;
@@ -1520,6 +1549,11 @@ namespace
     };
 
 } // namespace
+
+auto update_clusters(command_history& cmds, clustering_backend& backend) -> void
+{
+    cmds.execute(std::make_unique< update_clusters_cmd >(backend));
+}
 
 auto update_clusterer(
     command_history& cmds,

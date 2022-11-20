@@ -164,6 +164,8 @@ auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void;
  * Clustering                                              *
  ***********************************************************/
 
+auto update_clusters(command_history& cmds, clustering_backend& b) -> void;
+
 auto update_clusterer(
     command_history& cmds,
     clustering_backend& backend,

@@ -784,6 +784,8 @@
 
 	+ [x] Fwd typedefs issue
 
-	+ [ ] Clustering undo/redo
+	+ [x] Clustering undo/redo
+
+	+ [ ] LLP GUI helpers
 
 	+ [ ] Fix input propagation from gui

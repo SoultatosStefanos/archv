@@ -127,6 +127,7 @@ public:
     auto get_llp_steps() const -> steps_type;
 
     auto update_clusters() -> void;
+    auto update_clusters(cluster_map_type clusters) -> void;
     auto update_clusterer(id_type id) -> void;
     auto update_mst_finder(id_type id) -> void;
     auto update_k(k_type k) -> void;
@@ -145,6 +146,7 @@ public:
     auto connect_to_llp_steps(const steps_slot& f) -> connection;
 
 protected:
+    auto set_clusters(cluster_map_type clusters) -> void;
     auto set_clusterer(id_type id) -> void;
     auto set_mst_finder(id_type id) -> void;
     auto set_k(k_type k) -> void;
@@ -211,6 +213,8 @@ inline backend< Graph, WeightMap >::backend(
     set_min_modularity(config_data().min_modularity);
     set_llp_gamma(config_data().llp_gamma);
     set_llp_steps(config_data().llp_steps);
+
+    set_clusters(cluster(*this)); // just to be safe
 }
 
 template < typename Graph, typename WeightMap >
@@ -290,7 +294,15 @@ auto cluster(const backend< Graph, WeightMap >& b) ->
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_clusters() -> void
 {
-    m_clusters = cluster(*this);
+    set_clusters(cluster(*this));
+    emit_clusters();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
+backend< Graph, WeightMap >::update_clusters(cluster_map_type clusters) -> void
+{
+    set_clusters(std::move(clusters));
     emit_clusters();
 }
 
@@ -436,6 +448,13 @@ backend< Graph, WeightMap >::connect_to_llp_steps(const steps_slot& f)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_clusters(cluster_map_type clusters)
+    -> void
+{
+    m_clusters = std::move(clusters);
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 {
     m_clusterer = m_builder.result(id);
@@ -554,6 +573,12 @@ inline auto cluster(const backend< Graph, WeightMap >& b) ->
  ***********************************************************/
 
 template < typename Graph, typename WeightMap >
+inline auto get_clusters(const backend< Graph, WeightMap >& b) -> const auto&
+{
+    return b.get_clusters();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto get_clusterer_id(const backend< Graph, WeightMap >& b)
 {
     return b.get_clusterer().id();
@@ -599,6 +624,14 @@ template < typename Graph, typename WeightMap >
 inline auto update_clusters(backend< Graph, WeightMap >& b)
 {
     b.update_clusters();
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_clusters(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::cluster_map_type clusters)
+{
+    b.update_clusters(std::move(clusters));
 }
 
 template < typename Graph, typename WeightMap >

@@ -1132,7 +1132,7 @@ auto application::connect_clustering_presentation() -> void
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected cluster";
-            clustering::update_clusters(backend);
+            pres::update_clusters(*m_cmds, backend);
         });
 
     editor.connect_to_hide(
