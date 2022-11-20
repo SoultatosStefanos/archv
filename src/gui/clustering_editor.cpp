@@ -379,6 +379,10 @@ auto clustering_editor::render_llp_gamma_editor() const -> void
             "%.3f",
             ImGuiInputTextFlags_EnterReturnsTrue))
         emit_llp_gamma(gamma);
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "LLP resolution parameter gamma\nWhen gamma = 0 the "
+        "algorithm degenerates to label propagation");
 }
 
 auto clustering_editor::render_llp_steps_editor() const -> void
@@ -392,6 +396,10 @@ auto clustering_editor::render_llp_steps_editor() const -> void
             100,
             ImGuiInputTextFlags_EnterReturnsTrue))
         emit_llp_steps(steps);
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "Max number of LLP algorithm iterations\n(As "
+        "long as a different partition is produced at each step)");
 }
 
 } // namespace gui

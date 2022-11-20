@@ -786,6 +786,6 @@
 
 	+ [x] Clustering undo/redo
 
-	+ [ ] LLP GUI helpers
+	+ [x] LLP GUI helpers
 
 	+ [ ] Fix input propagation from gui
