@@ -782,6 +782,8 @@
 
 # 20 / 11 / 2022
 
+	+ [ ] Fwd typedefs issue
+
 	+ [ ] Clustering undo/redo
 
 	+ [ ] Fix input propagation from gui

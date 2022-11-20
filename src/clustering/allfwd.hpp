@@ -4,6 +4,8 @@
 #ifndef CLUSTERING_ALLFWD_HPP
 #define CLUSTERING_ALLFWD_HPP
 
+#include <boost/property_map/function_property_map.hpp>
+
 namespace clustering
 {
 
@@ -45,6 +47,12 @@ class min_spanning_tree_finder_factory;
 
 template < typename Graph, typename WeightMap >
 class backend;
+
+namespace detail
+{
+    template < typename Backend >
+    struct cluster_dispatcher;
+} // namespace detail
 
 template < typename Backend >
 class cluster_map;

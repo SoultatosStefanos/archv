@@ -10,10 +10,14 @@ namespace weights
 class backend;
 class weight_repo;
 
+namespace detail
+{
+    template < typename Graph, typename DependencyMap >
+    class weight_dispatcher;
+} // namespace detail
+
 template < typename Graph, typename DependencyMap >
 class weight_map;
-
-struct config_data;
 
 } // namespace weights
 

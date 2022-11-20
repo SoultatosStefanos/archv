@@ -4,6 +4,8 @@
 #ifndef RENDERING_ALLFWD_HPP
 #define RENDERING_ALLFWD_HPP
 
+#include "concepts.hpp"
+
 namespace rendering
 {
 
@@ -12,7 +14,12 @@ class background_config_api;
 
 class background_renderer;
 
-template < typename Graph, typename VertexID, typename DependencyMap >
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    degrees_evaluator DegreesEvaluator,
+    cluster_color_coder ClusterColorCoder >
 class graph_renderer;
 
 template < typename Graph, typename VertexID, typename DependencyMap >

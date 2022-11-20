@@ -4,8 +4,15 @@
 #ifndef ARCHITECTURE_ALLFWD_HPP
 #define ARCHITECTURE_ALLFWD_HPP
 
+#include <boost/graph/adjacency_list.hpp>
+#include <tuple>
+#include <unordered_map>
+
 namespace architecture
 {
+
+class vertex_properties;
+class tuple;
 
 class graph;
 class id_map;

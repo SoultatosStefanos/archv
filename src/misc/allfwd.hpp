@@ -4,6 +4,11 @@
 #ifndef MISC_ALLFWD_HPP
 #define MISC_ALLFWD_HPP
 
-namespace misc {}
+#include <unordered_map>
+
+namespace misc
+{
+class unordered_string_map;
+} // namespace misc
 
 #endif // MISC_ALLFWD_HPP
