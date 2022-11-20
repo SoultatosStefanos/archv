@@ -22,8 +22,6 @@ class tuple;
 
 struct metadata_counter;
 
-class graph_interface;
-
 } // namespace architecture
 
 #endif // ARCHITECTURE_ALLFWD_HPP

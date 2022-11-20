@@ -1,7 +1,6 @@
 set(FILES
 	application.cpp
 	archive.cpp
-	commands.cpp
 )
 set(SUBDIRECTORIES)
 

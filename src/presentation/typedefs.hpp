@@ -4,10 +4,9 @@
 #ifndef PRESENTATION_TYPEDEFS_HPP
 #define PRESENTATION_TYPEDEFS_HPP
 
-#include "architecture/graph_interface.hpp"
 #include "clustering/all.hpp"
+#include "graph_interface.hpp"
 #include "gui/all.hpp"
-#include "input/all.hpp"
 #include "layout/all.hpp"
 #include "rendering/all.hpp"
 #include "scaling/all.hpp"
@@ -21,7 +20,6 @@ namespace presentation
  * Entities                                                *
  ***********************************************************/
 
-using graph_interface = architecture::graph_interface;
 using command_history = undo_redo::command_history;
 
 /***********************************************************

@@ -1,6 +1,5 @@
 set(FILES
 	config.cpp
-	graph_interface.cpp
 	metadata.cpp
 	symbol_table.cpp
 )

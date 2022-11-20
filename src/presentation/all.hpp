@@ -5,6 +5,7 @@
 #define PRESENTATION_ALL_HPP
 
 #include "commands.hpp"
+#include "graph_interface.hpp"
 #include "typedefs.hpp"
 
 #endif // PRESENTATION_ALL_HPP

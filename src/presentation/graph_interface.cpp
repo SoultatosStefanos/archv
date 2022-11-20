@@ -1,15 +1,15 @@
 #include "graph_interface.hpp"
 
-namespace architecture
+namespace presentation
 {
 
 graph_interface::graph_interface(
-    symbol_table st,
-    graph&& g,
-    weights_config_type weights_cfg,
-    layout_config_type layout_cfg,
-    scaling_config_type scaling_cfg,
-    clustering_config_type clustering_cfg)
+    symbol_table_type st,
+    graph_type&& g,
+    weights_backend_type::config_data_type weights_cfg,
+    layout_backend_type::config_data_type layout_cfg,
+    scaling_backend_type::config_data_type scaling_cfg,
+    clustering_backend_type::config_data_type clustering_cfg)
 : m_st { std::move(st) }
 , m_g { std::move(g) }
 , m_weights { std::move(weights_cfg) }
@@ -21,7 +21,7 @@ graph_interface::graph_interface(
 
 auto graph_interface::vertex_id() const -> id_map
 {
-    return boost::get(boost::vertex_bundle, get_graph());
+    return boost::get(boost::vertex_bundle, graph());
 }
 
 auto graph_interface::vertex_position() const -> position_map
@@ -31,8 +31,9 @@ auto graph_interface::vertex_position() const -> position_map
 
 auto graph_interface::vertex_scale() const -> scale_map
 {
-    return scaling::make_scale_map< graph >(
-        scaling_backend(), metadata_counter(get_symbol_table(), get_graph()));
+    return scaling::make_scale_map< graph_type >(
+        scaling_backend(),
+        architecture::metadata_counter(symbol_table(), graph()));
 }
 
 auto graph_interface::vertex_cluster() const -> cluster_map
@@ -42,13 +43,13 @@ auto graph_interface::vertex_cluster() const -> cluster_map
 
 auto graph_interface::edge_dependency() const -> dependency_map
 {
-    return boost::get(boost::edge_bundle, get_graph());
+    return boost::get(boost::edge_bundle, graph());
 }
 
 auto graph_interface::edge_weight() const -> weight_map
 {
-    return weights::make_weight_map< graph >(
+    return weights::make_weight_map< graph_type >(
         weights_backend(), edge_dependency());
 }
 
-} // namespace architecture
+} // namespace presentation

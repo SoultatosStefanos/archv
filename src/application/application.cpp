@@ -1,8 +1,8 @@
 #include "application.hpp"
 
 #include "IconsFontAwesome5.h"
+#include "architecture/all.hpp"
 #include "archive.hpp"
-#include "commands.hpp"
 #include "config.hpp"
 #include "misc/all.hpp"
 #include "ui/all.hpp"
@@ -22,6 +22,8 @@
 
 namespace application
 {
+
+namespace pres = presentation;
 
 application::application(int argc, const char* argv[]) : base("ARCHV")
 {
@@ -143,7 +145,7 @@ auto application::setup_graph_renderer() -> void
     using degrees_backend = rendering::degrees_ranked_backend;
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
-        m_graph_iface->get_graph(),
+        m_graph_iface->graph(),
         m_graph_iface->vertex_id(),
         m_graph_iface->vertex_position(),
         m_graph_iface->edge_dependency(),
@@ -163,7 +165,7 @@ auto application::setup_graph_renderer() -> void
 auto application::setup_graph_collision_checker() -> void
 {
     m_graph_collisions = std::make_unique< graph_collision_checker_type >(
-        m_graph_iface->get_graph(),
+        m_graph_iface->graph(),
         m_graph_iface->vertex_id(),
         m_graph_iface->edge_dependency(),
         m_background_renderer->scene());
@@ -401,7 +403,7 @@ auto application::setup_gui() -> void
 
     m_gui = std::make_unique< gui_type >();
 
-    prepare_gui_popups(m_graph_iface->get_symbol_table(), gui::popups, *m_gui);
+    prepare_gui_popups(m_graph_iface->symbol_table(), gui::popups, *m_gui);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
 }
@@ -807,8 +809,8 @@ auto application::prepare_menu_bar() -> void
 {
     auto& bar = m_gui->get_menu_bar();
 
-    bar.num_vertices() = boost::num_vertices(m_graph_iface->get_graph());
-    bar.num_edges() = boost::num_edges(m_graph_iface->get_graph());
+    bar.num_vertices() = boost::num_vertices(m_graph_iface->graph());
+    bar.num_edges() = boost::num_edges(m_graph_iface->graph());
 
     bar.set_can_undo([this]() { return m_cmds->can_undo(); });
     bar.set_can_redo([this]() { return m_cmds->can_redo(); });
@@ -831,14 +833,14 @@ auto application::connect_weights_presentation() -> void
         [this, &backend](auto type, auto w)
         {
             BOOST_LOG_TRIVIAL(info) << "selected: " << w << " for: " << type;
-            commands::update_dependency_weight(*m_cmds, backend, type, w);
+            pres::update_dependency_weight(*m_cmds, backend, type, w);
         });
 
     editor.connect_to_restore(
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected weights restore";
-            commands::restore_weights(*m_cmds, backend);
+            pres::restore_weights(*m_cmds, backend);
         });
 
     backend.connect(
@@ -862,28 +864,28 @@ auto application::connect_layout_presentation() -> void
         [this, &backend](auto selection)
         {
             BOOST_LOG_TRIVIAL(info) << "selected layout: " << selection;
-            commands::update_layout(*m_cmds, backend, selection);
+            pres::update_layout(*m_cmds, backend, selection);
         });
 
     editor.connect_to_topology(
         [this, &backend](auto selection)
         {
             BOOST_LOG_TRIVIAL(info) << "selected topology: " << selection;
-            commands::update_layout_topology(*m_cmds, backend, selection);
+            pres::update_layout_topology(*m_cmds, backend, selection);
         });
 
     editor.connect_to_scale(
         [this, &backend](auto selection)
         {
             BOOST_LOG_TRIVIAL(info) << "selected scale: " << selection;
-            commands::update_layout_scale(*m_cmds, backend, selection);
+            pres::update_layout_scale(*m_cmds, backend, selection);
         });
 
     editor.connect_to_restore(
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected layout restore";
-            commands::restore_layout(*m_cmds, backend);
+            pres::restore_layout(*m_cmds, backend);
         });
 
     backend.connect_to_layout(
@@ -908,7 +910,7 @@ auto application::connect_scaling_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected baseline: " << baseline << "for: " << tag;
-            commands::update_scaling_factor_baseline(
+            pres::update_scaling_factor_baseline(
                 *m_cmds, backend, tag, baseline);
         });
 
@@ -916,7 +918,7 @@ auto application::connect_scaling_presentation() -> void
         [this, &backend](auto tag, const auto& dims)
         {
             BOOST_LOG_TRIVIAL(info) << "selected new dims for: " << tag;
-            commands::update_scaling_factor_dims(*m_cmds, backend, tag, dims);
+            pres::update_scaling_factor_dims(*m_cmds, backend, tag, dims);
         });
 
     editor.connect_to_enabled(
@@ -924,7 +926,7 @@ auto application::connect_scaling_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected enabled: " << enabled << " for: " << tag;
-            commands::update_scaling_factor_enablement(
+            pres::update_scaling_factor_enablement(
                 *m_cmds, backend, tag, enabled);
         });
 
@@ -933,8 +935,7 @@ auto application::connect_scaling_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected min ratio: " << ratio << " for: " << tag;
-            commands::update_scaling_factor_min_ratio(
-                *m_cmds, backend, tag, ratio);
+            pres::update_scaling_factor_min_ratio(*m_cmds, backend, tag, ratio);
         });
 
     editor.connect_to_max_ratio(
@@ -942,15 +943,14 @@ auto application::connect_scaling_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected max ratio: " << ratio << " for: " << tag;
-            commands::update_scaling_factor_max_ratio(
-                *m_cmds, backend, tag, ratio);
+            pres::update_scaling_factor_max_ratio(*m_cmds, backend, tag, ratio);
         });
 
     editor.connect_to_restore(
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected scaling restore";
-            commands::restore_scaling(*m_cmds, backend);
+            pres::restore_scaling(*m_cmds, backend);
         });
 
     backend.connect(
@@ -975,7 +975,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees light threshold: " << thres;
-            commands::update_in_degree_evaluation_light_threshold(
+            pres::update_in_degree_evaluation_light_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -984,7 +984,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees medium threshold: " << thres;
-            commands::update_in_degree_evaluation_medium_threshold(
+            pres::update_in_degree_evaluation_medium_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -993,7 +993,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees heavy threshold: " << thres;
-            commands::update_in_degree_evaluation_heavy_threshold(
+            pres::update_in_degree_evaluation_heavy_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -1002,7 +1002,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees light threshold: " << thres;
-            commands::update_out_degree_evaluation_light_threshold(
+            pres::update_out_degree_evaluation_light_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -1011,7 +1011,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees medium threshold: " << thres;
-            commands::update_out_degree_evaluation_medium_threshold(
+            pres::update_out_degree_evaluation_medium_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -1020,7 +1020,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees heavy threshold: " << thres;
-            commands::update_out_degree_evaluation_heavy_threshold(
+            pres::update_out_degree_evaluation_heavy_threshold(
                 *m_cmds, backend, thres);
         });
 
@@ -1029,7 +1029,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees light particles: " << particles;
-            commands::update_in_degree_evaluation_light_particles(
+            pres::update_in_degree_evaluation_light_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1038,7 +1038,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees medium particles: " << particles;
-            commands::update_in_degree_evaluation_medium_particles(
+            pres::update_in_degree_evaluation_medium_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1047,7 +1047,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees heavy particles: " << particles;
-            commands::update_in_degree_evaluation_heavy_particles(
+            pres::update_in_degree_evaluation_heavy_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1056,7 +1056,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees light particles: " << particles;
-            commands::update_out_degree_evaluation_light_particles(
+            pres::update_out_degree_evaluation_light_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1065,7 +1065,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees medium particles: " << particles;
-            commands::update_out_degree_evaluation_medium_particles(
+            pres::update_out_degree_evaluation_medium_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1074,7 +1074,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees heavy particles: " << particles;
-            commands::update_out_degree_evaluation_heavy_particles(
+            pres::update_out_degree_evaluation_heavy_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1083,7 +1083,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees applied: " << applied;
-            commands::update_in_degree_evaluation_applied(
+            pres::update_in_degree_evaluation_applied(
                 *m_cmds, backend, applied);
         });
 
@@ -1092,7 +1092,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees applied: " << applied;
-            commands::update_out_degree_evaluation_applied(
+            pres::update_out_degree_evaluation_applied(
                 *m_cmds, backend, applied);
         });
 
@@ -1100,7 +1100,7 @@ auto application::connect_degrees_presentation() -> void
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected in degrees restore";
-            commands::restore_degrees(*m_cmds, backend);
+            pres::restore_degrees(*m_cmds, backend);
         });
 
     backend.connect_to_in_degree_evaluation(
@@ -1146,56 +1146,56 @@ auto application::connect_clustering_presentation() -> void
         [this, &backend](auto id)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clusterer: " << id;
-            commands::update_clusterer(*m_cmds, backend, id);
+            pres::update_clusterer(*m_cmds, backend, id);
         });
 
     editor.connect_to_mst_finder(
         [this, &backend](auto id)
         {
             BOOST_LOG_TRIVIAL(info) << "selected mst finder: " << id;
-            commands::update_clustering_mst_finder(*m_cmds, backend, id);
+            pres::update_clustering_mst_finder(*m_cmds, backend, id);
         });
 
     editor.connect_to_k(
         [this, &backend](auto k)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering k: " << k;
-            commands::update_clustering_k(*m_cmds, backend, k);
+            pres::update_clustering_k(*m_cmds, backend, k);
         });
 
     editor.connect_to_snn_thres(
         [this, &backend](auto t)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering snn t " << t;
-            commands::update_clustering_snn_threshold(*m_cmds, backend, t);
+            pres::update_clustering_snn_threshold(*m_cmds, backend, t);
         });
 
     editor.connect_to_min_modularity(
         [this, &backend](auto q)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering min q " << q;
-            commands::update_clustering_min_modularity(*m_cmds, backend, q);
+            pres::update_clustering_min_modularity(*m_cmds, backend, q);
         });
 
     editor.connect_to_llp_gamma(
         [this, &backend](auto g)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering llp gamma " << g;
-            commands::update_clustering_llp_gamma(*m_cmds, backend, g);
+            pres::update_clustering_llp_gamma(*m_cmds, backend, g);
         });
 
     editor.connect_to_llp_steps(
         [this, &backend](auto s)
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering llp steps " << s;
-            commands::update_clustering_llp_steps(*m_cmds, backend, s);
+            pres::update_clustering_llp_steps(*m_cmds, backend, s);
         });
 
     editor.connect_to_restore(
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering restore";
-            commands::restore_clustering(*m_cmds, backend);
+            pres::restore_clustering(*m_cmds, backend);
         });
 
     backend.connect_to_clusters(

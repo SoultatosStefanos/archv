@@ -4,15 +4,8 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "architecture/all.hpp"
-#include "clustering/all.hpp"
-#include "gui/all.hpp"
 #include "input/all.hpp"
-#include "layout/all.hpp"
-#include "rendering/all.hpp"
-#include "scaling/all.hpp"
-#include "undo_redo/all.hpp"
-#include "weights/all.hpp"
+#include "presentation/all.hpp"
 
 #include <OGRE/Bites/OgreApplicationContext.h>
 #include <OGRE/Bites/OgreCameraMan.h>
@@ -30,23 +23,6 @@ class application : public OgreBites::ApplicationContext
     using base = OgreBites::ApplicationContext;
 
 public:
-    using graph_interface_type = architecture::graph_interface;
-    using command_history_type = undo_redo::command_history;
-
-    using background_renderer_type = rendering::background_renderer;
-
-    using graph_renderer_type = rendering::graph_renderer<
-        architecture::graph,
-        architecture::id_map,
-        architecture::dependency_map >;
-
-    using graph_collision_checker_type = rendering::graph_collision_checker<
-        architecture::graph,
-        architecture::id_map,
-        architecture::dependency_map >;
-
-    using gui_type = gui::overlay_manager;
-
     application(int argc, const char* argv[]);
     virtual ~application() override = default;
 
@@ -58,6 +34,13 @@ public:
     auto go() -> void;
 
 private:
+    using graph_interface_type = presentation::graph_interface;
+    using command_history_type = presentation::command_history;
+    using background_renderer_type = presentation::background_renderer;
+    using graph_renderer_type = presentation::graph_renderer;
+    using graph_collision_checker_type = presentation::graph_collision_checker;
+    using gui_type = presentation::overlay_manager;
+
     using weights_config_data_type = weights::config_data;
     using layout_config_data_type = layout::config_data;
     using scaling_config_data_type = scaling::config_data;

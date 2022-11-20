@@ -5,10 +5,7 @@
 #ifndef INPUT_INSPECTION_HANDLER_HPP
 #define INPUT_INSPECTION_HANDLER_HPP
 
-#include "architecture/all.hpp"
-#include "gui/allfwd.hpp"
-#include "rendering/graph_collision_checker.hpp"
-#include "rendering/graph_renderer.hpp"
+#include "presentation/typedefs.hpp"
 
 #include <OGRE/Bites/OgreInput.h>
 #include <OGRE/OgreCamera.h>
@@ -24,18 +21,10 @@ class inspection_handler : public OgreBites::InputListener
     using base = OgreBites::InputListener;
 
 public:
-    using graph_renderer_type = rendering::graph_renderer<
-        architecture::graph,
-        architecture::id_map,
-        architecture::dependency_map >;
-
-    using graph_collision_checker_type = rendering::graph_collision_checker<
-        architecture::graph,
-        architecture::id_map,
-        architecture::dependency_map >;
-
-    using overlay_manager_type = gui::overlay_manager;
-    using popup_holder_type = gui::popup_holder;
+    using graph_renderer_type = presentation::graph_renderer;
+    using graph_collision_checker_type = presentation::graph_collision_checker;
+    using overlay_manager_type = presentation::overlay_manager;
+    using popup_holder_type = presentation::popup_holder;
 
     using render_window_type = Ogre::RenderWindow;
     using camera_type = Ogre::Camera;
@@ -64,7 +53,7 @@ public:
     auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool;
 
 private:
-    using collision_id_type = graph_collision_checker_type::id_type;
+    using collision_id_type = std::string;
     using collision_stack = std::stack< collision_id_type >;
 
     graph_renderer_type& m_renderer;

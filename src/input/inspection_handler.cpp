@@ -1,8 +1,5 @@
 #include "inspection_handler.hpp"
 
-#include "gui/overlay_manager.hpp"
-#include "gui/popup_holder.hpp"
-
 #include <boost/log/trivial.hpp>
 
 namespace input

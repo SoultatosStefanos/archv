@@ -6,7 +6,6 @@
 
 #include "application.hpp"
 #include "archive.hpp"
-#include "commands.hpp"
 #include "config.hpp"
 
 #endif // APPLICATION_ALL_HPP

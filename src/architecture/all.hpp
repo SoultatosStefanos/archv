@@ -7,7 +7,6 @@
 #include "concepts.hpp"
 #include "config.hpp"
 #include "graph.hpp"
-#include "graph_interface.hpp"
 #include "metadata.hpp"
 #include "symbol_table.hpp"
 #include "symbols.hpp"

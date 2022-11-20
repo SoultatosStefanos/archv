@@ -1,5 +1,6 @@
 set(FILES
 	commands.cpp
+	graph_interface.cpp
 )
 set(SUBDIRECTORIES)
 

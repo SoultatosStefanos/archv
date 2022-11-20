@@ -777,4 +777,11 @@
 
 	+ [x] Layered label propagation commands
 
+	+ [x] Presentation Layer
+
+
+# 20 / 11 / 2022
+
 	+ [ ] Clustering undo/redo
+
+	+ [ ] Fix input propagation from gui
