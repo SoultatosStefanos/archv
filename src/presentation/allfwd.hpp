@@ -4,6 +4,14 @@
 #ifndef PRESENTATION_ALLFWD_HPP
 #define PRESENTATION_ALLFWD_HPP
 
+#include "clustering/allfwd.hpp"
+#include "gui/allfwd.hpp"
+#include "layout/allfwd.hpp"
+#include "rendering/allfwd.hpp"
+#include "scaling/allfwd.hpp"
+#include "undo_redo/allfwd.hpp"
+#include "weights/allfwd.hpp"
+
 namespace presentation
 {
 

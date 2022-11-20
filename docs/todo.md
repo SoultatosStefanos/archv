@@ -782,7 +782,7 @@
 
 # 20 / 11 / 2022
 
-	+ [ ] Fwd typedefs issue
+	+ [x] Fwd typedefs issue
 
 	+ [ ] Clustering undo/redo
 
