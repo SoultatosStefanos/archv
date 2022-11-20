@@ -399,6 +399,8 @@ auto application::setup_gui() -> void
     prepare_gui_resources();
     prepare_gui_overlay(m_background_renderer->scene());
 
+    ImGui::GetIO().WantCaptureMouse = true;
+
     gui::set_configs(m_gui_config);
 
     m_gui = std::make_unique< gui_type >();
@@ -411,6 +413,7 @@ auto application::setup_gui() -> void
 auto application::setup_input() -> void
 {
     using std::make_unique;
+    using listeners_vec = std::vector< OgreBites::InputListener* >;
 
     m_trays = std::make_unique< trays_type >("Bob", getRenderWindow());
     m_trays->showCursor();
@@ -436,13 +439,18 @@ auto application::setup_input() -> void
         *getRenderWindow(),
         m_background_renderer->cam());
 
+    auto&& listeners = listeners_vec { { m_gui_input_handler.get(),
+                                         m_inspection_input_handler.get() } };
+
+    m_input_chain
+        = std::make_unique< input_listener_chain_type >(std::move(listeners));
+
     addInputListener(m_trays.get());
-    addInputListener(m_gui_input_handler.get());
     addInputListener(m_cameraman.get());
     addInputListener(m_hud_input_handler.get());
     addInputListener(m_quit_handler.get());
     addInputListener(m_shortcut_input_handler.get());
-    addInputListener(m_inspection_input_handler.get());
+    addInputListener(m_input_chain.get());
 
 #ifdef NDEBUG
     SDL_SetRelativeMouseMode(SDL_TRUE); // Constrain mouse in application
@@ -473,14 +481,14 @@ auto application::shutdown() -> void
 
 auto application::shutdown_input() -> void
 {
+    removeInputListener(m_input_chain.get());
     removeInputListener(m_trays.get());
-    removeInputListener(m_inspection_input_handler.get());
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
-    removeInputListener(m_gui_input_handler.get());
     removeInputListener(m_hud_input_handler.get());
     removeInputListener(m_cameraman.get());
 
+    m_input_chain.reset();
     m_trays.reset();
     m_inspection_input_handler.reset();
     m_shortcut_input_handler.reset();

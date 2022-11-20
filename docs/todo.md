@@ -788,4 +788,4 @@
 
 	+ [x] LLP GUI helpers
 
-	+ [ ] Fix input propagation from gui
+	+ [x] Fix input propagation from gui
