@@ -2,6 +2,7 @@ set(FILES
 	config.cpp
 	metadata.cpp
 	symbol_table.cpp
+	vertex_marker.cpp
 )
 set(SUBDIRECTORIES)
 
