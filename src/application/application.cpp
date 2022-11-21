@@ -107,11 +107,12 @@ auto application::setup() -> void
 auto application::setup_graph_interface() -> void
 {
     const auto& jsons = archive::get();
-    auto&& [st, g, _] = architecture::deserialize(jsons.at(m_graph_path));
+    auto&& [st, g, m] = architecture::deserialize(jsons.at(m_graph_path));
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
         std::move(g),
+        std::move(m),
         m_weights_config,
         m_layout_config,
         m_scaling_config,

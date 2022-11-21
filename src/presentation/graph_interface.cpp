@@ -6,12 +6,14 @@ namespace presentation
 graph_interface::graph_interface(
     symbol_table_type st,
     graph_type&& g,
+    vertex_marker_type m,
     weights_backend_type::config_data_type weights_cfg,
     layout_backend_type::config_data_type layout_cfg,
     scaling_backend_type::config_data_type scaling_cfg,
     clustering_backend_type::config_data_type clustering_cfg)
 : m_st { std::move(st) }
 , m_g { std::move(g) }
+, m_marker { std::move(m) }
 , m_weights { std::move(weights_cfg) }
 , m_layout { m_g, edge_weight(*this), std::move(layout_cfg) }
 , m_scaling { std::move(scaling_cfg) }

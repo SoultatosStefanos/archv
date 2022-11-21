@@ -801,6 +801,10 @@
 
 		+ [x] Graph Interface functions
 
-		+ [ ] Vertex position by id
+		+ [x] Vertex position by id
+
+		+ [ ] Camera pan function
+
+		+ [ ] Menu search bar
 
 	+ [ ] Info Map
