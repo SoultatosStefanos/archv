@@ -16,6 +16,7 @@
 #include <boost/signals2/signal.hpp>
 #include <functional>
 #include <string>
+#include <string_view>
 
 namespace gui
 {
@@ -26,9 +27,14 @@ namespace gui
 
 class menu_bar
 {
+public:
+    using search_type = std::string;
+
+private:
     using quit_signal = boost::signals2::signal< void() >;
     using undo_signal = boost::signals2::signal< void() >;
     using redo_signal = boost::signals2::signal< void() >;
+    using search_signal = boost::signals2::signal< void(const search_type&) >;
 
 public:
     using pred = std::function< bool() >;
@@ -37,9 +43,10 @@ public:
     using quit_slot = quit_signal::slot_type;
     using undo_slot = undo_signal::slot_type;
     using redo_slot = redo_signal::slot_type;
+    using search_slot = search_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    menu_bar() = default;
+    menu_bar();
 
     auto get_weights_editor() const -> const auto& { return m_weights_editor; }
     auto get_weights_editor() -> auto& { return m_weights_editor; }
@@ -86,11 +93,13 @@ public:
     auto connect_to_quit(const quit_slot& f) -> connection;
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
+    auto connect_to_search(const search_slot& f) -> connection;
 
 protected:
     auto emit_quit() const -> void;
     auto emit_undo() const -> void;
     auto emit_redo() const -> void;
+    auto emit_search() const -> void;
 
 private:
     auto render_file_editor() const -> void;
@@ -118,9 +127,11 @@ private:
     quit_signal m_quit;
     undo_signal m_undo_sig;
     redo_signal m_redo_sig;
+    search_signal m_search_sig;
 
     size_type m_num_vertices {};
     size_type m_num_edges {};
+    mutable search_type m_query;
 };
 
 } // namespace gui

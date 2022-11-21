@@ -1550,6 +1550,10 @@ auto application::connect_menu_bar_presentation() -> void
             m_cmds->redo();
         });
 
+    bar.connect_to_search(
+        [this](const auto& query)
+        { BOOST_LOG_TRIVIAL(info) << "searched for: " << query; });
+
     BOOST_LOG_TRIVIAL(debug) << "connected undo redo presentation";
 }
 

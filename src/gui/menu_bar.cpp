@@ -11,6 +11,16 @@
 namespace gui
 {
 
+static constexpr auto query_capacity = 50;
+
+menu_bar::menu_bar()
+{
+    m_query.reserve(query_capacity);
+    m_query.resize(query_capacity);
+    assert(m_query.size() <= m_query.capacity());
+    assert(m_query.capacity() >= query_capacity);
+}
+
 auto menu_bar::can_undo() const -> bool
 {
     assert(m_undo_enabled);
@@ -50,6 +60,11 @@ auto menu_bar::connect_to_redo(const redo_slot& f) -> connection
     return m_redo_sig.connect(f);
 }
 
+auto menu_bar::connect_to_search(const search_slot& f) -> connection
+{
+    return m_search_sig.connect(f);
+}
+
 auto menu_bar::emit_quit() const -> void
 {
     m_quit();
@@ -63,6 +78,11 @@ auto menu_bar::emit_undo() const -> void
 auto menu_bar::emit_redo() const -> void
 {
     m_redo_sig();
+}
+
+auto menu_bar::emit_search() const -> void
+{
+    m_search_sig(m_query);
 }
 
 auto menu_bar::render() const -> void
@@ -212,22 +232,18 @@ auto menu_bar::render_search_bar() const -> void
 {
     if (ImGui::BeginMenu(ICON_FA_SEARCH " Search"))
     {
-        static auto buffer = []()
-        {
-            std::string res;
-            res.reserve(28);
-            return res;
-        }();
-
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
         if (ImGui::InputTextWithHint(
-                "Where Is",
+                " Where Is",
                 "buzz::Foo",
-                buffer.data(),
-                buffer.capacity() + 1,
+                m_query.data(),
+                m_query.capacity() + 1,
                 flags))
         {
+            assert(m_query.size() <= m_query.capacity());
+            assert(m_query.capacity() >= query_capacity);
+            emit_search();
         }
 
         ImGui::EndMenu();
