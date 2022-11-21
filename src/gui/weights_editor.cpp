@@ -1,6 +1,7 @@
 #include "weights_editor.hpp"
 
 #include "IconsFontAwesome5.h"
+#include "detail/imgui_stdlib.h"
 #include "misc/algorithm.hpp"
 #include "plugins.hpp"
 
@@ -47,8 +48,7 @@ auto weights_editor::render_dependencies() const -> void
 
         if (ImGui::InputText(
                 dependency,
-                w_str.data(),
-                w_str.capacity() + 1,
+                &w_str,
                 ImGuiInputTextFlags_CharsDecimal
                     | ImGuiInputTextFlags_EnterReturnsTrue))
         {

@@ -46,8 +46,6 @@ public:
     using search_slot = search_signal::slot_type;
     using connection = boost::signals2::connection;
 
-    menu_bar();
-
     auto get_weights_editor() const -> const auto& { return m_weights_editor; }
     auto get_weights_editor() -> auto& { return m_weights_editor; }
 

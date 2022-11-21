@@ -1,6 +1,7 @@
 #include "menu_bar.hpp"
 
 #include "IconsFontAwesome5.h"
+#include "detail/imgui_stdlib.h"
 #include "overlay.hpp"
 
 #include <OGRE/Overlay/imgui.h>
@@ -10,16 +11,6 @@
 
 namespace gui
 {
-
-static constexpr auto query_capacity = 50;
-
-menu_bar::menu_bar()
-{
-    m_query.reserve(query_capacity);
-    m_query.resize(query_capacity);
-    assert(m_query.size() <= m_query.capacity());
-    assert(m_query.capacity() >= query_capacity);
-}
 
 auto menu_bar::can_undo() const -> bool
 {
@@ -234,17 +225,8 @@ auto menu_bar::render_search_bar() const -> void
     {
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-        if (ImGui::InputTextWithHint(
-                " Where Is",
-                "buzz::Foo",
-                m_query.data(),
-                m_query.capacity() + 1,
-                flags))
-        {
-            assert(m_query.size() <= m_query.capacity());
-            assert(m_query.capacity() >= query_capacity);
+        if (ImGui::InputTextWithHint(" Where Is", "buzz::Foo", &m_query, flags))
             emit_search();
-        }
 
         ImGui::EndMenu();
     }

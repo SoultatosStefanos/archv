@@ -1,4 +1,5 @@
 set(FILES
+	camera.cpp
 	commands.cpp
 	graph_interface.cpp
 )

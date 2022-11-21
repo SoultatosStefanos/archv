@@ -1551,8 +1551,11 @@ auto application::connect_menu_bar_presentation() -> void
         });
 
     bar.connect_to_search(
-        [this](const auto& query)
-        { BOOST_LOG_TRIVIAL(info) << "searched for: " << query; });
+        [this](const auto& id)
+        {
+            BOOST_LOG_TRIVIAL(info) << "searched for: " << id;
+            pres::pan_at(*m_graph_iface, id, m_background_renderer->cam_node());
+        });
 
     BOOST_LOG_TRIVIAL(debug) << "connected undo redo presentation";
 }

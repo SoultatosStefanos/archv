@@ -795,7 +795,7 @@
 
 # 21 / 11 / 2022
 
-	+ [ ] Search bar with camera pan
+	+ [x] Search bar with camera pan
 
 		+ [x] Vertex Marker
 
@@ -805,8 +805,8 @@
 
 		+ [x] Menu search bar
 
-		+ [ ] Camera pan function
+		+ [x] Camera pan function
 
-		+ [ ] Menu search autocompletion
+	+ [ ] Menu search autocompletion
 
 	+ [ ] Info Map
