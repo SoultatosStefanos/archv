@@ -40,9 +40,9 @@ auto camera_handler::frameRendered(const Ogre::FrameEvent& evt) -> void
 auto camera_handler::keyPressed(const OgreBites::KeyboardEvent& evt) -> bool
 {
     if (!locked())
-        return cameraman().keyPressed(evt);
+        cameraman().keyPressed(evt);
 
-    return true;
+    return base::keyPressed(evt);
 }
 
 auto camera_handler::keyReleased(const OgreBites::KeyboardEvent& evt) -> bool
@@ -51,17 +51,17 @@ auto camera_handler::keyReleased(const OgreBites::KeyboardEvent& evt) -> bool
         toggle_lock_unlock();
 
     if (!locked())
-        return cameraman().keyReleased(evt);
+        cameraman().keyReleased(evt);
 
-    return true;
+    return base::keyReleased(evt);
 }
 
 auto camera_handler::mouseMoved(const OgreBites::MouseMotionEvent& evt) -> bool
 {
     if (!locked())
-        return cameraman().mouseMoved(evt);
+        cameraman().mouseMoved(evt);
 
-    return true;
+    return base::mouseMoved(evt);
 }
 
 auto camera_handler::mousePressed(const OgreBites::MouseButtonEvent& evt)
@@ -70,7 +70,7 @@ auto camera_handler::mousePressed(const OgreBites::MouseButtonEvent& evt)
     if (evt.button == OgreBites::ButtonType::BUTTON_MIDDLE)
         unlock();
 
-    return true;
+    return base::mousePressed(evt);
 }
 
 auto camera_handler::mouseReleased(const OgreBites::MouseButtonEvent& evt)
@@ -79,7 +79,7 @@ auto camera_handler::mouseReleased(const OgreBites::MouseButtonEvent& evt)
     if (evt.button == OgreBites::ButtonType::BUTTON_MIDDLE)
         lock();
 
-    return true;
+    return base::mouseReleased(evt);
 }
 
 } // namespace input

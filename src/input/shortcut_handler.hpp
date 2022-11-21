@@ -20,6 +20,8 @@ namespace input
 
 class shortcut_handler : public OgreBites::InputListener
 {
+    using base = OgreBites::InputListener;
+
 public:
     using commands_type = undo_redo::command_history;
 

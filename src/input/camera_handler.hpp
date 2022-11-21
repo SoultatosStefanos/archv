@@ -15,6 +15,8 @@ namespace input
 // Lock/Unlock: press/release mouse wheel, or press c.
 class camera_handler : public OgreBites::InputListener
 {
+    using base = OgreBites::InputListener;
+
 public:
     using cameraman_type = OgreBites::CameraMan;
 

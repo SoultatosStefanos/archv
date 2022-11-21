@@ -11,7 +11,8 @@ auto quit_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
 {
     if (e.keysym.sym == OgreBites::SDLK_ESCAPE)
         root().queueEndRendering();
-    return true;
+
+    return base::keyReleased(e);
 }
 
 } // namespace input

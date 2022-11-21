@@ -99,6 +99,7 @@ private:
     auto render_rendering_configurator() const -> void;
     auto render_gui_configurator() const -> void;
     auto render_helper() const -> void;
+    auto render_search_bar() const -> void;
     auto render_graph_sizes() const -> void;
 
     bool m_visible { true };

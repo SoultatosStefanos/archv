@@ -803,8 +803,10 @@
 
 		+ [x] Vertex position by id
 
+		+ [x] Menu search bar
+
 		+ [ ] Camera pan function
 
-		+ [ ] Menu search bar
+		+ [ ] Menu search autocompletion
 
 	+ [ ] Info Map

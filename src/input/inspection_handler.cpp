@@ -77,7 +77,7 @@ auto inspection_handler::mouseMoved(const OgreBites::MouseMotionEvent& e)
         }
     }
 
-    return true;
+    return base::mouseMoved(e);
 }
 
 auto inspection_handler::mousePressed(const OgreBites::MouseButtonEvent& e)
@@ -97,7 +97,7 @@ auto inspection_handler::mousePressed(const OgreBites::MouseButtonEvent& e)
         popup.show();
     }
 
-    return true;
+    return base::mousePressed(e);
 }
 
 } // namespace input

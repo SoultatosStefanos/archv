@@ -55,7 +55,7 @@ private:
     using quit_handler_type = input::quit_handler;
     using shortcut_input_handler_type = input::shortcut_handler;
     using inspection_handler_type = input::inspection_handler;
-    using input_listener_chain_type = OgreBites::InputListenerChain;
+    using event_dispatcher_type = input::event_dispatcher;
 
     auto setup_graph_interface() -> void;
     auto setup_commands() -> void;
@@ -118,7 +118,7 @@ private:
     std::unique_ptr< quit_handler_type > m_quit_handler;
     std::unique_ptr< shortcut_input_handler_type > m_shortcut_input_handler;
     std::unique_ptr< inspection_handler_type > m_inspection_input_handler;
-    std::unique_ptr< input_listener_chain_type > m_input_chain;
+    std::unique_ptr< event_dispatcher_type > m_input_chain;
 };
 
 } // namespace application

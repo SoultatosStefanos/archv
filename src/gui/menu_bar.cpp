@@ -73,6 +73,7 @@ auto menu_bar::render() const -> void
         render_editor();
         render_configurator();
         render_helper();
+        render_search_bar();
         render_graph_sizes();
 
         ImGui::EndMainMenuBar();
@@ -202,6 +203,32 @@ auto menu_bar::render_helper() const -> void
         ImGui::Spacing();
         ImGui::Text("QUIT:\n");
         ImGui::BulletText("ESC to exit.");
+
+        ImGui::EndMenu();
+    }
+}
+
+auto menu_bar::render_search_bar() const -> void
+{
+    if (ImGui::BeginMenu(ICON_FA_SEARCH " Search"))
+    {
+        static auto buffer = []()
+        {
+            std::string res;
+            res.reserve(28);
+            return res;
+        }();
+
+        ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+        if (ImGui::InputTextWithHint(
+                "Where Is",
+                "buzz::Foo",
+                buffer.data(),
+                buffer.capacity() + 1,
+                flags))
+        {
+        }
 
         ImGui::EndMenu();
     }

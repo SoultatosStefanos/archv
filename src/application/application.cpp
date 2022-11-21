@@ -441,14 +441,13 @@ auto application::setup_input() -> void
         m_background_renderer->cam());
 
     auto&& listeners = listeners_vec { { m_gui_input_handler.get(),
+                                         m_hud_input_handler.get(),
+                                         m_cameraman.get(),
                                          m_inspection_input_handler.get() } };
 
-    m_input_chain
-        = std::make_unique< input_listener_chain_type >(std::move(listeners));
+    m_input_chain = make_unique< event_dispatcher_type >(std::move(listeners));
 
     addInputListener(m_trays.get());
-    addInputListener(m_cameraman.get());
-    addInputListener(m_hud_input_handler.get());
     addInputListener(m_quit_handler.get());
     addInputListener(m_shortcut_input_handler.get());
     addInputListener(m_input_chain.get());
@@ -486,8 +485,6 @@ auto application::shutdown_input() -> void
     removeInputListener(m_trays.get());
     removeInputListener(m_shortcut_input_handler.get());
     removeInputListener(m_quit_handler.get());
-    removeInputListener(m_hud_input_handler.get());
-    removeInputListener(m_cameraman.get());
 
     m_input_chain.reset();
     m_trays.reset();

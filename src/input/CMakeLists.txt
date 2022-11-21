@@ -1,5 +1,6 @@
 set(FILES
 	camera_handler.cpp
+	event_dispatcher.cpp
 	hud_handler.cpp
 	inspection_handler.cpp
 	quit_handler.cpp

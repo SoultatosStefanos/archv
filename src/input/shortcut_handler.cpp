@@ -34,7 +34,7 @@ auto shortcut_handler::keyPressed(const OgreBites::KeyboardEvent& e) -> bool
         break;
     }
 
-    return true;
+    return base::keyPressed(e);
 }
 
 auto shortcut_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
@@ -57,7 +57,7 @@ auto shortcut_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
         break;
     }
 
-    return true;
+    return base::keyReleased(e);
 }
 
 auto shortcut_handler::handle_undo_combination() -> void

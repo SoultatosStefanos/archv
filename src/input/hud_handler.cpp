@@ -18,7 +18,8 @@ auto hud_handler::keyReleased(const OgreBites::KeyboardEvent& e) -> bool
         gui::toggle_show_hide(controls_hud());
     else if (e.keysym.sym == 'f')
         gui::toggle_show_hide(frames_hud());
-    return true;
+
+    return base::keyReleased(e);
 }
 
 } // namespace input

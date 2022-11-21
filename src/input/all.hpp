@@ -9,5 +9,6 @@
 #include "inspection_handler.hpp"
 #include "quit_handler.hpp"
 #include "shortcut_handler.hpp"
+#include "event_dispatcher.hpp"
 
 #endif // INPUT_ALL_HPP

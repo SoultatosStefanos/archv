@@ -17,6 +17,8 @@ namespace input
 
 class hud_handler : public OgreBites::InputListener
 {
+    using base = OgreBites::InputListener;
+
 public:
     using controls_hud_type = gui::controls_hud;
     using frames_hud_type = gui::frames_hud;
