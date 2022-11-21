@@ -1,6 +1,7 @@
 #include "../utility/config.hpp"
 #include "architecture/config.hpp"
 #include "architecture/symbol_table.hpp"
+#include "architecture/vertex_marker.hpp"
 
 #include <boost/graph/isomorphism.hpp>
 #include <gmock/gmock.h>
@@ -142,26 +143,26 @@ auto build_sample_st_2() -> symbol_table
 auto build_sample_graph_2(const symbol_table& st)
 {
     graph g;
-    vertex_properties cache;
+    vertex_marker cache;
 
     for (const auto& [id, _] : st)
-        cache[id] = boost::add_vertex(id, g);
+        cache.mark(id, boost::add_vertex(id, g));
 
     boost::add_edge(
-        cache.at("CS::CS_1::class_A"),
-        cache.at("CS::CS_1::class_B"),
+        cache.vertex("CS::CS_1::class_A"),
+        cache.vertex("CS::CS_1::class_B"),
         "ClassField",
         g);
 
     boost::add_edge(
-        cache.at("CS::CS_1::class_X"),
-        cache.at("CS::CS_1::class_B"),
+        cache.vertex("CS::CS_1::class_X"),
+        cache.vertex("CS::CS_1::class_B"),
         "Inherit",
         g);
 
     boost::add_edge(
-        cache.at("CS::CS_1::class_X"),
-        cache.at("CS::CS_1::class_A"),
+        cache.vertex("CS::CS_1::class_X"),
+        cache.vertex("CS::CS_1::class_A"),
         "Inherit",
         g);
 

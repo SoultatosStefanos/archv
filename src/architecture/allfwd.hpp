@@ -25,9 +25,9 @@ struct definition;
 struct method;
 struct structure;
 
-class tuple;
-
 struct metadata_counter;
+
+class vertex_marker;
 
 } // namespace architecture
 

@@ -8,21 +8,19 @@
 #include "graph.hpp"
 
 #include <jsoncpp/json/json.h>
-#include <unordered_map>
+#include <tuple>
 
 namespace architecture
 {
 
 class symbol_table;
+class vertex_marker;
 
-using vertex_properties
-    = std::unordered_map< graph::vertex_bundled, graph::vertex_descriptor >;
-
-using tuple = std::tuple< symbol_table, graph, vertex_properties >;
+using config_data = std::tuple< symbol_table, graph, vertex_marker >;
 
 // Generates a symbol table (components), graph (dependencies), and a cache to
 // query vertices by their properties.
-auto deserialize(const Json::Value& root) -> tuple;
+auto deserialize(const Json::Value& root) -> config_data;
 
 } // namespace architecture
 

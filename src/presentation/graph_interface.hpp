@@ -61,13 +61,6 @@ public:
     auto clustering_backend() const -> const auto& { return m_clustering; }
     auto clustering_backend() -> auto& { return m_clustering; }
 
-    auto vertex_id() const -> id_map;
-    auto vertex_position() const -> position_map;
-    auto vertex_scale() const -> scale_map;
-    auto vertex_cluster() const -> cluster_map;
-    auto edge_dependency() const -> dependency_map;
-    auto edge_weight() const -> weight_map;
-
 private:
     symbol_table_type m_st;
     graph_type m_g;
@@ -76,6 +69,14 @@ private:
     scaling_backend_type m_scaling;
     clustering_backend_type m_clustering;
 };
+
+auto vertex_id(const graph_interface& g) -> graph_interface::id_map;
+auto vertex_position(const graph_interface& g) -> graph_interface::position_map;
+auto vertex_scale(const graph_interface& g) -> graph_interface::scale_map;
+auto vertex_cluster(const graph_interface& g) -> graph_interface::cluster_map;
+
+auto edge_dependency(const graph_interface&) -> graph_interface::dependency_map;
+auto edge_weight(const graph_interface& g) -> graph_interface::weight_map;
 
 } // namespace presentation
 

@@ -146,16 +146,16 @@ auto application::setup_graph_renderer() -> void
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->graph(),
-        m_graph_iface->vertex_id(),
-        m_graph_iface->vertex_position(),
-        m_graph_iface->edge_dependency(),
+        pres::vertex_id(*m_graph_iface),
+        pres::vertex_position(*m_graph_iface),
+        pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene(),
         m_rendering_config.graph,
         ARCHV_RESOURCE_GROUP,
         degrees_evaluator(degrees_backend(m_rendering_config.degrees)));
 
-    m_graph_renderer->render_scaling(m_graph_iface->vertex_scale());
-    m_graph_renderer->render_weights(m_graph_iface->edge_weight());
+    m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
+    m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
 
@@ -166,8 +166,8 @@ auto application::setup_graph_collision_checker() -> void
 {
     m_graph_collisions = std::make_unique< graph_collision_checker_type >(
         m_graph_iface->graph(),
-        m_graph_iface->vertex_id(),
-        m_graph_iface->edge_dependency(),
+        pres::vertex_id(*m_graph_iface),
+        pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene());
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph collisions";
@@ -854,7 +854,7 @@ auto application::connect_weights_presentation() -> void
     backend.connect(
         [this](auto, auto)
         {
-            m_graph_renderer->render_weights(m_graph_iface->edge_weight());
+            m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));
             BOOST_LOG_TRIVIAL(info) << "rendered edge weights";
         });
 
@@ -899,7 +899,8 @@ auto application::connect_layout_presentation() -> void
     backend.connect_to_layout(
         [this](const auto&)
         {
-            m_graph_renderer->render_layout(m_graph_iface->vertex_position());
+            m_graph_renderer->render_layout(
+                pres::vertex_position(*m_graph_iface));
             BOOST_LOG_TRIVIAL(info) << "rendered layout";
         });
 
@@ -964,7 +965,8 @@ auto application::connect_scaling_presentation() -> void
     backend.connect(
         [this](const auto&)
         {
-            m_graph_renderer->render_scaling(m_graph_iface->vertex_scale());
+            m_graph_renderer->render_scaling(
+                pres::vertex_scale(*m_graph_iface));
             BOOST_LOG_TRIVIAL(info) << "rendered vertex scaling";
         });
 
@@ -1209,7 +1211,8 @@ auto application::connect_clustering_presentation() -> void
     backend.connect_to_clusters(
         [this](const auto&)
         {
-            m_graph_renderer->render_clusters(m_graph_iface->vertex_cluster());
+            m_graph_renderer->render_clusters(
+                pres::vertex_cluster(*m_graph_iface));
             BOOST_LOG_TRIVIAL(info) << "rendered clusters";
         });
 

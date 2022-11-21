@@ -789,3 +789,18 @@
 	+ [x] LLP GUI helpers
 
 	+ [x] Fix input propagation from gui
+
+	+ [ ] Graph interface for accessing vertices by ids
+
+
+# 21 / 11 / 2022
+
+	+ [ ] Search bar with camera pan
+
+		+ [x] Vertex Marker
+
+		+ [x] Graph Interface functions
+
+		+ [ ] Vertex position by id
+
+	+ [ ] Info Map

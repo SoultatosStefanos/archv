@@ -1,6 +1,8 @@
 #include "config.hpp"
 
+#include "graph.hpp"
 #include "symbol_table.hpp"
+#include "vertex_marker.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <cassert>
@@ -215,22 +217,19 @@ namespace
     }
 
     auto read_vertices(
-        const Json::Value& val,
-        symbol_table& st,
-        graph& g,
-        vertex_properties& props) -> void
+        const Json::Value& val, symbol_table& st, graph& g, vertex_marker& m)
+        -> void
     {
         for_each_object(
             val,
-            [&st, &g, &props](const auto& id, const auto& val)
+            [&st, &g, &m](const auto& id, const auto& val)
             {
                 st.insert(read_structure(id, val));
-                props.insert(std::make_pair(id, boost::add_vertex(id, g)));
+                m.mark(id, boost::add_vertex(id, g));
             });
     }
 
-    auto read_edges(const Json::Value& val, graph& g, vertex_properties& props)
-        -> void
+    auto read_edges(const Json::Value& val, graph& g, vertex_marker& m) -> void
     {
         using vertex_property = graph::vertex_bundled;
 
@@ -239,13 +238,13 @@ namespace
             const auto& from = v["from"].as< vertex_property >();
             const auto& to = v["to"].as< vertex_property >();
 
-            assert(props.contains(from));
-            assert(props.contains(to));
+            assert(m.marks(from));
+            assert(m.marks(to));
 
             for_each_object(
                 v["types"],
-                [&from, &to, &g, &props](const auto& type, const auto&)
-                { boost::add_edge(props[from], props[to], type, g); });
+                [&from, &to, &g, &m](const auto& type, const auto&)
+                { boost::add_edge(m.vertex(from), m.vertex(to), type, g); });
 
             BOOST_LOG_TRIVIAL(debug)
                 << "read dependency from: " << from << " to: " << to;
@@ -254,16 +253,16 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> tuple
+auto deserialize(const Json::Value& root) -> config_data
 {
     auto st = symbol_table();
     auto g = graph();
-    auto props = vertex_properties();
+    auto m = vertex_marker();
 
-    read_vertices(root["structures"], st, g, props);
-    read_edges(root["dependencies"], g, props);
+    read_vertices(root["structures"], st, g, m);
+    read_edges(root["dependencies"], g, m);
 
-    return { std::move(st), std::move(g), std::move(props) };
+    return { std::move(st), std::move(g), std::move(m) };
 }
 
 } // namespace architecture

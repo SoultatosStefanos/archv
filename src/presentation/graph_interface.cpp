@@ -13,43 +13,44 @@ graph_interface::graph_interface(
 : m_st { std::move(st) }
 , m_g { std::move(g) }
 , m_weights { std::move(weights_cfg) }
-, m_layout { m_g, edge_weight(), std::move(layout_cfg) }
+, m_layout { m_g, edge_weight(*this), std::move(layout_cfg) }
 , m_scaling { std::move(scaling_cfg) }
-, m_clustering { m_g, edge_weight(), std::move(clustering_cfg) }
+, m_clustering { m_g, edge_weight(*this), std::move(clustering_cfg) }
 {
 }
 
-auto graph_interface::vertex_id() const -> id_map
+auto vertex_id(const graph_interface& g) -> graph_interface::id_map
 {
-    return boost::get(boost::vertex_bundle, graph());
+    return boost::get(boost::vertex_bundle, g.graph());
 }
 
-auto graph_interface::vertex_position() const -> position_map
+auto vertex_position(const graph_interface& g) -> graph_interface::position_map
 {
-    return layout::make_position_map(layout_backend());
+    return layout::make_position_map(g.layout_backend());
 }
 
-auto graph_interface::vertex_scale() const -> scale_map
+auto vertex_scale(const graph_interface& g) -> graph_interface::scale_map
 {
-    return scaling::make_scale_map< graph_type >(
-        scaling_backend(),
-        architecture::metadata_counter(symbol_table(), graph()));
+    return scaling::make_scale_map< graph_interface::graph_type >(
+        g.scaling_backend(),
+        architecture::metadata_counter(g.symbol_table(), g.graph()));
 }
 
-auto graph_interface::vertex_cluster() const -> cluster_map
+auto vertex_cluster(const graph_interface& g) -> graph_interface::cluster_map
 {
-    return clustering::make_cluster_map(clustering_backend());
+    return clustering::make_cluster_map(g.clustering_backend());
 }
 
-auto graph_interface::edge_dependency() const -> dependency_map
+auto edge_dependency(const graph_interface& g)
+    -> graph_interface::dependency_map
 {
-    return boost::get(boost::edge_bundle, graph());
+    return boost::get(boost::edge_bundle, g.graph());
 }
 
-auto graph_interface::edge_weight() const -> weight_map
+auto edge_weight(const graph_interface& g) -> graph_interface::weight_map
 {
-    return weights::make_weight_map< graph_type >(
-        weights_backend(), edge_dependency());
+    return weights::make_weight_map< graph_interface::graph_type >(
+        g.weights_backend(), edge_dependency(g));
 }
 
 } // namespace presentation

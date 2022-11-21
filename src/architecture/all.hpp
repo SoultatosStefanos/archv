@@ -10,5 +10,6 @@
 #include "metadata.hpp"
 #include "symbol_table.hpp"
 #include "symbols.hpp"
+#include "vertex_marker.hpp"
 
 #endif // ARCHITECTURE_ALL_HPP
