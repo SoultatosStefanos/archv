@@ -35,6 +35,18 @@ auto build_infomap_network(
             static_cast< unsigned long >(boost::get(edge_weight, e)));
 }
 
+template < typename Graph, typename ClusterMap >
+auto cluster_in_isolation(const Graph& g, ClusterMap vertex_cluster) -> void
+{
+    using cluster_map_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename cluster_map_traits::value_type;
+
+    // { 0, 1, ..., boost::num_vertices(g) - 1 }
+    for (cluster_type c = 0;
+         auto u : boost::make_iterator_range(boost::vertices(g)))
+        boost::put(vertex_cluster, u, c++);
+}
+
 template < typename ClusterMap >
 auto cluster_from_hierarchical_network(
     infomap::InfomapWrapper& infomap,
@@ -59,12 +71,13 @@ template < typename Graph, typename WeightMap, typename ClusterMap >
 auto infomap_adaptor(
     const Graph& g,
     WeightMap edge_weight,
-    ClusterMap vertex_clster) -> void
+    ClusterMap vertex_cluster) -> void
 {
-    auto wrapper = infomap::InfomapWrapper("--two-level");
+    auto wrapper = infomap::InfomapWrapper("--two-level --flow-model directed");
     build_infomap_network(wrapper.network(), g, edge_weight);
     wrapper.run();
-    cluster_from_hierarchical_network(wrapper, vertex_clster);
+    cluster_in_isolation(g, vertex_cluster);
+    cluster_from_hierarchical_network(wrapper, vertex_cluster);
 }
 
 } // namespace clustering::detail

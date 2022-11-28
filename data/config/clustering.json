@@ -6,7 +6,8 @@
 		"Strong Components",
 		"Maximal Clique Enumeration",
 		"Louvain Method",
-		"Layered Label Propagation"
+		"Layered Label Propagation",
+		"Infomap"
 	],
 	"min-spanning-tree-finders" : 
 	[
