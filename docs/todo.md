@@ -19,9 +19,9 @@
 
 	+ [x] Louvain method
 
-	+ [ ] Layered label propagation
+	+ [x] Layered label propagation
  
- 	+ [ ] Info map
+ 	+ [x] Info map
 
 ## Features
 
@@ -106,7 +106,7 @@
 
 	+ [ ] Mini Map
 
-	+ [ ] Search Bar
+	+ [x] Search Bar
 
 	+ [ ] More configurations (all of em)
 
@@ -807,11 +807,11 @@
 
 		+ [x] Camera pan function
 
-	+ [ ] Menu search autocompletion
-
-	+ [ ] Info Map
-
 
 # 28 / 11 / 2022
 
 	+ [x] Info Map Adaptor
+
+	+ [x] Info Map
+
+	+ [ ] Menu search autocompletion
