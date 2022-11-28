@@ -34,6 +34,9 @@ template < typename Graph, typename WeightMap >
 class layered_label_propagation_clusterer;
 
 template < typename Graph, typename WeightMap >
+class infomap_clusterer;
+
+template < typename Graph, typename WeightMap >
 class kruskal_min_spanning_tree;
 
 template < typename Graph, typename WeightMap >
