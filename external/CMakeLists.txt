@@ -14,3 +14,4 @@ target_include_directories(${PROJECT_LIB} PUBLIC ${ICON_FONT_INCLUDE_DIR} ${INFO
 set(INFOMAP_LIB infomap_lib)
 file(GLOB_RECURSE infomap_src CONFIGURE_DEPENDS "infomap/src/*.h" "infomap/src/*.cpp")
 add_library(${INFOMAP_LIB} ${infomap_src})
+target_compile_options(${INFOMAP_LIB} PUBLIC -w)
