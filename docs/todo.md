@@ -810,3 +810,12 @@
 	+ [ ] Menu search autocompletion
 
 	+ [ ] Info Map
+
+
+# 28 / 11 / 2022
+
+	+ [ ] Info Map
+
+		+ [x] Consume?
+
+			+ [ ] Adapt

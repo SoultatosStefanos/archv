@@ -9,6 +9,7 @@
 #include "clusterer.hpp"
 #include "clusterer_builder.hpp"
 #include "config.hpp"
+#include "infomap_clustering.hpp"
 #include "k_spanning_tree_clusterer.hpp"
 #include "k_spanning_tree_clustering.hpp"
 #include "kruskal_min_spanning_tree.hpp"

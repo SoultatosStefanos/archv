@@ -28,10 +28,8 @@ endforeach()
 # provide config path
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="/home/stef/Documents/Projects/archv/data/config")
 
-set(ICON_FONT_INCLUDE_DIR external/IconFontCppHeaders)
-
 # make the src/ directory visible for include directives
-target_include_directories(${PROJECT_LIB} PUBLIC src ${ICON_FONT_INCLUDE_DIR})
+target_include_directories(${PROJECT_LIB} PUBLIC src)
 
 # find cmake configs locally
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
@@ -49,6 +47,7 @@ set(JSONCPP_LIBRARIES libjsoncpp.so)
 set(STB_LIBRARIES libstb.so)
 set(SDL2_LIBRARIES libSDL2.so)
 set(OGRE_PROCEDURAL_LIBRARIES ${OgreProcedural_LIBRARIES})
+set(INFOMAP_LIBRARIES infomap_lib)
 
 # merge 3rd party targets
 set(THIRD_PARTY_LIBRARIES
@@ -60,6 +59,7 @@ set(THIRD_PARTY_LIBRARIES
   ${FREETYPE_LIBRARIES}
   ${STB_LIBRARIES}
   ${OGRE_PROCEDURAL_LIBRARIES}
+  ${INFOMAP_LIBRARIES}
 )
 
 # link 3rd party libraries

@@ -1,3 +1,6 @@
 [submodule "external/IconFontCppHeaders"]
 	path = external/IconFontCppHeaders
 	url = https://github.com/juliettef/IconFontCppHeaders
+[submodule "external/infomap"]
+	path = external/infomap
+	url = https://github.com/mapequation/infomap
