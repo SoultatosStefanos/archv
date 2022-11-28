@@ -814,4 +814,16 @@
 
 	+ [x] Info Map
 
-	+ [ ] Menu search autocompletion
+	+ [n] Menu search autocompletion
+
+
+# 29 / 11 / 2022
+
+	+ [ ] Mini Map
+
+		+ [ ] Search in Ogre tutorials
+
+		+ [ ] Google for common tecnhiques
+
+		+ [?] Converter functions in constrained 2D space
+
