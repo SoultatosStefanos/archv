@@ -90,9 +90,11 @@ public:
     auto render_scale(const id_type& id, scale_type scale) -> void;
 
     auto render_in_degree_particles(
-        const id_type& id, const std::optional< name_type >& particles) -> void;
+        const id_type& id,
+        const std::optional< name_type >& particles) -> void;
     auto render_out_degree_particles(
-        const id_type&, const std::optional< name_type >& particles) -> void;
+        const id_type&,
+        const std::optional< name_type >& particles) -> void;
 
     auto render_cluster(const id_type& id, const rgba_type& col) -> void;
 

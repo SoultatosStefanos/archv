@@ -266,7 +266,9 @@ update_factor_dims(backend& b, backend::tag_type tag, backend::dims_type dims)
 }
 
 inline auto update_factor_baseline(
-    backend& b, backend::tag_type tag, backend::baseline_type baseline)
+    backend& b,
+    backend::tag_type tag,
+    backend::baseline_type baseline)
 {
     update_factor(
         b,
@@ -292,7 +294,9 @@ update_factor_enablement(backend& b, backend::tag_type tag, bool enabled)
 }
 
 inline auto update_factor_min_ratio(
-    backend& b, backend::tag_type tag, backend::ratio_type ratio)
+    backend& b,
+    backend::tag_type tag,
+    backend::ratio_type ratio)
 {
     update_factor(
         b,
@@ -305,7 +309,9 @@ inline auto update_factor_min_ratio(
 }
 
 inline auto update_factor_max_ratio(
-    backend& b, backend::tag_type tag, backend::ratio_type ratio)
+    backend& b,
+    backend::tag_type tag,
+    backend::ratio_type ratio)
 {
     update_factor(
         b,

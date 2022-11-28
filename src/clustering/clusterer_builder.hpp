@@ -94,7 +94,8 @@ private:
 
 template < typename Graph, typename WeightMap >
 inline clusterer_builder< Graph, WeightMap >::clusterer_builder(
-    const graph_type& g, weight_map_type edge_weight)
+    const graph_type& g,
+    weight_map_type edge_weight)
 : m_g { g }
 , m_edge_weight { edge_weight }
 , m_k_spanning_tree { edge_weight }

@@ -70,7 +70,9 @@ private:
 template < typename Graph >
 template < typename WeightMap >
 inline gursoy_atun_layout< Graph >::gursoy_atun_layout(
-    const graph_type& g, const topology& space, WeightMap edge_weight)
+    const graph_type& g,
+    const topology& space,
+    WeightMap edge_weight)
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept<
@@ -124,7 +126,9 @@ inline auto gursoy_atun_layout< Graph >::clone() const
 // For type deduction.
 template < typename Graph, typename WeightMap >
 inline auto make_gursoy_atun_layout(
-    const Graph& g, const topology& space, WeightMap edge_weight)
+    const Graph& g,
+    const topology& space,
+    WeightMap edge_weight)
 {
     return gursoy_atun_layout< Graph >(g, space, edge_weight);
 }

@@ -112,7 +112,8 @@ graph_collision_checker< Graph, IDMap, DependencyMap >::vertex_collision(
 template < typename Graph, typename IDMap, typename DependencyMap >
 inline auto
 graph_collision_checker< Graph, IDMap, DependencyMap >::vertex_collision(
-    const ray_type& ray, const id_type& id) const -> bool
+    const ray_type& ray,
+    const id_type& id) const -> bool
 {
     static_assert(std::is_convertible_v< id_type, Ogre::String >);
     assert(scene().hasEntity(id));

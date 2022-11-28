@@ -34,7 +34,8 @@ public:
     using modularity_type = float;
 
     explicit louvain_method_clusterer(
-        weight_map_type edge_weight, modularity_type min = 0.1);
+        weight_map_type edge_weight,
+        modularity_type min = 0.1);
     ~louvain_method_clusterer() override = default;
 
     auto edge_weight() const -> weight_map_type { return m_edge_weight; }
@@ -57,7 +58,8 @@ private:
 
 template < typename Graph, typename WeightMap >
 inline louvain_method_clusterer< Graph, WeightMap >::louvain_method_clusterer(
-    weight_map_type edge_weight, modularity_type min)
+    weight_map_type edge_weight,
+    modularity_type min)
 : m_edge_weight { edge_weight }, m_min { min }
 {
 }

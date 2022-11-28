@@ -66,7 +66,9 @@ private:
 template < typename Graph, typename WeightMap >
 inline layered_label_propagation_clusterer< Graph, WeightMap >::
     layered_label_propagation_clusterer(
-        weight_map_type edge_weight, gamma_type gamma, steps_type steps)
+        weight_map_type edge_weight,
+        gamma_type gamma,
+        steps_type steps)
 : m_edge_weight { edge_weight }, m_gamma { gamma }, m_steps { steps }
 {
 }

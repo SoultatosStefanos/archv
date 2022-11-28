@@ -584,8 +584,9 @@ inline auto community(const Dendrogram& parts, Vertex u)
 
 template < typename Graph, typename ClusterMap, typename Dendrogram >
 auto cluster_from_dendrogram(
-    const Graph& g, ClusterMap vertex_cluster, const Dendrogram& partitions)
-    -> void
+    const Graph& g,
+    ClusterMap vertex_cluster,
+    const Dendrogram& partitions) -> void
 {
     using cluster_map_traits = boost::property_traits< ClusterMap >;
     using cluster_type = typename cluster_map_traits::value_type;

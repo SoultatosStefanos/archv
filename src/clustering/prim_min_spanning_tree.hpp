@@ -58,7 +58,9 @@ public:
 
 template < typename Graph, typename WeightMap >
 inline void prim_min_spanning_tree< Graph, WeightMap >::operator()(
-    const graph_type& g, output_iterator out, weight_map_type edge_weight) const
+    const graph_type& g,
+    output_iterator out,
+    weight_map_type edge_weight) const
 {
     using predecessor_map = std::vector< vertex_type >;
 

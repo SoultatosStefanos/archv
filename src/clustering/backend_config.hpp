@@ -52,11 +52,13 @@ auto are_mst_finders_plugged_in(const backend_config& cfg) -> bool;
 
 auto is_clusterer_listed(const backend_config& cfg) -> bool;
 auto is_clusterer_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool;
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool;
 
 auto is_mst_finder_listed(const backend_config& cfg) -> bool;
 auto is_mst_finder_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool;
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool;
 
 auto all_clusterers() -> backend_config::ids_type;
 auto all_mst_finders() -> backend_config::ids_type;

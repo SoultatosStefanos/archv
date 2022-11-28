@@ -21,8 +21,9 @@ namespace clustering
 // type: boost::CliqueVisitor (the applied function).
 template < typename Graph, typename VisitCliques, typename ClusterMap >
 auto maximal_clique_enumeration_clustering(
-    const Graph& g, VisitCliques visit_cliques, ClusterMap vertex_cluster)
-    -> void
+    const Graph& g,
+    VisitCliques visit_cliques,
+    ClusterMap vertex_cluster) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 

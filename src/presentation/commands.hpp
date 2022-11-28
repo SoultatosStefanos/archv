@@ -153,10 +153,12 @@ auto update_out_degree_evaluation_applied(
     degrees_backend::applied_type applied) -> void;
 
 auto restore_in_degree_evaluation(
-    command_history& cmds, degrees_backend& backend) -> void;
+    command_history& cmds,
+    degrees_backend& backend) -> void;
 
 auto restore_out_degree_evaluation(
-    command_history& cmds, degrees_backend& backend) -> void;
+    command_history& cmds,
+    degrees_backend& backend) -> void;
 
 auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void;
 

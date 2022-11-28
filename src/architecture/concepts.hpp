@@ -9,13 +9,13 @@
 namespace architecture
 {
 
+// clang-format off
 template < typename T >
-concept symbol_composed = requires(T val)
+concept symbol_composed = requires(T val) 
 {
-    // clang-format off
-    { val.sym } -> std::same_as< symbol& >;
-    // clang-format on
+    { val.sym } -> std::same_as< symbol& >;                              
 };
+// clang-format on
 
 } // namespace architecture
 

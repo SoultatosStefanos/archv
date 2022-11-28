@@ -72,9 +72,9 @@ class backend
 public:
     using config_data_type = backend_config;
     using graph_type = Graph;
-    using graph_traits = boost::graph_traits<graph_type>;
-    using vertex_type = typename graph_traits::vertex_descriptor; 
-    using edge_type = typename graph_traits::edge_descriptor; 
+    using graph_traits = boost::graph_traits< graph_type >;
+    using vertex_type = typename graph_traits::vertex_descriptor;
+    using edge_type = typename graph_traits::edge_descriptor;
     using weight_map_type = WeightMap;
     using layout_type = layout< graph_type >;
     using topology_type = topology;
@@ -141,7 +141,9 @@ private:
 
 template < typename Graph, typename WeightMap >
 inline backend< Graph, WeightMap >::backend(
-    const graph_type& g, weight_map_type edge_weight, config_data_type config)
+    const graph_type& g,
+    weight_map_type edge_weight,
+    config_data_type config)
 : m_g { g }, m_edge_weight { edge_weight }, m_config { std::move(config) }
 {
     verify_config();
@@ -165,7 +167,9 @@ inline auto backend< Graph, WeightMap >::update_layout(id_type id) -> void
 
 template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_layout(
-    id_type space, scale_type scale, id_type lay) -> void
+    id_type space,
+    scale_type scale,
+    id_type lay) -> void
 {
     if (!is_topology_listed(config_data(), space) or scale < 0
         or !is_layout_listed(config_data(), lay))

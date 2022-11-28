@@ -197,13 +197,15 @@ evaluate_out_degree(const degrees_ranked_backend& b, degree_t degree)
 }
 
 inline auto update_in_degree_evaluation(
-    degrees_ranked_backend& b, degrees_ranked_evaluation_data data)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data data)
 {
     b.update_in_degree_evaluation(std::move(data));
 }
 
 inline auto update_out_degree_evaluation(
-    degrees_ranked_backend& b, degrees_ranked_evaluation_data data)
+    degrees_ranked_backend& b,
+    degrees_ranked_evaluation_data data)
 {
     b.update_out_degree_evaluation(std::move(data));
 }

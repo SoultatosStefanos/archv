@@ -58,8 +58,9 @@ public:
 
 template < typename Graph, typename WeightMap >
 inline auto kruskal_min_spanning_tree< Graph, WeightMap >::operator()(
-    const graph_type& g, output_iterator out, weight_map_type edge_weight) const
-    -> void
+    const graph_type& g,
+    output_iterator out,
+    weight_map_type edge_weight) const -> void
 {
     boost::kruskal_minimum_spanning_tree(
         g, out, boost::weight_map(edge_weight));

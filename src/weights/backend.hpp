@@ -61,7 +61,9 @@ inline auto get_weight(const backend& b, backend::dependency_type dependency)
 }
 
 inline auto update_weight(
-    backend& b, backend::dependency_type dependency, backend::weight_type w)
+    backend& b,
+    backend::dependency_type dependency,
+    backend::weight_type w)
 {
     b.update_weight(dependency, w);
 }

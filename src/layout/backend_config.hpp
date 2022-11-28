@@ -42,11 +42,13 @@ auto are_topologies_plugged_in(const backend_config& cfg) -> bool;
 
 auto is_layout_listed(const backend_config& cfg) -> bool;
 auto is_layout_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool;
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool;
 
 auto is_topology_listed(const backend_config& cfg) -> bool;
 auto is_topology_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool;
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool;
 
 auto all_layouts() -> backend_config::ids_type;
 auto all_topologies() -> backend_config::ids_type;

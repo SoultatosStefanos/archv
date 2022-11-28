@@ -4,8 +4,8 @@
 #ifndef CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 #define CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 
-#include "detail/utility.hpp"
 #include "detail/shared_nearest_neighbour_clustering.hpp"
+#include "detail/utility.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_utility.hpp>
@@ -19,7 +19,9 @@ namespace clustering
 // type max / 2
 template < typename Graph, typename ClusterMap >
 auto shared_nearest_neighbour_clustering(
-    const Graph& g, int threshold, ClusterMap vertex_cluster) -> void
+    const Graph& g,
+    int threshold,
+    ClusterMap vertex_cluster) -> void
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
