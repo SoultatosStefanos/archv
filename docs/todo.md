@@ -814,8 +814,4 @@
 
 # 28 / 11 / 2022
 
-	+ [ ] Info Map
-
-		+ [x] Consume?
-
-			+ [ ] Adapt
+	+ [x] Info Map Adaptor
