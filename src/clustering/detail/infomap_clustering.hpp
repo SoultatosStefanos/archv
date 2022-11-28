@@ -30,9 +30,9 @@ auto build_infomap_network(
 
     for (auto e : boost::make_iterator_range(boost::edges(g)))
         network.addLink(
-            static_cast< unsigned int >(boost::source(e)),
-            static_cast< unsigned int >(boost::target(e)),
-            boost::get(edge_weight, e));
+            static_cast< unsigned int >(boost::source(e, g)),
+            static_cast< unsigned int >(boost::target(e, g)),
+            static_cast< unsigned long >(boost::get(edge_weight, e)));
 }
 
 template < typename ClusterMap >
@@ -64,7 +64,7 @@ auto infomap_adaptor(
     auto wrapper = infomap::InfomapWrapper("--two-level");
     build_infomap_network(wrapper.network(), g, edge_weight);
     wrapper.run();
-    cluster_from_hierarchical_network(wrapper, g, vertex_clster);
+    cluster_from_hierarchical_network(wrapper, vertex_clster);
 }
 
 } // namespace clustering::detail

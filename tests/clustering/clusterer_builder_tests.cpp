@@ -169,4 +169,20 @@ TEST_F(
     ASSERT_EQ(downcasted.steps(), steps);
 }
 
+TEST_F(
+    clustering_cluster_builder_tests,
+    given_infomap_clusterer_id_returns_appropriate_implementation)
+{
+    using expected_t = clustering::infomap_clusterer< graph, weight_map >;
+
+    constexpr auto id = clustering::infomap_clusterer_id;
+    static_assert(clustering::is_clusterer_plugged_in(id));
+
+    const auto clusterer = builder->result(id);
+
+    ASSERT_NE(clusterer, nullptr);
+    EXPECT_EQ(clusterer->id(), id);
+    ASSERT_EQ(typeid(*clusterer), typeid(expected_t));
+}
+
 } // namespace

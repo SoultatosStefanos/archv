@@ -4,6 +4,7 @@
 #ifndef CLUSTERING_CLUSTERER_BUILDER_HPP
 #define CLUSTERING_CLUSTERER_BUILDER_HPP
 
+#include "infomap_clusterer.hpp"
 #include "k_spanning_tree_clusterer.hpp"
 #include "layered_label_propagation_clusterer.hpp"
 #include "louvain_method_clusterer.hpp"
@@ -76,6 +77,7 @@ private:
     using max_clique_enum_type = maximal_clique_enumeration_clusterer< Graph >;
     using louvain_method_type = louvain_method_clusterer< Graph, WeightMap >;
     using llp_type = layered_label_propagation_clusterer< Graph, WeightMap >;
+    using infomap_type = infomap_clusterer< Graph, WeightMap >;
 
     const graph_type& m_g;
     weight_map_type m_edge_weight;
@@ -86,6 +88,7 @@ private:
     max_clique_enum_type m_max_clique_enum;
     louvain_method_type m_louvain_method;
     llp_type m_llp;
+    infomap_type m_infomap;
 };
 
 /***********************************************************
@@ -101,6 +104,7 @@ inline clusterer_builder< Graph, WeightMap >::clusterer_builder(
 , m_k_spanning_tree { edge_weight }
 , m_louvain_method { edge_weight }
 , m_llp { edge_weight }
+, m_infomap { edge_weight }
 {
 }
 
@@ -220,6 +224,10 @@ inline auto clusterer_builder< Graph, WeightMap >::result(id_type id) const
     else if (id == llp_clusterer_id)
     {
         return &m_llp;
+    }
+    else if (id == infomap_clusterer_id)
+    {
+        return &m_infomap;
     }
     else
     {
