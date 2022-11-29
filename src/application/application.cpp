@@ -188,7 +188,9 @@ auto application::setup_minimap_renderer() -> void
                          .top = coord_type(0.0),
                          .right = coord_type(1.0),
                          .bottom = coord_type(-0.5),
-                         .background_col = rgba_type(0, 0, 0) };
+                         .background_col = rgba_type(0, 0, 0),
+                         .render_shadows = false,
+                         .render_sky = false };
 
     m_minimap_renderer = std::make_unique< minimap_renderer_type >(
         *getRenderWindow(),

@@ -823,7 +823,15 @@
 
 		+ [x] Search in Ogre tutorials
 
-		+ [ ] Google for common tecnhiques
+		+ [n] Google for common tecnhiques
 
-		+ [?] Converter functions in constrained 2D space
+		+ [n] Converter functions in constrained 2D space
+
+		+ [ ] 2nd Camera view (zoomed out)
+
+			+ [ ] 2nd Camera input
+
+		+ [ ] Configs via jsons
+
+		+ [ ] Interactive configuration
 

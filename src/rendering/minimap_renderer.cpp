@@ -110,8 +110,8 @@ auto minimap_renderer::setup_texture_target() -> void
     assert(viewport);
     viewport->setClearEveryFrame(true); // avoid the infinite trails effect
     viewport->setBackgroundColour(config_data().background_col);
-    viewport->setShadowsEnabled(false);  // for the unique look
-    viewport->setSkiesEnabled(false);    // save up time
+    viewport->setShadowsEnabled(config_data().render_shadows);
+    viewport->setSkiesEnabled(config_data().render_sky);
     viewport->setOverlaysEnabled(false); // hide overlays
 
     // avoid rendering the minimap recursively

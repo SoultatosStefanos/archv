@@ -65,4 +65,14 @@ auto minimap_config_api::set_background_color(rgba_type col) -> void
     config_data().background_col = col;
 }
 
+auto minimap_config_api::set_render_shadows(bool v) -> void
+{
+    config_data().render_shadows = v;
+}
+
+auto minimap_config_api::set_render_sky(bool v) -> void
+{
+    config_data().render_sky = v;
+}
+
 } // namespace rendering
