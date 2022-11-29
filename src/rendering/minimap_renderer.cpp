@@ -110,8 +110,8 @@ auto minimap_renderer::setup_texture_target() -> void
     assert(viewport);
     viewport->setClearEveryFrame(true); // avoid the infinite trails effect
     viewport->setBackgroundColour(config_data().background_col);
-    viewport->setShadowsEnabled(false);
-    viewport->setSkiesEnabled(false);
+    viewport->setShadowsEnabled(false);  // for the unique look
+    viewport->setSkiesEnabled(false);    // save up time
     viewport->setOverlaysEnabled(false); // hide overlays
 
     // avoid rendering the minimap recursively
@@ -131,6 +131,7 @@ auto minimap_renderer::setup_mini_screen() -> void
         config_data().right,
         config_data().bottom);
     m_rect->setBoundingBox(AxisAlignedBox::BOX_INFINITE);
+    m_rect->setRenderQueueGroup(RENDER_QUEUE_8); // render just before overlays
 
     auto material = MaterialManager::getSingleton().create(
         material_name, resource_group().data());

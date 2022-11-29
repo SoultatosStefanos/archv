@@ -65,9 +65,4 @@ auto minimap_config_api::set_background_color(rgba_type col) -> void
     config_data().background_col = col;
 }
 
-auto minimap_config_api::set_material(name_type name) -> void
-{
-    config_data().material = std::move(name);
-}
-
 } // namespace rendering
