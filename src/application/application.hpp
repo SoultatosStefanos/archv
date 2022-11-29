@@ -39,6 +39,8 @@ private:
     using background_renderer_type = presentation::background_renderer;
     using graph_renderer_type = presentation::graph_renderer;
     using graph_collision_checker_type = presentation::graph_collision_checker;
+    using minimap_renderer_type = presentation::minimap_renderer;
+
     using gui_type = presentation::overlay_manager;
 
     using weights_config_data_type = weights::config_data;
@@ -62,11 +64,13 @@ private:
     auto setup_background_renderer() -> void;
     auto setup_graph_renderer() -> void;
     auto setup_graph_collision_checker() -> void;
+    auto setup_minimap_renderer() -> void;
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;
+    auto shutdown_minimap_renderer() -> void;
     auto shutdown_graph_collision_checker() -> void;
     auto shutdown_graph_renderer() -> void;
     auto shutdown_background_renderer() -> void;
@@ -108,6 +112,7 @@ private:
     std::unique_ptr< graph_renderer_type > m_graph_renderer;
     std::unique_ptr< graph_collision_checker_type > m_graph_collisions;
     std::unique_ptr< background_renderer_type > m_background_renderer;
+    std::unique_ptr< minimap_renderer_type > m_minimap_renderer;
 
     std::unique_ptr< gui_type > m_gui;
 

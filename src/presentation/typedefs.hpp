@@ -48,6 +48,8 @@ using graph_collision_checker = rendering::graph_collision_checker<
     architecture::id_map,
     architecture::dependency_map >;
 
+using minimap_renderer = rendering::minimap_renderer;
+
 /***********************************************************
  * GUI                                                     *
  ***********************************************************/

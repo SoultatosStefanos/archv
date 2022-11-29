@@ -78,6 +78,7 @@ auto application::setup() -> void
     setup_background_renderer();
     setup_graph_renderer();
     setup_graph_collision_checker();
+    setup_minimap_renderer();
     setup_gui();
     setup_input();
 
@@ -172,6 +173,33 @@ auto application::setup_graph_collision_checker() -> void
         m_background_renderer->scene());
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph collisions";
+}
+
+auto application::setup_minimap_renderer() -> void
+{
+    using rendering::minimap_config;
+    using coord_type = rendering::minimap_config::coord_type;
+    using rgba_type = rendering::minimap_config::rgba_type;
+
+    assert(getRenderWindow());
+
+    // TODO Read from config
+    minimap_config cfg { .left = coord_type(0.5),
+                         .top = coord_type(0.0),
+                         .right = coord_type(1.0),
+                         .bottom = coord_type(-0.5),
+                         .background_col = rgba_type(0, 0, 0),
+                         .material = "Solid/Gray" };
+
+    m_minimap_renderer = std::make_unique< minimap_renderer_type >(
+        *getRenderWindow(),
+        m_background_renderer->scene(),
+        std::move(cfg),
+        ARCHV_RESOURCE_GROUP);
+
+    m_minimap_renderer->setup();
+
+    BOOST_LOG_TRIVIAL(debug) << "setup minimap renderer";
 }
 
 namespace // gui setup
@@ -469,6 +497,7 @@ auto application::shutdown() -> void
 {
     shutdown_input();
     shutdown_gui();
+    shutdown_minimap_renderer();
     shutdown_graph_collision_checker();
     shutdown_graph_renderer();
     shutdown_background_renderer();
@@ -505,6 +534,13 @@ auto application::shutdown_gui() -> void
     Ogre::OverlayManager::getSingleton().destroy(imgui_overlay_name);
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
+}
+
+auto application::shutdown_minimap_renderer() -> void
+{
+    m_minimap_renderer.reset();
+
+    BOOST_LOG_TRIVIAL(debug) << "shutdown minimap renderer";
 }
 
 auto application::shutdown_graph_collision_checker() -> void
