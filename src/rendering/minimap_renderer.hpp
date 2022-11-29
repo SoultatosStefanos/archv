@@ -31,7 +31,6 @@ public:
     using config_data_type = minimap_config;
     using config_api_type = minimap_config_api;
 
-    // NOTE: The camera must originate from the scene.
     minimap_renderer(
         const window_type& win,
         scene_type& scene,
