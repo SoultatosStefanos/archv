@@ -189,7 +189,7 @@ auto application::setup_minimap_renderer() -> void
                          .right = coord_type(1.0),
                          .bottom = coord_type(-0.5),
                          .background_col = rgba_type(0, 0, 0),
-                         .material = "Solid/Gray" };
+                         .material = "Minimap/Default" };
 
     m_minimap_renderer = std::make_unique< minimap_renderer_type >(
         *getRenderWindow(),
