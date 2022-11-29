@@ -14,12 +14,10 @@ using namespace Ogre;
 minimap_renderer::minimap_renderer(
     const window_type& win,
     scene_type& scene,
-    camera_type& cam,
     config_data_type config,
     std::string_view resource_group)
 : m_win { &win }
 , m_scene { &scene }
-, m_cam { &cam }
 , m_cfg { config }
 , m_default_cfg { config }
 , m_cfg_api { std::move(config) }
@@ -34,14 +32,20 @@ minimap_renderer::~minimap_renderer()
 
 namespace
 {
+    constexpr auto main_camera_name = "Main Camera";
+
     constexpr auto texture_name = "RttTex";
     constexpr auto screen_name = "Minimap Screen";
 } // namespace
 
+// TODO Create different view of the scene
 auto minimap_renderer::setup() -> void
 {
-    assert(!m_texture);
-    assert(scene().hasCamera(camera().getName()));
+    assert(!m_texture && "already setup");
+    assert(scene().hasCamera(main_camera_name));
+
+    m_cam = scene().getCamera(main_camera_name);
+    assert(m_cam);
 
     m_texture = TextureManager::getSingleton().createManual(
         texture_name,
@@ -52,7 +56,6 @@ auto minimap_renderer::setup() -> void
         0,                      // the number of mipmaps to be used.
         Ogre::PF_R8G8B8,        // texture format
         Ogre::TU_RENDERTARGET); // usage flag
-
     assert(m_texture);
 
     auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();

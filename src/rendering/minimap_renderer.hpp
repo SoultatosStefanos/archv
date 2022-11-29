@@ -35,7 +35,6 @@ public:
     minimap_renderer(
         const window_type& win,
         scene_type& scene,
-        camera_type& cam,
         config_data_type config,
         std::string_view resource_group);
 
@@ -74,7 +73,6 @@ private:
 
     const window_type* m_win { nullptr };
     scene_type* m_scene { nullptr };
-    camera_type* m_cam { nullptr };
 
     config_data_type m_cfg;
     config_data_type m_default_cfg;
@@ -82,8 +80,9 @@ private:
 
     std::string_view m_resource_group;
 
-    std::unique_ptr< rectangle_type > m_rect;
+    camera_type* m_cam { nullptr };
     texture_ptr_type m_texture;
+    std::unique_ptr< rectangle_type > m_rect;
 };
 
 } // namespace rendering

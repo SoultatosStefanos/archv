@@ -48,6 +48,11 @@ background_renderer::~background_renderer()
  * Setup                                                   *
  ***********************************************************/
 
+namespace
+{
+    constexpr auto camera_name = "Main Camera";
+}
+
 auto background_renderer::setup_scene() -> void
 {
     using namespace Ogre::RTShader;
@@ -85,7 +90,7 @@ auto background_renderer::setup_camera() -> void
 {
     using namespace Ogre;
 
-    m_cam = scene().createCamera("camera");
+    m_cam = scene().createCamera(camera_name);
 
     assert(m_cam);
 
