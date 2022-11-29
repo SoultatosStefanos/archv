@@ -819,7 +819,7 @@
 
 # 29 / 11 / 2022
 
-	+ [ ] Mini Map
+	+ [x] Mini Map
 
 		+ [x] Search in Ogre tutorials
 
@@ -832,6 +832,13 @@
 			+ [x] 2nd Camera input
 
 		+ [x] Visibility flags
+
+
+# 30 / 11 / 2022
+
+	+ [ ] Mini Map
+
+		+ [ ] Disable shadows for main render queue group 
 
 		+ [ ] Cameraman marker
 

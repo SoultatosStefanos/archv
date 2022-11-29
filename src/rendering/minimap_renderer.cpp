@@ -126,12 +126,12 @@ auto minimap_renderer::setup_texture_target() -> void
 
     auto* viewport = texture_trgt->addViewport(&cam());
     assert(viewport);
-    viewport->setClearEveryFrame(true); // avoid the infinite trails effect
     viewport->setBackgroundColour(config_data().background_col);
     viewport->setShadowsEnabled(config_data().render_shadows);
     viewport->setSkiesEnabled(config_data().render_sky);
-    viewport->setOverlaysEnabled(false);              // hide overlays
-    viewport->setVisibilityMask(detail::vertex_mask); // only render vertices
+    viewport->setClearEveryFrame(true);  // avoid the infinite trails effect
+    viewport->setOverlaysEnabled(false); // hide overlays
+    viewport->setVisibilityMask(detail::vertex_mesh_mask);
 
     // avoid rendering the minimap recursively
     texture_trgt->addListener(&m_omit_minimap);
