@@ -30,6 +30,10 @@ class degrees_ranked_backend;
 
 struct cluster_color_pool;
 
+struct minimap_config;
+class minimap_config_api;
+class minimap_renderer;
+
 } // namespace rendering
 
 #endif // RENDERING_ALLFWD_HPP

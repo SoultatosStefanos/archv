@@ -15,5 +15,7 @@
 #include "graph_collision_checker.hpp"
 #include "graph_config.hpp"
 #include "graph_renderer.hpp"
+#include "minimap_config.hpp"
+#include "minimap_renderer.hpp"
 
 #endif // RENDERING_ALL_HPP

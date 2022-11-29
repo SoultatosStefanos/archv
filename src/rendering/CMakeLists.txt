@@ -6,6 +6,8 @@ set(FILES
 	degrees_ranked_backend.cpp
 	degrees_ranked_evaluation.cpp
 	graph_config.cpp
+	minimap_config.cpp
+	minimap_renderer.cpp
 )
 set(SUBDIRECTORIES detail)
 

@@ -821,7 +821,7 @@
 
 	+ [ ] Mini Map
 
-		+ [ ] Search in Ogre tutorials
+		+ [x] Search in Ogre tutorials
 
 		+ [ ] Google for common tecnhiques
 
