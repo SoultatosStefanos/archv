@@ -117,7 +117,8 @@ namespace
     }
 
     inline auto make_vertex_properties(
-        vertex_renderer::id_type id, vertex_renderer::position_type pos)
+        vertex_renderer::id_type id,
+        vertex_renderer::position_type pos)
     {
         return std::make_unique< vertex_properties >(
             std::move(id), pos, make_vertex_txt_name(id));
@@ -322,8 +323,8 @@ auto vertex_renderer::hide_scale(const id_type& id) -> void
 }
 
 auto vertex_renderer::render_in_degree_particles(
-    const id_type& id, const std::optional< name_type >& particle_system)
-    -> void
+    const id_type& id,
+    const std::optional< name_type >& particle_system) -> void
 {
     render_degree_particles(
         id,
@@ -335,8 +336,8 @@ auto vertex_renderer::render_in_degree_particles(
 }
 
 auto vertex_renderer::render_out_degree_particles(
-    const id_type& id, const std::optional< name_type >& particle_system)
-    -> void
+    const id_type& id,
+    const std::optional< name_type >& particle_system) -> void
 {
     render_degree_particles(
         id,
@@ -662,7 +663,9 @@ namespace
     // Returns a point along a line segment defined by two points, at the
     // circumference of an object.
     inline auto across_line_circumferentiallly(
-        const Vector3& from, const Vector3& to, const MovableObject& by)
+        const Vector3& from,
+        const Vector3& to,
+        const MovableObject& by)
     {
         const auto r = by.getBoundingRadiusScaled();
         const auto d = (from - to).length() - r;
@@ -739,7 +742,8 @@ namespace
     }
 
     inline auto produce_weighted_caption(
-        const std::string& caption, edge_renderer::weight_type weight)
+        const std::string& caption,
+        edge_renderer::weight_type weight)
     {
         return caption + '\n' + "(" + std::to_string(weight) + ")";
     }
@@ -1157,14 +1161,16 @@ auto edge_renderer::edge_txt(const name_type& name) -> edge_txt_type&
 }
 
 auto edge_vertices_compare::operator()(
-    const edge_type& lhs, const edge_type& rhs) const -> bool
+    const edge_type& lhs,
+    const edge_type& rhs) const -> bool
 {
     return std::make_pair(lhs.source, lhs.target)
         < std::make_pair(rhs.source, rhs.target);
 }
 
 auto edge_vertices_compare::operator()(
-    const edge_type* lhs, const edge_type* rhs) const -> bool
+    const edge_type* lhs,
+    const edge_type* rhs) const -> bool
 {
     assert(lhs && rhs);
     return std::invoke(*this, *lhs, *rhs);

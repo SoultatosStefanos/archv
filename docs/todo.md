@@ -827,11 +827,17 @@
 
 		+ [n] Converter functions in constrained 2D space
 
-		+ [ ] 2nd Camera view (zoomed out)
+		+ [x] 2nd Camera view (zoomed out)
 
-			+ [ ] 2nd Camera input
+			+ [x] 2nd Camera input
+
+		+ [ ] Cameraman marker
+
+		+ [ ] Visibility flags
 
 		+ [ ] Configs via jsons
 
 		+ [ ] Interactive configuration
+
+		+ [ ] Toggle on and off
 

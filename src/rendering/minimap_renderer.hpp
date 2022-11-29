@@ -29,6 +29,7 @@ public:
     using window_type = Ogre::RenderWindow;
     using scene_type = Ogre::SceneManager;
     using camera_type = Ogre::Camera;
+    using node_type = Ogre::SceneNode;
     using config_data_type = minimap_config;
     using config_api_type = minimap_config_api;
 
@@ -48,8 +49,8 @@ public:
     auto window() const -> const auto& { return *m_win; }
     auto scene() const -> const auto& { return *m_scene; }
     auto scene() -> auto& { return *m_scene; }
-    auto camera() const -> const auto& { return *m_cam; }
-    auto camera() -> auto& { return *m_cam; }
+    auto cam() const -> const auto& { return *m_cam; }
+    auto cam() -> auto& { return *m_cam; }
 
     auto default_data() const -> const auto& { return m_default_cfg; }
     auto config_data() const -> const auto& { return m_cfg; }

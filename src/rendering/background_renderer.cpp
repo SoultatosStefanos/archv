@@ -96,7 +96,7 @@ auto background_renderer::setup_camera() -> void
 
     cam().setAutoAspectRatio(true);
 
-    m_cam_node = scene().getRootSceneNode()->createChildSceneNode();
+    m_cam_node = scene().getRootSceneNode()->createChildSceneNode(camera_name);
 
     assert(m_cam_node);
 

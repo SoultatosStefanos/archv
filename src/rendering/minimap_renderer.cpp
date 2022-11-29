@@ -57,6 +57,7 @@ auto minimap_renderer::omit_minimap_listener::postRenderTargetUpdate(
 namespace
 {
     constexpr auto main_camera_name = "Main Camera";
+    constexpr auto this_camera_name = "Minimap Camera";
     constexpr auto texture_name = "RttTex";
     constexpr auto material_name = "RttMat";
     constexpr auto screen_name = "Minimap Screen";
@@ -72,13 +73,28 @@ auto minimap_renderer::setup() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup minimap";
 }
 
-// TODO Create different view of the scene
 auto minimap_renderer::setup_camera() -> void
 {
-    assert(!m_cam);
     assert(scene().hasCamera(main_camera_name));
-    m_cam = scene().getCamera(main_camera_name);
-    assert(m_cam);
+    auto* main_cam = scene().getCamera(main_camera_name);
+    const auto& main_cam_pos = main_cam->getRealPosition();
+
+    assert(!scene().hasCamera(this_camera_name));
+    m_cam = scene().createCamera(this_camera_name);
+    m_cam->setAutoAspectRatio(true);
+
+    assert(scene().hasSceneNode(main_camera_name));
+    auto* main_cam_node = scene().getSceneNode(main_camera_name);
+
+    assert(!scene().hasSceneNode(this_camera_name));
+    auto* node
+        = scene().getRootSceneNode()->createChildSceneNode(this_camera_name);
+    assert(node);
+    node->attachObject(m_cam);
+    node->setAutoTracking(true, main_cam_node);
+    // TODO Pass offset from config
+    node->setPosition(main_cam_pos + Vector3(0, 600, 0));
+    node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
 }
@@ -105,7 +121,7 @@ auto minimap_renderer::setup_texture_target() -> void
     assert(m_texture);
     auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();
     assert(texture_trgt);
-    texture_trgt->addViewport(&camera());
+    texture_trgt->addViewport(&cam());
     auto* viewport = texture_trgt->getViewport(0);
     assert(viewport);
     viewport->setClearEveryFrame(true); // avoid the infinite trails effect
@@ -120,7 +136,6 @@ auto minimap_renderer::setup_texture_target() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup minimap texture render target";
 }
 
-// TODO Pass shader
 auto minimap_renderer::setup_mini_screen() -> void
 {
     assert(!m_rect);
@@ -186,9 +201,13 @@ auto minimap_renderer::shutdown_texture_target() -> void
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap render texture target";
 }
 
-// TODO
 auto minimap_renderer::shutdown_camera() -> void
 {
+    assert(scene().hasSceneNode(this_camera_name));
+    assert(scene().hasCamera(this_camera_name));
+    scene().getSceneNode(this_camera_name)->detachObject(m_cam);
+    scene().destroySceneNode(this_camera_name);
+    scene().destroyCamera(m_cam);
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap camera";
 }
 
