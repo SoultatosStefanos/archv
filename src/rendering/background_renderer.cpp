@@ -1,5 +1,7 @@
 #include "background_renderer.hpp"
 
+#include "detail/visibility_masks.hpp"
+
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreTextureManager.h>
@@ -104,6 +106,10 @@ auto background_renderer::setup_camera() -> void
 
     m_window.removeAllViewports();
     m_window.addViewport(m_cam);
+
+    // Render everything
+    m_cam->getViewport()->setVisibilityMask(
+        detail::vertex_mask | detail::edge_mask | detail::particles_mask);
 }
 
 /***********************************************************

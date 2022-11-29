@@ -1,5 +1,7 @@
 #include "minimap_renderer.hpp"
 
+#include "detail/visibility_masks.hpp"
+
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
@@ -93,7 +95,7 @@ auto minimap_renderer::setup_camera() -> void
     node->attachObject(m_cam);
     node->setAutoTracking(true, main_cam_node);
     // TODO Pass offset from config
-    node->setPosition(main_cam_pos + Vector3(0, 600, 0));
+    node->setPosition(main_cam_pos + Vector3(0, 100, 0));
     node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
@@ -121,14 +123,15 @@ auto minimap_renderer::setup_texture_target() -> void
     assert(m_texture);
     auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();
     assert(texture_trgt);
-    texture_trgt->addViewport(&cam());
-    auto* viewport = texture_trgt->getViewport(0);
+
+    auto* viewport = texture_trgt->addViewport(&cam());
     assert(viewport);
     viewport->setClearEveryFrame(true); // avoid the infinite trails effect
     viewport->setBackgroundColour(config_data().background_col);
     viewport->setShadowsEnabled(config_data().render_shadows);
     viewport->setSkiesEnabled(config_data().render_sky);
-    viewport->setOverlaysEnabled(false); // hide overlays
+    viewport->setOverlaysEnabled(false);              // hide overlays
+    viewport->setVisibilityMask(detail::vertex_mask); // only render vertices
 
     // avoid rendering the minimap recursively
     texture_trgt->addListener(&m_omit_minimap);

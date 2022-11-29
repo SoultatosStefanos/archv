@@ -831,9 +831,9 @@
 
 			+ [x] 2nd Camera input
 
-		+ [ ] Cameraman marker
+		+ [x] Visibility flags
 
-		+ [ ] Visibility flags
+		+ [ ] Cameraman marker
 
 		+ [ ] Configs via jsons
 

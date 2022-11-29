@@ -3,6 +3,7 @@
 #include "misc/random.hpp"
 #include "movable_text.hpp"
 #include "rendering/graph_renderer.hpp"
+#include "visibility_masks.hpp"
 
 #include <OGRE/OgreEntity.h>
 #include <OgreProcedural/Procedural.h>
@@ -195,6 +196,7 @@ auto vertex_renderer::setup_model(const vertex_type& v) -> void
     assert(e);
     e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+    e->setVisibilityFlags(detail::vertex_mesh_mask);
     node->attachObject(e);
 
     assert(m_scene.hasSceneNode(v.id));
@@ -222,6 +224,7 @@ auto vertex_renderer::setup_text(const vertex_type& v) -> void
     txt->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
     txt->showOnTop(true);
     txt->setRenderQueueGroup(RENDER_QUEUE_6);
+    txt->setVisibilityFlags(detail::vertex_text_mask);
 
     m_scene.getSceneNode(v.txt_name)->attachObject(txt.get());
 
@@ -389,6 +392,7 @@ auto vertex_renderer::render_degree_particles(
 
     auto* system = m_scene.createParticleSystem(new_effect_name, system_name());
     assert(system);
+    system->setVisibilityFlags(detail::particles_mask);
 
     auto* root = m_scene.getRootSceneNode();
     auto* node = root->createChildSceneNode(new_effect_name);
@@ -491,6 +495,7 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
     else
         e->setMaterialName(m_cfg->vertex_material);
 
+    e->setVisibilityFlags(detail::vertex_mesh_mask);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     node->attachObject(e);
 }
@@ -781,6 +786,7 @@ auto edge_renderer::setup_model(const edge_type& e, const path_type& path)
     auto* entity = m_scene.createEntity(e.name, e.name);
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+    entity->setVisibilityFlags(detail::edge_mesh_mask);
     entity->setMaterialName(m_cfg->edge_material, m_resource_group);
 
     auto* node = m_scene.getRootSceneNode()->createChildSceneNode(e.name);
@@ -801,6 +807,7 @@ auto edge_renderer::setup_tip(const edge_type& e, const path_type& path) -> void
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     entity->setMaterialName(m_cfg->edge_tip_material);
+    entity->setVisibilityFlags(detail::edge_tip_mask);
 
     auto* node = m_scene.getRootSceneNode()->createChildSceneNode(e.tip_name);
     assert(node);
@@ -839,6 +846,7 @@ auto edge_renderer::setup_text(const edge_type& e, const path_type& path)
     txt->setSpaceWidth(m_cfg->edge_type_space_width);
     txt->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
     txt->showOnTop(true);
+    txt->setVisibilityFlags(detail::edge_text_mask);
     txt->setRenderQueueGroup(RENDER_QUEUE_6);
 
     auto* node = m_scene.getRootSceneNode()->createChildSceneNode(e.txt_name);
@@ -943,6 +951,9 @@ auto edge_renderer::render_model_pos(const edge_type& e, const path_type& path)
         entity->setMaterialName(m_cfg->edge_material);
     else
         entity->setMaterial(shaded_color_material(*e.cluster_col));
+
+    entity->setVisibilityFlags(detail::edge_mesh_mask);
+    entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
 
     node->attachObject(entity);
 
@@ -1111,6 +1122,7 @@ auto edge_renderer::draw_tip(const edge_type& e, const path_type& path) -> void
     assert(entity);
     entity->setMaterialName(m_cfg->edge_tip_material);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+    entity->setVisibilityFlags(detail::edge_tip_mask);
     node->attachObject(entity);
 }
 
