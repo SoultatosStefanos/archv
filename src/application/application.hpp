@@ -118,6 +118,7 @@ private:
 
     std::unique_ptr< trays_type > m_trays;
     std::unique_ptr< cameraman_type > m_cameraman;
+    std::unique_ptr< cameraman_type > m_minimap_cameraman;
     std::unique_ptr< gui_input_handler_type > m_gui_input_handler;
     std::unique_ptr< hud_input_handler_type > m_hud_input_handler;
     std::unique_ptr< quit_handler_type > m_quit_handler;

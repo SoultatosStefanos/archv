@@ -11,6 +11,7 @@
 #include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTexture.h>
 #include <memory>
 #include <string_view>
@@ -51,6 +52,8 @@ public:
     auto scene() -> auto& { return *m_scene; }
     auto cam() const -> const auto& { return *m_cam; }
     auto cam() -> auto& { return *m_cam; }
+    auto cam_node() const -> const auto& { return *m_cam_node; }
+    auto cam_node() -> auto& { return *m_cam_node; }
 
     auto default_data() const -> const auto& { return m_default_cfg; }
     auto config_data() const -> const auto& { return m_cfg; }
@@ -107,6 +110,7 @@ private:
     std::string_view m_resource_group;
 
     camera_type* m_cam { nullptr };
+    node_type* m_cam_node { nullptr };
     texture_ptr_type m_texture;
     std::unique_ptr< rectangle_type > m_rect;
     omit_minimap_listener m_omit_minimap;

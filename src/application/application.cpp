@@ -188,7 +188,7 @@ auto application::setup_minimap_renderer() -> void
                          .top = coord_type(-0.5),
                          .right = coord_type(0.95),
                          .bottom = coord_type(-0.95),
-                         .background_col = rgba_type(0.5, 0.5, 0.5),
+                         .background_col = rgba_type(0, 0, 0),
                          .render_shadows = false,
                          .render_sky = false };
 
@@ -451,6 +451,9 @@ auto application::setup_input() -> void
     m_cameraman
         = make_unique< cameraman_type >(&m_background_renderer->cam_node());
 
+    m_minimap_cameraman
+        = make_unique< cameraman_type >(&m_minimap_renderer->cam_node());
+
     m_gui_input_handler = make_unique< gui_input_handler_type >();
 
     m_hud_input_handler = make_unique< hud_input_handler_type >(
@@ -472,6 +475,7 @@ auto application::setup_input() -> void
     auto&& listeners = listeners_vec { { m_gui_input_handler.get(),
                                          m_hud_input_handler.get(),
                                          m_cameraman.get(),
+                                         m_minimap_cameraman.get(),
                                          m_inspection_input_handler.get() } };
 
     m_input_chain = make_unique< event_dispatcher_type >(std::move(listeners));

@@ -88,15 +88,24 @@ auto minimap_renderer::setup_camera() -> void
     assert(scene().hasSceneNode(main_camera_name));
     auto* main_cam_node = scene().getSceneNode(main_camera_name);
 
+    // FIXME
+    // TODO Special input listener for this...
+    // TODO Pass from config, destroy, set masks
+    auto* e = scene().createEntity("ar", "cube.mesh", resource_group().data());
+    e->setMaterialName("Solid/White");
+    e->setRenderQueueGroup(RENDER_QUEUE_7);
+    e->setCastShadows(false);
+    main_cam_node->attachObject(e);
+    main_cam_node->setScale(main_cam_node->getScale() * 10.0);
+
     assert(!scene().hasSceneNode(this_camera_name));
-    auto* node
+    m_cam_node
         = scene().getRootSceneNode()->createChildSceneNode(this_camera_name);
-    assert(node);
-    node->attachObject(m_cam);
-    node->setAutoTracking(true, main_cam_node);
+    assert(m_cam_node);
+    m_cam_node->attachObject(m_cam);
     // TODO Pass offset from config
-    node->setPosition(main_cam_pos + Vector3(0, 100, 0));
-    node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
+    m_cam_node->setPosition(main_cam_pos + Vector3(0, 0, 800));
+    m_cam_node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
 }
@@ -131,7 +140,8 @@ auto minimap_renderer::setup_texture_target() -> void
     viewport->setSkiesEnabled(config_data().render_sky);
     viewport->setClearEveryFrame(true);  // avoid the infinite trails effect
     viewport->setOverlaysEnabled(false); // hide overlays
-    viewport->setVisibilityMask(detail::vertex_mesh_mask);
+    viewport->setVisibilityMask(
+        detail::vertex_mesh_mask | detail::edge_mesh_mask);
 
     // avoid rendering the minimap recursively
     texture_trgt->addListener(&m_omit_minimap);
