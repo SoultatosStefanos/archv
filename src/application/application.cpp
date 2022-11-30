@@ -178,8 +178,9 @@ auto application::setup_graph_collision_checker() -> void
 auto application::setup_minimap_renderer() -> void
 {
     using rendering::minimap_config;
-    using coord_type = rendering::minimap_config::coord_type;
-    using rgba_type = rendering::minimap_config::rgba_type;
+    using coord_type = minimap_config::coord_type;
+    using rgba_type = minimap_config::rgba_type;
+    using dist_type = minimap_config::dist_type;
 
     assert(getRenderWindow());
 
@@ -189,8 +190,15 @@ auto application::setup_minimap_renderer() -> void
                          .right = coord_type(0.95),
                          .bottom = coord_type(-0.95),
                          .background_col = rgba_type(0, 0, 0),
+                         .zoom_out = dist_type(800),
                          .render_shadows = false,
-                         .render_sky = false };
+                         .render_sky = false,
+                         .render_vertices = true,
+                         .render_vertex_ids = false,
+                         .render_edges = true,
+                         .render_edge_types = false,
+                         .render_edge_tips = false,
+                         .render_particles = false };
 
     m_minimap_renderer = std::make_unique< minimap_renderer_type >(
         *getRenderWindow(),
@@ -448,11 +456,11 @@ auto application::setup_input() -> void
     m_trays = std::make_unique< trays_type >("Bob", getRenderWindow());
     m_trays->showCursor();
 
-    m_cameraman
-        = make_unique< cameraman_type >(&m_background_renderer->cam_node());
+    m_cameraman = make_unique< cameraman_type >(
+        OgreBites::CameraMan(&m_background_renderer->cam_node()));
 
-    m_minimap_cameraman
-        = make_unique< cameraman_type >(&m_minimap_renderer->cam_node());
+    m_minimap_cameraman = make_unique< stiff_cameraman_type >(
+        OgreBites::CameraMan(&m_minimap_renderer->cam_node()));
 
     m_gui_input_handler = make_unique< gui_input_handler_type >();
 

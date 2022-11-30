@@ -58,8 +58,8 @@ auto minimap_renderer::omit_minimap_listener::postRenderTargetUpdate(
 
 namespace
 {
-    constexpr auto main_camera_name = "Main Camera";
-    constexpr auto this_camera_name = "Minimap Camera";
+    constexpr auto main_cam_name = "Main Camera";
+    constexpr auto cam_name = "Minimap Camera";
     constexpr auto texture_name = "RttTex";
     constexpr auto material_name = "RttMat";
     constexpr auto screen_name = "Minimap Screen";
@@ -77,34 +77,20 @@ auto minimap_renderer::setup() -> void
 
 auto minimap_renderer::setup_camera() -> void
 {
-    assert(scene().hasCamera(main_camera_name));
-    auto* main_cam = scene().getCamera(main_camera_name);
+    assert(scene().hasCamera(main_cam_name));
+    auto* main_cam = scene().getCamera(main_cam_name);
     const auto& main_cam_pos = main_cam->getRealPosition();
 
-    assert(!scene().hasCamera(this_camera_name));
-    m_cam = scene().createCamera(this_camera_name);
+    assert(!scene().hasCamera(cam_name));
+    m_cam = scene().createCamera(cam_name);
     m_cam->setAutoAspectRatio(true);
 
-    assert(scene().hasSceneNode(main_camera_name));
-    auto* main_cam_node = scene().getSceneNode(main_camera_name);
-
-    // FIXME
-    // TODO Special input listener for this...
-    // TODO Pass from config, destroy, set masks
-    auto* e = scene().createEntity("ar", "cube.mesh", resource_group().data());
-    e->setMaterialName("Solid/White");
-    e->setRenderQueueGroup(RENDER_QUEUE_7);
-    e->setCastShadows(false);
-    main_cam_node->attachObject(e);
-    main_cam_node->setScale(main_cam_node->getScale() * 10.0);
-
-    assert(!scene().hasSceneNode(this_camera_name));
-    m_cam_node
-        = scene().getRootSceneNode()->createChildSceneNode(this_camera_name);
+    assert(!scene().hasSceneNode(cam_name));
+    m_cam_node = scene().getRootSceneNode()->createChildSceneNode(cam_name);
     assert(m_cam_node);
     m_cam_node->attachObject(m_cam);
-    // TODO Pass offset from config
-    m_cam_node->setPosition(main_cam_pos + Vector3(0, 0, 800));
+    const auto offset = Vector3(0, 0, config_data().zoom_out);
+    m_cam_node->setPosition(main_cam_pos + offset);
     m_cam_node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
@@ -127,6 +113,24 @@ auto minimap_renderer::setup_texture() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup minimap texture";
 }
 
+namespace
+{
+    constexpr inline auto make_mask(bool expr, int32_t flag) -> int32_t
+    {
+        return expr ? flag : 0;
+    }
+
+    inline auto visibility_mask(const minimap_config& cfg) -> int32_t
+    {
+        return make_mask(cfg.render_vertices, detail::vertex_mesh_mask)
+            | make_mask(cfg.render_vertex_ids, detail::vertex_text_mask)
+            | make_mask(cfg.render_edges, detail::edge_mesh_mask)
+            | make_mask(cfg.render_edge_types, detail::edge_text_mask)
+            | make_mask(cfg.render_edge_tips, detail::edge_tip_mask)
+            | make_mask(cfg.render_particles, detail::particles_mask);
+    }
+} // namespace
+
 auto minimap_renderer::setup_texture_target() -> void
 {
     assert(m_texture);
@@ -140,8 +144,7 @@ auto minimap_renderer::setup_texture_target() -> void
     viewport->setSkiesEnabled(config_data().render_sky);
     viewport->setClearEveryFrame(true);  // avoid the infinite trails effect
     viewport->setOverlaysEnabled(false); // hide overlays
-    viewport->setVisibilityMask(
-        detail::vertex_mesh_mask | detail::edge_mesh_mask);
+    viewport->setVisibilityMask(visibility_mask(config_data()));
 
     // avoid rendering the minimap recursively
     texture_trgt->addListener(&m_omit_minimap);
@@ -216,10 +219,10 @@ auto minimap_renderer::shutdown_texture_target() -> void
 
 auto minimap_renderer::shutdown_camera() -> void
 {
-    assert(scene().hasSceneNode(this_camera_name));
-    assert(scene().hasCamera(this_camera_name));
-    scene().getSceneNode(this_camera_name)->detachObject(m_cam);
-    scene().destroySceneNode(this_camera_name);
+    assert(scene().hasSceneNode(cam_name));
+    assert(scene().hasCamera(cam_name));
+    scene().getSceneNode(cam_name)->detachObject(m_cam);
+    scene().destroySceneNode(cam_name);
     scene().destroyCamera(m_cam);
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap camera";
 }

@@ -75,4 +75,44 @@ auto minimap_config_api::set_render_sky(bool v) -> void
     config_data().render_sky = v;
 }
 
+auto minimap_config_api::set_zoom_out(dist_type dist) -> void
+{
+    if (dist < 0)
+    {
+        BOOST_LOG_TRIVIAL(warning) << "invalid negative zoom out";
+        return;
+    }
+    config_data().zoom_out = dist;
+}
+
+auto minimap_config_api::set_render_vertices(bool v) -> void
+{
+    config_data().render_vertices = v;
+}
+
+auto minimap_config_api::set_render_vertex_ids(bool v) -> void
+{
+    config_data().render_vertex_ids = v;
+}
+
+auto minimap_config_api::set_render_edges(bool v) -> void
+{
+    config_data().render_edges = v;
+}
+
+auto minimap_config_api::set_render_edge_types(bool v) -> void
+{
+    config_data().render_edge_types = v;
+}
+
+auto minimap_config_api::set_render_edge_tips(bool v) -> void
+{
+    config_data().render_edge_tips = v;
+}
+
+auto minimap_config_api::set_render_particles(bool v) -> void
+{
+    config_data().render_particles = v;
+}
+
 } // namespace rendering

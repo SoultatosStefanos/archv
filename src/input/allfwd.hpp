@@ -13,6 +13,7 @@ class shortcut_handler;
 class inspection_handler;
 class camera_handler;
 class event_dispatcher;
+class stiff_camera_handler;
 
 } // namespace input
 

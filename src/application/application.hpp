@@ -52,6 +52,7 @@ private:
 
     using trays_type = OgreBites::TrayManager;
     using cameraman_type = input::camera_handler;
+    using stiff_cameraman_type = input::stiff_camera_handler;
     using gui_input_handler_type = OgreBites::ImGuiInputListener;
     using hud_input_handler_type = input::hud_handler;
     using quit_handler_type = input::quit_handler;
@@ -118,7 +119,7 @@ private:
 
     std::unique_ptr< trays_type > m_trays;
     std::unique_ptr< cameraman_type > m_cameraman;
-    std::unique_ptr< cameraman_type > m_minimap_cameraman;
+    std::unique_ptr< stiff_cameraman_type > m_minimap_cameraman;
     std::unique_ptr< gui_input_handler_type > m_gui_input_handler;
     std::unique_ptr< hud_input_handler_type > m_hud_input_handler;
     std::unique_ptr< quit_handler_type > m_quit_handler;

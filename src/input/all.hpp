@@ -10,5 +10,6 @@
 #include "inspection_handler.hpp"
 #include "quit_handler.hpp"
 #include "shortcut_handler.hpp"
+#include "stiff_camera_handler.hpp"
 
 #endif // INPUT_ALL_HPP

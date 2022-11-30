@@ -14,6 +14,7 @@ namespace input
  ***********************************************************/
 
 // Dispatches input events to a chain of input listeners.
+// Extends the OgreBites::InputListenerChain class by dispatching the frame.
 class event_dispatcher : public OgreBites::InputListenerChain
 {
     using base = OgreBites::InputListenerChain;

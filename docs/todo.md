@@ -838,9 +838,9 @@
 
 	+ [ ] Mini Map
 
-		+ [ ] Disable shadows for main render queue group 
+		+ [n] Disable shadows for main render queue group (Don't need to it's about the angle)
 
-		+ [ ] Cameraman marker
+		+ [n] Cameraman marker (Don't need to)
 
 		+ [ ] Configs via jsons
 

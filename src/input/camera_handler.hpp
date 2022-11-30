@@ -10,6 +10,10 @@
 namespace input
 {
 
+/***********************************************************
+ * Camera Handler                                          *
+ ***********************************************************/
+
 // Camera input handler, free look style.
 // Wraps the utility class OgreBites::Cameraman, and delegates to it.
 // Lock/Unlock: press/release mouse wheel, or press c.
@@ -21,19 +25,23 @@ public:
     using cameraman_type = OgreBites::CameraMan;
 
     explicit camera_handler(cameraman_type cameraman);
-    ~camera_handler() override = default;
+    virtual ~camera_handler() override = default;
 
     auto cameraman() const -> const cameraman_type& { return m_cameraman; }
     auto cameraman() -> cameraman_type& { return m_cameraman; }
 
     auto locked() const -> bool { return m_locked; }
 
-    auto frameRendered(const Ogre::FrameEvent& evt) -> void override;
-    auto keyPressed(const OgreBites::KeyboardEvent& evt) -> bool override;
-    auto keyReleased(const OgreBites::KeyboardEvent& evt) -> bool override;
-    auto mouseMoved(const OgreBites::MouseMotionEvent& evt) -> bool override;
-    auto mousePressed(const OgreBites::MouseButtonEvent& evt) -> bool override;
-    auto mouseReleased(const OgreBites::MouseButtonEvent& evt) -> bool override;
+    virtual auto frameRendered(const Ogre::FrameEvent& e) -> void override;
+    virtual auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
+    virtual auto keyReleased(const OgreBites::KeyboardEvent& e)
+        -> bool override;
+    virtual auto mouseMoved(const OgreBites::MouseMotionEvent& e)
+        -> bool override;
+    virtual auto mousePressed(const OgreBites::MouseButtonEvent& e)
+        -> bool override;
+    virtual auto mouseReleased(const OgreBites::MouseButtonEvent& e)
+        -> bool override;
 
 protected:
     auto toggle_lock_unlock() -> void;
