@@ -15,6 +15,7 @@ class background_configurator;
 class weights_editor;
 class graph_configurator;
 class gui_configurator;
+class minimap_configurator;
 class menu_bar;
 class layout_editor;
 class scaling_editor;

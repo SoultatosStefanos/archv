@@ -15,6 +15,7 @@
 #include "gui_configurator.hpp"
 #include "layout_editor.hpp"
 #include "menu_bar.hpp"
+#include "minimap_configurator.hpp"
 #include "overlay.hpp"
 #include "overlay_manager.hpp"
 #include "plugins.hpp"
