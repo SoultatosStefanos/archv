@@ -790,7 +790,7 @@
 
 	+ [x] Fix input propagation from gui
 
-	+ [ ] Graph interface for accessing vertices by ids
+	+ [x] Graph interface for accessing vertices by ids
 
 
 # 21 / 11 / 2022
