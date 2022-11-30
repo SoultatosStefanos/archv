@@ -175,6 +175,43 @@ namespace
             deserialize_degrees_section(root["out-degree"]));
     }
 
+    inline auto deserialize_minimap(const Json::Value& root) -> minimap_config
+    {
+        using coord_type = minimap_config::coord_type;
+        using dist_type = minimap_config::dist_type;
+
+        const auto left = root["left"].as< double >();
+        const auto top = root["top"].as< double >();
+        const auto right = root["right"].as< double >();
+        const auto bottom = root["bottom"].as< double >();
+        const auto bkg_col = deserialize_rgb(root["background-color"]);
+        const auto zoom_out = root["zoom-out"].as< double >();
+        const auto render_shadows = root["render-shadows"].asBool();
+        const auto render_sky = root["render-sky"].asBool();
+        const auto render_vertices = root["render-vertices"].asBool();
+        const auto render_vertex_ids = root["render-vertex-ids"].asBool();
+        const auto render_edges = root["render-edges"].asBool();
+        const auto render_edge_types = root["render-edge-types"].asBool();
+        const auto render_edge_tips = root["render-edge-tips"].asBool();
+        const auto render_particles = root["render-particles"].asBool();
+
+        return minimap_config(
+            left,
+            top,
+            right,
+            bottom,
+            bkg_col,
+            zoom_out,
+            render_shadows,
+            render_sky,
+            render_vertices,
+            render_vertex_ids,
+            render_edges,
+            render_edge_types,
+            render_edge_tips,
+            render_particles);
+    }
+
 } // namespace
 
 auto deserialize(const Json::Value& root) -> config_data
@@ -182,10 +219,12 @@ auto deserialize(const Json::Value& root) -> config_data
     auto&& bkg = deserialize_background(root["background"]);
     auto&& g = deserialize_graph(root["graph"]);
     auto&& degrees = deserialize_degrees(root["degrees"]);
+    auto&& minimap = deserialize_minimap(root["minimap"]);
 
     return config_data { .background = std::move(bkg),
                          .graph = std::move(g),
-                         .degrees = std::move(degrees) };
+                         .degrees = std::move(degrees),
+                         .minimap = std::move(minimap) };
 }
 
 } // namespace rendering

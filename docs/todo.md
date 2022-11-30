@@ -842,7 +842,7 @@
 
 		+ [n] Cameraman marker (Don't need to)
 
-		+ [ ] Configs via jsons
+		+ [x] Configs via jsons
 
 		+ [ ] Interactive configuration
 

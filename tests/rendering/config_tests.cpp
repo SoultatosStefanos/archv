@@ -48,9 +48,26 @@ auto make_sample_rendering_0()
             { 1, 2, 3 }, { "aaa", "bbb", "ccc" }, true)
     };
 
+    auto&& minimap
+        = minimap_config { .left = 0,
+                           .top = 0.2,
+                           .right = 0.22,
+                           .bottom = -1,
+                           .background_col = ColourValue(1.0, 1.0, 1.0),
+                           .zoom_out = 700,
+                           .render_shadows = true,
+                           .render_sky = true,
+                           .render_vertices = true,
+                           .render_vertex_ids = true,
+                           .render_edges = true,
+                           .render_edge_types = true,
+                           .render_edge_tips = true,
+                           .render_particles = true };
+
     return config_data { .background = std::move(background),
                          .graph = std::move(graph),
-                         .degrees = std::move(degrees) };
+                         .degrees = std::move(degrees),
+                         .minimap = std::move(minimap) };
 }
 
 TEST(rendering_deserialization, sample_rendering_0)

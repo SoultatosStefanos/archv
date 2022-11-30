@@ -67,5 +67,22 @@
 			},
 			"applied" : true
 		}
+	},
+	"minimap" : 
+	{
+		"left" : 0,
+		"top" : 0.2,
+		"right" : 0.22,
+		"bottom" : -1,
+		"background-color" : [ 1.0, 1.0, 1.0 ],
+		"zoom-out" : 700,
+		"render-shadows" : true,
+		"render-sky" : true,
+		"render-vertices" : true,
+		"render-vertex-ids" : true,
+		"render-edges" : true,
+		"render-edge-types" : true,
+		"render-edge-tips" : true,
+		"render-particles" : true
 	}
 }
