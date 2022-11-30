@@ -49,7 +49,7 @@
 				"medium" : "Degrees/SwarmMedium",
 				"heavy" : "Degrees/SwarmHeavy" 
 			},
-			"applied" : true
+			"applied" : false
 		},
 		"out-degree" :
 		{
