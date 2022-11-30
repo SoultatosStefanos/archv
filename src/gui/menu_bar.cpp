@@ -171,6 +171,12 @@ auto menu_bar::render_rendering_configurator() const -> void
                 ImGui::EndTabItem();
             }
 
+            if (ImGui::BeginTabItem("Minimap"))
+            {
+                get_minimap_configurator().render();
+                ImGui::EndTabItem();
+            }
+
             ImGui::EndTabBar();
         }
 

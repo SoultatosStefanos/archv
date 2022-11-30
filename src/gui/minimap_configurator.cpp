@@ -1,30 +1,126 @@
 #include "minimap_configurator.hpp"
 
+#include <OGRE/Overlay/imgui.h>
+
 namespace gui
 {
 
+// TODO Helper markers, icons, sections
+
+namespace
+{
+    [[maybe_unused]] inline auto spaced_text(const char* str)
+    {
+        assert(str);
+        ImGui::Spacing();
+        ImGui::Text("%s", str);
+        ImGui::Spacing();
+    }
+
+    inline auto spaced_separator()
+    {
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+    }
+
+} // namespace
+
 auto minimap_configurator::render() const -> void
 {
+    if (!visible())
+        return;
+
+    render_corners_configurator();
+    render_background_color_configurator();
+    render_zoom_out_configurator();
+    render_render_flags_configurator();
+    spaced_separator();
+    render_config_buttons();
 }
 
 auto minimap_configurator::render_corners_configurator() const -> void
 {
+    if (ImGui::SliderFloat("Left Corner##minimap", &m_left, -1.0f, 1.0f))
+        emit_left();
+
+    if (ImGui::SliderFloat("Top Corner##minimap", &m_top, -1.0f, 1.0f))
+        emit_top();
+
+    if (ImGui::SliderFloat("Right Corner##minimap", &m_right, -1.0f, 1.0f))
+        emit_right();
+
+    if (ImGui::SliderFloat("Bottom Corner##minimap", &m_bottom, -1.0f, 1.0f))
+        emit_bottom();
 }
 
 auto minimap_configurator::render_background_color_configurator() const -> void
 {
+    if (ImGui::ColorEdit4("Background Color##minimap", m_background_col.data()))
+        emit_background_color();
 }
 
 auto minimap_configurator::render_zoom_out_configurator() const -> void
 {
+    if (ImGui::InputFloat("Zoom Out##minimap", &m_zoom_out, 1, 0))
+        emit_zoom_out();
 }
 
 auto minimap_configurator::render_render_flags_configurator() const -> void
 {
+    if (ImGui::Checkbox("Render Shadows##minimap", &m_render_shadows))
+        emit_render_shadows();
+
+    if (ImGui::Checkbox("Render Sky##minimap", &m_render_sky))
+        emit_render_sky();
+
+    if (ImGui::Checkbox("Render Vertices##minimap", &m_render_vertices))
+        emit_render_vertices();
+
+    if (ImGui::Checkbox("Render Vertex IDs##minimap", &m_render_vertex_ids))
+        emit_render_vertex_ids();
+
+    if (ImGui::Checkbox("Render Edges##minimap", &m_render_edges))
+        emit_render_edges();
+
+    if (ImGui::Checkbox("Render Edge Types##minimap", &m_render_edge_types))
+        emit_render_edge_types();
+
+    if (ImGui::Checkbox("Render Edge Tips##minimap", &m_render_edge_tips))
+        emit_render_edge_tips();
+
+    if (ImGui::Checkbox("Render Particles##minimap", &m_render_particles))
+        emit_render_particles();
 }
 
 auto minimap_configurator::render_config_buttons() const -> void
 {
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Preview"))
+        emit_preview();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Apply"))
+        emit_apply();
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Cancel"))
+        emit_cancel();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Restore Defaults"))
+        emit_restore();
+
+    ImGui::Spacing();
+    ImGui::Spacing();
 }
 
 auto minimap_configurator::left() const -> coord_type

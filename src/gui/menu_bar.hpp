@@ -10,6 +10,7 @@
 #include "graph_configurator.hpp"
 #include "gui_configurator.hpp"
 #include "layout_editor.hpp"
+#include "minimap_configurator.hpp"
 #include "scaling_editor.hpp"
 #include "weights_editor.hpp"
 
@@ -67,6 +68,9 @@ public:
     auto get_graph_configurator() const -> const auto& { return m_graph_cfg; }
     auto get_graph_configurator() -> auto& { return m_graph_cfg; }
 
+    auto get_minimap_configurator() const -> const auto& { return m_map_cfg; }
+    auto get_minimap_configurator() -> auto& { return m_map_cfg; }
+
     auto get_gui_configurator() const -> const auto& { return m_gui_cfg; }
     auto get_gui_configurator() -> auto& { return m_gui_cfg; }
 
@@ -117,6 +121,7 @@ private:
     mutable clustering_editor m_c_editor;
     background_configurator m_bkg_cfg;
     graph_configurator m_graph_cfg;
+    minimap_configurator m_map_cfg;
     gui_configurator m_gui_cfg;
 
     pred m_undo_enabled;
