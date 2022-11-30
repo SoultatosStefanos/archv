@@ -844,7 +844,7 @@
 
 		+ [x] Configs via jsons
 
-		+ [ ] Interactive configuration
+		+ [x] Interactive configuration
 
 		+ [ ] Toggle on and off
 

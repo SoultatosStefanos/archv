@@ -89,6 +89,7 @@ auto application::setup() -> void
     prepare_clustering_editor();
     prepare_background_configurator();
     prepare_graph_configurator();
+    prepare_minimap_configurator();
     prepare_gui_configurator();
     prepare_menu_bar();
 
@@ -99,6 +100,7 @@ auto application::setup() -> void
     connect_clustering_presentation();
     connect_background_presentation();
     connect_graph_presentation();
+    connect_minimap_presentation();
     connect_gui_presentation();
     connect_menu_bar_presentation();
 
@@ -825,6 +827,31 @@ auto application::prepare_graph_configurator() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared graph configurator";
 }
 
+auto application::prepare_minimap_configurator() -> void
+{
+    assert(m_minimap_renderer);
+
+    auto& minimap_gui = m_gui->get_menu_bar().get_minimap_configurator();
+    const auto& cfg = m_minimap_renderer->config_data();
+
+    minimap_gui.set_left(cfg.left);
+    minimap_gui.set_top(cfg.top);
+    minimap_gui.set_right(cfg.right);
+    minimap_gui.set_bottom(cfg.bottom);
+    minimap_gui.set_background_color(to_rgba(cfg.background_col));
+    minimap_gui.set_zoom_out(cfg.zoom_out);
+    minimap_gui.set_render_shadows(cfg.render_shadows);
+    minimap_gui.set_render_sky(cfg.render_sky);
+    minimap_gui.set_render_vertices(cfg.render_vertices);
+    minimap_gui.set_render_vertex_ids(cfg.render_vertex_ids);
+    minimap_gui.set_render_edges(cfg.render_edges);
+    minimap_gui.set_render_edge_types(cfg.render_edge_types);
+    minimap_gui.set_render_edge_tips(cfg.render_edge_tips);
+    minimap_gui.set_render_particles(cfg.render_particles);
+
+    BOOST_LOG_TRIVIAL(debug) << "prepared minimap configurator";
+}
+
 auto application::prepare_gui_configurator() -> void
 {
     auto& gui_cfg = m_gui->get_menu_bar().get_gui_configurator();
@@ -1475,6 +1502,149 @@ auto application::connect_graph_presentation() -> void
         });
 
     BOOST_LOG_TRIVIAL(debug) << "connected graph presentation";
+}
+
+auto application::connect_minimap_presentation() -> void
+{
+    assert(m_gui);
+    assert(m_minimap_renderer);
+
+    auto& iface = m_gui->get_menu_bar().get_minimap_configurator();
+    auto& api = m_minimap_renderer->config_api();
+
+    iface.connect_to_left(
+        [&api](auto c)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap left corner: " << c;
+            api.set_left(c);
+        });
+
+    iface.connect_to_top(
+        [&api](auto c)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap top corner: " << c;
+            api.set_top(c);
+        });
+
+    iface.connect_to_right(
+        [&api](auto c)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap right corner: " << c;
+            api.set_right(c);
+        });
+
+    iface.connect_to_bottom(
+        [&api](auto c)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap bottom corner: " << c;
+            api.set_bottom(c);
+        });
+
+    iface.connect_to_background_color(
+        [&api](const auto& col)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected new minimap background col";
+            api.set_background_color(to_color(col));
+        });
+
+    iface.connect_to_zoom_out(
+        [&api](auto z)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap zoom out: " << z;
+            api.set_zoom_out(z);
+        });
+
+    iface.connect_to_render_shadows(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap render shadows: " << v;
+            api.set_render_shadows(v);
+        });
+
+    iface.connect_to_render_sky(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap render sky: " << v;
+            api.set_render_sky(v);
+        });
+
+    iface.connect_to_render_vertices(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected minimap render vertices: " << v;
+            api.set_render_vertices(v);
+        });
+
+    iface.connect_to_render_vertex_ids(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected minimap render vertex ids: " << v;
+            api.set_render_vertex_ids(v);
+        });
+
+    iface.connect_to_render_edges(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap render edges: " << v;
+            api.set_render_edges(v);
+        });
+
+    iface.connect_to_render_edge_types(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected minimap render edge types: " << v;
+            api.set_render_edge_types(v);
+        });
+
+    iface.connect_to_render_edge_tips(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected minimap render edge tips: " << v;
+            api.set_render_edge_tips(v);
+        });
+
+    iface.connect_to_render_particles(
+        [&api](auto v)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected minimap render particles: " << v;
+            api.set_render_particles(v);
+        });
+
+    iface.connect_to_apply(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap apply";
+            ui::apply_configs(*m_minimap_renderer);
+        });
+
+    iface.connect_to_preview(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap preview";
+            ui::begin_preview(*m_minimap_renderer);
+        });
+
+    iface.connect_to_cancel(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap cancel";
+            ui::end_preview(*m_minimap_renderer);
+        });
+
+    iface.connect_to_restore(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected minimap restore";
+            ui::restore_defaults(*m_minimap_renderer);
+            prepare_minimap_configurator();
+        });
+
+    BOOST_LOG_TRIVIAL(debug) << "connected minimap presentation";
 }
 
 auto application::connect_gui_presentation() -> void

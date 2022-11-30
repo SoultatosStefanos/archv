@@ -85,6 +85,7 @@ private:
     auto prepare_clustering_editor() -> void;
     auto prepare_background_configurator() -> void;
     auto prepare_graph_configurator() -> void;
+    auto prepare_minimap_configurator() -> void;
     auto prepare_gui_configurator() -> void;
     auto prepare_menu_bar() -> void;
 
@@ -95,6 +96,7 @@ private:
     auto connect_clustering_presentation() -> void;
     auto connect_background_presentation() -> void;
     auto connect_graph_presentation() -> void;
+    auto connect_minimap_presentation() -> void;
     auto connect_gui_presentation() -> void;
     auto connect_menu_bar_presentation() -> void;
 
