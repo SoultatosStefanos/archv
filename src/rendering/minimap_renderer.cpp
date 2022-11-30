@@ -227,9 +227,22 @@ auto minimap_renderer::shutdown_camera() -> void
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap camera";
 }
 
-// TODO
-auto minimap_renderer::draw(const config_data_type&) -> void
+auto minimap_renderer::draw(const config_data_type& cfg) -> void
 {
+    assert(m_rect);
+    m_rect->setCorners(cfg.left, cfg.top, cfg.right, cfg.bottom);
+
+    assert(m_texture);
+    auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();
+    assert(texture_trgt);
+    auto* viewport = texture_trgt->getViewport(0);
+    assert(viewport);
+    viewport->setBackgroundColour(cfg.background_col);
+    viewport->setShadowsEnabled(cfg.render_shadows);
+    viewport->setSkiesEnabled(cfg.render_sky);
+    viewport->setVisibilityMask(visibility_mask(cfg));
+
+    BOOST_LOG_TRIVIAL(debug) << "drew minimap configs";
 }
 
 } // namespace rendering
