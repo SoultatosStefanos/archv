@@ -27,33 +27,12 @@ minimap_renderer::minimap_renderer(
 , m_default_cfg { config }
 , m_cfg_api { std::move(config) }
 , m_resource_group { resource_group }
-, m_omit_minimap { *this }
 {
 }
 
 minimap_renderer::~minimap_renderer()
 {
     shutdown();
-}
-
-minimap_renderer::omit_minimap_listener::omit_minimap_listener(
-    minimap_renderer& parent)
-: m_parent { &parent }
-{
-}
-
-auto minimap_renderer::omit_minimap_listener::preRenderTargetUpdate(
-    const RenderTargetEvent& rte) -> void
-{
-    assert(m_parent);
-    m_parent->set_visible(false);
-}
-
-auto minimap_renderer::omit_minimap_listener::postRenderTargetUpdate(
-    const RenderTargetEvent& rte) -> void
-{
-    assert(m_parent);
-    m_parent->set_visible(true);
 }
 
 namespace
@@ -146,9 +125,6 @@ auto minimap_renderer::setup_texture_target() -> void
     viewport->setOverlaysEnabled(false); // hide overlays
     viewport->setVisibilityMask(visibility_mask(config_data()));
 
-    // avoid rendering the minimap recursively
-    texture_trgt->addListener(&m_omit_minimap);
-
     BOOST_LOG_TRIVIAL(debug) << "setup minimap texture render target";
 }
 
@@ -163,6 +139,7 @@ auto minimap_renderer::setup_mini_screen() -> void
         config_data().bottom);
     m_rect->setBoundingBox(AxisAlignedBox::BOX_INFINITE);
     m_rect->setRenderQueueGroup(RENDER_QUEUE_8); // render just before overlays
+    m_rect->setVisibilityFlags(detail::minimap_mask);
 
     auto material = MaterialManager::getSingleton().create(
         material_name, resource_group().data());
@@ -189,7 +166,6 @@ auto minimap_renderer::shutdown() -> void
         return;
 
     shutdown_mini_screen();
-    shutdown_texture_target();
     shutdown_camera();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap";
@@ -205,16 +181,6 @@ auto minimap_renderer::shutdown_mini_screen() -> void
     m_rect.reset();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap screen";
-}
-
-auto minimap_renderer::shutdown_texture_target() -> void
-{
-    assert(m_texture);
-    auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();
-    assert(texture_trgt);
-    texture_trgt->removeListener(&m_omit_minimap);
-
-    BOOST_LOG_TRIVIAL(debug) << "shutdown minimap render texture target";
 }
 
 auto minimap_renderer::shutdown_camera() -> void

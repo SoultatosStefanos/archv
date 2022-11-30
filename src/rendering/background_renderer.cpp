@@ -109,7 +109,8 @@ auto background_renderer::setup_camera() -> void
 
     // Render everything
     m_cam->getViewport()->setVisibilityMask(
-        detail::vertex_mask | detail::edge_mask | detail::particles_mask);
+        detail::vertex_mask | detail::edge_mask | detail::particles_mask
+        | detail::minimap_mask);
 }
 
 /***********************************************************

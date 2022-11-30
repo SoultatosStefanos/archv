@@ -836,7 +836,7 @@
 
 # 30 / 11 / 2022
 
-	+ [ ] Mini Map
+	+ [x] Mini Map
 
 		+ [n] Disable shadows for main render queue group (Don't need to it's about the angle)
 
@@ -846,5 +846,11 @@
 
 		+ [x] Interactive configuration
 
-		+ [ ] Toggle on and off
+		+ [x] Toggle on and off
+
+			+ [x] Input handling
+
+			+ [x] Update controls
+
+	+ [ ] Popups beautify
 

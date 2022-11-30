@@ -446,7 +446,9 @@ auto application::setup_input() -> void
     m_gui_input_handler = make_unique< gui_input_handler_type >();
 
     m_hud_input_handler = make_unique< hud_input_handler_type >(
-        m_gui->get_controls_hud(), m_gui->get_frames_hud());
+        m_gui->get_controls_hud(),
+        m_gui->get_frames_hud(),
+        *m_minimap_renderer);
 
     m_quit_handler = make_unique< quit_handler_type >(*getRoot());
 

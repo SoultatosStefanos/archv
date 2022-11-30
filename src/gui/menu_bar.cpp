@@ -215,6 +215,7 @@ auto menu_bar::render_helper() const -> void
         ImGui::Text("HUD:\n");
         ImGui::BulletText("F to show/hide frame stats.");
         ImGui::BulletText("H to show/hide controls.");
+        ImGui::BulletText("M to show/hide minimap.");
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();

@@ -8,7 +8,6 @@
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreRectangle2D.h>
-#include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
@@ -75,28 +74,12 @@ private:
     using rectangle_type = Ogre::Rectangle2D;
     using texture_ptr_type = Ogre::TexturePtr;
 
-    // Used to omit rendering the minimap on top of the minimap.
-    // NOTE: Could not fwd declare this (idk why).
-    class omit_minimap_listener : public Ogre::RenderTargetListener
-    {
-    public:
-        explicit omit_minimap_listener(minimap_renderer& parent);
-        ~omit_minimap_listener() override = default;
-
-        auto preRenderTargetUpdate(const Ogre::RenderTargetEvent& rte) -> void;
-        auto postRenderTargetUpdate(const Ogre::RenderTargetEvent& rte) -> void;
-
-    private:
-        minimap_renderer* m_parent { nullptr };
-    };
-
     auto setup_camera() -> void;
     auto setup_texture() -> void;
     auto setup_texture_target() -> void;
     auto setup_mini_screen() -> void;
 
     auto shutdown_mini_screen() -> void;
-    auto shutdown_texture_target() -> void;
     // The texture's lifetime is managed by Ogre automatically.
     auto shutdown_camera() -> void;
 
@@ -113,7 +96,6 @@ private:
     node_type* m_cam_node { nullptr };
     texture_ptr_type m_texture;
     std::unique_ptr< rectangle_type > m_rect;
-    omit_minimap_listener m_omit_minimap;
 };
 
 } // namespace rendering
