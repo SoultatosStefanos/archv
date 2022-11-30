@@ -62,7 +62,9 @@ auto graph_configurator::render_nodes_configurator() const -> void
 
 auto graph_configurator::render_nodes_caption_configurator() const -> void
 {
-    spaced_text("ID Caption");
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     render_node_font_selector();
     render_node_char_height_selector();
@@ -83,7 +85,9 @@ auto graph_configurator::render_edges_configurator() const -> void
 
 auto graph_configurator::render_edges_type_configurator() const -> void
 {
-    spaced_text("Dependency Caption");
+    ImGui::Spacing();
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     render_edge_font_selector();
     render_edge_char_height_selector();

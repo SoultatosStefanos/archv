@@ -1,15 +1,16 @@
 #include "minimap_configurator.hpp"
 
+#include "IconsFontAwesome5.h"
+#include "detail/utility.hpp"
+
 #include <OGRE/Overlay/imgui.h>
 
 namespace gui
 {
 
-// TODO Helper markers, icons, sections
-
 namespace
 {
-    [[maybe_unused]] inline auto spaced_text(const char* str)
+    inline auto spaced_text(const char* str)
     {
         assert(str);
         ImGui::Spacing();
@@ -31,9 +32,14 @@ auto minimap_configurator::render() const -> void
     if (!visible())
         return;
 
+    spaced_text(ICON_FA_SEARCH_LOCATION " Position");
     render_corners_configurator();
-    render_background_color_configurator();
     render_zoom_out_configurator();
+    spaced_separator();
+    spaced_text(ICON_FA_LIGHTBULB " Lighting");
+    render_background_color_configurator();
+    spaced_separator();
+    spaced_text(ICON_FA_VIDEO " Rendering Options");
     render_render_flags_configurator();
     spaced_separator();
     render_config_buttons();
@@ -43,27 +49,41 @@ auto minimap_configurator::render_corners_configurator() const -> void
 {
     if (ImGui::SliderFloat("Left Corner##minimap", &m_left, -1.0f, 1.0f))
         emit_left();
+    ImGui::SameLine();
+    detail::render_help_marker("Relative to the screen");
 
     if (ImGui::SliderFloat("Top Corner##minimap", &m_top, -1.0f, 1.0f))
         emit_top();
+    ImGui::SameLine();
+    detail::render_help_marker("Relative to the screen");
 
     if (ImGui::SliderFloat("Right Corner##minimap", &m_right, -1.0f, 1.0f))
         emit_right();
+    ImGui::SameLine();
+    detail::render_help_marker("Relative to the screen");
 
     if (ImGui::SliderFloat("Bottom Corner##minimap", &m_bottom, -1.0f, 1.0f))
         emit_bottom();
+    ImGui::SameLine();
+    detail::render_help_marker("Relative to the screen");
 }
 
 auto minimap_configurator::render_background_color_configurator() const -> void
 {
     if (ImGui::ColorEdit4("Background Color##minimap", m_background_col.data()))
         emit_background_color();
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "Only has an effect if the option: \"Render Skybox\" is disabled");
 }
 
 auto minimap_configurator::render_zoom_out_configurator() const -> void
 {
     if (ImGui::InputFloat("Zoom Out##minimap", &m_zoom_out, 1, 0))
         emit_zoom_out();
+    ImGui::SameLine();
+    detail::render_help_marker("From how far out (across the positive z axis) "
+                               "to render the scene on the minimap");
 }
 
 auto minimap_configurator::render_render_flags_configurator() const -> void
