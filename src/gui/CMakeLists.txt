@@ -10,6 +10,7 @@ set(FILES
 	gui_configurator.cpp
 	layout_editor.cpp
 	menu_bar.cpp
+	minimap_configurator.cpp
 	overlay_manager.cpp
 	plugins.cpp
 	popup_holder.cpp

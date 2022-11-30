@@ -52,7 +52,7 @@ public:
     auto top() const -> coord_type;
     auto right() const -> coord_type;
     auto bottom() const -> coord_type;
-    auto background_color() const -> rgba_type;
+    auto background_color() const -> const rgba_type&;
     [[nodiscard]] auto zoom_out() const -> dist_type;
     [[nodiscard]] auto render_shadows() const -> render_type;
     [[nodiscard]] auto render_sky() const -> render_type;
@@ -91,7 +91,7 @@ public:
     auto connect_to_render_edges(const render_slot& f) -> connection;
     auto connect_to_render_edge_types(const render_slot& f) -> connection;
     auto connect_to_render_edge_tips(const render_slot& f) -> connection;
-    auto connect_to_render_edge_particles(const render_slot& f) -> connection;
+    auto connect_to_render_particles(const render_slot& f) -> connection;
     auto connect_to_apply(const apply_slot& f) -> connection;
     auto connect_to_preview(const preview_slot& f) -> connection;
     auto connect_to_cancel(const cancel_slot& f) -> connection;
@@ -111,7 +111,7 @@ protected:
     auto emit_render_edges() const -> void;
     auto emit_render_edge_types() const -> void;
     auto emit_render_edge_tips() const -> void;
-    auto emit_render_edge_particles() const -> void;
+    auto emit_render_particles() const -> void;
     auto emit_apply() const -> void;
     auto emit_preview() const -> void;
     auto emit_cancel() const -> void;
@@ -130,7 +130,7 @@ private:
     coord_signal m_top_sig;
     coord_signal m_right_sig;
     coord_signal m_bottom_sig;
-    rgba_signal m_rgba_sig;
+    rgba_signal m_background_col_sig;
     dist_signal m_zoom_out_sig;
     render_signal m_render_shadows_sig;
     render_signal m_render_sky_sig;
