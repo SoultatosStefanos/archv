@@ -59,12 +59,12 @@ public:
     auto pos() -> point& { return m_pos; }
 
     auto render() const -> void;
-    auto visible() const -> bool { return m_visible; }
-    auto show() -> void { m_visible = true; }
-    auto hide() -> void { m_visible = false; }
+    auto visible() const -> bool;
+    auto show() -> void;
+    auto hide() -> void;
 
 private:
-    mutable bool m_visible { false };
+    mutable bool m_do_open { false };
     structure_info m_structure;
     point m_pos;
 };

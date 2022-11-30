@@ -852,5 +852,5 @@
 
 			+ [x] Update controls
 
-	+ [ ] Popups beautify
+	+ [x] Popups beautify
 
