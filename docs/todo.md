@@ -104,7 +104,7 @@
 
 	+ [x] Helpers with question marks
 
-	+ [ ] Mini Map
+	+ [x] Mini Map
 
 	+ [x] Search Bar
 
@@ -854,3 +854,9 @@
 
 	+ [x] Popups beautify
 
+
+# 01 / 12 / 2022
+
+	+ [?] Tweaks
+
+	+ [?] Autocompletion revisit
