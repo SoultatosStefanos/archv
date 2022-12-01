@@ -5,29 +5,29 @@
 		"skybox-distance" : 5000,
 		"ambient-color" : [ 0, 0, 0 ],
 		"diffuse-color" : [ 0.4, 0.43, 0.42 ],
-		"specular-color" : [ 0, 0, 0 ],
+		"specular-color" : [ 0.337, 0.325, 0.325 ],
 		"cam-far-clip-distance" : 0,
 		"cam-near-clip-distance" : 5
 	},
 	"graph" : 
 	{
-		"vertex-mesh" : "sphere.mesh",
-		"vertex-material" : "Shaded/MetalBlue",
-		"vertex-scale" :  [	0.09, 0.09, 0.09 ],
+		"vertex-mesh" : "Cube.001.mesh",
+		"vertex-material" : "Shaded/StudioGold",
+		"vertex-scale" :  [	5, 5, 5 ],
 		"vertex-id" : 
 		{
-			"font-name" : "Cousine-Regular",
+			"font-name" : "Gecko-Personal",
 			"char-height" : 6,
 			"color" : [ 1, 1, 1 ],
 			"space-width" : 0
 		},
-		"edge-material" : "Shaded/LightGreen",
+		"edge-material" : "Shaded/LightBlue",
 		"edge-tip-mesh" : "triangle.mesh",
-		"edge-tip-material" : "Shaded/LightGreen",
-		"edge-tip-scale" : [ 0.5, 0.5, 0.5 ],
+		"edge-tip-material" : "Shaded/LightBlue",
+		"edge-tip-scale" : [ 1.25, 1.25, 1.25 ],
 		"edge-type" :
 		{
-			"font-name" : "Cousine-Regular",
+			"font-name" : "Gecko-Personal",
 			"char-height" : 2.5,
 			"color" : [ 1, 1, 1 ],
 			"space-width" : 0
@@ -77,7 +77,7 @@
 		"background-color" : [ 0.0, 0.0, 0.0 ],
 		"zoom-out" : 800,
 		"render-shadows" : false,
-		"render-sky" : false,
+		"render-sky" : true,
 		"render-vertices" : true,
 		"render-vertex-ids" : false,
 		"render-edges" : true,

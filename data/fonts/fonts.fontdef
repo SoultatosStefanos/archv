@@ -1,49 +1,77 @@
-font Cousine-Regular
+font Arapey-Italic
 {
 	type 		truetype
-	source 		cousine-regular.ttf
-	size 		150
+	source 		arapey-italic.ttf
+	size 		200
 	resolution 	96
 }
-font Droid-Sans
+font Arapey-Regular
 {
 	type 		truetype
-	source 		droid-sans.ttf
-	size 		150
+	source 		arapey-regular.ttf
+	size 		200
 	resolution 	96
 }
-font Fornire-Light
+font Backpack
 {
 	type 		truetype
-	source 		fornire-light.ttf
-	size 		150
+	source 		backpack.ttf
+	size 		200
 	resolution 	96
 }
-font Karla-Regular
+font Besar
 {
 	type 		truetype
-	source 		karla-regular.ttf
-	size 		150
+	source 		besar.ttf
+	size 		200
 	resolution 	96
 }
-font Proggy-Clean
+font Bunya-Personal-Black
 {
 	type 		truetype
-	source 		proggy-clean.ttf
-	size 		150
+	source 		bunya-personal-black.ttf
+	size 		200
 	resolution 	96
 }
-font Proggy-Tiny
+font Bunya-Personal-Bold
 {
 	type 		truetype
-	source 		proggy-tiny.ttf
-	size 		150
+	source 		bunya-personal-bold.ttf
+	size 		200
 	resolution 	96
 }
-font Roboto-Medium
+font Bunya-Personal-Light
 {
 	type 		truetype
-	source 		roboto-medium.ttf
-	size 		100
+	source 		bunya-personal-light.ttf
+	size 		200
+	resolution 	96
+}
+font Bunya-Personal-Regular
+{
+	type 		truetype
+	source 		bunya-personal-regular.ttf
+	size 		200
+	resolution 	96
+}
+font Bunya-Personal-Thin
+{
+	type 		truetype
+	source 		bunya-personal-thin.ttf
+	size 		200
+	resolution 	96
+}
+font Gecko-Personal
+{
+	type 		truetype
+	source 		gecko-personal.ttf
+	size 		200
+	resolution 	96
+}
+font Mitchaella
+{
+	type 		truetype
+	source 		mitchaella.ttf
+	size 		200
 	resolution 	96
 }

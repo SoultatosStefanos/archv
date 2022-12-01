@@ -14,6 +14,22 @@ material Shaded/LightGreen
 		}
 	}
 }
+material Shaded/LightBlue
+{
+	receive_shadows on
+	
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			ambient 0.05 0.15 0.1
+			diffuse 0.302 0.442 0.411
+		}
+	}
+}
 material Shaded/MetalBlue
 {
 	receive_shadows on
@@ -36,7 +52,7 @@ material Shaded/MetalBlue
 		}
 	}
 }
-material Shaded/StudioMetalBlue
+material Shaded/StudioBlue
 {
 	receive_shadows on
 	
@@ -69,8 +85,31 @@ material Shaded/StudioGray
 			lighting on
 			depth_write on
 
-			ambient 1 1 1
-			diffuse 0 0 0
+			ambient 0.235 0.227 0.235 1
+			diffuse 0.647 0.650 0.666 1
+
+			rtshader_system 
+            {
+                lighting_stage metal_roughness
+                texturing_stage late_add_blend
+            }
+		}
+	}
+}
+material Shaded/StudioGold
+{
+	receive_shadows on
+	
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			ambient 0.96 0.784 0.517 1
+			diffuse 1 0.909 0.776 1
+			specular 0.96 0.784 0.517 1
 
 			rtshader_system 
             {

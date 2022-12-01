@@ -34,3 +34,21 @@ material Triangle
 		}
 	}
 }
+material Material
+{
+	receive_shadows on
+	
+	technique
+	{
+		pass
+		{
+			lighting on
+			depth_write on
+
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 1 1 1
+			}
+		}
+	}
+}
