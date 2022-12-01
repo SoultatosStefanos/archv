@@ -14,16 +14,4 @@ auto stiff_camera_handler::mouseMoved(const OgreBites::MouseMotionEvent& evt)
     return InputListener::mouseMoved(evt);
 }
 
-auto stiff_camera_handler::mousePressed(const OgreBites::MouseButtonEvent& evt)
-    -> bool
-{
-    return InputListener::mousePressed(evt);
-}
-
-auto stiff_camera_handler::mouseReleased(const OgreBites::MouseButtonEvent& evt)
-    -> bool
-{
-    return InputListener::mouseReleased(evt);
-}
-
 } // namespace input

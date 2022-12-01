@@ -25,8 +25,6 @@ public:
     virtual ~stiff_camera_handler() override = default;
 
     auto mouseMoved(const OgreBites::MouseMotionEvent& e) -> bool override;
-    auto mousePressed(const OgreBites::MouseButtonEvent& e) -> bool override;
-    auto mouseReleased(const OgreBites::MouseButtonEvent& e) -> bool override;
 };
 
 } // namespace input
