@@ -99,6 +99,9 @@ auto background_renderer::setup_camera() -> void
     cam().setAutoAspectRatio(true);
 
     m_cam_node = scene().getRootSceneNode()->createChildSceneNode(camera_name);
+    const auto& curr_pos = m_cam_node->getPosition();
+    const auto new_pos = Vector3(curr_pos.x, curr_pos.y, curr_pos.z + 5000);
+    m_cam_node->setPosition(new_pos); // zoom out a little initially
 
     assert(m_cam_node);
 
