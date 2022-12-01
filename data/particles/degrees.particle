@@ -239,8 +239,8 @@ particle_system Degrees/SwarmLight
 {
 	quota	3000
 	material	Misc/Flare
-	particle_width	2.6
-	particle_height	2.6
+	particle_width	1.4
+	particle_height	1.4
 	cull_each	true
 	renderer	billboard
 	sorted	true
@@ -252,15 +252,15 @@ particle_system Degrees/SwarmLight
 		angle	180
 		colour	1 1 1 1
 		direction	0 1 0
-		emission_rate	50
+		emission_rate	31.5
 		position	0 0 0
-		velocity	20
-		time_to_live	3.4
+		velocity	4.3
+		time_to_live	1.78
 		duration	0
 		repeat_delay	0
-		width	80
-		height	80
-		depth	80
+		width	8
+		height	8
+		depth	8
 	}
 
 	affector DeflectorPlane
@@ -308,14 +308,28 @@ particle_system Degrees/SwarmLight
 	affector DirectionRandomiser
 	{
 		randomness	60
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
 	}
 }
 particle_system Degrees/SwarmMedium
 {
 	quota	3000
 	material	Misc/Flare
-	particle_width	2.6
-	particle_height	2.6
+	particle_width	1.4
+	particle_height	1.4
 	cull_each	true
 	renderer	billboard
 	sorted	true
@@ -327,15 +341,15 @@ particle_system Degrees/SwarmMedium
 		angle	180
 		colour	1 1 1 1
 		direction	0 1 0
-		emission_rate	70
+		emission_rate	81.5
 		position	0 0 0
-		velocity	20
-		time_to_live	3.4
+		velocity	6.3
+		time_to_live	1.78
 		duration	0
 		repeat_delay	0
-		width	80
-		height	80
-		depth	80
+		width	8
+		height	8
+		depth	8
 	}
 
 	affector DeflectorPlane
@@ -383,14 +397,28 @@ particle_system Degrees/SwarmMedium
 	affector DirectionRandomiser
 	{
 		randomness	60
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
+	}
+	
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
 	}
 }
 particle_system Degrees/SwarmHeavy
 {
 	quota	3000
 	material	Misc/Flare
-	particle_width	2.6
-	particle_height	2.6
+	particle_width	1.4
+	particle_height	1.4
 	cull_each	true
 	renderer	billboard
 	sorted	true
@@ -402,15 +430,15 @@ particle_system Degrees/SwarmHeavy
 		angle	180
 		colour	1 1 1 1
 		direction	0 1 0
-		emission_rate	100
+		emission_rate	181.5
 		position	0 0 0
-		velocity	20
-		time_to_live	3.4
+		velocity	26.3
+		time_to_live	1.78
 		duration	0
 		repeat_delay	0
-		width	80
-		height	80
-		depth	80
+		width	8
+		height	8
+		depth	8
 	}
 
 	affector DeflectorPlane
@@ -458,5 +486,19 @@ particle_system Degrees/SwarmHeavy
 	affector DirectionRandomiser
 	{
 		randomness	60
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
+	}
+	
+	affector DeflectorPlane
+	{
+		plane_point	50 0 0
+		plane_normal	-1 0 0
+		bounce	1
 	}
 }
