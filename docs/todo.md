@@ -861,11 +861,12 @@
 
 	+ [?] Autocompletion revisit
 
+
 # 06 / 12 / 2022
 
 	+ [x] Typedefs
 
-	+ [ ] Fwd decls
+	+ [x] Fwd decls
 		
 		+ [x] Misc
 
@@ -893,6 +894,13 @@
 
 		+ [x] Application
 
-		+ [ ] 3rd party fwd decls cleanup
-
 	+ [x] Presentation cleanup
+
+
+# 07 / 12 / 2022
+
+	+ [ ] Pimpl at Infomap clustering impl
+
+	+ [ ] Gui setup cleanup
+
+	+ [ ] Gui configs
