@@ -6,7 +6,7 @@
 
 #include "camera.hpp"
 #include "commands.hpp"
+#include "def.hpp"
 #include "graph_interface.hpp"
-#include "typedefs.hpp"
 
 #endif // PRESENTATION_ALL_HPP

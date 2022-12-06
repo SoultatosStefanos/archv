@@ -4,8 +4,8 @@
 #ifndef PRESENTATION_CAMERA_HPP
 #define PRESENTATION_CAMERA_HPP
 
-#include <OGRE/OgreSceneNode.h>
-#include <string>
+#include <OGRE/OgrePrerequisites.h> // for SceneNode
+#include <string>                   // for string
 
 namespace presentation
 {

@@ -259,7 +259,9 @@ namespace
         dims_type old_dims;
 
         update_scaling_factor_dims_cmd(
-            backend_type& b, tag_type t, dims_type dims)
+            backend_type& b,
+            tag_type t,
+            dims_type dims)
         : backend { b }, tag { t }, new_dims { dims }
         {
         }
@@ -292,7 +294,9 @@ namespace
         baseline_type old_baseline;
 
         update_scaling_factor_baseline_cmd(
-            backend_type& b, tag_type t, baseline_type baseline)
+            backend_type& b,
+            tag_type t,
+            baseline_type baseline)
         : backend { b }, tag { t }, new_baseline { baseline }
         {
         }
@@ -324,7 +328,9 @@ namespace
         bool old_enabled;
 
         update_scaling_factor_enablement_cmd(
-            backend_type& b, tag_type t, bool enabled)
+            backend_type& b,
+            tag_type t,
+            bool enabled)
         : backend { b }, tag { t }, new_enabled { enabled }
         {
         }
@@ -357,7 +363,9 @@ namespace
         ratio_type old_ratio;
 
         update_scaling_factor_min_ratio_cmd(
-            backend_type& b, tag_type t, ratio_type ratio)
+            backend_type& b,
+            tag_type t,
+            ratio_type ratio)
         : backend { b }, tag { t }, new_ratio { ratio }
         {
         }
@@ -390,7 +398,9 @@ namespace
         ratio_type old_ratio;
 
         update_scaling_factor_max_ratio_cmd(
-            backend_type& b, tag_type t, ratio_type ratio)
+            backend_type& b,
+            tag_type t,
+            ratio_type ratio)
         : backend { b }, tag { t }, new_ratio { ratio }
         {
         }
@@ -1264,14 +1274,16 @@ auto update_out_degree_evaluation_applied(
 }
 
 auto restore_in_degree_evaluation(
-    command_history& cmds, degrees_backend& backend) -> void
+    command_history& cmds,
+    degrees_backend& backend) -> void
 {
     cmds.execute(
         std::make_unique< restore_degree_cmd< in_degree_tag > >(backend));
 }
 
 auto restore_out_degree_evaluation(
-    command_history& cmds, degrees_backend& backend) -> void
+    command_history& cmds,
+    degrees_backend& backend) -> void
 {
     cmds.execute(
         std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));

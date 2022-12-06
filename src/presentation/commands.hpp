@@ -4,7 +4,7 @@
 #ifndef PRESENTATION_COMMANDS_HPP
 #define PRESENTATION_COMMANDS_HPP
 
-#include "typedefs.hpp"
+#include "def.hpp" // for all the modules
 
 namespace presentation
 {

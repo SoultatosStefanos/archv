@@ -4,55 +4,59 @@ namespace presentation
 {
 
 graph_interface::graph_interface(
-    symbol_table_type st,
-    graph_type&& g,
-    vertex_marker_type m,
-    weights_backend_type::config_data_type weights_cfg,
-    layout_backend_type::config_data_type layout_cfg,
-    scaling_backend_type::config_data_type scaling_cfg,
-    clustering_backend_type::config_data_type clustering_cfg)
+    symbol_table st,
+    graph&& g,
+    vertex_marker m,
+    weights_config w_cfg,
+    layout_config l_cfg,
+    scaling_config scaling_cfg,
+    clustering_config clus_cfg)
 : m_st { std::move(st) }
 , m_g { std::move(g) }
 , m_marker { std::move(m) }
-, m_weights { std::move(weights_cfg) }
-, m_layout { m_g, edge_weight(*this), std::move(layout_cfg) }
+, m_weights { std::move(w_cfg) }
+, m_layout { m_g, edge_weight(*this), std::move(l_cfg) }
 , m_scaling { std::move(scaling_cfg) }
-, m_clustering { m_g, edge_weight(*this), std::move(clustering_cfg) }
+, m_clustering { m_g, edge_weight(*this), std::move(clus_cfg) }
 {
 }
 
-auto vertex_id(const graph_interface& g) -> graph_interface::id_map
+auto vertex_id(const graph_interface& g) -> id_map
 {
-    return boost::get(boost::vertex_bundle, g.graph());
+    return boost::get(boost::vertex_bundle, g.get_graph());
 }
 
-auto vertex_position(const graph_interface& g) -> graph_interface::position_map
+auto vertex_position(const graph_interface& g) -> position_map
 {
-    return layout::make_position_map(g.layout_backend());
+    return layout::make_position_map(g.get_layout_backend());
 }
 
-auto vertex_scale(const graph_interface& g) -> graph_interface::scale_map
+auto vertex_scale(const graph_interface& g) -> scale_map
 {
-    return scaling::make_scale_map< graph_interface::graph_type >(
-        g.scaling_backend(),
-        architecture::metadata_counter(g.symbol_table(), g.graph()));
+    return scaling::make_scale_map< graph >(
+        g.get_scaling_backend(),
+        metadata_counter(g.get_symbol_table(), g.get_graph()));
 }
 
-auto vertex_cluster(const graph_interface& g) -> graph_interface::cluster_map
+auto vertex_cluster(const graph_interface& g) -> cluster_map
 {
-    return clustering::make_cluster_map(g.clustering_backend());
+    return clustering::make_cluster_map(g.get_clustering_backend());
 }
 
-auto edge_dependency(const graph_interface& g)
-    -> graph_interface::dependency_map
+auto edge_dependency(const graph_interface& g) -> dependency_map
 {
-    return boost::get(boost::edge_bundle, g.graph());
+    return boost::get(boost::edge_bundle, g.get_graph());
 }
 
-auto edge_weight(const graph_interface& g) -> graph_interface::weight_map
+auto edge_weight(const graph_interface& g) -> weight_map
 {
-    return weights::make_weight_map< graph_interface::graph_type >(
-        g.weights_backend(), edge_dependency(g));
+    return weights::make_weight_map< graph >(
+        g.get_weights_backend(), edge_dependency(g));
+}
+
+auto get_vertex(const graph_interface& g, const id_t& id) -> vertex
+{
+    return g.get_vertex_marker().vertex(id);
 }
 
 } // namespace presentation

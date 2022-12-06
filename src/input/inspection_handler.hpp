@@ -5,7 +5,7 @@
 #ifndef INPUT_INSPECTION_HANDLER_HPP
 #define INPUT_INSPECTION_HANDLER_HPP
 
-#include "presentation/typedefs.hpp"
+#include "presentation/def.hpp"
 
 #include <OGRE/Bites/OgreInput.h>
 #include <OGRE/OgreCamera.h>

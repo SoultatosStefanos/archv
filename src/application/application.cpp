@@ -151,7 +151,7 @@ auto application::setup_graph_renderer() -> void
     using cluster_color_coder = rendering::cluster_color_pool;
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
-        m_graph_iface->graph(),
+        m_graph_iface->get_graph(),
         pres::vertex_id(*m_graph_iface),
         pres::vertex_position(*m_graph_iface),
         pres::edge_dependency(*m_graph_iface),
@@ -172,7 +172,7 @@ auto application::setup_graph_renderer() -> void
 auto application::setup_graph_collision_checker() -> void
 {
     m_graph_collisions = std::make_unique< graph_collision_checker_type >(
-        m_graph_iface->graph(),
+        m_graph_iface->get_graph(),
         pres::vertex_id(*m_graph_iface),
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene());
@@ -427,7 +427,7 @@ auto application::setup_gui() -> void
 
     m_gui = std::make_unique< gui_type >();
 
-    prepare_gui_popups(m_graph_iface->symbol_table(), gui::popups, *m_gui);
+    prepare_gui_popups(m_graph_iface->get_symbol_table(), gui::popups, *m_gui);
 
     BOOST_LOG_TRIVIAL(debug) << "setup gui";
 }
@@ -589,7 +589,8 @@ auto application::prepare_weights_editor() -> void
 
     editor.set_weights(
         [this](auto type) {
-            return weights::get_weight(m_graph_iface->weights_backend(), type);
+            return weights::get_weight(
+                m_graph_iface->get_weights_backend(), type);
         });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared weights editor";
@@ -603,15 +604,16 @@ auto application::prepare_layout_editor() -> void
 
     editor.set_layout(
         [this]()
-        { return layout::get_layout_id(m_graph_iface->layout_backend()); });
+        { return layout::get_layout_id(m_graph_iface->get_layout_backend()); });
 
     editor.set_topology(
-        [this]()
-        { return layout::get_topology_id(m_graph_iface->layout_backend()); });
+        [this]() {
+            return layout::get_topology_id(m_graph_iface->get_layout_backend());
+        });
 
     editor.set_scale(
         [this]()
-        { return layout::get_scale(m_graph_iface->layout_backend()); });
+        { return layout::get_scale(m_graph_iface->get_layout_backend()); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared layout editor";
 }
@@ -623,36 +625,38 @@ auto application::prepare_scaling_editor() -> void
     auto& editor = m_gui->get_menu_bar().get_scaling_editor();
 
     editor.set_dims(
-        [this](auto tag) {
+        [this](auto tag)
+        {
             return scaling::get_factor_dims(
-                m_graph_iface->scaling_backend(), tag);
+                m_graph_iface->get_scaling_backend(), tag);
         });
 
     editor.set_baseline(
         [this](auto tag)
         {
             return scaling::get_factor_baseline(
-                m_graph_iface->scaling_backend(), tag);
+                m_graph_iface->get_scaling_backend(), tag);
         });
 
     editor.set_enabled(
-        [this](auto tag) {
+        [this](auto tag)
+        {
             return scaling::is_factor_enabled(
-                m_graph_iface->scaling_backend(), tag);
+                m_graph_iface->get_scaling_backend(), tag);
         });
 
     editor.set_min_ratio(
         [this](auto tag)
         {
             return scaling::get_factor_min_ratio(
-                m_graph_iface->scaling_backend(), tag);
+                m_graph_iface->get_scaling_backend(), tag);
         });
 
     editor.set_max_ratio(
         [this](auto tag)
         {
             return scaling::get_factor_max_ratio(
-                m_graph_iface->scaling_backend(), tag);
+                m_graph_iface->get_scaling_backend(), tag);
         });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared scaling editor";
@@ -738,7 +742,7 @@ auto application::prepare_clustering_editor() -> void
 {
     assert(m_graph_iface);
 
-    auto& backend = m_graph_iface->clustering_backend();
+    auto& backend = m_graph_iface->get_clustering_backend();
     auto& frontend = m_gui->get_menu_bar().get_clustering_editor();
 
     frontend.set_clusterer([this, &backend]()
@@ -875,8 +879,8 @@ auto application::prepare_menu_bar() -> void
 {
     auto& bar = m_gui->get_menu_bar();
 
-    bar.num_vertices() = boost::num_vertices(m_graph_iface->graph());
-    bar.num_edges() = boost::num_edges(m_graph_iface->graph());
+    bar.num_vertices() = boost::num_vertices(m_graph_iface->get_graph());
+    bar.num_edges() = boost::num_edges(m_graph_iface->get_graph());
 
     bar.set_can_undo([this]() { return m_cmds->can_undo(); });
     bar.set_can_redo([this]() { return m_cmds->can_redo(); });
@@ -893,7 +897,7 @@ auto application::connect_weights_presentation() -> void
     assert(m_graph_iface);
 
     auto& editor = m_gui->get_menu_bar().get_weights_editor();
-    auto& backend = m_graph_iface->weights_backend();
+    auto& backend = m_graph_iface->get_weights_backend();
 
     editor.connect_to_dependency(
         [this, &backend](auto type, auto w)
@@ -924,7 +928,7 @@ auto application::connect_layout_presentation() -> void
     assert(m_graph_iface);
 
     auto& editor = m_gui->get_menu_bar().get_layout_editor();
-    auto& backend = m_graph_iface->layout_backend();
+    auto& backend = m_graph_iface->get_layout_backend();
 
     editor.connect_to_layout(
         [this, &backend](auto selection)
@@ -970,7 +974,7 @@ auto application::connect_scaling_presentation() -> void
     assert(m_graph_iface);
 
     auto& editor = m_gui->get_menu_bar().get_scaling_editor();
-    auto& backend = m_graph_iface->scaling_backend();
+    auto& backend = m_graph_iface->get_scaling_backend();
 
     editor.connect_to_baseline(
         [this, &backend](auto tag, auto baseline)
@@ -1193,7 +1197,7 @@ auto application::connect_clustering_presentation() -> void
     assert(m_graph_renderer);
     assert(m_graph_iface);
 
-    auto& backend = m_graph_iface->clustering_backend();
+    auto& backend = m_graph_iface->get_clustering_backend();
     auto& editor = m_gui->get_menu_bar().get_clustering_editor();
 
     editor.connect_to_cluster(
