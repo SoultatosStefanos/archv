@@ -857,6 +857,10 @@
 
 # 01 / 12 / 2022
 
-	+ [?] Tweaks
+	+ [x] Tweaks
 
 	+ [?] Autocompletion revisit
+
+# 06 / 12 / 2022
+
+	+ [ ] Typedefs

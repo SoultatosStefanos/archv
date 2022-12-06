@@ -4,30 +4,80 @@
 #ifndef ARCHITECTURE_ALLFWD_HPP
 #define ARCHITECTURE_ALLFWD_HPP
 
-#include <boost/graph/adjacency_list.hpp>
+#include <string>
 #include <tuple>
-#include <unordered_map>
+
+namespace boost
+{
+
+struct vecS;
+struct bidirectionalS;
+struct listS;
+struct no_property;
+
+template <
+    typename OutEdgeListS,
+    typename VertexListS,
+    typename DirectedS,
+    typename VertexProperty,
+    typename EdgeProperty,
+    typename GraphProperty,
+    typename EdgeListS >
+class adjacency_list;
+
+} // namespace boost
 
 namespace architecture
 {
 
-class vertex_properties;
-class tuple;
+/***********************************************************
+ * Graph                                                   *
+ ***********************************************************/
 
-class graph;
-class id_map;
-class dependency_map;
+using graph = boost::adjacency_list<
+    boost::vecS,
+    boost::vecS,
+    boost::bidirectionalS,
+    std::string,
+    std::string,
+    boost::no_property,
+    boost::listS >;
 
-class symbol_table;
+using dependency_type = std::string;
+
+/***********************************************************
+ * Symbols                                                 *
+ ***********************************************************/
+
 struct source_location;
 struct symbol;
 struct definition;
 struct method;
 struct structure;
 
+/***********************************************************
+ * Symbol Table                                            *
+ ***********************************************************/
+
+class symbol_table;
+
+/***********************************************************
+ * Metadata                                                *
+ ***********************************************************/
+
 struct metadata_counter;
 
+/***********************************************************
+ * Vertex Marker                                           *
+ ***********************************************************/
+
 class vertex_marker;
+
+/***********************************************************
+ * Config                                                  *
+ ***********************************************************/
+
+using config_data = std::tuple< symbol_table, graph, vertex_marker >;
 
 } // namespace architecture
 
