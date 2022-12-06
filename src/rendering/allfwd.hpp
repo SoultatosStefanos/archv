@@ -14,6 +14,9 @@ class background_config_api;
 
 class background_renderer;
 
+struct graph_config;
+struct graph_config_api;
+
 template <
     typename Graph,
     typename VertexID,
@@ -33,6 +36,8 @@ struct cluster_color_pool;
 struct minimap_config;
 class minimap_config_api;
 class minimap_renderer;
+
+struct config_data;
 
 } // namespace rendering
 
