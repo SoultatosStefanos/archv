@@ -1,13 +1,16 @@
 #include "application.hpp"
 
 #include "IconsFontAwesome5.h"
-#include "architecture/all.hpp"
 #include "archive.hpp"
 #include "config.hpp"
+#include "input/all.hpp"
 #include "misc/all.hpp"
-#include "rendering/all.hpp"
+#include "presentation/all.hpp"
 #include "ui/all.hpp"
 
+#include <OGRE/Bites/OgreCameraMan.h>
+#include <OGRE/Bites/OgreImGuiInputListener.h>
+#include <OGRE/Bites/OgreTrays.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreParticleSystemManager.h>
 #include <OGRE/OgreRoot.h>
@@ -35,22 +38,9 @@ application::application(int argc, const char* argv[]) : base("ARCHV")
     }
 
     m_graph_path = argv[1];
-    const auto& jsons = archive::get();
-
-    const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
-    const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
-    const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
-    const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
-    const auto& rendering_root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
-    const auto& gui_root = jsons.at(ARCHV_GUI_CONFIG_PATH);
-
-    m_weights_config = weights::deserialize(weights_root);
-    m_layout_config = layout::deserialize(layout_root);
-    m_scaling_config = scaling::deserialize(scaling_root);
-    m_clustering_config = clustering::deserialize(clustering_root);
-    m_rendering_config = rendering::deserialize(rendering_root);
-    m_gui_config = gui::deserialize(gui_root);
 }
+
+application::~application() = default;
 
 auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 {
@@ -76,10 +66,7 @@ auto application::setup() -> void
     base::setup();
     setup_graph_interface();
     setup_commands();
-    setup_background_renderer();
-    setup_graph_renderer();
-    setup_graph_collision_checker();
-    setup_minimap_renderer();
+    setup_rendering();
     setup_gui();
     setup_input();
 
@@ -111,16 +98,22 @@ auto application::setup() -> void
 auto application::setup_graph_interface() -> void
 {
     const auto& jsons = archive::get();
+
     auto&& [st, g, m] = architecture::deserialize(jsons.at(m_graph_path));
+
+    const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
+    const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
+    const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
+    const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
         std::move(g),
         std::move(m),
-        m_weights_config,
-        m_layout_config,
-        m_scaling_config,
-        m_clustering_config);
+        weights::deserialize(weights_root),
+        layout::deserialize(layout_root),
+        scaling::deserialize(scaling_root),
+        clustering::deserialize(clustering_root));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -132,23 +125,18 @@ auto application::setup_commands() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup commands";
 }
 
-auto application::setup_background_renderer() -> void
-{
-    assert(getRenderWindow());
-
-    m_background_renderer = std::make_unique< background_renderer_type >(
-        *getRenderWindow(),
-        m_rendering_config.background,
-        ARCHV_RESOURCE_GROUP);
-
-    BOOST_LOG_TRIVIAL(debug) << "setup background renderer";
-}
-
-auto application::setup_graph_renderer() -> void
+auto application::setup_rendering() -> void
 {
     using degrees_evaluator = rendering::degrees_ranked_evaluator;
     using degrees_backend = rendering::degrees_ranked_backend;
     using cluster_color_coder = rendering::cluster_color_pool;
+
+    const auto& jsons = archive::get();
+    const auto& root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
+    const auto config = rendering::deserialize(root);
+
+    m_background_renderer = std::make_unique< background_renderer_type >(
+        *getRenderWindow(), config.background, ARCHV_RESOURCE_GROUP);
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->get_graph(),
@@ -156,9 +144,9 @@ auto application::setup_graph_renderer() -> void
         pres::vertex_position(*m_graph_iface),
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene(),
-        m_rendering_config.graph,
+        config.graph,
         ARCHV_RESOURCE_GROUP,
-        degrees_evaluator(degrees_backend(m_rendering_config.degrees)),
+        degrees_evaluator(degrees_backend(config.degrees)),
         cluster_color_coder());
 
     m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
@@ -166,33 +154,21 @@ auto application::setup_graph_renderer() -> void
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
 
-    BOOST_LOG_TRIVIAL(debug) << "setup graph renderer";
-}
-
-auto application::setup_graph_collision_checker() -> void
-{
     m_graph_collisions = std::make_unique< graph_collision_checker_type >(
         m_graph_iface->get_graph(),
         pres::vertex_id(*m_graph_iface),
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene());
 
-    BOOST_LOG_TRIVIAL(debug) << "setup graph collisions";
-}
-
-auto application::setup_minimap_renderer() -> void
-{
-    assert(getRenderWindow());
-
     m_minimap_renderer = std::make_unique< minimap_renderer_type >(
         *getRenderWindow(),
         m_background_renderer->scene(),
-        m_rendering_config.minimap,
+        config.minimap,
         ARCHV_RESOURCE_GROUP);
 
     m_minimap_renderer->setup();
 
-    BOOST_LOG_TRIVIAL(debug) << "setup minimap renderer";
+    BOOST_LOG_TRIVIAL(debug) << "setup rendering";
 }
 
 namespace // gui setup
@@ -413,17 +389,18 @@ namespace // gui setup
 auto application::setup_gui() -> void
 {
     prepare_gui_plugins(
-        m_weights_config,
-        m_layout_config,
-        m_scaling_config,
-        m_clustering_config);
+        m_graph_iface->get_weights_backend().config_data(),
+        m_graph_iface->get_layout_backend().config_data(),
+        m_graph_iface->get_scaling_backend().config_data(),
+        m_graph_iface->get_clustering_backend().config_data());
 
     prepare_gui_resources();
     prepare_gui_overlay(m_background_renderer->scene());
 
     ImGui::GetIO().WantCaptureMouse = true;
 
-    gui::set_configs(m_gui_config);
+    const auto& gui_root = archive::get().at(ARCHV_GUI_CONFIG_PATH);
+    gui::set_configs(gui::deserialize(gui_root));
 
     m_gui = std::make_unique< gui_type >();
 
@@ -496,10 +473,7 @@ auto application::shutdown() -> void
 {
     shutdown_input();
     shutdown_gui();
-    shutdown_minimap_renderer();
-    shutdown_graph_collision_checker();
-    shutdown_graph_renderer();
-    shutdown_background_renderer();
+    shutdown_rendering();
     shutdown_commands();
     shutdown_graph_interface();
     base::shutdown();
@@ -535,32 +509,14 @@ auto application::shutdown_gui() -> void
     BOOST_LOG_TRIVIAL(debug) << "shutdown gui";
 }
 
-auto application::shutdown_minimap_renderer() -> void
+auto application::shutdown_rendering() -> void
 {
     m_minimap_renderer.reset();
-
-    BOOST_LOG_TRIVIAL(debug) << "shutdown minimap renderer";
-}
-
-auto application::shutdown_graph_collision_checker() -> void
-{
     m_graph_collisions.reset();
-
-    BOOST_LOG_TRIVIAL(debug) << "shutdown graph collisions";
-}
-
-auto application::shutdown_graph_renderer() -> void
-{
     m_graph_renderer.reset();
-
-    BOOST_LOG_TRIVIAL(debug) << "shutdown graph renderer";
-}
-
-auto application::shutdown_background_renderer() -> void
-{
     m_background_renderer.reset();
 
-    BOOST_LOG_TRIVIAL(debug) << "shutdown background renderer";
+    BOOST_LOG_TRIVIAL(debug) << "shutdown renderering";
 }
 
 auto application::shutdown_commands() -> void

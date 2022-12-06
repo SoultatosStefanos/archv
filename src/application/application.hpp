@@ -4,14 +4,20 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "input/all.hpp"
-#include "presentation/all.hpp"
+#include "input/allfwd.hpp"        // for the input modules
+#include "presentation/allfwd.hpp" // for the presentation modules
 
-#include <OGRE/Bites/OgreApplicationContext.h>
-#include <OGRE/Bites/OgreCameraMan.h>
-#include <OGRE/Bites/OgreImGuiInputListener.h>
-#include <OGRE/Bites/OgreTrays.h>
-#include <memory>
+#include <OGRE/Bites/OgreApplicationContext.h> // for ApplicationContext
+#include <memory>                              // for unique_ptr
+
+namespace OgreBites
+{
+
+class CameraMan;
+class ImGuiInputListener;
+class TrayManager;
+
+} // namespace OgreBites
 
 namespace application
 {
@@ -24,7 +30,7 @@ class application : public OgreBites::ApplicationContext
 
 public:
     application(int argc, const char* argv[]);
-    virtual ~application() override = default;
+    ~application() override;
 
     auto frameStarted(const Ogre::FrameEvent& e) -> bool override;
 
@@ -36,19 +42,13 @@ public:
 private:
     using graph_interface_type = presentation::graph_interface;
     using command_history_type = presentation::command_history;
+
     using background_renderer_type = presentation::background_renderer;
     using graph_renderer_type = presentation::graph_renderer;
     using graph_collision_checker_type = presentation::graph_collision_checker;
     using minimap_renderer_type = presentation::minimap_renderer;
 
     using gui_type = presentation::overlay_manager;
-
-    using weights_config_data_type = weights::config_data;
-    using layout_config_data_type = layout::config_data;
-    using scaling_config_data_type = scaling::config_data;
-    using clustering_config_data_type = clustering::config_data;
-    using rendering_config_data_type = rendering::config_data;
-    using gui_config_data_type = gui::config_data;
 
     using trays_type = OgreBites::TrayManager;
     using cameraman_type = input::camera_handler;
@@ -62,19 +62,13 @@ private:
 
     auto setup_graph_interface() -> void;
     auto setup_commands() -> void;
-    auto setup_background_renderer() -> void;
-    auto setup_graph_renderer() -> void;
-    auto setup_graph_collision_checker() -> void;
-    auto setup_minimap_renderer() -> void;
+    auto setup_rendering() -> void;
     auto setup_gui() -> void;
     auto setup_input() -> void;
 
     auto shutdown_input() -> void;
     auto shutdown_gui() -> void;
-    auto shutdown_minimap_renderer() -> void;
-    auto shutdown_graph_collision_checker() -> void;
-    auto shutdown_graph_renderer() -> void;
-    auto shutdown_background_renderer() -> void;
+    auto shutdown_rendering() -> void;
     auto shutdown_commands() -> void;
     auto shutdown_graph_interface() -> void;
 
@@ -101,13 +95,6 @@ private:
     auto connect_menu_bar_presentation() -> void;
 
     const char* m_graph_path { nullptr };
-
-    weights_config_data_type m_weights_config;
-    layout_config_data_type m_layout_config;
-    scaling_config_data_type m_scaling_config;
-    clustering_config_data_type m_clustering_config;
-    rendering_config_data_type m_rendering_config;
-    gui_config_data_type m_gui_config;
 
     std::unique_ptr< graph_interface_type > m_graph_iface;
     std::unique_ptr< command_history_type > m_cmds;

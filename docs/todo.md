@@ -891,7 +891,7 @@
 
 		+ [x] Input
 
-		+ [ ] Application
+		+ [x] Application
 
 		+ [ ] 3rd party fwd decls cleanup
 
