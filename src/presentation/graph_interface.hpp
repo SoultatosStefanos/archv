@@ -10,7 +10,7 @@
 #include "architecture/vertex_marker.hpp"
 #include "clustering/backend.hpp"
 #include "clustering/cluster_map.hpp"
-#include "layout/position_map.hpp"
+#include "layout/all.hpp"
 #include "scaling/scale_map.hpp"
 #include "weights/weight_map.hpp"
 
@@ -32,7 +32,6 @@ public:
     using id_map = architecture::id_map;
     using dependency_map = architecture::dependency_map;
     using weight_map = weights::weight_map< graph_type, dependency_map >;
-    using position_map = layout::position_map< graph_type, weight_map >;
     using scale_map
         = scaling::scale_map< graph_type, architecture::metadata_counter >;
 
@@ -43,6 +42,7 @@ public:
         = clustering::backend< graph_type, weight_map >;
 
     using cluster_map = clustering::cluster_map< clustering_backend_type >;
+    using position_map = layout::position_map< layout_backend_type >;
 
     using id_type = vertex_marker_type::id_type;
     using vertex_type = boost::graph_traits< graph_type >::vertex_descriptor;

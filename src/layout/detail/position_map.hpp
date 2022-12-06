@@ -4,9 +4,6 @@
 #ifndef LAYOUT_DETAIL_POSITION_MAP_HPP
 #define LAYOUT_DETAIL_POSITION_MAP_HPP
 
-#include "layout/backend.hpp"
-
-#include <boost/graph/graph_concepts.hpp>
 #include <concepts>
 
 namespace layout::detail
@@ -18,14 +15,14 @@ struct position
     Coord x, y, z;
 };
 
-template < typename Graph, typename WeightMap >
+template < typename Backend >
 class position_dispatcher
 {
 public:
-    using graph_type = Graph;
-    using weight_map_type = WeightMap;
-    using vertex_type = typename graph_type::vertex_descriptor;
-    using backend_type = backend< graph_type, weight_map_type >;
+    using backend_type = Backend;
+    using graph_type = typename backend_type::graph_type;
+    using weight_map_type = typename backend_type::weight_map_type;
+    using vertex_type = typename backend_type::vertex_type;
     using coord_type = typename backend_type::layout_type::coord_type;
     using position_type = position< coord_type >;
 

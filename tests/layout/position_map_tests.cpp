@@ -1,3 +1,4 @@
+#include "layout/backend.hpp"
 #include "layout/position_map.hpp"
 
 #include <boost/graph/adjacency_list.hpp>
