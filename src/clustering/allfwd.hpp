@@ -4,7 +4,15 @@
 #ifndef CLUSTERING_ALLFWD_HPP
 #define CLUSTERING_ALLFWD_HPP
 
-#include <boost/property_map/function_property_map.hpp>
+#include <string_view>
+
+namespace boost
+{
+
+template < typename Func, typename Key, typename Ret >
+class function_property_map;
+
+} // namespace boost
 
 namespace clustering
 {
@@ -58,10 +66,15 @@ namespace detail
 } // namespace detail
 
 template < typename Backend >
-class cluster_map;
+using cluster_map = boost::function_property_map<
+    detail::cluster_dispatcher< Backend >,
+    typename Backend::vertex_type,
+    typename Backend::cluster_type >;
 
 struct backend_config;
-struct config_data;
+using config_data = backend_config;
+
+using id_t = std::string_view;
 
 } // namespace clustering
 

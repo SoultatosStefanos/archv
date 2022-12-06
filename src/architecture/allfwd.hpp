@@ -30,10 +30,6 @@ class adjacency_list;
 namespace architecture
 {
 
-/***********************************************************
- * Graph                                                   *
- ***********************************************************/
-
 using graph = boost::adjacency_list<
     boost::vecS,
     boost::vecS,
@@ -45,37 +41,17 @@ using graph = boost::adjacency_list<
 
 using dependency_type = std::string;
 
-/***********************************************************
- * Symbols                                                 *
- ***********************************************************/
-
 struct source_location;
 struct symbol;
 struct definition;
 struct method;
 struct structure;
 
-/***********************************************************
- * Symbol Table                                            *
- ***********************************************************/
-
 class symbol_table;
-
-/***********************************************************
- * Metadata                                                *
- ***********************************************************/
 
 struct metadata_counter;
 
-/***********************************************************
- * Vertex Marker                                           *
- ***********************************************************/
-
 class vertex_marker;
-
-/***********************************************************
- * Config                                                  *
- ***********************************************************/
 
 using config_data = std::tuple< symbol_table, graph, vertex_marker >;
 
