@@ -1,9 +1,6 @@
 #include "hud_handler.hpp"
 
-#include "gui/controls_hud.hpp"
-#include "gui/frames_hud.hpp"
-#include "gui/overlay.hpp"
-#include "rendering/minimap_renderer.hpp"
+#include "presentation/def.hpp"
 
 #include <boost/log/trivial.hpp>
 

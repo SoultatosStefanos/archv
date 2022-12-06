@@ -5,13 +5,11 @@
 #ifndef INPUT_INSPECTION_HANDLER_HPP
 #define INPUT_INSPECTION_HANDLER_HPP
 
-#include "presentation/def.hpp"
+#include "presentation/deffwd.hpp" // for graph_renderer, graph_collision_checker, overlay_manager, popup_holder
 
-#include <OGRE/Bites/OgreInput.h>
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreRay.h>
-#include <OGRE/OgreRenderWindow.h>
-#include <stack>
+#include <OGRE/Bites/OgreInput.h>   // for InputListener
+#include <OGRE/OgrePrerequisites.h> // for Camera, Ray, RenderWindow
+#include <stack>                    // for stack
 
 namespace input
 {

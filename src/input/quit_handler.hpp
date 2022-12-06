@@ -4,8 +4,8 @@
 #ifndef INPUT_QUIT_HANDLER_HPP
 #define INPUT_QUIT_HANDLER_HPP
 
-#include <OGRE/Bites/OgreInput.h>
-#include <OGRE/OgreRoot.h>
+#include <OGRE/Bites/OgreInput.h>   // for InputListener
+#include <OGRE/OgrePrerequisites.h> // for Root
 
 namespace input
 {

@@ -4,14 +4,9 @@
 #ifndef INPUT_HUD_HANDLER_HPP
 #define INPUT_HUD_HANDLER_HPP
 
-#include "gui/allfwd.hpp"
+#include "presentation/deffwd.hpp" // for frames_hud, controls_hud, minimap_renderer
 
-#include <OGRE/Bites/OgreInput.h>
-
-namespace rendering
-{
-class minimap_renderer;
-} // namespace rendering
+#include <OGRE/Bites/OgreInput.h> // for InputListener
 
 namespace input
 {
@@ -20,15 +15,14 @@ namespace input
  * HUD Handler                                             *
  ***********************************************************/
 
-// TODO Toggle minimap
 class hud_handler : public OgreBites::InputListener
 {
     using base = OgreBites::InputListener;
 
 public:
-    using controls_hud_type = gui::controls_hud;
-    using frames_hud_type = gui::frames_hud;
-    using minimap_renderer_type = rendering::minimap_renderer;
+    using controls_hud_type = presentation::controls_hud;
+    using frames_hud_type = presentation::frames_hud;
+    using minimap_renderer_type = presentation::minimap_renderer;
 
     hud_handler(
         controls_hud_type& controls,

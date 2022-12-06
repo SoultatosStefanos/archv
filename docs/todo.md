@@ -889,7 +889,7 @@
 
 		+ [x] Presentation
 
-		+ [ ] Input
+		+ [x] Input
 
 		+ [ ] Application
 

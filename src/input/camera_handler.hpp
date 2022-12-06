@@ -4,8 +4,8 @@
 #ifndef INPUT_CAMERA_HANDLER_HPP
 #define INPUT_CAMERA_HANDLER_HPP
 
-#include <OGRE/Bites/OgreCameraMan.h>
-#include <OGRE/Bites/OgreInput.h>
+#include <OGRE/Bites/OgreCameraMan.h> // for CameraMan
+#include <OGRE/Bites/OgreInput.h>     // for InputListener
 
 namespace input
 {

@@ -1,5 +1,10 @@
 #include "inspection_handler.hpp"
 
+#include "presentation/def.hpp"
+
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreRay.h>
+#include <OGRE/OgreRenderWindow.h>
 #include <boost/log/trivial.hpp>
 
 namespace input

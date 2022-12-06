@@ -1,5 +1,7 @@
 #include "quit_handler.hpp"
 
+#include <OGRE/OgreRoot.h>
+
 namespace input
 {
 

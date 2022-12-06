@@ -4,7 +4,7 @@
 #ifndef INPUT_EVENT_DISPATCHER_HPP
 #define INPUT_EVENT_DISPATCHER_HPP
 
-#include <OGRE/Bites/OgreInput.h>
+#include <OGRE/Bites/OgreInput.h> // for InputListenerChain
 
 namespace input
 {

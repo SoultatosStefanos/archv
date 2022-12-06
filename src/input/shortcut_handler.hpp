@@ -4,12 +4,9 @@
 #ifndef INPUT_SHORTCUT_INPUT_LISTENER_HPP
 #define INPUT_SHORTCUT_INPUT_LISTENER_HPP
 
-#include <OGRE/Bites/OgreInput.h>
+#include "presentation/deffwd.hpp" // for command_history
 
-namespace undo_redo
-{
-class command_history;
-} // namespace undo_redo
+#include <OGRE/Bites/OgreInput.h> // for InputListener
 
 namespace input
 {
@@ -23,7 +20,7 @@ class shortcut_handler : public OgreBites::InputListener
     using base = OgreBites::InputListener;
 
 public:
-    using commands_type = undo_redo::command_history;
+    using commands_type = presentation::command_history;
 
     explicit shortcut_handler(commands_type& cmds);
     virtual ~shortcut_handler() override = default;

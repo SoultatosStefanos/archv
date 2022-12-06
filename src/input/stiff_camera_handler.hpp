@@ -4,7 +4,7 @@
 #ifndef INPUT_STIFF_CAMERA_HANDLER_HPP
 #define INPUT_STIFF_CAMERA_HANDLER_HPP
 
-#include "camera_handler.hpp"
+#include "camera_handler.hpp" // for camera_handler
 
 namespace input
 {
