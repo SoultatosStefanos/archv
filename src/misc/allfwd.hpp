@@ -4,11 +4,10 @@
 #ifndef MISC_ALLFWD_HPP
 #define MISC_ALLFWD_HPP
 
-#include <unordered_map>
+#include "heterogeneous.hpp"
 
 namespace misc
 {
-class unordered_string_map;
 } // namespace misc
 
 #endif // MISC_ALLFWD_HPP
