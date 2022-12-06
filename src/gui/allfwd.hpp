@@ -28,6 +28,11 @@ class controls_hud;
 class structure_popup;
 class popup_holder;
 
+class gui_config;
+
+using config_data = gui_config;
+struct point;
+
 } // namespace gui
 
 #endif // GUI_ALLFWD_HPP
