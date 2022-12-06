@@ -875,4 +875,8 @@
 
 		+ [x] Scaling
 
-		+ [ ] Weights
+		+ [x] Weights
+
+		+ [ ] Architecture
+
+		+ [ ] Layout

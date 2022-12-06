@@ -1,6 +1,7 @@
 #include "config.hpp"
 
 #include <boost/log/trivial.hpp>
+#include <jsoncpp/json/json.h>
 
 namespace weights
 {

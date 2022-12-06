@@ -4,11 +4,11 @@
 #ifndef WEIGHTS_WEIGHT_MAP_HPP
 #define WEIGHTS_WEIGHT_MAP_HPP
 
-#include "backend.hpp"
-#include "detail/weight_map.hpp"
+#include "backend.hpp"           // for backend
+#include "detail/weight_map.hpp" // for weight_dispatcher
 
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/property_map/function_property_map.hpp>
+#include <boost/graph/graph_concepts.hpp>               // for GraphConcept
+#include <boost/property_map/function_property_map.hpp> // for function_property_map
 
 namespace weights
 {

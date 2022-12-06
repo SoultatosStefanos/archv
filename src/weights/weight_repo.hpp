@@ -4,10 +4,10 @@
 #ifndef WEIGHTS_WEIGHT_REPO_HPP
 #define WEIGHTS_WEIGHT_REPO_HPP
 
-#include "misc/heterogeneous.hpp"
+#include "misc/heterogeneous.hpp" // for unordered_string_map
 
-#include <string>
-#include <string_view>
+#include <string>      // for string
+#include <string_view> // for string_view
 
 namespace weights
 {

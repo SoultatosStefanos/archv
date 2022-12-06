@@ -4,10 +4,10 @@
 #ifndef WEIGHTS_BACKEND_HPP
 #define WEIGHTS_BACKEND_HPP
 
-#include "weight_repo.hpp"
+#include "weight_repo.hpp" // for weight repo
 
-#include <boost/signals2/signal.hpp>
-#include <string>
+#include <boost/signals2/signal.hpp> // for connection, signal
+#include <string>                    // for string
 
 namespace weights
 {
