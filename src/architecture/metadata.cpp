@@ -1,5 +1,6 @@
 #include "metadata.hpp"
 
+#include "graph.hpp"
 #include "symbol_table.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -7,6 +8,9 @@
 
 namespace architecture
 {
+
+static_assert(
+    std::is_same_v< metadata_counter::vertex_type, graph::vertex_descriptor >);
 
 auto metadata_counter::operator()(vertex_type v, tag_type tag) const
     -> count_type

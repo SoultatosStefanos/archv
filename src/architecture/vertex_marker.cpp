@@ -1,9 +1,16 @@
 #include "vertex_marker.hpp"
 
+#include "graph.hpp"
+#include "symbols.hpp"
+
 #include <cassert>
 
 namespace architecture
 {
+
+static_assert(std::is_same_v< vertex_marker::id_type, structure::id_type >);
+static_assert(
+    std::is_same_v< vertex_marker::vertex_type, graph::vertex_descriptor >);
 
 auto vertex_marker::vertex(const id_type& id) const -> vertex_type
 {

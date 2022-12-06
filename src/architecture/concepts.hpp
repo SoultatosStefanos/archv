@@ -4,7 +4,7 @@
 #ifndef ARCHITECTURE_CONCEPTS_HPP
 #define ARCHITECTURE_CONCEPTS_HPP
 
-#include "symbols.hpp"
+#include "symbols.hpp" // for symbol
 
 namespace architecture
 {

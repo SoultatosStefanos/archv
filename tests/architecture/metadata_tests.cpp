@@ -1,3 +1,4 @@
+#include "architecture/graph.hpp"
 #include "architecture/metadata.hpp"
 #include "architecture/symbol_table.hpp"
 

@@ -7,6 +7,7 @@
 #include <boost/log/trivial.hpp>
 #include <cassert>
 #include <concepts>
+#include <jsoncpp/json/json.h>
 
 namespace architecture
 {
@@ -58,7 +59,8 @@ namespace
     }
 
     inline void deserialize_definition_with_access_specifier(
-        const Json::Value& val, definition& def)
+        const Json::Value& val,
+        definition& def)
     {
         using access_specifier = symbol::access_specifier;
 
@@ -107,7 +109,9 @@ namespace
         std::decay_t< symbol::id_type >,
         std::decay_t< Json::Value > >
     inline void get_composites(
-        const Json::Value& val, Container& data, BinaryOperation binary_op)
+        const Json::Value& val,
+        Container& data,
+        BinaryOperation binary_op)
     {
         for_each_object(
             val,
@@ -143,7 +147,9 @@ namespace
     }
 
     inline auto read_method_definition(
-        const method& owner, const symbol::id_type& id, const Json::Value& val)
+        const method& owner,
+        const symbol::id_type& id,
+        const Json::Value& val)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading local of: " << owner.sym.id;
 
@@ -217,8 +223,10 @@ namespace
     }
 
     auto read_vertices(
-        const Json::Value& val, symbol_table& st, graph& g, vertex_marker& m)
-        -> void
+        const Json::Value& val,
+        symbol_table& st,
+        graph& g,
+        vertex_marker& m) -> void
     {
         for_each_object(
             val,

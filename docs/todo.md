@@ -877,6 +877,12 @@
 
 		+ [x] Weights
 
-		+ [ ] Architecture
+		+ [x] Architecture
 
 		+ [ ] Layout
+
+		+ [ ] Clustering
+
+		+ [ ] Gui
+
+		+ [ ] Rendering

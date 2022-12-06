@@ -4,9 +4,8 @@
 #ifndef ARCHITECTURE_GRAPH_HPP
 #define ARCHITECTURE_GRAPH_HPP
 
-#include "symbols.hpp"
-
-#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_list.hpp> // for adjacency_list
+#include <string>                         // for string
 
 namespace architecture
 {
@@ -15,6 +14,7 @@ namespace architecture
  * Properties                                              *
  ***********************************************************/
 
+using symbol_type = std::string;
 using dependency_type = std::string;
 
 /***********************************************************
@@ -25,7 +25,7 @@ using graph = boost::adjacency_list<
     boost::vecS,
     boost::vecS,
     boost::bidirectionalS,
-    structure::id_type,
+    symbol_type,
     dependency_type >;
 
 /***********************************************************

@@ -1,3 +1,4 @@
+#include "architecture/graph.hpp"
 #include "architecture/vertex_marker.hpp"
 
 #include <gtest/gtest.h>

@@ -4,14 +4,41 @@
 #ifndef ARCHITECTURE_METADATA_HPP
 #define ARCHITECTURE_METADATA_HPP
 
-#include "graph.hpp"
+#include <string_view> // for string_view
 
-#include <string_view>
+namespace boost
+{
+
+struct vecS;
+struct bidirectionalS;
+struct listS;
+struct no_property;
+
+template <
+    typename OutEdgeListS,
+    typename VertexListS,
+    typename DirectedS,
+    typename VertexProperty,
+    typename EdgeProperty,
+    typename GraphProperty,
+    typename EdgeListS >
+class adjacency_list;
+
+} // namespace boost
 
 namespace architecture
 {
 
 class symbol_table;
+
+using graph = boost::adjacency_list<
+    boost::vecS,
+    boost::vecS,
+    boost::bidirectionalS,
+    std::string,
+    std::string,
+    boost::no_property,
+    boost::listS >;
 
 /***********************************************************
  * Metadata Counter                                        *
@@ -20,7 +47,7 @@ class symbol_table;
 // Count graph symbols attributes by tags, e.g: "fields", "methods", etc.
 struct metadata_counter
 {
-    using vertex_type = graph::vertex_descriptor;
+    using vertex_type = std::size_t;
     using tag_type = std::string_view;
     using count_type = unsigned;
 

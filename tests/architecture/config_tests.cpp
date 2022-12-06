@@ -1,11 +1,13 @@
 #include "../utility/config.hpp"
 #include "architecture/config.hpp"
+#include "architecture/graph.hpp"
 #include "architecture/symbol_table.hpp"
 #include "architecture/vertex_marker.hpp"
 
 #include <boost/graph/isomorphism.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <jsoncpp/json/json.h>
 
 using namespace testing;
 using namespace architecture;

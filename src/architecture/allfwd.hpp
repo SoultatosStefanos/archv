@@ -39,6 +39,7 @@ using graph = boost::adjacency_list<
     boost::no_property,
     boost::listS >;
 
+using symbol_type = std::string;
 using dependency_type = std::string;
 
 struct source_location;

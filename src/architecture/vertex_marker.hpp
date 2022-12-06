@@ -5,9 +5,8 @@
 #ifndef ARCHITECTURE_VERTEX_MARKER_HPP
 #define ARCHITECTURE_VERTEX_MARKER_HPP
 
-#include "graph.hpp"
-
-#include <unordered_map>
+#include <string>        // for string
+#include <unordered_map> // for unordered_map
 
 namespace architecture
 {
@@ -19,9 +18,8 @@ namespace architecture
 class vertex_marker
 {
 public:
-    using graph_type = graph;
-    using id_type = structure::id_type;
-    using vertex_type = boost::graph_traits< graph >::vertex_descriptor;
+    using id_type = std::string;
+    using vertex_type = std::size_t;
     using size_type = std::size_t;
 
     auto vertex(const id_type& id) const -> vertex_type;

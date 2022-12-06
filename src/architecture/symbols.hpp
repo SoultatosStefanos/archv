@@ -4,8 +4,8 @@
 #ifndef ARCHITECTURE_SYMBOLS_HPP
 #define ARCHITECTURE_SYMBOLS_HPP
 
-#include <string>
-#include <vector>
+#include <string> // for string
+#include <vector> // for vector
 
 namespace architecture
 {

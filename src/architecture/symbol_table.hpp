@@ -4,9 +4,9 @@
 #ifndef ARCHITECTURE_SYMBOL_TABLE_HPP
 #define ARCHITECTURE_SYMBOL_TABLE_HPP
 
-#include "symbols.hpp"
+#include "symbols.hpp" // for structure
 
-#include <unordered_map>
+#include <unordered_map> // for unordered_map
 
 namespace architecture
 {
