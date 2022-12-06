@@ -4,13 +4,13 @@
 #ifndef CLUSTERING_K_SPANNING_TREE_CLUSTERER_HPP
 #define CLUSTERING_K_SPANNING_TREE_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "k_spanning_tree_clustering.hpp"
-#include "min_spanning_tree_finder.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp"                  // for clusterer
+#include "k_spanning_tree_clustering.hpp" // for k_spanning_tree_clustering
+#include "min_spanning_tree_finder.hpp"   // for min_spanning_tree_finder
+#include "plugin.hpp"                     // for id_t
 
-#include <cassert>
-#include <memory>
+#include <cassert> // for assert
+#include <memory>  // for unique_ptr
 
 namespace clustering
 {

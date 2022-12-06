@@ -4,7 +4,7 @@
 #ifndef CLUSTERING_DETAIL_CLUSTER_MAP_HPP
 #define CLUSTERING_DETAIL_CLUSTER_MAP_HPP
 
-#include <cassert>
+#include <cassert> // for assert
 
 namespace clustering::detail
 {

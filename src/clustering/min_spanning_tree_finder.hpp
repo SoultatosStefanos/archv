@@ -4,12 +4,12 @@
 #ifndef CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 #define CLUSTERING_MIN_SPANNING_TREE_FINDER_HPP
 
-#include "detail/utility.hpp"
+#include "detail/utility.hpp" // for edge_hash
 
-#include <boost/graph/graph_concepts.hpp>
-#include <memory>
-#include <string_view>
-#include <unordered_set>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <memory>                         // for unique_ptr
+#include <string_view>                    // for string_view
+#include <unordered_set>                  // for unordered_set
 
 namespace clustering
 {
@@ -51,8 +51,7 @@ public:
     virtual void operator()(
         const graph_type& g,
         output_iterator out,
-        weight_map_type edge_weight) const
-        = 0;
+        weight_map_type edge_weight) const = 0;
 
     virtual auto clone() const -> std::unique_ptr< self > = 0;
 };

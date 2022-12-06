@@ -10,6 +10,7 @@
 
 // NOTE: see external/infomap/examples/cpp/minimal/example.cpp
 // TODO pass more config options around
+// TODO Pimpl herer to hide the 3rd party lib
 
 namespace clustering::detail
 {
@@ -73,6 +74,7 @@ auto infomap_adaptor(
     WeightMap edge_weight,
     ClusterMap vertex_cluster) -> void
 {
+    static_assert(boost::is_directed< Graph >);
     auto wrapper = infomap::InfomapWrapper("--two-level --flow-model directed");
     build_infomap_network(wrapper.network(), g, edge_weight);
     wrapper.run();

@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_LAYERED_LABEL_PROPAGATION_CLUSTERER_HPP
 #define CLUSTERING_LAYERED_LABEL_PROPAGATION_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "layered_label_propagation_clustering.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp"                            // for clusterer
+#include "layered_label_propagation_clustering.hpp" // for layered_label_propagation_clustering
+#include "plugin.hpp"                               // for id_t
 
 namespace clustering
 {

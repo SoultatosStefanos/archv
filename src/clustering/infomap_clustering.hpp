@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_INFOMAP_CLUSTERING_HPP
 #define CLUSTERING_INFOMAP_CLUSTERING_HPP
 
-#include "detail/infomap_clustering.hpp"
+#include "detail/infomap_clustering.hpp" // for infomap_adaptor
 
-#include <boost/graph/graph_concepts.hpp>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
 
 namespace clustering
 {

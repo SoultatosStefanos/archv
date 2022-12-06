@@ -4,7 +4,10 @@
 #ifndef CLUSTERING_CONFIG_HPP
 #define CLUSTERING_CONFIG_HPP
 
-#include <jsoncpp/json/json.h>
+namespace Json
+{
+class Value;
+} // namespace Json
 
 namespace clustering
 {

@@ -4,12 +4,12 @@
 #ifndef CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP
 #define CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP
 
-#include "detail/maximal_clique_enumeration_clustering.hpp"
+#include "detail/maximal_clique_enumeration_clustering.hpp" // for clique_size_recorder
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_utility.hpp>
-#include <deque>
-#include <map>
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <boost/graph/graph_utility.hpp>  // for has_no_vertices, has_no_edges
+#include <deque>                          // for dequeue
+#include <map>                            // for multimap
 
 namespace clustering
 {

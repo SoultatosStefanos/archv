@@ -4,20 +4,19 @@
 #ifndef CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_LOUVAIN_METHOD_CLUSTERING_HPP
 
-#include "misc/algorithm.hpp"
-#include "misc/concepts.hpp"
-#include "misc/random.hpp"
-#include "utility.hpp"
+#include "misc/algorithm.hpp" // for accumulate
+#include "misc/concepts.hpp"  // for arithmetic
+#include "misc/random.hpp"    // for rng
+#include "utility.hpp"        // for edge_hash
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/log/trivial.hpp>
-#include <cassert>
-#include <cmath>
-#include <concepts>
-#include <ranges>
-#include <set>
-#include <unordered_map>
-#include <vector>
+#include <boost/graph/adjacency_list.hpp> // for vertices, etc
+#include <cassert>                        // for assert
+#include <cmath>                          // for pow
+#include <concepts>                       // for floating_point
+#include <ranges>                         // for values, keys
+#include <set>                            // for set
+#include <unordered_map>                  // for unordered_map, hash
+#include <vector>                         // for vector
 
 // NOTE: Based on .js implementation from:
 // https://github.com/upphiminn/jLouvain/blob/master/src/jLouvain.js

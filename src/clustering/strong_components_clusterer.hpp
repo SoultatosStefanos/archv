@@ -4,10 +4,10 @@
 #ifndef CLUSTERING_STRONG_COMPONENTS_CLUSTERER_HPP
 #define CLUSTERING_STRONG_COMPONENTS_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp" // for clusterer
+#include "plugin.hpp"    // for id_t
 
-#include <boost/graph/strong_components.hpp>
+#include <boost/graph/strong_components.hpp> // for strong_components
 
 namespace clustering
 {

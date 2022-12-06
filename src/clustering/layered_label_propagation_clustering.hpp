@@ -5,12 +5,12 @@
 #ifndef CLUSTERING_LAYERED_LABEL_PROPAGATION_CLUSTERING_HPP
 #define CLUSTERING_LAYERED_LABEL_PROPAGATION_CLUSTERING_HPP
 
-#include "detail/layered_label_propagation_clustering.hpp"
-#include "misc/algorithm.hpp"
+#include "detail/layered_label_propagation_clustering.hpp" // for layered_label_propagation_clustering
+#include "misc/algorithm.hpp"                              // for subrange
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/graph/graph_utility.hpp>
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <boost/graph/graph_utility.hpp>  // for has_no_vertices, has_no_edges
 
 namespace clustering
 {

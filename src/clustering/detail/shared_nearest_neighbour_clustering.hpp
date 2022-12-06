@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_DETAIL_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 
-#include "misc/algorithm.hpp"
+#include "misc/algorithm.hpp" // for set_intersection
 
-#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_list.hpp> // for source, target, etc
 
 namespace clustering::detail
 {

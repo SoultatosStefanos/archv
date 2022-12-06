@@ -4,11 +4,11 @@
 #ifndef CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERER_HPP
 #define CLUSTERING_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "maximal_clique_enumeration_clustering.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp"                             // for clusterer
+#include "maximal_clique_enumeration_clustering.hpp" // for maximal_clique_enumeration_clustering
+#include "plugin.hpp"                                // for id_t
 
-#include <boost/graph/bron_kerbosch_all_cliques.hpp>
+#include <boost/graph/bron_kerbosch_all_cliques.hpp> // for bron_kerbosch_all_cliques
 
 namespace clustering
 {
@@ -19,8 +19,6 @@ namespace clustering
 
 // Generic maximal clique enumeration clusterer.
 // NOTE: Currently uses the Bron Kerbosch clique visitor.
-// TODO(?): Create an interface for the clique visitors, so the user can choose
-// between them.
 // Implementation details:
 // see
 // https://www.boost.org/doc/libs/1_46_1/boost/graph/bron_kerbosch_all_cliques.hpp

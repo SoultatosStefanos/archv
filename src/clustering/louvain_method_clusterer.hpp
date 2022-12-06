@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_LOUVAIN_METHOD_CLUSTERER_HPP
 #define CLUSTERING_LOUVAIN_METHOD_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "louvain_method_clustering.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp"                 // for clusterer
+#include "louvain_method_clustering.hpp" // for louvain_method_clustering
+#include "plugin.hpp"                    // for id_t
 
 namespace clustering
 {

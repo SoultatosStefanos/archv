@@ -5,10 +5,10 @@
 #ifndef CLUSTERING_PLUGIN_HPP
 #define CLUSTERING_PLUGIN_HPP
 
-#include "misc/algorithm.hpp"
+#include "misc/algorithm.hpp" // for container_contains
 
-#include <array>
-#include <string_view>
+#include <array>       // for array
+#include <string_view> // for string_view
 
 namespace clustering
 {

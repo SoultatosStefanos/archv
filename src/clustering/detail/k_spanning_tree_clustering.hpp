@@ -4,8 +4,8 @@
 #ifndef CLUSTERING_DETAIL_K_SPANNING_TREE_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_K_SPANNING_TREE_CLUSTERING_HPP
 
-#include <algorithm>
-#include <boost/graph/adjacency_list.hpp>
+#include <algorithm>                      // for max_element, etc
+#include <boost/graph/adjacency_list.hpp> // for vertices, etc
 
 namespace clustering::detail
 {

@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_BACKEND_CONFIG_HPP
 #define CLUSTERING_BACKEND_CONFIG_HPP
 
-#include <string>
-#include <string_view>
-#include <vector>
+#include <string>      // for string
+#include <string_view> // for string_view
+#include <vector>      // for vector
 
 namespace clustering
 {

@@ -4,14 +4,14 @@
 #ifndef CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP
 #define CLUSTERING_K_SPANNING_TREE_CLUSTERING_HPP
 
-#include "detail/k_spanning_tree_clustering.hpp"
-#include "detail/utility.hpp"
+#include "detail/k_spanning_tree_clustering.hpp" // for k_spanning_tree_clustering
+#include "detail/utility.hpp"                    // for max_weighted
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_utility.hpp>
-#include <cassert>
-#include <type_traits>
-#include <unordered_set>
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <boost/graph/graph_utility.hpp>  // for has_no_vertices
+#include <cassert>                        // for assert
+#include <type_traits>                    // for is_integral_v
+#include <unordered_set>                  // for unordered_set
 
 namespace clustering
 {

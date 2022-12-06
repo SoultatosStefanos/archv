@@ -881,8 +881,14 @@
 
 		+ [x] Layout
 
-		+ [ ] Clustering
+		+ [x] Clustering
 
 		+ [ ] Gui
 
 		+ [ ] Rendering
+
+		+ [ ] Presentation
+
+		+ [ ] Input
+
+		+ [ ] Application

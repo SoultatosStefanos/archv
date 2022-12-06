@@ -4,14 +4,14 @@
 #ifndef CLUSTERING_MIN_SPANNING_TREE_FINDER_FACTORY_HPP
 #define CLUSTERING_MIN_SPANNING_TREE_FINDER_FACTORY_HPP
 
-#include "kruskal_min_spanning_tree.hpp"
-#include "min_spanning_tree_finder.hpp"
-#include "plugin.hpp"
-#include "prim_min_spanning_tree.hpp"
+#include "kruskal_min_spanning_tree.hpp" // for kruskal_min_spanning_tree
+#include "min_spanning_tree_finder.hpp"  // for min_spanning_tree_finder
+#include "plugin.hpp"                    // for id_t
+#include "prim_min_spanning_tree.hpp"    // for prim_min_spanning_tree
 
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/log/trivial.hpp>
-#include <memory>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <boost/log/trivial.hpp>          // for BOOST_LOG_TRIVIAL
+#include <memory>                         // for unique_ptr
 
 namespace clustering
 {

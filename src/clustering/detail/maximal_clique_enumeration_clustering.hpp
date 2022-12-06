@@ -5,7 +5,7 @@
 #ifndef CLUSTERING_DETAIL_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_MAXIMAL_CLIQUE_ENUMERATION_CLUSTERING_HPP
 
-#include <numeric>
+#include <numeric> // for numeric_limits
 
 namespace clustering::detail
 {

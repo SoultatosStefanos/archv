@@ -3,6 +3,7 @@
 #include "clustering/config.hpp"
 
 #include <gtest/gtest.h>
+#include <jsoncpp/json/json.h>
 
 using namespace testing;
 using namespace utility;

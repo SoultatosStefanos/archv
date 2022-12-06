@@ -4,12 +4,12 @@
 #ifndef CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 #define CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERING_HPP
 
-#include "detail/shared_nearest_neighbour_clustering.hpp"
-#include "detail/utility.hpp"
+#include "detail/shared_nearest_neighbour_clustering.hpp" // for shared_nearest_neighbour_clustering
+#include "detail/utility.hpp" // for edge_hash, shared_nearest_neighbour
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_utility.hpp>
-#include <cassert>
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <boost/graph/graph_utility.hpp>  // for has_no_vertices, has_no_edges
+#include <cassert>                        // for assert
 
 namespace clustering
 {

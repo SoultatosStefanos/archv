@@ -4,10 +4,10 @@
 #ifndef CLUSTERING_CLUSTERER_HPP
 #define CLUSTERING_CLUSTERER_HPP
 
-#include <boost/graph/graph_concepts.hpp>
-#include <memory>
-#include <string_view>
-#include <unordered_map>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <memory>                         // for unique_ptr
+#include <string_view>                    // for string_view
+#include <unordered_map>                  // for unordered_map
 
 namespace clustering
 {

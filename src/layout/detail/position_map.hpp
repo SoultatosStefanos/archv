@@ -4,7 +4,7 @@
 #ifndef LAYOUT_DETAIL_POSITION_MAP_HPP
 #define LAYOUT_DETAIL_POSITION_MAP_HPP
 
-#include <concepts>
+#include <concepts> // for floating_point
 
 namespace layout::detail
 {

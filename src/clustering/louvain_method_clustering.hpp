@@ -4,12 +4,12 @@
 #ifndef CLUSTERING_LOUVAIN_METHOD_CLUSTERING_HPP
 #define CLUSTERING_LOUVAIN_METHOD_CLUSTERING_HPP
 
-#include "detail/louvain_method_clustering.hpp"
-#include "misc/random.hpp"
+#include "detail/louvain_method_clustering.hpp" // for louvain_method_clustering
+#include "misc/random.hpp"                      // for rng
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graph_utility.hpp>
-#include <concepts>
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <boost/graph/graph_utility.hpp>  // for has_no_vertices, has_no_edges
+#include <concepts>                       // for floating_point
 
 namespace clustering
 {

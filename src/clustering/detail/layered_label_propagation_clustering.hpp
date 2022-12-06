@@ -4,17 +4,16 @@
 #ifndef CLUSTERING_DETAIL_LAYERED_LABEL_PROPAGATION_CLUSTERING_HPP
 #define CLUSTERING_DETAIL_LAYERED_LABEL_PROPAGATION_CLUSTERING_HPP
 
-#include "misc/concepts.hpp"
-#include "misc/random.hpp"
+#include "misc/concepts.hpp" // for arithmetic
+#include "misc/random.hpp"   // for rng
 
-#include <algorithm>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/log/trivial.hpp>
-#include <cassert>
-#include <limits>
-#include <ranges>
-#include <unordered_map>
-#include <vector>
+#include <algorithm>                      // for find, etc
+#include <boost/graph/adjacency_list.hpp> // for vertices, etc
+#include <cassert>                        // for assert
+#include <limits>                         // for numeric_limits
+#include <ranges>                         // for values, keys
+#include <unordered_map>                  // for hash, unordered_map
+#include <vector>                         // for vector
 
 // NOTE: Based on .js implementation from:
 // https://github.com/warcraft12321/Thesis

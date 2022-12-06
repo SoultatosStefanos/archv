@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_INFOMAP_CLUSTERER_HPP
 #define CLUSTERING_INFOMAP_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "infomap_clustering.hpp"
-#include "plugin.hpp"
+#include "clusterer.hpp"          // for clusterer
+#include "infomap_clustering.hpp" // for infomap_clustering
+#include "plugin.hpp"             // for id_t
 
 namespace clustering
 {

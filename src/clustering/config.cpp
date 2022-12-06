@@ -3,6 +3,7 @@
 #include "backend_config.hpp"
 
 #include <algorithm>
+#include <jsoncpp/json/json.h>
 
 namespace clustering
 {

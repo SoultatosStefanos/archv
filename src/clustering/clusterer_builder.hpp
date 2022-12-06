@@ -4,18 +4,18 @@
 #ifndef CLUSTERING_CLUSTERER_BUILDER_HPP
 #define CLUSTERING_CLUSTERER_BUILDER_HPP
 
-#include "infomap_clusterer.hpp"
-#include "k_spanning_tree_clusterer.hpp"
-#include "layered_label_propagation_clusterer.hpp"
-#include "louvain_method_clusterer.hpp"
-#include "maximal_clique_enumeration_clusterer.hpp"
-#include "plugin.hpp"
-#include "shared_nearest_neighbour_clusterer.hpp"
-#include "strong_components_clusterer.hpp"
+#include "infomap_clusterer.hpp"         // for infomap_clusterer
+#include "k_spanning_tree_clusterer.hpp" // for k_spanning_tree_clusterer
+#include "layered_label_propagation_clusterer.hpp" // for layered_label_propagation_clusterer
+#include "louvain_method_clusterer.hpp" // for louvain_method_clusterer
+#include "maximal_clique_enumeration_clusterer.hpp" // for maximal_clique_enumeration_clusterer
+#include "plugin.hpp"                               // for id_t
+#include "shared_nearest_neighbour_clusterer.hpp" // for shared_nearest_neighbour_clusterer
+#include "strong_components_clusterer.hpp" // for strong_components_clusterer
 
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/log/trivial.hpp>
-#include <memory>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <boost/log/trivial.hpp>          // BOOST_LOG_TRIVIAL
+#include <memory>                         // for unique_ptr
 
 namespace clustering
 {

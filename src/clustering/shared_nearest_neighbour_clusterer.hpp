@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERER_HPP
 #define CLUSTERING_SHARED_NEAREST_NEIGHBOUR_CLUSTERER_HPP
 
-#include "clusterer.hpp"
-#include "plugin.hpp"
-#include "shared_nearest_neighbour_clustering.hpp"
+#include "clusterer.hpp"                           // for clusterer
+#include "plugin.hpp"                              // for id_t
+#include "shared_nearest_neighbour_clustering.hpp" // for shared_nearest_neighbour_clustering
 
 namespace clustering
 {

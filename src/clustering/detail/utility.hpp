@@ -4,7 +4,8 @@
 #ifndef CLUSTERING_DETAIL_UTILITY_HPP
 #define CLUSTERING_DETAIL_UTILITY_HPP
 
-#include <boost/graph/adjacency_list.hpp>
+#include <cstdint>       // for uint64_t
+#include <unordered_map> // for hash
 
 namespace clustering::detail
 {

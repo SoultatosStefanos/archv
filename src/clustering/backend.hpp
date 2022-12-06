@@ -4,17 +4,17 @@
 #ifndef CLUSTERING_BACKEND_HPP
 #define CLUSTERING_BACKEND_HPP
 
-#include "backend_config.hpp"
-#include "clusterer.hpp"
-#include "clusterer_builder.hpp"
-#include "min_spanning_tree_finder.hpp"
-#include "min_spanning_tree_finder_factory.hpp"
-#include "plugin.hpp"
+#include "backend_config.hpp"                   // for backend_config
+#include "clusterer.hpp"                        // for clusterer
+#include "clusterer_builder.hpp"                // for clusterer_builder
+#include "min_spanning_tree_finder.hpp"         // for min_spanning_tree_finder
+#include "min_spanning_tree_finder_factory.hpp" // for min_spanning_tree_finder_factory
+#include "plugin.hpp"                           // for id_t
 
-#include <boost/exception/all.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/signals2/signal.hpp>
-#include <stdexcept>
+#include <boost/exception/all.hpp>   // for exception
+#include <boost/log/trivial.hpp>     // for BOOST_LOG_TRIVIAL
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <stdexcept>                 // for exception
 
 namespace clustering
 {

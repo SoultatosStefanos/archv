@@ -4,9 +4,9 @@
 #ifndef CLUSTERING_CLUSTER_MAP_HPP
 #define CLUSTERING_CLUSTER_MAP_HPP
 
-#include "detail/cluster_map.hpp"
+#include "detail/cluster_map.hpp" // for cluster_dispatcher
 
-#include <boost/property_map/function_property_map.hpp>
+#include <boost/property_map/function_property_map.hpp> // for function_property_map
 
 namespace clustering
 {

@@ -4,11 +4,11 @@
 #ifndef CLUSTERING_PRIM_MIN_SPANNING_TREE_HPP
 #define CLUSTERING_PRIM_MIN_SPANNING_TREE_HPP
 
-#include "min_spanning_tree_finder.hpp"
-#include "plugin.hpp"
+#include "min_spanning_tree_finder.hpp" // for min_spanning_tree_finder
+#include "plugin.hpp"                   // for id_t
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/prim_minimum_spanning_tree.hpp>
+#include <boost/graph/adjacency_list.hpp>             // for vertices
+#include <boost/graph/prim_minimum_spanning_tree.hpp> // for prim_minimum_spanning_tree
 
 namespace clustering
 {
