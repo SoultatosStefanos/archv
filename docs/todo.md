@@ -903,4 +903,7 @@
 
 	+ [ ] Gui setup cleanup
 
-	+ [ ] Gui configs
+
+# 08 / 12 / 2022
+
+	+ [ ] Begin writing README
