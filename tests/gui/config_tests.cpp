@@ -5,6 +5,7 @@
 #include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <jsoncpp/json/json.h>
 
 using namespace gui;
 using namespace testing;

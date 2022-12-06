@@ -883,7 +883,7 @@
 
 		+ [x] Clustering
 
-		+ [ ] Gui
+		+ [x] Gui
 
 		+ [ ] Rendering
 
@@ -892,3 +892,7 @@
 		+ [ ] Input
 
 		+ [ ] Application
+
+		+ [ ] 3rd party fwd decls cleanup
+
+	+ [ ] Presentation cleanup

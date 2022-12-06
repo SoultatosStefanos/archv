@@ -5,9 +5,9 @@
 #ifndef GUI_GRAPH_CONFIGURATOR_HPP
 #define GUI_GRAPH_CONFIGURATOR_HPP
 
-#include <array>
-#include <boost/signals2/signal.hpp>
-#include <string_view>
+#include <array>                     // for array
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <string_view>               // for string_view
 
 namespace gui
 {

@@ -4,10 +4,10 @@
 #ifndef GUI_DEGREES_EDITOR_HPP
 #define GUI_DEGREES_EDITOR_HPP
 
-#include <boost/signals2/signal.hpp>
-#include <functional>
-#include <string_view>
-#include <vector>
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <functional>                // for functional
+#include <string_view>               // for string_view
+#include <vector>                    // for vector
 
 namespace gui
 {

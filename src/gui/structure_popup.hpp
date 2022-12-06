@@ -4,10 +4,10 @@
 #ifndef GUI_STRUCTURE_POPUP_HPP
 #define GUI_STRUCTURE_POPUP_HPP
 
-#include "point.hpp"
+#include "point.hpp" // for point
 
-#include <string_view>
-#include <vector>
+#include <string_view> // for string_view
+#include <vector>      // for vector
 
 namespace gui
 {

@@ -4,10 +4,10 @@
 #ifndef GUI_POPUP_HOLDER_HPP
 #define GUI_POPUP_HOLDER_HPP
 
-#include "structure_popup.hpp"
+#include "structure_popup.hpp" // for structure_popup
 
-#include <string_view>
-#include <unordered_map>
+#include <string_view>   // for string_view
+#include <unordered_map> // for unordered_map
 
 namespace gui
 {

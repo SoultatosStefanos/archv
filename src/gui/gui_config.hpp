@@ -4,7 +4,7 @@
 #ifndef GUI_GUI_CONFIG_HPP
 #define GUI_GUI_CONFIG_HPP
 
-#include <string>
+#include <string> // for string
 
 namespace gui
 {

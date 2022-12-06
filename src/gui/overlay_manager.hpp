@@ -4,12 +4,12 @@
 #ifndef GUI_OVERLAY_MANAGER_HPP
 #define GUI_OVERLAY_MANAGER_HPP
 
-#include "controls_hud.hpp"
-#include "frames_hud.hpp"
-#include "menu_bar.hpp"
-#include "structure_popup.hpp"
+#include "controls_hud.hpp"    // for controls_hud
+#include "frames_hud.hpp"      // for frames_hud
+#include "menu_bar.hpp"        // for menu_bar
+#include "structure_popup.hpp" // for structure_popup
 
-#include <unordered_set>
+#include <unordered_set> // for unordered_set
 
 namespace gui
 {

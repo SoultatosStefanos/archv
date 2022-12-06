@@ -4,20 +4,20 @@
 #ifndef GUI_MENU_BAR_HPP
 #define GUI_MENU_BAR_HPP
 
-#include "background_configurator.hpp"
-#include "clustering_editor.hpp"
-#include "degrees_editor.hpp"
-#include "graph_configurator.hpp"
-#include "gui_configurator.hpp"
-#include "layout_editor.hpp"
-#include "minimap_configurator.hpp"
-#include "scaling_editor.hpp"
-#include "weights_editor.hpp"
+#include "background_configurator.hpp" // for background_configurator
+#include "clustering_editor.hpp"       // for clustering_editor
+#include "degrees_editor.hpp"          // for degrees_editor
+#include "graph_configurator.hpp"      // for graph_configurator
+#include "gui_configurator.hpp"        // for gui_configurator
+#include "layout_editor.hpp"           // for layout_editor
+#include "minimap_configurator.hpp"    // for minimap_configurator
+#include "scaling_editor.hpp"          // for scaling_editor
+#include "weights_editor.hpp"          // for weights_editor
 
-#include <boost/signals2/signal.hpp>
-#include <functional>
-#include <string>
-#include <string_view>
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <functional>                // for function
+#include <string>                    // for string
+#include <string_view>               // for string_view
 
 namespace gui
 {

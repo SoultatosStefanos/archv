@@ -4,7 +4,7 @@
 #ifndef GUI_DETAIL_UTILITY_HPP
 #define GUI_DETAIL_UTILITY_HPP
 
-#include <string_view>
+#include <string_view> // for string_view
 
 namespace gui::detail
 {

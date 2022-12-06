@@ -4,8 +4,8 @@
 #ifndef GUI_GUI_CONFIGURATOR_HPP
 #define GUI_GUI_CONFIGURATOR_HPP
 
-#include <boost/signals2/signal.hpp>
-#include <string_view>
+#include <boost/signals2/signal.hpp> // for signal
+#include <string_view>               // for string_view
 
 namespace gui
 {

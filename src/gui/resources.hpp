@@ -4,9 +4,9 @@
 #ifndef GUI_RESOURCES_HPP
 #define GUI_RESOURCES_HPP
 
-#include <array>
-#include <string_view>
-#include <vector>
+#include <array>       // for array
+#include <string_view> // for string_view
+#include <vector>      // for vector
 
 namespace gui::resources
 {

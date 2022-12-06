@@ -4,7 +4,7 @@
 #ifndef GUI_OVERLAY_HPP
 #define GUI_OVERLAY_HPP
 
-#include <concepts>
+#include <concepts> // for same_as
 
 namespace gui
 {

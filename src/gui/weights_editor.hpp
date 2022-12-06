@@ -4,11 +4,11 @@
 #ifndef GUI_WEIGHTS_EDITOR_HPP
 #define GUI_WEIGHTS_EDITOR_HPP
 
-#include <boost/signals2/signal.hpp>
-#include <functional>
-#include <string>
-#include <string_view>
-#include <vector>
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <functional>                // for function
+#include <string>                    // for string
+#include <string_view>               // for string_view
+#include <vector>                    // for vector
 
 namespace gui
 {

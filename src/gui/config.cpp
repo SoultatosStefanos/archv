@@ -2,6 +2,8 @@
 
 #include "gui_config.hpp"
 
+#include <jsoncpp/json/json.h>
+
 namespace gui
 {
 

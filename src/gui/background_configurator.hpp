@@ -5,8 +5,8 @@
 #ifndef GUI_BACKGROUND_CONFIGURATOR_HPP
 #define GUI_BACKGROUND_CONFIGURATOR_HPP
 
-#include <boost/signals2/signal.hpp>
-#include <string_view>
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <string_view>               // for string_view
 
 namespace gui
 {

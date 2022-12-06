@@ -4,8 +4,8 @@
 #ifndef GUI_MINIMAP_CONFIGURATOR_HPP
 #define GUI_MINIMAP_CONFIGURATOR_HPP
 
-#include <array>
-#include <boost/signals2/signal.hpp>
+#include <array>                     // for array
+#include <boost/signals2/signal.hpp> // for signal, connection
 
 namespace gui
 {

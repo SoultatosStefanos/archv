@@ -4,8 +4,8 @@
 #ifndef GUI_PLUGINS_HPP
 #define GUI_PLUGINS_HPP
 
-#include <string_view>
-#include <unordered_set>
+#include <string_view>   // for string_view
+#include <unordered_set> // for unordered_set
 
 namespace gui::plugins
 {

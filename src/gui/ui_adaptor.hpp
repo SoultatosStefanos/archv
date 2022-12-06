@@ -5,8 +5,8 @@
 #ifndef GUI_UI_ADAPTOR_HPP
 #define GUI_UI_ADAPTOR_HPP
 
-#include <boost/exception/all.hpp>
-#include <stdexcept>
+#include <boost/exception/all.hpp> // for exception
+#include <stdexcept>               // for exception
 
 namespace gui
 {
