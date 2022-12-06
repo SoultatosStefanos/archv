@@ -4,12 +4,11 @@
 #ifndef SCALING_SCALE_MAP_HPP
 #define SCALING_SCALE_MAP_HPP
 
-#include "backend.hpp"
-#include "detail/scale_map.hpp"
+#include "backend.hpp"          // for backend
+#include "detail/scale_map.hpp" // for scale_dispatcher
 
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/property_map/function_property_map.hpp>
-#include <concepts>
+#include <boost/property_map/function_property_map.hpp> // for function_property_map
+#include <concepts>                                     // for invocable
 
 namespace scaling
 {

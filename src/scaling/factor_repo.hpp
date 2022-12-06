@@ -4,10 +4,10 @@
 #ifndef SCALING_FACTOR_REPO_HPP
 #define SCALING_FACTOR_REPO_HPP
 
-#include "factor.hpp"
+#include "factor.hpp" // for factor
 
-#include <misc/heterogeneous.hpp>
-#include <string_view>
+#include <misc/heterogeneous.hpp> // for unordered_string_map
+#include <string_view>            // for string_view
 
 namespace scaling
 {

@@ -873,6 +873,6 @@
 
 		+ [x] Undo/Redo
 
-		+ [ ] Scaling
+		+ [x] Scaling
 
 		+ [ ] Weights

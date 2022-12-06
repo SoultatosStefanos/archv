@@ -4,11 +4,11 @@
 #ifndef SCALING_BACKEND_HPP
 #define SCALING_BACKEND_HPP
 
-#include "factor_repo.hpp"
+#include "factor_repo.hpp" // for factor_repo
 
-#include <boost/exception/all.hpp>
-#include <boost/signals2/signal.hpp>
-#include <exception>
+#include <boost/exception/all.hpp>   // for exception
+#include <boost/signals2/signal.hpp> // for signal, connection
+#include <exception>                 // for exception
 
 namespace scaling
 {

@@ -4,8 +4,8 @@
 #ifndef SCALING_FACTOR_HPP
 #define SCALING_FACTOR_HPP
 
-#include <array>
-#include <limits>
+#include <array>  // for array
+#include <limits> // for numeric_limits
 
 namespace scaling
 {

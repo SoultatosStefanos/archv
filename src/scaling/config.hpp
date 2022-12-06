@@ -4,9 +4,12 @@
 #ifndef SCALING_CONFIG_HPP
 #define SCALING_CONFIG_HPP
 
-#include "backend.hpp"
+#include "backend.hpp" // for backend::config_data_type;
 
-#include <jsoncpp/json/json.h>
+namespace Json
+{
+class Value;
+} // namespace Json
 
 namespace scaling
 {

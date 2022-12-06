@@ -5,11 +5,11 @@
 #ifndef SCALING_SCALE_HPP
 #define SCALING_SCALE_HPP
 
-#include "factor.hpp"
+#include "factor.hpp" // for factor
 
-#include <algorithm>
-#include <cassert>
-#include <concepts>
+#include <algorithm> // for clamp
+#include <cassert>   // for assert
+#include <concepts>  // for integral
 
 namespace scaling
 {
