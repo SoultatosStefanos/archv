@@ -4,10 +4,10 @@
 #ifndef LAYOUT_TOPOLOGY_HPP
 #define LAYOUT_TOPOLOGY_HPP
 
-#include <boost/graph/topology.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <memory>
-#include <string_view>
+#include <boost/graph/topology.hpp>       // for topology
+#include <boost/smart_ptr/shared_ptr.hpp> // for shared_ptr
+#include <memory>                         // for unique_ptr
+#include <string_view>                    // for string_view
 
 // NOTE: The bgl topology abstractions are not meant to be used polymorphically.
 // Plus, we need to access the scale of each topolgy.
@@ -43,14 +43,12 @@ public:
     virtual auto random_point() const -> point_type = 0;
 
     virtual auto distance(const point_type& p1, const point_type& p2) const
-        -> distance_type
-        = 0;
+        -> distance_type = 0;
 
     virtual auto move_position_toward(
         const point_type& p1,
         fraction_type fraction,
-        const point_type& p2) const -> point_type
-        = 0;
+        const point_type& p2) const -> point_type = 0;
 
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };

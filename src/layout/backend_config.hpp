@@ -4,9 +4,9 @@
 #ifndef LAYOUT_BACKEND_CONFIG_HPP
 #define LAYOUT_BACKEND_CONFIG_HPP
 
-#include <string>
-#include <string_view>
-#include <vector>
+#include <string>      // for string
+#include <string_view> // for string view
+#include <vector>      // for vector
 
 namespace layout
 {

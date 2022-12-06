@@ -4,9 +4,9 @@
 #ifndef LAYOUT_LAYOUT_HPP
 #define LAYOUT_LAYOUT_HPP
 
-#include <boost/graph/graph_concepts.hpp>
-#include <memory>
-#include <string_view>
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <memory>                         // for unique_ptr
+#include <string_view>                    // for string_view
 
 namespace layout
 {

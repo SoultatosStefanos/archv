@@ -4,10 +4,10 @@
 #ifndef LAYOUT_TOPOLOGY_FACTORY_HPP
 #define LAYOUT_TOPOLOGY_FACTORY_HPP
 
-#include "plugin.hpp"
-#include "topology.hpp"
+#include "plugin.hpp"   // for id_t
+#include "topology.hpp" // for topology
 
-#include <memory>
+#include <memory> // for unique_ptr
 
 namespace layout
 {

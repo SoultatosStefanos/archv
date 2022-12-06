@@ -4,14 +4,14 @@
 #ifndef LAYOUT_LAYOUT_FACTORY_HPP
 #define LAYOUT_LAYOUT_FACTORY_HPP
 
-#include "gursoy_atun_layout.hpp"
-#include "layout.hpp"
-#include "plugin.hpp"
-#include "topology.hpp"
+#include "gursoy_atun_layout.hpp" // for gursoy_atun_layout
+#include "layout.hpp"             // for layout
+#include "plugin.hpp"             // for id_t
+#include "topology.hpp"           // for topology
 
-#include <boost/log/trivial.hpp>
-#include <cassert>
-#include <memory>
+#include <boost/log/trivial.hpp> // for BOOST_LOG_TRIVIAL
+#include <cassert>               // for assert
+#include <memory>                // for unique_ptr
 
 namespace layout
 {

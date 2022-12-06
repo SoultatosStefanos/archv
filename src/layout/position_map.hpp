@@ -4,9 +4,9 @@
 #ifndef LAYOUT_POSITION_MAP_HPP
 #define LAYOUT_POSITION_MAP_HPP
 
-#include "detail/position_map.hpp"
+#include "detail/position_map.hpp" // for position_dispatcher
 
-#include <boost/property_map/function_property_map.hpp>
+#include <boost/property_map/function_property_map.hpp> // for function_property_map
 
 namespace layout
 {

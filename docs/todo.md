@@ -879,7 +879,7 @@
 
 		+ [x] Architecture
 
-		+ [ ] Layout
+		+ [x] Layout
 
 		+ [ ] Clustering
 

@@ -4,9 +4,9 @@
 #ifndef LAYOUT_CUBE_HPP
 #define LAYOUT_CUBE_HPP
 
-#include "topology.hpp"
+#include "topology.hpp" // for topology
 
-#include <random>
+#include <random> // for minstd_rand
 
 namespace layout
 {

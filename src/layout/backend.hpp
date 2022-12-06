@@ -4,21 +4,21 @@
 #ifndef LAYOUT_BACKEND_HPP
 #define LAYOUT_BACKEND_HPP
 
-#include "backend_config.hpp"
-#include "layout.hpp"
-#include "layout_factory.hpp"
-#include "plugin.hpp"
-#include "topology.hpp"
-#include "topology_factory.hpp"
+#include "backend_config.hpp"   // for backend_config
+#include "layout.hpp"           // for layout
+#include "layout_factory.hpp"   // for layout_factory
+#include "plugin.hpp"           // for id_t
+#include "topology.hpp"         // for topology
+#include "topology_factory.hpp" // for topology_factory
 
-#include <boost/exception/all.hpp>
-#include <boost/graph/graph_concepts.hpp>
-#include <boost/signals2/signal.hpp>
-#include <cassert>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <string_view>
+#include <boost/exception/all.hpp>        // for exception
+#include <boost/graph/graph_concepts.hpp> // for GraphConcept
+#include <boost/signals2/signal.hpp>      // for signal, connection
+#include <cassert>                        // for assert
+#include <memory>                         // for unique_ptr
+#include <stdexcept>                      // for exception
+#include <string>                         // for string
+#include <string_view>                    // for string_view
 
 namespace layout
 {

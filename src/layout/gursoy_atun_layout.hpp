@@ -4,13 +4,13 @@
 #ifndef LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 #define LAYOUT_GURSOY_ATUN_LAYOUT_HPP
 
-#include "layout.hpp"
-#include "plugin.hpp"
-#include "topology.hpp"
+#include "layout.hpp"   // for layout
+#include "plugin.hpp"   // for gursoy_atun_id
+#include "topology.hpp" // for topology
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/gursoy_atun_layout.hpp>
-#include <cassert>
+#include <boost/graph/adjacency_list.hpp>     // for vertices
+#include <boost/graph/gursoy_atun_layout.hpp> // for gursoy_atun_layout
+#include <cassert>                            // for assert
 
 namespace layout
 {

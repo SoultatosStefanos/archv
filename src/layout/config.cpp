@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <boost/log/trivial.hpp>
+#include <jsoncpp/json/json.h>
 
 namespace layout
 {
