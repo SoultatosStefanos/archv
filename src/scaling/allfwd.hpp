@@ -4,17 +4,10 @@
 #ifndef SCALING_ALLFWD_HPP
 #define SCALING_ALLFWD_HPP
 
-#include "misc/allfwd.hpp"
+#include "misc/boost_property_mapfwd.hpp" // for function_property_map
+#include "misc/heterogeneous.hpp"         // for  unordered_string_map
 
-#include <array>
-
-namespace boost
-{
-
-template < typename Func, typename Key, typename Ret >
-class function_property_map;
-
-} // namespace boost
+#include <array> // for array
 
 namespace scaling
 {

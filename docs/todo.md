@@ -896,10 +896,10 @@
 
 	+ [x] Presentation cleanup
 
+	+ [x] Introduce 3rd party fwd headers
+
 
 # 07 / 12 / 2022
-
-	+ [ ] Introduce 3rd party fwd headers
 
 	+ [ ] Pimpl at Infomap clustering impl
 

@@ -4,27 +4,9 @@
 #ifndef ARCHITECTURE_METADATA_HPP
 #define ARCHITECTURE_METADATA_HPP
 
+#include "misc/boost_graphfwd.hpp" // for adjacency_list
+
 #include <string_view> // for string_view
-
-namespace boost
-{
-
-struct vecS;
-struct bidirectionalS;
-struct listS;
-struct no_property;
-
-template <
-    typename OutEdgeListS,
-    typename VertexListS,
-    typename DirectedS,
-    typename VertexProperty,
-    typename EdgeProperty,
-    typename GraphProperty,
-    typename EdgeListS >
-class adjacency_list;
-
-} // namespace boost
 
 namespace architecture
 {

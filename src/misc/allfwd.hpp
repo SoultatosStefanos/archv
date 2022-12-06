@@ -4,7 +4,11 @@
 #ifndef MISC_ALLFWD_HPP
 #define MISC_ALLFWD_HPP
 
+#include "boost_graphfwd.hpp"
+#include "boost_property_mapfwd.hpp"
 #include "heterogeneous.hpp"
+#include "jsoncppfwd.hpp"
+#include "ogre_bitesfwd.hpp"
 
 namespace misc
 {

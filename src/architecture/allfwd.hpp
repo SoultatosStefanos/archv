@@ -4,28 +4,10 @@
 #ifndef ARCHITECTURE_ALLFWD_HPP
 #define ARCHITECTURE_ALLFWD_HPP
 
-#include <string>
-#include <tuple>
+#include "misc/boost_graphfwd.hpp" // for adjacency_list
 
-namespace boost
-{
-
-struct vecS;
-struct bidirectionalS;
-struct listS;
-struct no_property;
-
-template <
-    typename OutEdgeListS,
-    typename VertexListS,
-    typename DirectedS,
-    typename VertexProperty,
-    typename EdgeProperty,
-    typename GraphProperty,
-    typename EdgeListS >
-class adjacency_list;
-
-} // namespace boost
+#include <string> // for string
+#include <tuple>  // for tuple
 
 namespace architecture
 {

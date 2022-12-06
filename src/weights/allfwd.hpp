@@ -4,15 +4,8 @@
 #ifndef WEIGHTS_ALLFWD_HPP
 #define WEIGHTS_ALLFWD_HPP
 
-#include "misc/allfwd.hpp"
-
-namespace boost
-{
-
-template < typename Func, typename Key, typename Ret >
-class function_property_map;
-
-} // namespace boost
+#include "misc/boost_property_mapfwd.hpp" // for function_property_map
+#include "misc/heterogeneous.hpp"         // for unordered_string_map
 
 namespace weights
 {

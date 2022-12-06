@@ -5,33 +5,11 @@
 #ifndef ARCHITECTURE_CONFIG_HPP
 #define ARCHITECTURE_CONFIG_HPP
 
+#include "misc/boost_graphfwd.hpp" // for adjacency_list
+#include "misc/jsoncppfwd.hpp"     // for Value
+
 #include <string> // for string
 #include <tuple>  // for tuple
-
-namespace boost
-{
-
-struct vecS;
-struct bidirectionalS;
-struct listS;
-struct no_property;
-
-template <
-    typename OutEdgeListS,
-    typename VertexListS,
-    typename DirectedS,
-    typename VertexProperty,
-    typename EdgeProperty,
-    typename GraphProperty,
-    typename EdgeListS >
-class adjacency_list;
-
-} // namespace boost
-
-namespace Json
-{
-class Value;
-} // namespace Json
 
 namespace architecture
 {

@@ -12,9 +12,7 @@
 
 namespace Ogre
 {
-
-class Rectangle2D;
-
+class Rectangle2D; // Why is this forgotten?
 } // namespace Ogre
 
 namespace rendering

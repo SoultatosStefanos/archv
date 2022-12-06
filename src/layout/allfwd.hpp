@@ -4,15 +4,9 @@
 #ifndef LAYOUT_ALLFWD_HPP
 #define LAYOUT_ALLFWD_HPP
 
+#include "misc/boost_property_mapfwd.hpp" // for function_property_map
+
 #include <concepts> // for floating_point
-
-namespace boost
-{
-
-template < typename Func, typename Key, typename Ret >
-class function_property_map;
-
-} // namespace boost
 
 namespace layout
 {

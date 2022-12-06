@@ -8,11 +8,7 @@
 #include "degrees_ranked_config.hpp" // for degrees_ranked_config
 #include "graph_config.hpp"          // for graph_config
 #include "minimap_config.hpp"        // for minimap_config
-
-namespace Json
-{
-class Value;
-} // namespace Json
+#include "misc/jsoncppfwd.hpp"       // for Value
 
 namespace rendering
 {

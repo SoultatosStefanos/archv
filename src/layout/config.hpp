@@ -4,10 +4,7 @@
 #ifndef LAYOUT_CONFIG_HPP
 #define LAYOUT_CONFIG_HPP
 
-namespace Json
-{
-class Value;
-} // namespace Json
+#include "misc/jsoncppfwd.hpp" // for Value
 
 namespace layout
 {

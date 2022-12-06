@@ -4,20 +4,12 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "input/allfwd.hpp"        // for the input modules
+#include "input/allfwd.hpp"       // for the input modules
+#include "misc/ogre_bitesfwd.hpp" // for CameraMan, ImGuiInputListener, TrayManager
 #include "presentation/allfwd.hpp" // for the presentation modules
 
 #include <OGRE/Bites/OgreApplicationContext.h> // for ApplicationContext
 #include <memory>                              // for unique_ptr
-
-namespace OgreBites
-{
-
-class CameraMan;
-class ImGuiInputListener;
-class TrayManager;
-
-} // namespace OgreBites
 
 namespace application
 {

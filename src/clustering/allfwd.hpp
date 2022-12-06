@@ -4,15 +4,9 @@
 #ifndef CLUSTERING_ALLFWD_HPP
 #define CLUSTERING_ALLFWD_HPP
 
+#include "misc/boost_property_mapfwd.hpp" // for function_property_map
+
 #include <string_view> // for string_view
-
-namespace boost
-{
-
-template < typename Func, typename Key, typename Ret >
-class function_property_map;
-
-} // namespace boost
 
 namespace clustering
 {
