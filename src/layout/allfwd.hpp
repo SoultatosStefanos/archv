@@ -4,8 +4,13 @@
 #ifndef LAYOUT_ALLFWD_HPP
 #define LAYOUT_ALLFWD_HPP
 
-#include <boost/graph/graph_traits.hpp>
-#include <boost/property_map/function_property_map.hpp>
+namespace boost
+{
+
+template < typename Func, typename Key, typename Ret >
+class function_property_map;
+
+} // namespace boost
 
 namespace layout
 {
@@ -24,16 +29,24 @@ template < typename Graph >
 class gursoy_atun_layout;
 
 struct backend_config;
-struct config_data;
+using config_data = backend_config;
+
+template < typename Graph >
+class layout_factory;
+
+class topology_factory;
 
 namespace detail
 {
-    template < typename Graph, typename WeightMap >
+    template < typename backend >
     class position_dispatcher;
 } // namespace detail
 
-template < typename Graph, typename WeightMap >
-struct position_map;
+template < typename Backend >
+using position_map = boost::function_property_map<
+    detail::position_dispatcher< Backend >,
+    typename Backend::vertex_type,
+    typename detail::position_dispatcher< Backend >::position_type >;
 
 } // namespace layout
 
