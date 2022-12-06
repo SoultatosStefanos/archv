@@ -4,10 +4,10 @@
 #ifndef RENDERING_DEGREES_RANKED_BACKEND_HPP
 #define RENDERING_DEGREES_RANKED_BACKEND_HPP
 
-#include "degrees_ranked_config.hpp"
-#include "degrees_ranked_evaluation.hpp"
+#include "degrees_ranked_config.hpp"     // for degrees_ranked_config
+#include "degrees_ranked_evaluation.hpp" // degrees_ranked_evaluation_data
 
-#include <boost/signals2/signal.hpp>
+#include <boost/signals2/signal.hpp> // for signal, connection
 
 namespace rendering
 {

@@ -4,7 +4,10 @@
 #ifndef RENDERING_GRAPH_CONFIG_HPP
 #define RENDERING_GRAPH_CONFIG_HPP
 
-#include <OGRE/Ogre.h>
+#include <OGRE/OgreColourValue.h>   // for ColourValue
+#include <OGRE/OgrePrerequisites.h> // for Real
+#include <OGRE/OgreString.h>        // for String
+#include <OGRE/OgreVector.h>        // for Vector3
 
 namespace rendering
 {

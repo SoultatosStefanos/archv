@@ -4,11 +4,10 @@
 #ifndef RENDERING_DETAIL_GRAPH_RENDERER_HPP
 #define RENDERING_DETAIL_GRAPH_RENDERER_HPP
 
-#include <OGRE/OgreResourceGroupManager.h>
-#include <OGRE/OgreSceneManager.h>
-#include <memory>
-#include <optional>
-#include <unordered_map>
+#include <OGRE/OgrePrerequisites.h> // for SceneManager
+#include <memory>                   // for memory
+#include <optional>                 // for optional
+#include <unordered_map>            // for unordered_map
 
 /***********************************************************
  * Fwd Declarations                                        *
@@ -72,7 +71,7 @@ public:
     vertex_renderer(
         scene_type& scene,
         const config_data_type& cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT);
+        std::string_view resource_group);
 
     vertex_renderer(const vertex_renderer&) = default;
     vertex_renderer(vertex_renderer&&) = default;
@@ -175,7 +174,7 @@ public:
     edge_renderer(
         scene_type& scene,
         const config_data_type& cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT);
+        std::string_view resource_group);
 
     edge_renderer(const edge_renderer&) = default;
     edge_renderer(edge_renderer&&) = default;

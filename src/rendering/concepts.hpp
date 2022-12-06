@@ -4,8 +4,8 @@
 #ifndef RENDERING_CONCEPTS_HPP
 #define RENDERING_CONCEPTS_HPP
 
-#include <concepts>
-#include <functional>
+#include <concepts>   // for same_as
+#include <functional> // for invoke
 
 namespace rendering
 {

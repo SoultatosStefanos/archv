@@ -4,16 +4,9 @@
 #ifndef RENDERING_BACKGROUND_RENDERER_HPP
 #define RENDERING_BACKGROUND_RENDERER_HPP
 
-#include "background_config.hpp"
+#include "background_config.hpp" // for background_config, background_config_api
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreLight.h>
-#include <OGRE/OgreRenderWindow.h>
-#include <OGRE/OgreResourceGroupManager.h>
-#include <OGRE/OgreRoot.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreSceneNode.h>
-#include <jsoncpp/json/json.h>
+#include <OGRE/OgrePrerequisites.h> // for Camera, SceneManager, etc
 
 namespace rendering
 {
@@ -27,8 +20,8 @@ public:
 
     explicit background_renderer(
         Ogre::RenderWindow& window,
-        config_data_type config = config_data_type(),
-        std::string_view resource_group = Ogre::RGN_DEFAULT);
+        config_data_type config,
+        std::string_view resource_group);
 
     ~background_renderer();
 

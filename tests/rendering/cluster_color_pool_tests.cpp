@@ -1,6 +1,7 @@
 #include "misc/random.hpp"
 #include "rendering/cluster_color_pool.hpp"
 
+#include <OGRE/OgreColourValue.h>
 #include <gtest/gtest.h>
 
 using namespace testing;

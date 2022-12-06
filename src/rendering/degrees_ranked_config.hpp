@@ -4,7 +4,7 @@
 #ifndef RENDERING_DEGREES_RANKED_CONFIG_HPP
 #define RENDERING_DEGREES_RANKED_CONFIG_HPP
 
-#include "degrees_ranked_evaluation.hpp"
+#include "degrees_ranked_evaluation.hpp" // for degrees_ranked_evaluation_data
 
 namespace rendering
 {

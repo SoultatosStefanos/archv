@@ -4,7 +4,9 @@
 #ifndef RENDERING_BACKGROUND_CONFIG_HPP
 #define RENDERING_BACKGROUND_CONFIG_HPP
 
-#include <OGRE/Ogre.h>
+#include <OGRE/OgreColourValue.h>   // for ColourValue
+#include <OGRE/OgrePrerequisites.h> // for Real
+#include <OGRE/OgreString.h>        // for String
 
 namespace rendering
 {

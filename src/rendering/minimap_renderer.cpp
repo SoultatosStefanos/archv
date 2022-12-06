@@ -2,10 +2,18 @@
 
 #include "detail/visibility_masks.hpp"
 
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreRectangle2D.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
 #include <OGRE/OgreRenderTexture.h>
+#include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTexture.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 #include <boost/log/trivial.hpp>
@@ -209,6 +217,16 @@ auto minimap_renderer::draw(const config_data_type& cfg) -> void
     viewport->setVisibilityMask(visibility_mask(cfg));
 
     BOOST_LOG_TRIVIAL(debug) << "drew minimap configs";
+}
+
+auto minimap_renderer::set_visible(bool v) -> void
+{
+    m_rect->setVisible(v);
+}
+
+auto minimap_renderer::visible() const -> bool
+{
+    return m_rect->isVisible();
 }
 
 } // namespace rendering

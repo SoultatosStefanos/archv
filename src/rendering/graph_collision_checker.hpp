@@ -5,13 +5,12 @@
 #ifndef RENDERING_GRAPH_COLLISION_CHECKER_HPP
 #define RENDERING_GRAPH_COLLISION_CHECKER_HPP
 
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreRay.h>
-#include <OGRE/OgreSceneManager.h>
-#include <algorithm>
-#include <boost/graph/adjacency_list.hpp>
-#include <cassert>
-#include <optional>
+#include <OGRE/OgreEntity.h>              // for Entity
+#include <OGRE/OgreRay.h>                 // for Ray
+#include <OGRE/OgreSceneManager.h>        // for SceneManager
+#include <boost/graph/adjacency_list.hpp> // for vertices
+#include <cassert>                        // for assert
+#include <optional>                       // for optional
 
 namespace rendering
 {

@@ -6,6 +6,8 @@
 #include "visibility_masks.hpp"
 
 #include <OGRE/OgreEntity.h>
+#include <OGRE/OgreResourceGroupManager.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OgreProcedural/Procedural.h>
 #include <boost/log/trivial.hpp>
 #include <cassert>

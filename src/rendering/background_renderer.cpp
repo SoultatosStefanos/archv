@@ -2,8 +2,15 @@
 
 #include "detail/visibility_masks.hpp"
 
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreMeshManager.h>
+#include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreResourceGroupManager.h>
+#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/RTShaderSystem/OgreRTShaderSystem.h>

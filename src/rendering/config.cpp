@@ -2,6 +2,7 @@
 
 #include <OGRE/Ogre.h>
 #include <boost/log/trivial.hpp>
+#include <jsoncpp/json/json.h>
 #include <string>
 
 namespace rendering

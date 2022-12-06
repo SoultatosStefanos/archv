@@ -4,7 +4,8 @@
 #ifndef RENDERING_MINIMAP_CONFIG_HPP
 #define RENDERING_MINIMAP_CONFIG_HPP
 
-#include <OGRE/Ogre.h>
+#include <OGRE/OgreColourValue.h>   // for ColourValue
+#include <OGRE/OgrePrerequisites.h> // for Real
 
 namespace rendering
 {

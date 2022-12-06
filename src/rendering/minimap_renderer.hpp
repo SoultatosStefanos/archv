@@ -4,16 +4,18 @@
 #ifndef RENDERING_MINIMAP_RENDERER_HPP
 #define RENDERING_MINIMAP_RENDERER_HPP
 
-#include "minimap_config.hpp"
+#include "minimap_config.hpp" // for minimap_config
 
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreRectangle2D.h>
-#include <OGRE/OgreRenderWindow.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTexture.h>
-#include <memory>
-#include <string_view>
+#include <OGRE/OgrePrerequisites.h> // for SceneManager, SceneNode, etc
+#include <memory>                   // for unique_ptr
+#include <string_view>              // for string_view
+
+namespace Ogre
+{
+
+class Rectangle2D;
+
+} // namespace Ogre
 
 namespace rendering
 {
@@ -62,8 +64,8 @@ public:
 
     auto resource_group() const -> auto { return m_resource_group; }
 
-    auto visible() const -> bool { return m_rect->isVisible(); }
-    auto set_visible(bool v) -> void { m_rect->setVisible(v); }
+    auto visible() const -> bool;
+    auto set_visible(bool v) -> void;
 
     auto setup() -> void;
     auto shutdown() -> void;
@@ -72,7 +74,7 @@ public:
 
 private:
     using rectangle_type = Ogre::Rectangle2D;
-    using texture_ptr_type = Ogre::TexturePtr;
+    using texture_type = Ogre::Texture;
 
     auto setup_camera() -> void;
     auto setup_texture() -> void;
@@ -94,7 +96,7 @@ private:
 
     camera_type* m_cam { nullptr };
     node_type* m_cam_node { nullptr };
-    texture_ptr_type m_texture;
+    std::shared_ptr< texture_type > m_texture;
     std::unique_ptr< rectangle_type > m_rect;
 };
 

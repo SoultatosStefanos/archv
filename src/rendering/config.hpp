@@ -4,12 +4,15 @@
 #ifndef RENDERING_CONFIG_HPP
 #define RENDERING_CONFIG_HPP
 
-#include "background_config.hpp"
-#include "degrees_ranked_config.hpp"
-#include "graph_config.hpp"
-#include "minimap_config.hpp"
+#include "background_config.hpp"     // for background_config
+#include "degrees_ranked_config.hpp" // for degrees_ranked_config
+#include "graph_config.hpp"          // for graph_config
+#include "minimap_config.hpp"        // for minimap_config
 
-#include <jsoncpp/json/json.h>
+namespace Json
+{
+class Value;
+} // namespace Json
 
 namespace rendering
 {

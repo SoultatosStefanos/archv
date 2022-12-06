@@ -5,7 +5,7 @@
 #ifndef RENDERING_DETAIL_VISIBILITY_MASKS_HPP
 #define RENDERING_DETAIL_VISIBILITY_MASKS_HPP
 
-#include <cstdint>
+#include <cstdint> // for int32_t
 
 namespace rendering::detail
 {

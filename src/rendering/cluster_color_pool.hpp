@@ -5,7 +5,7 @@
 #ifndef RENDERING_CLUSTER_COLOR_POOL_HPP
 #define RENDERING_CLUSTER_COLOR_POOL_HPP
 
-#include <OGRE/OgreColourValue.h>
+#include <OGRE/OgrePrerequisites.h> // for ColourValue
 
 namespace rendering
 {
@@ -19,10 +19,8 @@ struct cluster_color_pool
     auto operator()(cluster c) const -> rgba_type;
 };
 
-inline auto color_code(cluster_color_pool::cluster c)
-{
-    return cluster_color_pool()(c);
-}
+// Convenience utility.
+auto color_code(cluster_color_pool::cluster c) -> cluster_color_pool::rgba_type;
 
 } // namespace rendering
 

@@ -4,17 +4,13 @@
 #ifndef RENDERING_GRAPH_RENDERER_HPP
 #define RENDERING_GRAPH_RENDERER_HPP
 
-#include "cluster_color_pool.hpp"
-#include "concepts.hpp"
-#include "degrees_ranked_evaluator.hpp"
-#include "detail/graph_renderer.hpp"
-#include "graph_config.hpp"
+#include "concepts.hpp" // for cluster_color_coder, degrees_evaluator
+#include "detail/graph_renderer.hpp" // for vertex_renderer, edge_renderer
+#include "graph_config.hpp"          // for graph_config
 
-#include <OGRE/OgreResourceGroupManager.h>
-#include <OGRE/OgreSceneManager.h>
-#include <boost/graph/adjacency_list.hpp>
-#include <concepts>
-#include <string_view>
+#include <OGRE/OgreSceneManager.h>        // for SceneManager
+#include <boost/graph/adjacency_list.hpp> // for vertices, etc
+#include <string_view>                    // for string_view
 
 namespace rendering
 {
@@ -30,8 +26,8 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    degrees_evaluator DegreesEvaluator = degrees_ranked_evaluator,
-    cluster_color_coder ClusterColorCoder = cluster_color_pool >
+    degrees_evaluator DegreesEvaluator,
+    cluster_color_coder ClusterColorCoder >
 class graph_renderer
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
@@ -82,9 +78,9 @@ public:
         dependency_map_type edge_dependency,
         scene_type& scene,
         config_data_type cfg,
-        std::string_view resource_group = Ogre::RGN_DEFAULT,
-        degrees_evaluator_type degrees_eval = degrees_evaluator_type(),
-        cluster_color_coder_type color_coder = cluster_color_coder_type());
+        std::string_view resource_group,
+        degrees_evaluator_type degrees_eval,
+        cluster_color_coder_type color_coder);
 
     graph_renderer(const graph_renderer&) = default;
     graph_renderer(graph_renderer&&) = default;

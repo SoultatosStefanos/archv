@@ -885,7 +885,7 @@
 
 		+ [x] Gui
 
-		+ [ ] Rendering
+		+ [x] Rendering
 
 		+ [ ] Presentation
 

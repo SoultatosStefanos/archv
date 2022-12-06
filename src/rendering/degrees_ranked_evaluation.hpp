@@ -5,8 +5,8 @@
 #ifndef RENDERING_DEGREES_RANKED_EVALUATION_HPP
 #define RENDERING_DEGREES_RANKED_EVALUATION_HPP
 
-#include <optional>
-#include <string>
+#include <optional> // for optional
+#include <string>   // for string
 
 namespace rendering
 {

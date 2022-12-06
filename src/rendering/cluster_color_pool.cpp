@@ -1,5 +1,6 @@
 #include "cluster_color_pool.hpp"
 
+#include <OGRE/OgreColourValue.h>
 #include <cassert>
 
 namespace rendering
@@ -195,6 +196,11 @@ namespace
 auto cluster_color_pool::operator()(cluster c) const -> rgba_type
 {
     return rgbas()[c % hexes.size()];
+}
+
+auto color_code(cluster_color_pool::cluster c) -> cluster_color_pool::rgba_type
+{
+    return cluster_color_pool()(c);
 }
 
 } // namespace rendering

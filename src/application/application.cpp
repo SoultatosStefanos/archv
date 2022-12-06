@@ -5,6 +5,7 @@
 #include "archive.hpp"
 #include "config.hpp"
 #include "misc/all.hpp"
+#include "rendering/all.hpp"
 #include "ui/all.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
@@ -147,6 +148,7 @@ auto application::setup_graph_renderer() -> void
 {
     using degrees_evaluator = rendering::degrees_ranked_evaluator;
     using degrees_backend = rendering::degrees_ranked_backend;
+    using cluster_color_coder = rendering::cluster_color_pool;
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->graph(),
@@ -156,7 +158,8 @@ auto application::setup_graph_renderer() -> void
         m_background_renderer->scene(),
         m_rendering_config.graph,
         ARCHV_RESOURCE_GROUP,
-        degrees_evaluator(degrees_backend(m_rendering_config.degrees)));
+        degrees_evaluator(degrees_backend(m_rendering_config.degrees)),
+        cluster_color_coder());
 
     m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
     m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));

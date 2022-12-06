@@ -4,8 +4,8 @@
 #ifndef RENDERING_DEGREES_RANKED_EVALUATOR_HPP
 #define RENDERING_DEGREES_RANKED_EVALUATOR_HPP
 
-#include "degrees_ranked_backend.hpp"
-#include "degrees_ranked_evaluation.hpp"
+#include "degrees_ranked_backend.hpp"    // for degrees_ranked_backend
+#include "degrees_ranked_evaluation.hpp" // for degree_t, particle_system_t
 
 namespace rendering
 {

@@ -41,7 +41,9 @@ using background_renderer = rendering::background_renderer;
 using graph_renderer = rendering::graph_renderer<
     architecture::graph,
     architecture::id_map,
-    architecture::dependency_map >;
+    architecture::dependency_map,
+    rendering::degrees_ranked_evaluator,
+    rendering::cluster_color_pool >;
 
 using graph_collision_checker = rendering::graph_collision_checker<
     architecture::graph,
