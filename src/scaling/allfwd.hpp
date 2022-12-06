@@ -4,8 +4,17 @@
 #ifndef SCALING_ALLFWD_HPP
 #define SCALING_ALLFWD_HPP
 
-#include <boost/graph/graph_traits.hpp>
-#include <boost/property_map/function_property_map.hpp>
+#include "misc/allfwd.hpp"
+
+#include <array>
+
+namespace boost
+{
+
+template < typename Func, typename Key, typename Ret >
+class function_property_map;
+
+} // namespace boost
 
 namespace scaling
 {
@@ -13,8 +22,11 @@ namespace scaling
 class backend;
 struct factor;
 class factor_repo;
-struct scale_vector;
-struct config_data;
+
+using scale_t = float;
+using scale_vector = std::array< scale_t, 3 >; // (x, y, z)
+
+using config_data = misc::unordered_string_map< factor >;
 
 namespace detail
 {
@@ -23,7 +35,10 @@ namespace detail
 } // namespace detail
 
 template < typename Graph, typename FactorCounter >
-struct scale_map;
+using scale_map = boost::function_property_map<
+    detail::scale_dispatcher< Graph, FactorCounter >,
+    typename Graph::vertex_descriptor,
+    scale_vector >;
 
 } // namespace scaling
 

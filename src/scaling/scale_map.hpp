@@ -18,7 +18,7 @@ namespace scaling
 template < typename Graph, typename FactorCounter >
 using scale_map = boost::function_property_map<
     detail::scale_dispatcher< Graph, FactorCounter >,
-    typename boost::graph_traits< Graph >::vertex_descriptor,
+    typename Graph::vertex_descriptor,
     scale_vector >;
 
 // Makes a dynamic vertex scaling property map.
@@ -27,8 +27,8 @@ template < typename Graph, typename FactorCounter >
 requires std::invocable<
     FactorCounter,
     typename boost::graph_traits< Graph >::vertex_descriptor,
-    factor_repo::hash_table::key_type > inline auto
-make_scale_map(const backend& b, FactorCounter func)
+    factor_repo::hash_table::key_type >
+inline auto make_scale_map(const backend& b, FactorCounter func)
 {
     BOOST_CONCEPT_ASSERT((boost::GraphConcept< Graph >));
 
