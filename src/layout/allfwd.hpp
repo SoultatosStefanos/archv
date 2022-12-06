@@ -4,6 +4,8 @@
 #ifndef LAYOUT_ALLFWD_HPP
 #define LAYOUT_ALLFWD_HPP
 
+#include <concepts> // for floating_point
+
 namespace boost
 {
 
@@ -38,15 +40,19 @@ class topology_factory;
 
 namespace detail
 {
-    template < typename backend >
+    template < std::floating_point Coord >
+    struct position;
+
+    template < typename Backend, typename Vertex, typename Coord >
     class position_dispatcher;
+
 } // namespace detail
 
 template < typename Backend >
 using position_map = boost::function_property_map<
-    detail::position_dispatcher< Backend >,
-    typename Backend::vertex_type,
-    typename detail::position_dispatcher< Backend >::position_type >;
+    detail::position_dispatcher< Backend, std::size_t, double >,
+    std::size_t,
+    detail::position< double > >;
 
 } // namespace layout
 

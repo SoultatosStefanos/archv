@@ -12,8 +12,8 @@ namespace clustering::detail
 template < typename Backend >
 struct cluster_dispatcher
 {
-    using cluster_type = typename Backend::cluster_type;
-    using vertex_type = typename Backend::vertex_type;
+    using cluster_type = unsigned long long;
+    using vertex_type = std::size_t;
 
     const Backend* back { nullptr };
 

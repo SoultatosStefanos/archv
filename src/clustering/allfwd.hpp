@@ -4,7 +4,7 @@
 #ifndef CLUSTERING_ALLFWD_HPP
 #define CLUSTERING_ALLFWD_HPP
 
-#include <string_view>
+#include <string_view> // for string_view
 
 namespace boost
 {
@@ -68,8 +68,8 @@ namespace detail
 template < typename Backend >
 using cluster_map = boost::function_property_map<
     detail::cluster_dispatcher< Backend >,
-    typename Backend::vertex_type,
-    typename Backend::cluster_type >;
+    std::size_t,
+    unsigned long long >;
 
 struct backend_config;
 using config_data = backend_config;

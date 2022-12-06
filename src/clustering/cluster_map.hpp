@@ -15,8 +15,8 @@ namespace clustering
 template < typename Backend >
 using cluster_map = boost::function_property_map<
     detail::cluster_dispatcher< Backend >,
-    typename Backend::vertex_type,
-    typename Backend::cluster_type >;
+    std::size_t,
+    unsigned long long >;
 
 // Utility factory for type deduction.
 template < typename Backend >

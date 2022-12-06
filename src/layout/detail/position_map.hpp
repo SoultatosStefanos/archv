@@ -15,15 +15,13 @@ struct position
     Coord x, y, z;
 };
 
-template < typename Backend >
+template < typename Backend, typename Vertex, typename Coord >
 class position_dispatcher
 {
 public:
     using backend_type = Backend;
-    using graph_type = typename backend_type::graph_type;
-    using weight_map_type = typename backend_type::weight_map_type;
-    using vertex_type = typename backend_type::vertex_type;
-    using coord_type = typename backend_type::layout_type::coord_type;
+    using vertex_type = Vertex;
+    using coord_type = Coord;
     using position_type = position< coord_type >;
 
     explicit position_dispatcher(const backend_type& b) : m_backend { &b } { }

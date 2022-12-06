@@ -4,8 +4,6 @@
 #ifndef RENDERING_ALLFWD_HPP
 #define RENDERING_ALLFWD_HPP
 
-#include "concepts.hpp"
-
 namespace rendering
 {
 
@@ -21,8 +19,8 @@ template <
     typename Graph,
     typename VertexID,
     typename DependencyMap,
-    degrees_evaluator DegreesEvaluator,
-    cluster_color_coder ClusterColorCoder >
+    typename DegreesEvaluator,
+    typename ClusterColorCoder >
 class graph_renderer;
 
 template < typename Graph, typename VertexID, typename DependencyMap >

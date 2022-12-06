@@ -14,15 +14,16 @@ namespace layout
 // A runtime managed 3D vertex-position property map from a layout.
 template < typename Backend >
 using position_map = boost::function_property_map<
-    detail::position_dispatcher< Backend >,
-    typename Backend::vertex_type,
-    typename detail::position_dispatcher< Backend >::position_type >;
+    detail::position_dispatcher< Backend, std::size_t, double >,
+    std::size_t,
+    detail::position< double > >;
 
 // Creates a runtime managed 3D vertex-position property map from a layout.
 template < typename Backend >
 inline auto make_position_map(const Backend& b)
 {
-    return position_map< Backend >(detail::position_dispatcher< Backend >(b));
+    return position_map< Backend >(
+        detail::position_dispatcher< Backend, std::size_t, double >(b));
 }
 
 } // namespace layout

@@ -16,25 +16,13 @@
 namespace presentation
 {
 
-/***********************************************************
- * Entities                                                *
- ***********************************************************/
-
 using command_history = undo_redo::command_history;
-
-/***********************************************************
- * Backends                                                *
- ***********************************************************/
 
 using weights_backend = graph_interface::weights_backend_type;
 using layout_backend = graph_interface::layout_backend_type;
 using scaling_backend = graph_interface::scaling_backend_type;
 using degrees_backend = rendering::degrees_ranked_backend;
 using clustering_backend = graph_interface::clustering_backend_type;
-
-/***********************************************************
- * Renderers                                               *
- ***********************************************************/
 
 using background_renderer = rendering::background_renderer;
 
@@ -51,10 +39,6 @@ using graph_collision_checker = rendering::graph_collision_checker<
     architecture::dependency_map >;
 
 using minimap_renderer = rendering::minimap_renderer;
-
-/***********************************************************
- * GUI                                                     *
- ***********************************************************/
 
 using menu_bar = gui::menu_bar;
 using weights_editor = gui::weights_editor;
