@@ -17,7 +17,7 @@ namespace weights
 template < typename Graph, typename DependencyMap >
 using weight_map = boost::function_property_map<
     detail::weight_dispatcher< Graph, DependencyMap >,
-    typename boost::graph_traits< Graph >::edge_descriptor,
+    typename Graph::edge_descriptor,
     backend::weight_type >;
 
 // Creates a runtime managed edge-weight property map from a dependencies

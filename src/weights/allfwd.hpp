@@ -4,11 +4,23 @@
 #ifndef WEIGHTS_ALLFWD_HPP
 #define WEIGHTS_ALLFWD_HPP
 
+#include "misc/allfwd.hpp"
+
+namespace boost
+{
+
+template < typename Func, typename Key, typename Ret >
+class function_property_map;
+
+} // namespace boost
+
 namespace weights
 {
 
 class backend;
 class weight_repo;
+
+using config_data = misc::unordered_string_map< int >;
 
 namespace detail
 {
@@ -17,7 +29,10 @@ namespace detail
 } // namespace detail
 
 template < typename Graph, typename DependencyMap >
-class weight_map;
+using weight_map = boost::function_property_map<
+    detail::weight_dispatcher< Graph, DependencyMap >,
+    typename Graph ::edge_descriptor,
+    int >;
 
 } // namespace weights
 
