@@ -1,3 +1,6 @@
+// Contains all of the archv subsystem modules hooked & fwd declared.
+// Soultatos Stefanos 2022
+
 #ifndef PRESENTATION_DEFFWD_HPP
 #define PRESENTATION_DEFFWD_HPP
 
@@ -64,6 +67,13 @@ using controls_hud = gui::controls_hud;
 using frames_hud = gui::frames_hud;
 using overlay_manager = gui::overlay_manager;
 using popup_holder = gui::popup_holder;
+
+using weights_config = weights::config_data;
+using layout_config = layout::config_data;
+using scaling_config = scaling::config_data;
+using clustering_config = clustering::config_data;
+using rendering_config = rendering::config_data;
+using gui_config = gui::config_data;
 
 } // namespace presentation
 

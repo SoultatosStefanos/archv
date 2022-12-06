@@ -1,3 +1,6 @@
+// Contains all of the archv subsystem modules hooked & imported.
+// Soultatos Stefanos 2022
+
 #ifndef PRESENTATION_DEF_HPP
 #define PRESENTATION_DEF_HPP
 
@@ -64,7 +67,15 @@ using frames_hud = gui::frames_hud;
 using overlay_manager = gui::overlay_manager;
 using popup_holder = gui::popup_holder;
 
-// NOTE: fwd declared these as such for build times.
+using weights_config = weights::config_data;
+using layout_config = layout::config_data;
+using scaling_config = scaling::config_data;
+using clustering_config = clustering::config_data;
+using rendering_config = rendering::config_data;
+using gui_config = gui::config_data;
+
+// NOTE: fwd declared these to save build times.
+
 static_assert(std::is_same_v< graph::vertex_descriptor, std::size_t >);
 
 static_assert(
@@ -72,6 +83,8 @@ static_assert(
 
 static_assert(
     std::is_same_v< clustering_backend::cluster_type, unsigned long long >);
+
+static_assert(std::is_same_v< weights_backend::weight_type, int >);
 
 } // namespace presentation
 
