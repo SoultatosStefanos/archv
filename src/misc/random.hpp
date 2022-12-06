@@ -4,12 +4,11 @@
 #ifndef MISC_RANDOM_HPP
 #define MISC_RANDOM_HPP
 
-#include "concepts.hpp"
+#include "concepts.hpp" // for arithmetic
 
-#include <concepts>
-#include <limits>
-#include <random>
-#include <type_traits>
+#include <limits>      // for numeric_limits
+#include <random>      // for uniform_int/real_distribution, random_device
+#include <type_traits> // for conditional_t
 
 namespace misc
 {

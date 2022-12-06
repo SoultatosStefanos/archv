@@ -4,7 +4,7 @@
 #ifndef UI_UI_COMPONENT_HPP
 #define UI_UI_COMPONENT_HPP
 
-#include "ui_concepts.hpp"
+#include "ui_concepts.hpp" // for drawable, configurable, etc
 
 namespace ui
 {

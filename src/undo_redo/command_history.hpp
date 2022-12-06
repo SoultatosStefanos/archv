@@ -4,8 +4,8 @@
 #ifndef UNDO_REDO_COMMAND_HISTORY_HPP
 #define UNDO_REDO_COMMAND_HISTORY_HPP
 
-#include <list>
-#include <memory>
+#include <list>   // for list
+#include <memory> // for unique_ptr
 
 namespace undo_redo
 {

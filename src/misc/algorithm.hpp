@@ -4,14 +4,14 @@
 #ifndef MISC_ALGORITHM_HPP
 #define MISC_ALGORITHM_HPP
 
-#include "concepts.hpp"
+#include "concepts.hpp" // for arithmetic
 
-#include <algorithm>
-#include <cassert>
-#include <concepts>
-#include <iterator>
-#include <numeric>
-#include <ranges>
+#include <algorithm> // for find, transform
+#include <cassert>   // for assert
+#include <concepts>  // for input_iterator, equality_comparable_with, etc
+#include <iterator>  // for iterator_traits
+#include <numeric>   // for accumulate
+#include <ranges>    // for input_range
 
 namespace misc
 {
@@ -22,8 +22,8 @@ namespace misc
 
 // Returns a range from a pair of input iterators.
 template < typename IteratorPair >
-requires std::input_iterator< typename IteratorPair::first_type >
-    && std::input_iterator< typename IteratorPair::second_type >
+requires std::input_iterator< typename IteratorPair::first_type > && std::
+    input_iterator< typename IteratorPair::second_type >
 inline auto subrange(IteratorPair pair)
 {
     return std::ranges::subrange(pair.first, pair.second);
@@ -103,9 +103,9 @@ constexpr auto to_chars(InputRange range, OutputIterator out) -> void
 // NOTE: std::set_intersection only works on sorted ranges.
 template < std::ranges::input_range InputRange, typename OutputIterator >
 requires std::output_iterator<
-             OutputIterator,
-             std::ranges::range_value_t< InputRange > >
-    && std::equality_comparable< std::ranges::range_value_t< InputRange > >
+    OutputIterator,
+    std::ranges::range_value_t< InputRange > > && std::
+    equality_comparable< std::ranges::range_value_t< InputRange > >
 constexpr auto
 set_intersection(InputRange range1, InputRange range2, OutputIterator out)
 {
@@ -121,9 +121,9 @@ set_intersection(InputRange range1, InputRange range2, OutputIterator out)
 // NOTE: std::set_intersection only works on sorted ranges.
 template < std::input_iterator InputIterator, typename OutputIterator >
 requires std::output_iterator<
-             OutputIterator,
-             typename InputIterator::value_type >
-    && std::equality_comparable< typename InputIterator::value_type >
+    OutputIterator,
+    typename InputIterator::value_type > && std::
+    equality_comparable< typename InputIterator::value_type >
 constexpr auto set_intersection(
     InputIterator first1,
     InputIterator last1,
@@ -152,10 +152,10 @@ template <
     typename T,
     typename BinaryOperation >
 requires std::invocable<
-             BinaryOperation,
-             std::decay_t< T >,
-             std::ranges::range_value_t< InputRange > > inline auto
-accumulate(InputRange range, T init, BinaryOperation f) -> T
+    BinaryOperation,
+    std::decay_t< T >,
+    std::ranges::range_value_t< InputRange > >
+inline auto accumulate(InputRange range, T init, BinaryOperation f) -> T
 {
     return std::accumulate(std::cbegin(range), std::cend(range), init, f);
 }

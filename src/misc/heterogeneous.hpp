@@ -4,10 +4,10 @@
 #ifndef MISC_HETEROGENEOUS_HPP
 #define MISC_HETEROGENEOUS_HPP
 
-#include <functional> // for std::equal_to<void>
-#include <string>
-#include <string_view>
-#include <unordered_map>
+#include <functional>    // for std::equal_to<void>
+#include <string>        // for string
+#include <string_view>   // for string_view
+#include <unordered_map> // for unordered_map
 
 namespace misc
 {

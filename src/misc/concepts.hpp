@@ -4,7 +4,7 @@
 #ifndef MISC_CONCEPTS_HPP
 #define MISC_CONCEPTS_HPP
 
-#include <concepts>
+#include <type_traits> // for is_arithmetic_v
 
 namespace misc
 {

@@ -863,4 +863,16 @@
 
 # 06 / 12 / 2022
 
-	+ [ ] Typedefs
+	+ [x] Typedefs
+
+	+ [ ] Fwd decls
+		
+		+ [x] Misc
+
+		+ [x] UI
+
+		+ [x] Undo/Redo
+
+		+ [ ] Scaling
+
+		+ [ ] Weights
