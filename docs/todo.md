@@ -899,6 +899,8 @@
 
 # 07 / 12 / 2022
 
+	+ [ ] Introduce 3rd party fwd headers
+
 	+ [ ] Pimpl at Infomap clustering impl
 
 	+ [ ] Gui setup cleanup
