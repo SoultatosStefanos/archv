@@ -7,7 +7,7 @@
 namespace gui
 {
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     auto&& color_theme = root["color-theme"].as< std::string >();
     auto frame_rounding = root["frame-rounding"].as< int >();

@@ -26,11 +26,12 @@ using graph = boost::adjacency_list<
     boost::no_property,
     boost::listS >;
 
+using json_val = Json::Value;
 using config_data = std::tuple< symbol_table, graph, vertex_marker >;
 
 // Generates a symbol table (components), graph (dependencies), and a cache to
 // query vertices by their properties.
-auto deserialize(const Json::Value& root) -> config_data;
+auto deserialize(const json_val& root) -> config_data;
 
 } // namespace architecture
 

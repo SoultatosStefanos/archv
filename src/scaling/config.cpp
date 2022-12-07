@@ -8,7 +8,7 @@ namespace scaling
 
 namespace
 {
-    auto deserialize_dims(const Json::Value& val) -> factor::dims_type
+    auto deserialize_dims(const json_val& val) -> factor::dims_type
     {
         auto iter = std::cbegin(val);
 
@@ -23,7 +23,7 @@ namespace
         return { x_val, y_val, z_val };
     }
 
-    auto deserialize_factor(const Json::Value& val) -> factor
+    auto deserialize_factor(const json_val& val) -> factor
     {
         auto enabled = val["enabled"].asBool();
         auto&& dims = deserialize_dims(val["dimensions"]);
@@ -42,7 +42,7 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     config_data res;
 

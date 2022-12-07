@@ -11,9 +11,10 @@ namespace clustering
 
 class backend_config;
 
+using json_val = Json::Value;
 using config_data = backend_config;
 
-auto deserialize(const Json::Value& root) -> config_data;
+auto deserialize(const json_val& root) -> config_data;
 
 } // namespace clustering
 

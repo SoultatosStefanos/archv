@@ -6,7 +6,7 @@
 namespace weights
 {
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     using weight_type = weight_repo::weight_type;
 

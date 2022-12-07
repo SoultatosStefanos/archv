@@ -10,7 +10,7 @@ namespace clustering
 
 namespace
 {
-    inline auto deserialize_ids(const Json::Value& root)
+    inline auto deserialize_ids(const json_val& root)
     {
         using id_type = config_data::id_type;
         using ids_type = config_data::ids_type;
@@ -20,14 +20,14 @@ namespace
             std::cbegin(root),
             std::cend(root),
             std::back_inserter(ids),
-            [](const Json::Value& val) { return val.as< id_type >(); });
+            [](const json_val& val) { return val.as< id_type >(); });
 
         return ids;
     }
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     using id_type = config_data::id_type;
     using k_type = config_data::k_type;

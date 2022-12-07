@@ -12,7 +12,7 @@ namespace layout
 namespace
 {
     template < typename Container >
-    inline auto read_json_array(const Json::Value& val) -> Container
+    inline auto read_json_array(const json_val& val) -> Container
     {
         using value_type = typename Container::value_type;
 
@@ -22,19 +22,19 @@ namespace
             std::begin(val),
             std::end(val),
             std::inserter(res, std::begin(res)),
-            [](const Json::Value& val) { return val.as< value_type >(); });
+            [](const json_val& val) { return val.as< value_type >(); });
 
         return res;
     }
 
-    inline auto deserialize_layouts(const Json::Value& root)
+    inline auto deserialize_layouts(const json_val& root)
     {
         using json_layouts = std::vector< config_data::id_type >;
         BOOST_LOG_TRIVIAL(debug) << "reading layouts";
         return read_json_array< json_layouts >(root["layouts"]);
     }
 
-    inline auto deserialize_topologies(const Json::Value& root)
+    inline auto deserialize_topologies(const json_val& root)
     {
         using json_topologies = std::vector< config_data::id_type >;
         BOOST_LOG_TRIVIAL(debug) << "reading topologies";
@@ -43,7 +43,7 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     auto&& layouts = deserialize_layouts(root);
     auto&& topologies = deserialize_topologies(root);

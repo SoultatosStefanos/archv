@@ -17,10 +17,10 @@ namespace
     // Traverse json objects with ids.
     template < typename BinaryOperation >
     requires std::invocable<
-        BinaryOperation,
-        std::decay_t< Json::String >,
-        std::decay_t< Json::Value > >
-    auto for_each_object(const Json::Value& val, BinaryOperation func) -> void
+                 BinaryOperation,
+                 std::decay_t< Json::String >,
+                 std::decay_t< json_val > > auto
+    for_each_object(const json_val& val, BinaryOperation func) -> void
     {
         if (val.isNull())
             return;
@@ -34,7 +34,7 @@ namespace
 namespace
 {
     inline void
-    deserialize_source_location(const Json::Value& val, source_location& loc)
+    deserialize_source_location(const json_val& val, source_location& loc)
     {
         using file_type = source_location::file_type;
         using line_type = source_location::line_type;
@@ -45,7 +45,7 @@ namespace
         loc.col = val["col"].as< column_type >();
     }
 
-    inline void deserialize_definition(const Json::Value& val, definition& def)
+    inline void deserialize_definition(const json_val& val, definition& def)
     {
         using name_type = symbol::name_type;
         using full_type = definition::full_type;
@@ -59,7 +59,7 @@ namespace
     }
 
     inline void deserialize_definition_with_access_specifier(
-        const Json::Value& val,
+        const json_val& val,
         definition& def)
     {
         using access_specifier = symbol::access_specifier;
@@ -68,7 +68,7 @@ namespace
         def.sym.access = val["access"].as< access_specifier >();
     }
 
-    void deserialize_method(const Json::Value& val, method& m)
+    void deserialize_method(const json_val& val, method& m)
     {
         using access_specifier = symbol::access_specifier;
         using name_type = symbol::name_type;
@@ -91,7 +91,7 @@ namespace
         m.is_virtual = val["virtual"].as< bool >();
     }
 
-    inline void deserialize_structure(const Json::Value& val, structure& s)
+    inline void deserialize_structure(const json_val& val, structure& s)
     {
         using name_type = symbol::name_type;
         using namespace_type = symbol::namespace_type;
@@ -107,9 +107,9 @@ namespace
     requires std::invocable<
         BinaryOperation,
         std::decay_t< symbol::id_type >,
-        std::decay_t< Json::Value > >
-    inline void get_composites(
-        const Json::Value& val,
+        std::decay_t< json_val > > inline void
+    get_composites(
+        const json_val& val,
         Container& data,
         BinaryOperation binary_op)
     {
@@ -120,7 +120,7 @@ namespace
     }
 
     template < typename Container >
-    inline void get_references(const Json::Value& val, Container& data)
+    inline void get_references(const json_val& val, Container& data)
     {
         if (val.isNull())
             return;
@@ -129,13 +129,13 @@ namespace
             std::begin(val),
             std::end(val),
             std::back_inserter(data),
-            [](const Json::Value& v) { return v.as< std::string >(); });
+            [](const json_val& v) { return v.as< std::string >(); });
     }
 
     inline auto read_field(
         const structure& owner,
         const symbol::id_type& id,
-        const Json::Value& val)
+        const json_val& val)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading field of: " << owner.sym.id;
 
@@ -149,7 +149,7 @@ namespace
     inline auto read_method_definition(
         const method& owner,
         const symbol::id_type& id,
-        const Json::Value& val)
+        const json_val& val)
     {
         BOOST_LOG_TRIVIAL(debug) << "reading local of: " << owner.sym.id;
 
@@ -163,7 +163,7 @@ namespace
     auto read_method(
         const structure& owner,
         const symbol::id_type& id,
-        const Json::Value& val) -> method
+        const json_val& val) -> method
     {
         BOOST_LOG_TRIVIAL(debug) << "reading method of: " << owner.sym.id;
 
@@ -191,7 +191,7 @@ namespace
         return m;
     }
 
-    auto read_structure(const symbol::id_type& id, const Json::Value& val)
+    auto read_structure(const symbol::id_type& id, const json_val& val)
         -> structure
     {
         structure s;
@@ -223,7 +223,7 @@ namespace
     }
 
     auto read_vertices(
-        const Json::Value& val,
+        const json_val& val,
         symbol_table& st,
         graph& g,
         vertex_marker& m) -> void
@@ -237,7 +237,7 @@ namespace
             });
     }
 
-    auto read_edges(const Json::Value& val, graph& g, vertex_marker& m) -> void
+    auto read_edges(const json_val& val, graph& g, vertex_marker& m) -> void
     {
         using vertex_property = graph::vertex_bundled;
 
@@ -246,7 +246,7 @@ namespace
             const auto& from = v["from"].as< vertex_property >();
             const auto& to = v["to"].as< vertex_property >();
 
-            assert(m.marks(from));
+            assert(m.marks(from)); // TODO throw here
             assert(m.marks(to));
 
             for_each_object(
@@ -261,7 +261,7 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     auto st = symbol_table();
     auto g = graph();

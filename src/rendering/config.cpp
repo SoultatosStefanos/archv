@@ -11,7 +11,7 @@ namespace rendering
 namespace
 {
     template < typename T >
-    auto deserialize_triad(const Json::Value& val)
+    auto deserialize_triad(const json_val& val)
     {
         auto extract_val = [iter = std::begin(val)]() mutable -> T
         {
@@ -27,7 +27,7 @@ namespace
         return std::make_tuple(std::move(f), std::move(s), std::move(t));
     }
 
-    inline auto deserialize_rgb(const Json::Value& val) -> Ogre::ColourValue
+    inline auto deserialize_rgb(const json_val& val) -> Ogre::ColourValue
     {
         using color_value = double;
 
@@ -45,7 +45,7 @@ namespace
         return Ogre::ColourValue(r, g, b);
     }
 
-    auto deserialize_background(const Json::Value& val) -> background_config
+    auto deserialize_background(const json_val& val) -> background_config
     {
         using real = double;
         using string = std::string;
@@ -72,7 +72,7 @@ namespace
                  static_cast< Ogre::Real >(cam_far_clip_dist) };
     }
 
-    inline auto deserialize_vector3(const Json::Value& val) -> Ogre::Vector3
+    inline auto deserialize_vector3(const json_val& val) -> Ogre::Vector3
     {
         using real = double;
 
@@ -84,7 +84,7 @@ namespace
         return Ogre::Vector3(xs, ys, zs);
     }
 
-    auto deserialize_graph(const Json::Value& val) -> graph_config
+    auto deserialize_graph(const json_val& val) -> graph_config
     {
         using string = std::string;
         using real = double;
@@ -132,7 +132,7 @@ namespace
     }
 
     template < typename T >
-    inline auto deserialize_degree_ranks(const Json::Value& val)
+    inline auto deserialize_degree_ranks(const json_val& val)
     {
         auto&& light = val["light"].as< T >();
         auto&& medium = val["medium"].as< T >();
@@ -142,7 +142,7 @@ namespace
             std::move(light), std::move(medium), std::move(heavy));
     }
 
-    inline auto deserialize_degrees_section(const Json::Value& val)
+    inline auto deserialize_degrees_section(const json_val& val)
     {
         using threshold_type = degrees_ranked_evaluation_data::threshold_type;
         using system_type
@@ -168,7 +168,7 @@ namespace
             applied);
     }
 
-    inline auto deserialize_degrees(const Json::Value& root)
+    inline auto deserialize_degrees(const json_val& root)
         -> degrees_ranked_config
     {
         return degrees_ranked_config(
@@ -176,7 +176,7 @@ namespace
             deserialize_degrees_section(root["out-degree"]));
     }
 
-    inline auto deserialize_minimap(const Json::Value& root) -> minimap_config
+    inline auto deserialize_minimap(const json_val& root) -> minimap_config
     {
         using coord_type = minimap_config::coord_type;
         using dist_type = minimap_config::dist_type;
@@ -215,7 +215,7 @@ namespace
 
 } // namespace
 
-auto deserialize(const Json::Value& root) -> config_data
+auto deserialize(const json_val& root) -> config_data
 {
     auto&& bkg = deserialize_background(root["background"]);
     auto&& g = deserialize_graph(root["graph"]);

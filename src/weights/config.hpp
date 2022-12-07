@@ -10,9 +10,10 @@
 namespace weights
 {
 
+using json_val = Json::Value;
 using config_data = backend::config_data_type;
 
-auto deserialize(const Json::Value& root) -> config_data;
+auto deserialize(const json_val& root) -> config_data;
 
 } // namespace weights
 

@@ -13,10 +13,6 @@
 namespace rendering
 {
 
-/***********************************************************
- * Config data                                             *
- ***********************************************************/
-
 struct config_data
 {
     background_config background;
@@ -28,11 +24,9 @@ struct config_data
     auto operator!=(const config_data&) const -> bool = default;
 };
 
-/***********************************************************
- * Utilities                                               *
- ***********************************************************/
+using json_val = Json::Value;
 
-auto deserialize(const Json::Value& root) -> config_data;
+auto deserialize(const json_val& root) -> config_data;
 
 } // namespace rendering
 
