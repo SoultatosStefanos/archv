@@ -56,15 +56,11 @@ struct ui_adaptor
     using config_data_type = gui_config;
     using config_api_type = gui_config_api;
 
-    auto default_data() const -> const auto& { return get_default_configs(); }
+    static auto default_data() -> const auto& { return get_default_configs(); }
+    static auto config_data() -> auto& { return get_configs(); }
+    static auto config_api() -> auto& { return get_config_api(); }
 
-    auto config_data() const -> const auto& { return get_configs(); }
-    auto config_data() -> auto& { return get_configs(); }
-
-    auto config_api() const -> const auto& { return get_config_api(); }
-    auto config_api() -> auto& { return get_config_api(); }
-
-    auto draw(const config_data_type& cfg) { draw_configs(cfg); }
+    static auto draw(const config_data_type& cfg) { draw_configs(cfg); }
 };
 
 } // namespace gui

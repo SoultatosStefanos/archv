@@ -903,9 +903,9 @@
 
 	+ [x] Jsoncpp wrapper for exceptions
 
-	+ [ ] Static ui adaptor
+	+ [x] Static ui adaptor
 
-	+ [ ] Pimpl at Infomap clustering impl
+	+ [n] Pimpl at Infomap clustering impl
 
 	+ [ ] Gui setup cleanup
 
