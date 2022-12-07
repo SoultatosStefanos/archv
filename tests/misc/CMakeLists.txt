@@ -1,5 +1,5 @@
 set(FILES
-	json_val_tests.cpp
+	deserialization_tests.cpp
 )
 set(SUBDIRECTORIES)
 

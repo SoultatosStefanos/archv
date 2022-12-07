@@ -1,5 +1,4 @@
 set(FILES
-	json_val.cpp
 )
 set(SUBDIRECTORIES)
 
