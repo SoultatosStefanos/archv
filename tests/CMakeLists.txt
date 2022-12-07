@@ -16,6 +16,7 @@ set(SUBDIRECTORIES
   clustering
   gui
   layout
+  misc
   rendering
   scaling
   ui
