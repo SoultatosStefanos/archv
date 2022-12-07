@@ -901,7 +901,7 @@
 
 # 07 / 12 / 2022
 
-	+ [ ] Jsoncpp wrapper for exceptions
+	+ [x] Jsoncpp wrapper for exceptions
 
 	+ [ ] Static ui adaptor
 

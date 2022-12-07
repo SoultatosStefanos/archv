@@ -4,6 +4,7 @@
 #ifndef MISC_DESERIALIZATION_HPP
 #define MISC_DESERIALIZATION_HPP
 
+#include <boost/core/demangle.hpp> // for demangle
 #include <boost/exception/all.hpp> // for error_info, exception
 #include <jsoncpp/json/json.h>     // for Value
 #include <stdexcept>               // for exception
@@ -43,17 +44,17 @@ struct type_mismatch : virtual deserialization_error
  * Error Info                                              *
  ***********************************************************/
 
-using key_info = boost::error_info< struct tag_key, std::string_view >;
-using type_info = boost::error_info< struct tag_type, std::string_view >;
+using key_info = boost::error_info< struct tag_key, std::string >;
+using type_info = boost::error_info< struct tag_type, std::string >;
 
 /***********************************************************
  * Functions                                               *
  ***********************************************************/
 
-// Throws key_not_found error if the given key is not found.
+// Throws key_not_found error if the given key is not a json value member.
 inline auto get(const Json::Value& val, const char* key) -> const auto&
 {
-    if (val[key].isNull())
+    if (!val.isMember(key))
         BOOST_THROW_EXCEPTION(key_not_found() << key_info(key));
 
     return val[key];
@@ -64,7 +65,9 @@ template < deserializable T >
 inline auto as(const Json::Value& val) -> T
 {
     if (!val.is< T >())
-        BOOST_THROW_EXCEPTION(type_mismatch() << type_info(typeid(T).name()));
+        BOOST_THROW_EXCEPTION(
+            type_mismatch()
+            << type_info(boost::core::demangle(typeid(T).name())));
 
     return val.as< T >();
 }

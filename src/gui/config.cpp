@@ -1,19 +1,22 @@
 #include "config.hpp"
 
 #include "gui_config.hpp"
+#include "misc/deserialization.hpp"
 
 #include <jsoncpp/json/json.h>
 
 namespace gui
 {
 
+using namespace misc;
+
 auto deserialize(const json_val& root) -> config_data
 {
-    auto&& color_theme = root["color-theme"].as< std::string >();
-    auto frame_rounding = root["frame-rounding"].as< int >();
-    auto window_bordered = root["window-bordered"].as< bool >();
-    auto frame_bordered = root["frame-bordered"].as< bool >();
-    auto popup_bordered = root["popup-bordered"].as< bool >();
+    auto&& color_theme = as< std::string >(get(root, "color-theme"));
+    auto frame_rounding = as< int >(get(root, "frame-rounding"));
+    auto window_bordered = as< bool >(get(root, "window-bordered"));
+    auto frame_bordered = as< bool >(get(root, "frame-bordered"));
+    auto popup_bordered = as< bool >(get(root, "popup-bordered"));
     ;
 
     return config_data { .color_theme = std::move(color_theme),

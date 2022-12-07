@@ -1,12 +1,15 @@
 #include "config.hpp"
 
 #include "backend_config.hpp"
+#include "misc/deserialization.hpp"
 
 #include <algorithm>
 #include <jsoncpp/json/json.h>
 
 namespace clustering
 {
+
+using namespace misc;
 
 namespace
 {
@@ -20,7 +23,7 @@ namespace
             std::cbegin(root),
             std::cend(root),
             std::back_inserter(ids),
-            [](const json_val& val) { return val.as< id_type >(); });
+            [](const json_val& val) { return as< id_type >(val); });
 
         return ids;
     }
@@ -36,19 +39,20 @@ auto deserialize(const json_val& root) -> config_data
     using gamma_type = config_data::gamma_type;
     using steps_type = config_data::steps_type;
 
-    auto&& clusterers = deserialize_ids(root["clusterers"]);
-    auto&& mst_finders = deserialize_ids(root["min-spanning-tree-finders"]);
-    auto&& clusterer = root["clusterer"].as< id_type >();
-    auto&& mst_finder = root["min-spanning-tree-finder"].as< id_type >();
-    auto k = root["k"].as< k_type >();
-    auto snn_thres = root["snn-threshold"].as< snn_thres_type >();
+    auto&& clusterers = deserialize_ids(get(root, "clusterers"));
+    auto&& mst_finders
+        = deserialize_ids(get(root, "min-spanning-tree-finders"));
+    auto&& clusterer = as< id_type >(get(root, "clusterer"));
+    auto&& mst_finder = as< id_type >(get(root, "min-spanning-tree-finder"));
+    auto k = as< k_type >(get(root, "k"));
+    auto snn_thres = as< snn_thres_type >(get(root, "snn-threshold"));
 
     static_assert(std::is_floating_point_v< modularity_type >);
-    auto min_q = root["min-modularity"].as< double >();
+    auto min_q = as< double >(get(root, "min-modularity"));
 
     static_assert(std::is_floating_point_v< gamma_type >);
-    auto llp_gamma = root["llp-gamma"].as< double >();
-    auto llp_steps = root["llp-steps"].as< steps_type >();
+    auto llp_gamma = as< double >(get(root, "llp-gamma"));
+    auto llp_steps = as< steps_type >(get(root, "llp-steps"));
 
     return config_data { .clusterers = std::move(clusterers),
                          .mst_finders = std::move(mst_finders),
