@@ -62,12 +62,19 @@ auto minimap_renderer::setup() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup minimap";
 }
 
+namespace
+{
+    inline auto point_in_front(const SceneNode& of, SceneNode& node, Real dist)
+    {
+        const auto offset = Vector3(0, 0, dist);
+        node.setPosition(of.getPosition() + offset);
+        node.lookAt(of.getPosition(), Node::TransformSpace::TS_WORLD);
+    }
+
+} // namespace
+
 auto minimap_renderer::setup_camera() -> void
 {
-    assert(scene().hasCamera(main_cam_name));
-    auto* main_cam = scene().getCamera(main_cam_name);
-    const auto& main_cam_pos = main_cam->getRealPosition();
-
     assert(!scene().hasCamera(cam_name));
     m_cam = scene().createCamera(cam_name);
     m_cam->setAutoAspectRatio(true);
@@ -76,9 +83,10 @@ auto minimap_renderer::setup_camera() -> void
     m_cam_node = scene().getRootSceneNode()->createChildSceneNode(cam_name);
     assert(m_cam_node);
     m_cam_node->attachObject(m_cam);
-    const auto offset = Vector3(0, 0, config_data().zoom_out);
-    m_cam_node->setPosition(main_cam_pos + offset);
-    m_cam_node->lookAt(main_cam_pos, Node::TransformSpace::TS_WORLD);
+
+    assert(scene().hasCamera(main_cam_name));
+    auto* main_cam_node = scene().getSceneNode(main_cam_name);
+    point_in_front(*main_cam_node, *m_cam_node, config_data().zoom_out);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
 }
@@ -205,6 +213,10 @@ auto minimap_renderer::draw(const config_data_type& cfg) -> void
 {
     assert(m_rect);
     m_rect->setCorners(cfg.left, cfg.top, cfg.right, cfg.bottom);
+
+    assert(scene().hasCamera(main_cam_name));
+    auto* main_cam_node = scene().getSceneNode(main_cam_name);
+    point_in_front(*main_cam_node, *m_cam_node, cfg.zoom_out);
 
     assert(m_texture);
     auto* texture_trgt = m_texture->getBuffer()->getRenderTarget();
