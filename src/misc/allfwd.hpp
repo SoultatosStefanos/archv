@@ -12,6 +12,9 @@
 
 namespace misc
 {
+
+class json_val;
+
 } // namespace misc
 
 #endif // MISC_ALLFWD_HPP

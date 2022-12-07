@@ -7,6 +7,7 @@
 #include "algorithm.hpp"
 #include "concepts.hpp"
 #include "heterogeneous.hpp"
+#include "json_val.hpp"
 #include "random.hpp"
 #include "source.hpp"
 

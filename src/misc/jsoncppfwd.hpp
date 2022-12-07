@@ -7,6 +7,7 @@
 namespace Json
 {
 class Value;
+class ValueConstIterator;
 } // namespace Json
 
 #endif // MISC_JSONCPPFWD_HPP

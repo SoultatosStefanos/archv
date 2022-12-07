@@ -1,4 +1,6 @@
-set(FILES)
+set(FILES
+	json_val.cpp
+)
 set(SUBDIRECTORIES)
 
 foreach(VAR ${SUBDIRECTORIES})
