@@ -124,7 +124,7 @@
 
 	+ [x] Features
 
-	+ [ ] Usage
+	+ [x] Usage
 
 	+ [ ] Third-party
 

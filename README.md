@@ -33,6 +33,11 @@ tables, in the form of a 3D graph.
 
 ## Usage
 
+The visualizer uses the output .json file from the GraphGenerator project 
+(see forked/updated repo) https://github.com/SoultatosStefanos/Code-Smell-Detector
+as command line input.
+
+E.g. `./archv_app path/to/output-file/graph.json`
 
 ## Third-Party Dependencies
 
