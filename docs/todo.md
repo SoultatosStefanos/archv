@@ -122,7 +122,7 @@
 
 	+ [x] Summary
 
-	+ [ ] Features
+	+ [x] Features
 
 	+ [ ] Usage
 
