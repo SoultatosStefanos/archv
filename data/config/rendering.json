@@ -75,7 +75,7 @@
 		"right" : 0.95,
 		"bottom" : -0.95,
 		"background-color" : [ 0.0, 0.0, 0.0 ],
-		"zoom-out" : 100,
+		"zoom-out" : 300,
 		"render-shadows" : false,
 		"render-sky" : true,
 		"render-vertices" : true,

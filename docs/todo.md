@@ -912,6 +912,6 @@
 
 # 09 / 12 / 2022
 
-	+ [ ] Minimap update
+	+ [x] Minimap update
 
 	+ [ ] Resource group tidy
