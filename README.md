@@ -62,7 +62,7 @@ https://github.com/libsdl-org/SDL
 https://github.com/freetype/freetype
 * Stb  
 https://github.com/nothings/stb
-* Ogre 3D  
+* Ogre 3D v13  
 https://github.com/OGRECave/ogre
 * Ogre 3D Bites Component
 * Ogre 3D Overlay Component
