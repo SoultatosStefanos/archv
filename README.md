@@ -20,6 +20,11 @@ tables, in the form of a 3D graph.
 | ![](data/screenshots/class_info_inspection.png) | ![](data/screenshots/procedural_edge_curves.png) |
 
 
+| Layout & topology editing | Edge weight editing
+|----|----|
+| ![](data/screenshots/layout_n_topology_editing.png) | ![](data/screenshots/edge_weight_editing.png) |
+
+
 ## Usage
 
 
