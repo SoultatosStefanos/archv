@@ -10,9 +10,9 @@ tables, in the form of a 3D graph.
 
 ## Features
 
-| Integrated Bump and Offset Mapping | Integrated shadows |
+| 3D Graph rendering | Dynamic illumination
 |----|----|
-| ![](Other/screenshots/bumpmap.webp) | ![](Other/screenshots/shadows.jpg) |
+| ![](data/screenshots/3d_graph.png) | ![](data/screenshots/dynamic_illumination.png) |
 
 
 ## Usage
