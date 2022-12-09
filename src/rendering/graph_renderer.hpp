@@ -77,7 +77,6 @@ public:
         dependency_map_type edge_dependency,
         scene_type& scene,
         config_data_type cfg,
-        std::string_view resource_group,
         degrees_evaluator_type degrees_eval,
         cluster_color_coder_type color_coder);
 
@@ -101,8 +100,6 @@ public:
     auto config_data() -> config_data_type& { return m_cfg; }
     auto config_api() const -> const config_api_type& { return m_cfg_api; }
     auto config_api() -> config_api_type& { return m_cfg_api; }
-
-    auto resource_group() const -> auto* { return m_resource_group.data(); }
 
     auto get_degrees_evaluator() const -> const auto& { return m_degrees_eval; }
     auto get_degrees_evaluator() -> auto& { return m_degrees_eval; }
@@ -159,7 +156,6 @@ private:
     scene_type& m_scene;
     config_data_type m_cfg, m_defaults;
     config_api_type m_cfg_api;
-    std::string_view m_resource_group;
 
     detail::vertex_renderer m_vertex_renderer;
     detail::edge_renderer m_edge_renderer;
@@ -192,7 +188,6 @@ inline graph_renderer<
         dependency_map_type edge_dependency,
         scene_type& scene,
         config_data_type cfg,
-        std::string_view resource_group,
         degrees_evaluator_type degrees_eval,
         cluster_color_coder_type color_coder)
 : m_g { g }
@@ -202,9 +197,8 @@ inline graph_renderer<
 , m_cfg { cfg }
 , m_defaults { cfg }
 , m_cfg_api { std::move(cfg) }
-, m_resource_group { resource_group }
-, m_vertex_renderer { scene, config_data(), resource_group }
-, m_edge_renderer { scene, config_data(), resource_group }
+, m_vertex_renderer { scene, config_data() }
+, m_edge_renderer { scene, config_data() }
 , m_degrees_eval { std::move(degrees_eval) }
 , m_cluster_col_coder { std::move(color_coder) }
 {

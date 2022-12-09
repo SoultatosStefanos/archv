@@ -19,10 +19,10 @@ namespace misc
  ***********************************************************/
 
 template < typename T >
-concept deserializable = std::same_as< T, bool > || std::
-    same_as< T, int > || std::same_as< T, unsigned int > || std::
-        same_as< T, int64_t > || std::same_as< T, uint64_t > || std::
-            same_as< T, double > || std::same_as< T, std::string >;
+concept deserializable = std::same_as< T, bool > || std::same_as< T, int >
+    || std::same_as< T, unsigned int > || std::same_as< T, int64_t >
+    || std::same_as< T, uint64_t > || std::same_as< T, double >
+    || std::same_as< T, std::string >;
 
 /***********************************************************
  * Errors                                                  *

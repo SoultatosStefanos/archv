@@ -68,10 +68,7 @@ public:
     using name_type = std::string;
     using rgba_type = Ogre::ColourValue;
 
-    vertex_renderer(
-        scene_type& scene,
-        const config_data_type& cfg,
-        std::string_view resource_group);
+    vertex_renderer(scene_type& scene, const config_data_type& cfg);
 
     vertex_renderer(const vertex_renderer&) = default;
     vertex_renderer(vertex_renderer&&) = default;
@@ -147,7 +144,6 @@ private:
 
     scene_type& m_scene;
     const config_data_type* m_cfg { nullptr };
-    const char* m_resource_group { nullptr };
 
     vertex_map m_vertices;
     vertex_text_map m_vertex_texts;
@@ -171,10 +167,7 @@ public:
 
     using rgba_type = Ogre::ColourValue;
 
-    edge_renderer(
-        scene_type& scene,
-        const config_data_type& cfg,
-        std::string_view resource_group);
+    edge_renderer(scene_type& scene, const config_data_type& cfg);
 
     edge_renderer(const edge_renderer&) = default;
     edge_renderer(edge_renderer&&) = default;
@@ -282,7 +275,6 @@ private:
 
     scene_type& m_scene;
     const config_data_type* m_cfg { nullptr };
-    const char* m_resource_group { nullptr };
 
     edge_map m_edges;
     edge_text_map m_edge_texts;

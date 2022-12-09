@@ -8,7 +8,6 @@
 
 #include <OGRE/OgrePrerequisites.h> // for SceneManager, SceneNode, etc
 #include <memory>                   // for unique_ptr
-#include <string_view>              // for string_view
 
 namespace Ogre
 {
@@ -36,8 +35,7 @@ public:
     minimap_renderer(
         const window_type& win,
         scene_type& scene,
-        config_data_type config,
-        std::string_view resource_group);
+        config_data_type config);
 
     minimap_renderer(const minimap_renderer&) = delete;
     minimap_renderer(minimap_renderer&&) = default;
@@ -59,8 +57,6 @@ public:
     auto config_data() -> auto& { return m_cfg; }
     auto config_api() const -> const auto& { return m_cfg_api; }
     auto config_api() -> auto& { return m_cfg_api; }
-
-    auto resource_group() const -> auto { return m_resource_group; }
 
     auto visible() const -> bool;
     auto set_visible(bool v) -> void;
@@ -89,8 +85,6 @@ private:
     config_data_type m_cfg;
     config_data_type m_default_cfg;
     config_api_type m_cfg_api;
-
-    std::string_view m_resource_group;
 
     camera_type* m_cam { nullptr };
     node_type* m_cam_node { nullptr };

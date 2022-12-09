@@ -1,5 +1,6 @@
 #include "minimap_renderer.hpp"
 
+#include "config/config.hpp"
 #include "detail/visibility_masks.hpp"
 
 #include <OGRE/OgreCamera.h>
@@ -28,14 +29,12 @@ using namespace Ogre;
 minimap_renderer::minimap_renderer(
     const window_type& win,
     scene_type& scene,
-    config_data_type config,
-    std::string_view resource_group)
+    config_data_type config)
 : m_win { &win }
 , m_scene { &scene }
 , m_cfg { config }
 , m_default_cfg { config }
 , m_cfg_api { std::move(config) }
-, m_resource_group { resource_group }
 {
 }
 
@@ -84,7 +83,8 @@ auto minimap_renderer::setup_camera() -> void
 
     assert(!scene().hasSceneNode(cam_name));
     m_cam_node = main_cam_node->createChildSceneNode(
-        cam_name, make_z_offsetted_pos(config_data().zoom_out));
+        cam_name,
+        make_z_offsetted_pos(config_data().zoom_out));
     assert(m_cam_node);
     m_cam_node->attachObject(m_cam);
 
@@ -94,15 +94,17 @@ auto minimap_renderer::setup_camera() -> void
 auto minimap_renderer::setup_texture() -> void
 {
     assert(!m_texture);
+
     m_texture = TextureManager::getSingleton().createManual(
         texture_name,
-        resource_group().data(),
+        ARCHV_RESOURCE_GROUP,
         Ogre::TEX_TYPE_2D,
         window().getWidth(),
         window().getHeight(),
         0,                      // the number of mipmaps to be used.
         Ogre::PF_R8G8B8,        // texture format
         Ogre::TU_RENDERTARGET); // usage flag
+
     assert(m_texture);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap texture";
@@ -158,7 +160,9 @@ auto minimap_renderer::setup_mini_screen() -> void
     m_rect->setVisibilityFlags(detail::minimap_mask);
 
     auto material = MaterialManager::getSingleton().create(
-        material_name, resource_group().data());
+        material_name,
+        ARCHV_RESOURCE_GROUP);
+
     assert(material);
     auto* pass = material->getTechnique(0)->getPass(0);
     assert(pass);

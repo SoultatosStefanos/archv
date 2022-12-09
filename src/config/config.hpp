@@ -1,8 +1,8 @@
 // Contains a configuration module for the application.
 // Soultatos Stefanos 2022
 
-#ifndef APPLICATION_CONFIG_HPP
-#define APPLICATION_CONFIG_HPP
+#ifndef CONFIG_CONFIG_HPP
+#define CONFIG_CONFIG_HPP
 
 // Supress warnings, intellisense errors.
 #ifndef ARCHV_CONFIG_DIR
@@ -31,4 +31,4 @@
 #define ARCHV_RESOURCE_GROUP "Archv"
 #endif
 
-#endif // APPLICATION_CONFIG_HPP
+#endif // CONFIG_CONFIG_HPP

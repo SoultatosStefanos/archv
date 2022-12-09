@@ -1,5 +1,6 @@
 #include "graph_renderer.hpp"
 
+#include "config/config.hpp"
 #include "misc/random.hpp"
 #include "movable_text.hpp"
 #include "rendering/graph_renderer.hpp"
@@ -46,11 +47,8 @@ struct vertex_properties
     auto operator!=(const vertex_properties&) const -> bool = default;
 };
 
-vertex_renderer::vertex_renderer(
-    scene_type& scene,
-    const config_data_type& cfg,
-    std::string_view resource_group)
-: m_scene { scene }, m_cfg { &cfg }, m_resource_group { resource_group.data() }
+vertex_renderer::vertex_renderer(scene_type& scene, const config_data_type& cfg)
+: m_scene { scene }, m_cfg { &cfg }
 {
     assert(m_cfg);
 }
@@ -124,7 +122,9 @@ namespace
         vertex_renderer::position_type pos)
     {
         return std::make_unique< vertex_properties >(
-            std::move(id), pos, make_vertex_txt_name(id));
+            std::move(id),
+            pos,
+            make_vertex_txt_name(id));
     }
 
     inline auto update_pos_if_effect(
@@ -194,7 +194,8 @@ auto vertex_renderer::setup_model(const vertex_type& v) -> void
     node->setScale(m_cfg->vertex_scale);
     node->setPosition(v.pos);
 
-    auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
+    auto* e
+        = m_scene.createEntity(v.id, m_cfg->vertex_mesh, ARCHV_RESOURCE_GROUP);
     assert(e);
     e->setMaterialName(m_cfg->vertex_material);
     e->setRenderQueueGroup(RENDER_QUEUE_MAIN);
@@ -220,7 +221,7 @@ auto vertex_renderer::setup_text(const vertex_type& v) -> void
         m_cfg->vertex_id_font_name,
         m_cfg->vertex_id_char_height,
         m_cfg->vertex_id_color,
-        m_resource_group);
+        ARCHV_RESOURCE_GROUP);
 
     txt->setSpaceWidth(m_cfg->vertex_id_space_width);
     txt->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
@@ -489,7 +490,8 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
     node->detachObject(v.id);
     m_scene.destroyEntity(v.id);
 
-    auto* e = m_scene.createEntity(v.id, m_cfg->vertex_mesh, m_resource_group);
+    auto* e
+        = m_scene.createEntity(v.id, m_cfg->vertex_mesh, ARCHV_RESOURCE_GROUP);
     assert(e);
 
     if (v.cluster_col)
@@ -533,7 +535,7 @@ auto vertex_renderer::draw_text(const vertex_type& v) -> void
 
     auto& txt = vertex_txt(v.txt_name);
 
-    txt.setFontName(m_cfg->vertex_id_font_name, m_resource_group);
+    txt.setFontName(m_cfg->vertex_id_font_name, ARCHV_RESOURCE_GROUP);
     txt.setCharacterHeight(m_cfg->vertex_id_char_height);
     txt.setColor(m_cfg->vertex_id_color);
     txt.setSpaceWidth(m_cfg->vertex_id_space_width);
@@ -598,11 +600,8 @@ struct edge_properties
     auto operator!=(const edge_properties&) const -> bool = default;
 };
 
-edge_renderer::edge_renderer(
-    scene_type& scene,
-    const config_data_type& cfg,
-    std::string_view resource_group)
-: m_scene { scene }, m_cfg { &cfg }, m_resource_group { resource_group.data() }
+edge_renderer::edge_renderer(scene_type& scene, const config_data_type& cfg)
+: m_scene { scene }, m_cfg { &cfg }
 {
     assert(m_cfg);
 }
@@ -789,7 +788,7 @@ auto edge_renderer::setup_model(const edge_type& e, const path_type& path)
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     entity->setVisibilityFlags(detail::edge_mesh_mask);
-    entity->setMaterialName(m_cfg->edge_material, m_resource_group);
+    entity->setMaterialName(m_cfg->edge_material, ARCHV_RESOURCE_GROUP);
 
     auto* node = m_scene.getRootSceneNode()->createChildSceneNode(e.name);
     assert(node);
@@ -805,7 +804,9 @@ auto edge_renderer::setup_tip(const edge_type& e, const path_type& path) -> void
     assert(!m_scene.hasSceneNode(e.tip_name));
 
     auto* entity = m_scene.createEntity(
-        e.tip_name, m_cfg->edge_tip_mesh, m_resource_group);
+        e.tip_name,
+        m_cfg->edge_tip_mesh,
+        ARCHV_RESOURCE_GROUP);
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     entity->setMaterialName(m_cfg->edge_tip_material);
@@ -843,7 +844,7 @@ auto edge_renderer::setup_text(const edge_type& e, const path_type& path)
         m_cfg->edge_type_font_name,
         m_cfg->edge_type_char_height,
         m_cfg->edge_type_color,
-        m_resource_group);
+        ARCHV_RESOURCE_GROUP);
 
     txt->setSpaceWidth(m_cfg->edge_type_space_width);
     txt->setTextAlignment(MovableText::H_CENTER, MovableText::V_CENTER);
@@ -1120,7 +1121,9 @@ auto edge_renderer::draw_tip(const edge_type& e, const path_type& path) -> void
     node->detachObject(e.tip_name);
     m_scene.destroyEntity(e.tip_name);
     auto* entity = m_scene.createEntity(
-        e.tip_name, m_cfg->edge_tip_mesh, m_resource_group);
+        e.tip_name,
+        m_cfg->edge_tip_mesh,
+        ARCHV_RESOURCE_GROUP);
     assert(entity);
     entity->setMaterialName(m_cfg->edge_tip_material);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
@@ -1137,7 +1140,7 @@ auto edge_renderer::draw_text(const edge_type& e, const path_type& path) -> void
 
     auto& txt = edge_txt(e.txt_name);
 
-    txt.setFontName(m_cfg->edge_type_font_name, m_resource_group);
+    txt.setFontName(m_cfg->edge_type_font_name, ARCHV_RESOURCE_GROUP);
     txt.setCharacterHeight(m_cfg->edge_type_char_height);
     txt.setColor(m_cfg->edge_type_color);
     txt.setSpaceWidth(m_cfg->edge_type_space_width);

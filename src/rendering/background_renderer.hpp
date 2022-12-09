@@ -18,10 +18,7 @@ public:
     using config_data_type = background_config;
     using config_api_type = background_config_api;
 
-    explicit background_renderer(
-        Ogre::RenderWindow& window,
-        config_data_type config,
-        std::string_view resource_group);
+    background_renderer(Ogre::RenderWindow& window, config_data_type config);
 
     ~background_renderer();
 
@@ -38,8 +35,6 @@ public:
 
     auto config_api() const -> const config_api_type& { return m_config_api; }
     auto config_api() -> config_api_type& { return m_config_api; }
-
-    auto resource_group() const -> auto* { return m_resource_group.data(); }
 
     auto scene() const -> const auto& { return *m_scene; }
     auto scene() -> auto& { return *m_scene; }
@@ -73,8 +68,6 @@ private:
 
     config_data_type m_config, m_defaults;
     config_api_type m_config_api;
-
-    std::string_view m_resource_group;
 
     Ogre::Root& m_root; // Obtained from global context.
     Ogre::RenderWindow& m_window;

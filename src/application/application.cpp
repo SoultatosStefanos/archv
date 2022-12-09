@@ -2,7 +2,7 @@
 
 #include "IconsFontAwesome5.h"
 #include "archive.hpp"
-#include "config.hpp"
+#include "config/config.hpp"
 #include "input/all.hpp"
 #include "misc/all.hpp"
 #include "presentation/all.hpp"
@@ -136,7 +136,7 @@ auto application::setup_rendering() -> void
     const auto config = rendering::deserialize(root);
 
     m_background_renderer = std::make_unique< background_renderer_type >(
-        *getRenderWindow(), config.background, ARCHV_RESOURCE_GROUP);
+        *getRenderWindow(), config.background);
 
     m_graph_renderer = std::make_unique< graph_renderer_type >(
         m_graph_iface->get_graph(),
@@ -145,7 +145,6 @@ auto application::setup_rendering() -> void
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene(),
         config.graph,
-        ARCHV_RESOURCE_GROUP,
         degrees_evaluator(degrees_backend(config.degrees)),
         cluster_color_coder());
 
@@ -161,10 +160,7 @@ auto application::setup_rendering() -> void
         m_background_renderer->scene());
 
     m_minimap_renderer = std::make_unique< minimap_renderer_type >(
-        *getRenderWindow(),
-        m_background_renderer->scene(),
-        config.minimap,
-        ARCHV_RESOURCE_GROUP);
+        *getRenderWindow(), m_background_renderer->scene(), config.minimap);
 
     m_minimap_renderer->setup();
 

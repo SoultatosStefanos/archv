@@ -1,5 +1,6 @@
 #include "background_renderer.hpp"
 
+#include "config/config.hpp"
 #include "detail/visibility_masks.hpp"
 
 #include <OGRE/OgreCamera.h>
@@ -25,12 +26,10 @@ namespace rendering
 
 background_renderer::background_renderer(
     Ogre::RenderWindow& window,
-    config_data_type config,
-    std::string_view resource_group)
+    config_data_type config)
 : m_config { config }
 , m_defaults { config }
 , m_config_api { std::move(config) }
-, m_resource_group { resource_group }
 , m_root { Ogre::Root::getSingleton() }
 , m_window { window }
 {
@@ -166,7 +165,10 @@ auto background_renderer::draw_scene(const config_data_type& cfg) -> void
     assert(m_scene);
 
     scene().setSkyBox(
-        true, cfg.skybox_material, cfg.skybox_distance, resource_group());
+        true,
+        cfg.skybox_material,
+        cfg.skybox_distance,
+        ARCHV_RESOURCE_GROUP);
 
     scene().setAmbientLight(cfg.ambient_color);
 

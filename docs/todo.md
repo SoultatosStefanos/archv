@@ -914,4 +914,6 @@
 
 	+ [x] Minimap update
 
-	+ [ ] Resource group tidy
+	+ [x] Resource group tidy
+
+	+ [ ] Pan feature update
