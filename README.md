@@ -49,6 +49,24 @@ https://www.boost.org/doc/libs/1_61_0/doc/html/signals2.html
 https://www.boost.org/doc/libs/1_63_0/libs/log/doc/html/index.html
 * Boost Exception  
 https://theboostcpplibraries.com/boost.exception
+* Jsoncpp  
+https://github.com/open-source-parsers/jsoncpp
+* Infomap  
+https://github.com/mapequation/infomap
+*  IconFontCppHeaders  
+https://github.com/juliettef/IconFontCppHeaders
+* SDL  
+https://github.com/libsdl-org/SDL
+* OpenGL
+* Freetype  
+https://github.com/freetype/freetype
+* Stb  
+https://github.com/nothings/stb
+* Ogre 3D  
+https://github.com/OGRECave/ogre
+* Ogre 3D Bites Component
+* Ogre 3D Overlay Component
+* Ogre 3D Procedural Component
 
 
 ## Set-Up / Build
