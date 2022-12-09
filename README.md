@@ -8,14 +8,14 @@ object-oriented, software architectural dependencies taken from global symbol
 tables, in the form of a 3D graph.
 
 
-## Usage
-
-
 ## Features
 
 | Integrated Bump and Offset Mapping | Integrated shadows |
 |----|----|
 | ![](Other/screenshots/bumpmap.webp) | ![](Other/screenshots/shadows.jpg) |
+
+
+## Usage
 
 
 ## Third-Party Dependencies
