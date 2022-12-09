@@ -1,55 +1,114 @@
+# #####################################################################
+# CMake misc variables
+# #####################################################################
 cmake_minimum_required(VERSION 3.13.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# #####################################################################
+# Project name
+# #####################################################################
 project(archv CXX)
 
+# #####################################################################
+# Targets
+# #####################################################################
 set(PROJECT ${PROJECT_NAME})
 set(PROJECT_LIB ${PROJECT}_lib)
 set(PROJECT_APP ${PROJECT}_app)
 
-# compiler flags
+# #####################################################################
+# Compiler flags
+# #####################################################################
 if(MSVC)
   add_compile_options(/W4 /WX)
 else()
   add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
+# #####################################################################
+# Library
+# #####################################################################
 add_library(${PROJECT_LIB})
 
+# #####################################################################
+# Subdirectories
+# #####################################################################
 set(SUBDIRECTORIES external src tests)
 
 foreach(VAR ${SUBDIRECTORIES})
   add_subdirectory(${VAR})
 endforeach()
 
-# provide config path
-target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="/home/stef/Documents/Projects/archv/data/config")
+# #####################################################################
+# Setup options
+# #####################################################################
+set(ARCHV_CONFIG_DIR CACHE STRING "The directory containing all of the .json runtime configuration files e.g. '/home/Descktop/archv/data/config'.")
+set(ARCHV_RENDERING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"rendering.json" CACHE STRING "The file path to the .json runtime configuration file for the rendering subsystem e.g. '/home/Descktop/archv/data/config/rendering.json'.")
+set(ARCHV_GUI_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"gui.json" CACHE STRING "The file path to the .json runtime configuration file for the gui subsystem e.g. '/home/Descktop/archv/data/config/gui.json'.")
+set(ARCHV_WEIGHTS_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"weights.json" CACHE STRING "The file path to the .json runtime configuration file for the edge weight management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
+set(ARCHV_LAYOUT_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"layout.json" CACHE STRING "The file path to the .json runtime configuration file for the graph layout management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
+set(ARCHV_SCALING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"scaling.json" CACHE STRING "The file path to the .json runtime configuration file for the vertex property scaling management subsystem e.g. '/home/Descktop/archv/data/config/scaling.json'.")
+set(ARCHV_CLUSTERING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"clustering.json" CACHE STRING "The file path to the .json runtime configuration file for the graph clustering subsystem e.g. '/home/Descktop/archv/data/config/clustering.json'.")
+set(ARCHV_RESOURCE_GROUP "Archv" CACHE STRING "The media resource group used, e.g. 'Archv'.")
 
-# make the src/ directory visible for include directives
-target_include_directories(${PROJECT_LIB} PUBLIC src)
+set(OGRE_PROCEDURAL_DIR "/usr/local/lib/OgreProcedural/cmake" CACHE STRING "The directory containing a CMake configuration file for the Ogre Procedural component.")
 
-# find cmake configs locally
+# #####################################################################
+# Find 3rd party packages
+# #####################################################################
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
 find_package(OGRE REQUIRED COMPONENTS Bites Overlay CONFIG)
 find_package(OpenGL REQUIRED)
 find_package(FreeType REQUIRED)
-
-set(OgreProcedural_DIR "/usr/local/lib/OgreProcedural/cmake")
-list(APPEND CMAKE_MODULE_PATH "/usr/local/lib/OgreProcedural/cmake")
+set(OgreProcedural_DIR ${OGRE_PROCEDURAL_DIR})
+list(APPEND CMAKE_MODULE_PATH ${OgreProcedural_DIR})
 find_package(OgreProcedural REQUIRED)
 
-# define 3rd party targets
+# #####################################################################
+# Compile definitions
+# #####################################################################
+message("Archv definitions:")
+message("Found ARCHV_CONFIG_DIR: " ${ARCHV_CONFIG_DIR})
+message("Found ARCHV_RENDERING_CONFIG_PATH: " ${ARCHV_RENDERING_CONFIG_PATH})
+message("Found ARCHV_GUI_CONFIG_PATH: " ${ARCHV_GUI_CONFIG_PATH})
+message("Found ARCHV_WEIGHTS_CONFIG_PATH: " ${ARCHV_WEIGHTS_CONFIG_PATH})
+message("Found ARCHV_LAYOUT_CONFIG_PATH: " ${ARCHV_LAYOUT_CONFIG_PATH})
+message("Found ARCHV_SCALING_CONFIG_PATH: " ${ARCHV_SCALING_CONFIG_PATH})
+message("Found ARCHV_CLUSTERING_CONFIG_PATH: " ${ARCHV_CLUSTERING_CONFIG_PATH})
+message("Found ARCHV_RESOURCE_GROUP: " ${ARCHV_RESOURCE_GROUP})
+message("Found OGRE_PROCEDURAL_DIR: " ${OGRE_PROCEDURAL_DIR})
+message(" ")
+
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CONFIG_DIR="${ARCHV_CONFIG_DIR}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_RENDERING_CONFIG_PATH="${ARCHV_RENDERING_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_GUI_CONFIG_PATH="${ARCHV_GUI_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_WEIGHTS_CONFIG_PATH="${ARCHV_WEIGHTS_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_LAYOUT_CONFIG_PATH="${ARCHV_LAYOUT_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_SCALING_CONFIG_PATH="${ARCHV_SCALING_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CLUSTERING_CONFIG_PATH="${ARCHV_CLUSTERING_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_RESOURCE_GROUP="${ARCHV_RESOURCE_GROUP}")
+
+# #####################################################################
+# Include directories
+# #####################################################################
+set(OGRE_PROCEDURAL_INCLUDE_DIR ${OgreProcedural_INCLUDE_DIRS})
+set(THIRD_PARTY_INCLUDE_DIRS ${OGRE_PROCEDURAL_INCLUDE_DIR})
+
+include_directories(${THIRD_PARTY_INCLUDE_DIRS})
+target_include_directories(${PROJECT_LIB} PUBLIC src)
+
+# #####################################################################
+# Linking
+# #####################################################################
 set(BOOST_LIBRARIES ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 set(JSONCPP_LIBRARIES libjsoncpp.so)
 set(STB_LIBRARIES libstb.so)
 set(SDL2_LIBRARIES libSDL2.so)
 set(OGRE_PROCEDURAL_LIBRARIES ${OgreProcedural_LIBRARIES})
 set(INFOMAP_LIBRARIES infomap_lib)
-
-# merge 3rd party targets
 set(THIRD_PARTY_LIBRARIES
   ${JSONCPP_LIBRARIES}
   ${OGRE_LIBRARIES}
@@ -62,25 +121,11 @@ set(THIRD_PARTY_LIBRARIES
   ${INFOMAP_LIBRARIES}
 )
 
-# link 3rd party libraries
 target_link_libraries(${PROJECT_LIB} PUBLIC ${THIRD_PARTY_LIBRARIES})
 
-set(OGRE_PROCEDURAL_INCLUDE_DIR ${OgreProcedural_INCLUDE_DIRS})
-
-# define 3rd include directories
-set(THIRD_PARTY_INCLUDE_DIRS
-  ${OGRE_PROCEDURAL_INCLUDE_DIR}
-)
-
-# include 3rd party directories globally
-include_directories(${THIRD_PARTY_INCLUDE_DIRS})
-
-# setup driver target
+# #####################################################################
+# App
+# #####################################################################
 set(APP_FILES src/main.cpp)
-
-if(APP_FILES)
-  add_executable(${PROJECT_APP} ${APP_FILES})
-
-  # link driver with public library
-  target_link_libraries(${PROJECT_APP} PUBLIC ${PROJECT_LIB})
-endif()
+add_executable(${PROJECT_APP} ${APP_FILES})
+target_link_libraries(${PROJECT_APP} PUBLIC ${PROJECT_LIB})

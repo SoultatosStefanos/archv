@@ -4,31 +4,43 @@
 #ifndef CONFIG_CONFIG_HPP
 #define CONFIG_CONFIG_HPP
 
-// Supress warnings, intellisense errors.
+// The directory containing the .json configuration files.
 #ifndef ARCHV_CONFIG_DIR
-#define ARCHV_CONFIG_DIR
+#error "Archv config directory not found!"
 #endif
 
 // The path of the weights.json config file.
-#define ARCHV_WEIGHTS_CONFIG_PATH ARCHV_CONFIG_DIR "/weights.json"
+#ifndef ARCHV_WEIGHTS_CONFIG_PATH
+#error "Archv weights config path not found!"
+#endif
 
 // The path of the layout.json config file.
-#define ARCHV_LAYOUT_CONFIG_PATH ARCHV_CONFIG_DIR "/layout.json"
+#ifndef ARCHV_LAYOUT_CONFIG_PATH
+#error "Archv layout config path not found!"
+#endif
 
 // The path of the rendering.json config file.
-#define ARCHV_RENDERING_CONFIG_PATH ARCHV_CONFIG_DIR "/rendering.json"
+#ifndef ARCHV_RENDERING_CONFIG_PATH
+#error "Archv rendering config path not found!"
+#endif
 
 // The path of the gui.json config file.
-#define ARCHV_GUI_CONFIG_PATH ARCHV_CONFIG_DIR "/gui.json"
+#ifndef ARCHV_GUI_CONFIG_PATH
+#error "Archv gui config path not found!"
+#endif
 
 // The path of the scaling.json config file.
-#define ARCHV_SCALING_CONFIG_PATH ARCHV_CONFIG_DIR "/scaling.json"
+#ifndef ARCHV_SCALING_CONFIG_PATH
+#error "Archv scaling config path not found!"
+#endif
 
 // The path of the clustering.json config file.
-#define ARCHV_CLUSTERING_CONFIG_PATH ARCHV_CONFIG_DIR "/clustering.json"
+#ifndef ARCHV_CLUSTERING_CONFIG_PATH
+#error "Archv clustering config path not found!"
+#endif
 
 #ifndef ARCHV_RESOURCE_GROUP
-#define ARCHV_RESOURCE_GROUP "Archv"
+#error "Archv resource group not found!"
 #endif
 
 #endif // CONFIG_CONFIG_HPP

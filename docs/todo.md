@@ -110,7 +110,26 @@
 
 	+ [ ] More configurations (all of em)
 
-	
+
+# CMakeLists
+
+	+ [ ] Variables with descriptions
+
+
+# README
+
+	+ [ ] Skeleton
+
+	+ [ ] Summary
+
+	+ [ ] Features
+
+	+ [ ] Usage
+
+	+ [ ] Third-party
+
+	+ [ ] Configuration
+
 # 08 / 07 / 2022
 
 	+ [x] Visualizer/layout sybsystem tests
