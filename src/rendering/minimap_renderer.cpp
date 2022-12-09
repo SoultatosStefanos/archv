@@ -3,6 +3,7 @@
 #include "detail/visibility_masks.hpp"
 
 #include <OGRE/OgreCamera.h>
+#include <OGRE/OgreEntity.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
@@ -46,6 +47,7 @@ minimap_renderer::~minimap_renderer()
 namespace
 {
     constexpr auto main_cam_name = "Main Camera";
+    constexpr auto main_cam_marker_name = "Main Camera Marker";
     constexpr auto cam_name = "Minimap Camera";
     constexpr auto texture_name = "RttTex";
     constexpr auto material_name = "RttMat";
@@ -54,6 +56,7 @@ namespace
 
 auto minimap_renderer::setup() -> void
 {
+    setup_main_camera_marker();
     setup_camera();
     setup_texture();
     setup_texture_target();
@@ -62,12 +65,27 @@ auto minimap_renderer::setup() -> void
     BOOST_LOG_TRIVIAL(debug) << "setup minimap";
 }
 
+auto minimap_renderer::setup_main_camera_marker() -> void
+{
+    // TODO Destroy, visibility flags, scale/mesh/material config
+    auto* e = scene().createEntity(
+        main_cam_marker_name, "cube.mesh", resource_group().data());
+    assert(scene().hasSceneNode(main_cam_name));
+    auto* main_cam_node = scene().getSceneNode(main_cam_name);
+    e->setMaterialName("Solid/Gray", resource_group().data());
+    e->setRenderQueueGroup(RENDER_QUEUE_6);
+    main_cam_node->attachObject(e);
+    main_cam_node->setScale(main_cam_node->getScale() * 10);
+
+    BOOST_LOG_TRIVIAL(debug) << "setup main camera marker";
+}
+
 namespace
 {
     inline auto point_in_front(const SceneNode& of, SceneNode& node, Real dist)
     {
         const auto offset = Vector3(0, 0, dist);
-        node.setPosition(of.getPosition() + offset);
+        node.setPosition(node.getPosition() + offset);
         node.lookAt(of.getPosition(), Node::TransformSpace::TS_WORLD);
     }
 
@@ -79,13 +97,14 @@ auto minimap_renderer::setup_camera() -> void
     m_cam = scene().createCamera(cam_name);
     m_cam->setAutoAspectRatio(true);
 
+    assert(scene().hasCamera(main_cam_name));
+    auto* main_cam_node = scene().getSceneNode(main_cam_name);
+
     assert(!scene().hasSceneNode(cam_name));
-    m_cam_node = scene().getRootSceneNode()->createChildSceneNode(cam_name);
+    m_cam_node = main_cam_node->createChildSceneNode(cam_name);
     assert(m_cam_node);
     m_cam_node->attachObject(m_cam);
 
-    assert(scene().hasCamera(main_cam_name));
-    auto* main_cam_node = scene().getSceneNode(main_cam_name);
     point_in_front(*main_cam_node, *m_cam_node, config_data().zoom_out);
 
     BOOST_LOG_TRIVIAL(debug) << "setup minimap camera";
@@ -178,11 +197,13 @@ auto minimap_renderer::shutdown() -> void
 {
     // Could be many other conditions.
     const bool did_shutdown = !scene().hasSceneNode(screen_name);
+
     if (did_shutdown)
         return;
 
     shutdown_mini_screen();
     shutdown_camera();
+    shutdown_main_camera_marker();
 
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap";
 }
@@ -207,6 +228,17 @@ auto minimap_renderer::shutdown_camera() -> void
     scene().destroySceneNode(cam_name);
     scene().destroyCamera(m_cam);
     BOOST_LOG_TRIVIAL(debug) << "shutdown minimap camera";
+}
+
+auto minimap_renderer::shutdown_main_camera_marker() -> void
+{
+    assert(scene().hasSceneNode(main_cam_name));
+    auto* main_cam_node = scene().getSceneNode(main_cam_name);
+    assert(scene().hasEntity(main_cam_marker_name));
+    assert(main_cam_node->getAttachedObject(main_cam_marker_name));
+    main_cam_node->detachObject(main_cam_marker_name);
+    scene().destroyEntity(main_cam_marker_name);
+    BOOST_LOG_TRIVIAL(debug) << "shutdown main camera marker";
 }
 
 auto minimap_renderer::draw(const config_data_type& cfg) -> void

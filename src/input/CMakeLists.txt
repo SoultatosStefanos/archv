@@ -5,7 +5,6 @@ set(FILES
 	inspection_handler.cpp
 	quit_handler.cpp
 	shortcut_handler.cpp
-	stiff_camera_handler.cpp
 )
 set(SUBDIRECTORIES)
 

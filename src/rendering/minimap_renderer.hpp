@@ -74,6 +74,7 @@ private:
     using rectangle_type = Ogre::Rectangle2D;
     using texture_type = Ogre::Texture;
 
+    auto setup_main_camera_marker() -> void;
     auto setup_camera() -> void;
     auto setup_texture() -> void;
     auto setup_texture_target() -> void;
@@ -82,6 +83,7 @@ private:
     auto shutdown_mini_screen() -> void;
     // The texture's lifetime is managed by Ogre automatically.
     auto shutdown_camera() -> void;
+    auto shutdown_main_camera_marker() -> void;
 
     const window_type* m_win { nullptr };
     scene_type* m_scene { nullptr };

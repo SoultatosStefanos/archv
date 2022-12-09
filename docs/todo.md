@@ -910,6 +910,8 @@
 	+ [ ] Gui setup cleanup
 
 
-# 08 / 12 / 2022
+# 09 / 12 / 2022
 
-	+ [ ] Begin writing README
+	+ [ ] Minimap update
+
+	+ [ ] Resource group tidy

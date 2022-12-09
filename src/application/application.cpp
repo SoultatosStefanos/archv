@@ -420,9 +420,6 @@ auto application::setup_input() -> void
     m_cameraman = make_unique< cameraman_type >(
         OgreBites::CameraMan(&m_background_renderer->cam_node()));
 
-    m_minimap_cameraman = make_unique< stiff_cameraman_type >(
-        OgreBites::CameraMan(&m_minimap_renderer->cam_node()));
-
     m_gui_input_handler = make_unique< gui_input_handler_type >();
 
     m_hud_input_handler = make_unique< hud_input_handler_type >(
@@ -446,7 +443,6 @@ auto application::setup_input() -> void
     auto&& listeners = listeners_vec { { m_gui_input_handler.get(),
                                          m_hud_input_handler.get(),
                                          m_cameraman.get(),
-                                         m_minimap_cameraman.get(),
                                          m_inspection_input_handler.get() } };
 
     m_input_chain = make_unique< event_dispatcher_type >(std::move(listeners));
