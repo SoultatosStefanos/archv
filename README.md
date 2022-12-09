@@ -41,6 +41,15 @@ E.g. `./archv_app foo/bar/buzz/graph.json`
 
 ## Third-Party Dependencies
 
+* Boost Graph Library (BGL)  
+https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
+* Boost Signals2  
+https://www.boost.org/doc/libs/1_61_0/doc/html/signals2.html
+* Boost Log v2  
+https://www.boost.org/doc/libs/1_63_0/libs/log/doc/html/index.html
+* Boost Exception  
+https://theboostcpplibraries.com/boost.exception
+
 
 ## Set-Up / Build
 
