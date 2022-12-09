@@ -126,7 +126,7 @@
 
 	+ [x] Usage
 
-	+ [ ] Third-party
+	+ [x] Third-party
 
 	+ [ ] Configuration
 
