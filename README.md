@@ -25,6 +25,10 @@ tables, in the form of a 3D graph.
 | ![](data/screenshots/layout_n_topology_editing.png) | ![](data/screenshots/edge_weight_editing.png) |
 
 
+| Vertex dynamic scaling according to class metadata | Clustering
+|----|----|
+| ![](data/screenshots/vertex_by_property_scaling.png) | ![](data/screenshots/clustering.png) |
+
 ## Usage
 
 
