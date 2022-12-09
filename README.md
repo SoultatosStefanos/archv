@@ -15,6 +15,11 @@ tables, in the form of a 3D graph.
 | ![](data/screenshots/3d_graph.png) | ![](data/screenshots/dynamic_illumination.png) |
 
 
+| Class Metadata inspection | Procedural edge-curve generation
+|----|----|
+| ![](data/screenshots/class_info_inspection.png) | ![](data/screenshots/procedural_edge_curves.png) |
+
+
 ## Usage
 
 
