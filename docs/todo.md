@@ -113,14 +113,14 @@
 
 # CMakeLists
 
-	+ [ ] Variables with descriptions
+	+ [x] Variables with descriptions
 
 
 # README
 
-	+ [ ] Skeleton
+	+ [x] Skeleton
 
-	+ [ ] Summary
+	+ [x] Summary
 
 	+ [ ] Features
 
@@ -129,6 +129,7 @@
 	+ [ ] Third-party
 
 	+ [ ] Configuration
+
 
 # 08 / 07 / 2022
 
