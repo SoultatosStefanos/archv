@@ -37,7 +37,7 @@ The visualizer uses the output .json file from the GraphGenerator project
 (see forked/updated repo) https://github.com/SoultatosStefanos/Code-Smell-Detector
 as command line input.
 
-E.g. `./archv_app path/to/output-file/graph.json`
+E.g. `./archv_app foo/bar/buzz/graph.json`
 
 ## Third-Party Dependencies
 
