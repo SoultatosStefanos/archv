@@ -916,4 +916,4 @@
 
 	+ [x] Resource group tidy
 
-	+ [ ] Pan feature update
+	+ [x] Pan feature update

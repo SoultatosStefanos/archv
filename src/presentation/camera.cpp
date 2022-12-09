@@ -17,8 +17,8 @@ auto pan_at(const graph_interface& g, const id_t& id, node_t& cam) -> void
         const auto vert = get_vertex(g, id);
         const auto [x, y, z] = boost::get(vertex_position(g), vert);
         const auto vec = Vector3(x, y, z);
-        const auto rel = Node::TransformSpace::TS_WORLD;
-        cam.lookAt(vec, rel);
+        cam.setPosition(vec + Vector3(0, 0, 200));
+        cam.lookAt(vec, Node::TransformSpace::TS_WORLD);
     }
 }
 
