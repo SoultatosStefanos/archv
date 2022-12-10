@@ -66,11 +66,11 @@ https://github.com/freetype/freetype
 https://github.com/nothings/stb
 * Dear ImGui  
 https://github.com/ocornut/imgui
-* Ogre 3D v13  
+* OGRE v13  
 https://github.com/OGRECave/ogre
-* Ogre 3D Bites Component
-* Ogre 3D Overlay Component
-* Ogre 3D Procedural
+* OGRE Bites Component
+* OGRE Overlay Component
+* Ogre Procedural
 
 
 ## Set-Up / Build
@@ -119,20 +119,21 @@ and built from source when building the Archv application. (see [Set-Up](#set-up
 
 * SDL  
 `sudo apt-get install libsdl2-dev`  
-This is also an Ogre3D dependency. 
+This is also an Ogre dependency. 
 (see https://ogrecave.github.io/ogre/api/1.12/building-ogre.html).  
 This will install the compatible SDL library on your system.  Archv should 
 now be able to link against the libSDL2 target.  
 
 * OpenGL  
 `sudo apt-get install libgles2-mesa-dev`  
-This is an Ogre3D dependency. 
+This is an Ogre dependency. 
 (see https://ogrecave.github.io/ogre/api/1.12/building-ogre.html).  
 Archv should now be able to locate a CMake configuration file for OpenGL. 
 
 * Freetype  
 See: https://github.com/freetype/freetype/blob/master/docs/INSTALL.UNIX  
 Clone the repo from: https://github.com/freetype/freetype.  
+`git clone https://github.com/freetype/freetype`  
 You should now create a build directory for Freetype somewhere outside
 Freetype's sources.  
 Then:  
@@ -149,10 +150,11 @@ This will install the compatible stb library on your system. Archv should
 now be able to link against the libstb target.  
 
 * Dear ImGui  
-Just clone the repo from: https://github.com/ocornut/imgui somewhere. The build 
-process of the Ogre 3D Overlay component will take care of the rest.
+Just clone the repo from: https://github.com/ocornut/imgui somewhere.  
+`git clone https://github.com/ocornut/imgui`  
+The build  process of the Ogre Overlay component will take care of the rest.
 
-* Ogre 3D  
+* OGRE  
 See: https://ogrecave.github.io/ogre/api/1.12/building-ogre.html.  
 Download a v13 release from: https://github.com/OGRECave/ogre.  
 You should now create a build directory for Ogre somewhere outside
@@ -172,6 +174,24 @@ https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html).
 Archv should now be able to locate a CMake configuration file for Ogre. If 
 not, the path to the directory containing the CMake configuration file must be 
 given to CMake with the CMake variable: OGRE_DIR (see [Cmake](#cmake)).
+
+* Ogre Procedural  
+This is a dependency that is not packaged with Ogre from the previous step.  
+Clone the repo from: https://github.com/OGRECave/ogre-procedural.  
+`git clone https://github.com/OGRECave/ogre-procedural`  
+You should now create a build directory for  Ogre Procedural somewhere outside
+ Ogre Procedural's sources.  
+Then:  
+`cd build && cmake ..`  
+(But make sure that the CMake variable: OGRE_DIR is set to the directory path 
+containing a CMake configuration file for Ogre).  
+`make`  
+`sudo make install`  
+Archv should now be able to locate a CMake configuration file for Ogre 
+Procedural.  If  not, the path to the directory containing the CMake 
+configuration file must be given to CMake with the CMake variable: 
+OGRE_PROCEDURAL_DIR (see [Cmake](#cmake)).
+
 
 ### CMake
 
