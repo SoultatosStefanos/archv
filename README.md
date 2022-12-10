@@ -122,7 +122,29 @@ This is also an Ogre3D dependency.
 This will install the compatible SDL library on your system.  Archv should 
 now be able to link against the libSDL2 target.  
 
+* OpenGL  
+`sudo apt-get install libgles2-mesa-dev`  
+This is an Ogre3D dependency. 
+(see https://ogrecave.github.io/ogre/api/1.12/building-ogre.html).  
+Archv should now be able to locate a CMake configuration file for OpenGL. 
 
+* Freetype  
+See: https://github.com/freetype/freetype/blob/master/docs/INSTALL.UNIX  
+Clone the repo from: https://github.com/freetype/freetype.  
+You should now create a build directory for Freetype somewhere outside
+Freetype's sources.  
+Then:  
+`cd build && cmake ..`  
+`make`  
+`sudo make install`  
+Archv should now be able to locate a CMake configuration file for Freetype. If 
+not, the path to the directory containing the CMake configuration file must be 
+given to CMake with the CMake variable: FreeType_DIR (see [Cmake](#cmake)).
+
+* Stb  
+`sudo apt install libstb-dev`  
+This will install the compatible stb library on your system. Archv should 
+now be able to link against the libstb target.  
 
 ### CMake
 
