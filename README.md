@@ -73,10 +73,62 @@ https://github.com/OGRECave/ogre
 
 ## Set-Up / Build
 
-Lorem ipsum lorem ipsum
+Archv uses CMake as its build system on all supported platforms (tested on 
+ubuntu debian Pop!_OS version 22.04 LTS). This guide will explain to you how to
+use CMake to build Archv from source, under this OS.
+
+### Getting dependencies
+
+* GoogleTest  
+(This dependency can be skipped if you do not wish to build the Archv tests.)  
+Download the v1.12.1 release from: https://github.com/google/googletest.
+You should now create a build directory for GTest somewhere outside GTest's
+sources.  
+Then:  
+`cd build && cmake ..`  
+`make`  
+`sudo make install`  
+Archv should now be able to locate a CMake configuration file for GTest.  If 
+not, the path to the directory containing the CMake configuration file must be 
+given to CMake with the CMake variable: GTest_DIR (see [Cmake](#cmake)).
+
+* Boost  
+`sudo apt-get install libboost-all-dev`  
+This will install all of the required Boost modules (Graph, Signals2, Log, 
+Exception).  If a compile/linking error occurs when building Archv from source,
+make sure that the CMake variables: Boost_INCLUDE_DIR, Boost_LOG_LIBRARY_RELEASE
+, Boost_LOG_SETUP_LIBRARY_RELEASE and Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE are
+configured appropriately (see [Cmake](#cmake)).
+
+* Jsoncpp  
+`sudo apt-get install libjsoncpp-dev`  
+This will install the compatible JsonCpp library on your system. Archv should 
+now be able to link against the libjsoncpp target.  
+
+* Infomap  
+This dependency is being used as a git submodule 
+(see https://git-scm.com/book/en/v2/Git-Tools-Submodules) and will be fetched 
+and built from source when building the Archv application. (see [Set-Up](#set-up)).
+
+* IconFontCppHeaders  
+This dependency is being used as a git submodule 
+(see https://git-scm.com/book/en/v2/Git-Tools-Submodules) and will be fetched 
+and built from source when building the Archv application. (see [Set-Up](#set-up)).
+
+* SDL  
+`sudo apt-get install libsdl2-dev`  
+This is also an Ogre3D dependency. 
+(see https://ogrecave.github.io/ogre/api/1.12/building-ogre.html).  
+This will install the compatible SDL library on your system.  Archv should 
+now be able to link against the libSDL2 target.  
+
+
 
 ### CMake
 
+### Notes
+
+### Set-Up
 
 ## Configuration
 
