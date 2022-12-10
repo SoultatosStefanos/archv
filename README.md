@@ -64,11 +64,13 @@ https://github.com/libsdl-org/SDL
 https://github.com/freetype/freetype
 * Stb  
 https://github.com/nothings/stb
+* Dear ImGui  
+https://github.com/ocornut/imgui
 * Ogre 3D v13  
 https://github.com/OGRECave/ogre
 * Ogre 3D Bites Component
 * Ogre 3D Overlay Component
-* Ogre 3D Procedural Component
+* Ogre 3D Procedural
 
 
 ## Set-Up / Build
@@ -146,11 +148,38 @@ given to CMake with the CMake variable: FreeType_DIR (see [Cmake](#cmake)).
 This will install the compatible stb library on your system. Archv should 
 now be able to link against the libstb target.  
 
+* Dear ImGui  
+Just clone the repo from: https://github.com/ocornut/imgui somewhere. The build 
+process of the Ogre 3D Overlay component will take care of the rest.
+
+* Ogre 3D  
+See: https://ogrecave.github.io/ogre/api/1.12/building-ogre.html.  
+Download a v13 release from: https://github.com/OGRECave/ogre.  
+You should now create a build directory for Ogre somewhere outside
+Ogre's sources.  
+Then:  
+`cd build`  
+Archv makes use of the Bites & Overlay components, so be sure to build them as
+well. Thus the CMake variables: OGRE_BUILD_COMPONENT_BITES, 
+OGRE_BUILD_COMPONENT_OVERLAY, OGRE_BUILD_COMPONENT_OVERLAY_IMGUI, 
+OGRE_BUILD_DEPENDENCIES must be set to: TRUE. Also, make sure the CMake variable
+IMGUI_DIR is set to the directory path of the imgui headers.  
+The rest of Ogre's settings can be configured as you wish.  
+(Tip: use the cmake-gui tool here, see: 
+https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html).  
+`make`  
+`sudo make install`  
+Archv should now be able to locate a CMake configuration file for Ogre. If 
+not, the path to the directory containing the CMake configuration file must be 
+given to CMake with the CMake variable: OGRE_DIR (see [Cmake](#cmake)).
+
 ### CMake
 
 ### Notes
 
 ### Set-Up
+
+### Building
 
 ## Configuration
 
