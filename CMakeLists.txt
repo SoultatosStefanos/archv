@@ -45,13 +45,13 @@ endforeach()
 # #####################################################################
 # Setup options
 # #####################################################################
-set(ARCHV_CONFIG_DIR CACHE STRING "The directory containing all of the .json runtime configuration files e.g. '/home/Descktop/archv/data/config'.")
-set(ARCHV_RENDERING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"rendering.json" CACHE STRING "The file path to the .json runtime configuration file for the rendering subsystem e.g. '/home/Descktop/archv/data/config/rendering.json'.")
-set(ARCHV_GUI_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"gui.json" CACHE STRING "The file path to the .json runtime configuration file for the gui subsystem e.g. '/home/Descktop/archv/data/config/gui.json'.")
-set(ARCHV_WEIGHTS_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"weights.json" CACHE STRING "The file path to the .json runtime configuration file for the edge weight management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
-set(ARCHV_LAYOUT_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"layout.json" CACHE STRING "The file path to the .json runtime configuration file for the graph layout management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
-set(ARCHV_SCALING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"scaling.json" CACHE STRING "The file path to the .json runtime configuration file for the vertex property scaling management subsystem e.g. '/home/Descktop/archv/data/config/scaling.json'.")
-set(ARCHV_CLUSTERING_CONFIG_PATH ${ARCHV_CONFIG_DIR}/"clustering.json" CACHE STRING "The file path to the .json runtime configuration file for the graph clustering subsystem e.g. '/home/Descktop/archv/data/config/clustering.json'.")
+set(ARCHV_CONFIG_DIR "${CMAKE_SOURCE_DIR}/data/config" CACHE STRING "The directory containing all of the .json runtime configuration files e.g. '/home/Descktop/archv/data/config'.")
+set(ARCHV_RENDERING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/rendering.json" CACHE STRING "The file path to the .json runtime configuration file for the rendering subsystem e.g. '/home/Descktop/archv/data/config/rendering.json'.")
+set(ARCHV_GUI_CONFIG_PATH "${ARCHV_CONFIG_DIR}/gui.json" CACHE STRING "The file path to the .json runtime configuration file for the gui subsystem e.g. '/home/Descktop/archv/data/config/gui.json'.")
+set(ARCHV_WEIGHTS_CONFIG_PATH "${ARCHV_CONFIG_DIR}/weights.json" CACHE STRING "The file path to the .json runtime configuration file for the edge weight management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
+set(ARCHV_LAYOUT_CONFIG_PATH "${ARCHV_CONFIG_DIR}/layout.json" CACHE STRING "The file path to the .json runtime configuration file for the graph layout management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
+set(ARCHV_SCALING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/scaling.json" CACHE STRING "The file path to the .json runtime configuration file for the vertex property scaling management subsystem e.g. '/home/Descktop/archv/data/config/scaling.json'.")
+set(ARCHV_CLUSTERING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/clustering.json" CACHE STRING "The file path to the .json runtime configuration file for the graph clustering subsystem e.g. '/home/Descktop/archv/data/config/clustering.json'.")
 set(ARCHV_RESOURCE_GROUP "Archv" CACHE STRING "The media resource group used, e.g. 'Archv'.")
 
 set(OGRE_PROCEDURAL_DIR "/usr/local/lib/OgreProcedural/cmake" CACHE STRING "The directory containing a CMake configuration file for the Ogre Procedural component.")

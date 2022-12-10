@@ -195,10 +195,10 @@ OGRE_PROCEDURAL_DIR (see [Cmake](#cmake)).
 
 ### CMake
 
-Before building the application, some final CMake variables must be set. Namely,
-the: ARCHV_CONFIG_DIR, ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
-ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, ARCHV_SCALING_CONFIG_PATH,
-ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_RESOURCE_GROUP.  
+Before building the application, some final CMake variables can optionally be
+set. Namely, the: ARCHV_CONFIG_DIR, ARCHV_RENDERING_CONFIG_PATH, 
+ARCHV_GUI_CONFIG_PATH,  ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, 
+ARCHV_SCALING_CONFIG_PATH, ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_RESOURCE_GROUP.  
 The ARCHV_CONFIG_DIR CMake variable must be set to the directory path containing
 all of the .json runtime configuration files. (E.g. path/to/archv/data/config).  
 The ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
