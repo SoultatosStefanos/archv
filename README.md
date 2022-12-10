@@ -41,6 +41,8 @@ E.g. `./archv_app foo/bar/buzz/graph.json`
 
 ## Third-Party Dependencies
 
+* GoogleTest  
+https://github.com/google/googletest
 * Boost Graph Library (BGL)  
 https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 * Boost Signals2  
