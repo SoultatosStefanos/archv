@@ -230,6 +230,21 @@ In order to build all targets, the application, or the tests respectively.
 
 ### Set-Up
 
+Lastly, before attempting to run the application, the directory paths of all of
+the used assets must be specified for Ogre, under the Archv resource group name.  
+Add the following lines to your resources.cfg file: (probably located under: 
+/usr/local/share/OGRE)  
+```cfg
+[Archv]
+FileSystem=/path/to/archv/data/textures
+FileSystem=/path/to/archv/data/materials
+FileSystem=/path/to/archv/data/models
+FileSystem=/path/to/archv/data/fonts
+FileSystem=/path/to/archv/data/particles   
+```
+(Read more at the Configuration Files section at: 
+https://ogrecave.github.io/ogre/api/latest/setup.html, to get an idea of how 
+Ogre manages all of the resources).
 
 
 ## Usage
