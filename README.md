@@ -241,7 +241,8 @@ FileSystem=/path/to/archv/data/particles
 https://ogrecave.github.io/ogre/api/1.12/setup.html).
 
 > **_NOTE:_**  If the Archv resource group name has not been manually specified,
-it will be defaulted to: 'Archv'. (see [CMake optional variables](#cmake-optional-variables)).  
+it will be defaulted to: 'Archv'. (see 
+[CMake optional variables](#cmake-optional-variables), [Configuration](#configuration) ).  
 
 ## Usage
 
