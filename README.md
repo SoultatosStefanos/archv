@@ -206,8 +206,8 @@ https://ogrecave.github.io/ogre/api/1.12/setup.html).
 ### Notes
 
 Archv makes use of several C++20 library features (input range adaptors), 
-thus certain compilers that do not support them will fail to  build this 
-project. (like Clang libc++).  
+thus certain compilers that do not support these features will fail to build 
+this project (like Clang libc++).  
 (see https://en.cppreference.com/w/cpp/compiler_support).  
 Archv has been tested with GCC libstdc++.
 
