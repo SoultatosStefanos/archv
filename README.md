@@ -31,14 +31,6 @@ tables, in the form of a 3D graph.
 | ![](data/screenshots/particle_effects.png) | ![](data/screenshots/extensive_configuration.png) |
 
 
-## Usage
-
-The visualizer uses the output .json file from the GraphGenerator project 
-(see forked/updated repo) https://github.com/SoultatosStefanos/Code-Smell-Detector
-as command line input.
-
-E.g. `./archv_app foo/bar/buzz/graph.json`
-
 ## Third-Party Dependencies
 
 * GoogleTest  
@@ -218,9 +210,40 @@ https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html):
 
 ### Notes
 
+Archv makes use of several C++20 library features (input range adaptors), 
+thus certain compilers that do not support them will fail to  build this 
+project. (like Clang libc++).  
+(see https://en.cppreference.com/w/cpp/compiler_support).  
+Archv has been tested with GCC libstdc++.
+
+
 ### Building
 
+You should create a build directory for Archv somewhere outside Archv's sources.  
+Then:  
+`cd build && cmake ..`  
+`make`  
+`make archv_app`  
+`make archv_tests`  
+In order to build all targets, the application, or the tests respectively.
+
+
 ### Set-Up
+
+
+
+## Usage
+
+The visualizer uses the output .json file from the GraphGenerator project 
+(see forked/updated repo) https://github.com/SoultatosStefanos/Code-Smell-Detector
+as command line input.
+
+E.g. `./archv_app foo/bar/buzz/graph.json`  
+
+Or, in order to run the tests:  
+
+`./tests/archv_tests`
+
 
 ## Configuration
 
