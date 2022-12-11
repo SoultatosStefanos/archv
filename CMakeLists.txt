@@ -45,7 +45,7 @@ endforeach()
 # #####################################################################
 # Setup options
 # #####################################################################
-set(ARCHV_CONFIG_DIR "${CMAKE_SOURCE_DIR}/data/config" CACHE STRING "The directory containing all of the .json runtime configuration files e.g. '/home/Descktop/archv/data/config'.")
+set(ARCHV_CONFIG_DIR "${CMAKE_SOURCE_DIR}/data/config")
 set(ARCHV_RENDERING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/rendering.json" CACHE STRING "The file path to the .json runtime configuration file for the rendering subsystem e.g. '/home/Descktop/archv/data/config/rendering.json'.")
 set(ARCHV_GUI_CONFIG_PATH "${ARCHV_CONFIG_DIR}/gui.json" CACHE STRING "The file path to the .json runtime configuration file for the gui subsystem e.g. '/home/Descktop/archv/data/config/gui.json'.")
 set(ARCHV_WEIGHTS_CONFIG_PATH "${ARCHV_CONFIG_DIR}/weights.json" CACHE STRING "The file path to the .json runtime configuration file for the edge weight management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
@@ -71,7 +71,6 @@ find_package(OgreProcedural REQUIRED)
 # Compile definitions
 # #####################################################################
 message("Archv definitions:")
-message("Found ARCHV_CONFIG_DIR: " ${ARCHV_CONFIG_DIR})
 message("Found ARCHV_RENDERING_CONFIG_PATH: " ${ARCHV_RENDERING_CONFIG_PATH})
 message("Found ARCHV_GUI_CONFIG_PATH: " ${ARCHV_GUI_CONFIG_PATH})
 message("Found ARCHV_WEIGHTS_CONFIG_PATH: " ${ARCHV_WEIGHTS_CONFIG_PATH})

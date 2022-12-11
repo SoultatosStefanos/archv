@@ -4,11 +4,6 @@
 #ifndef CONFIG_CONFIG_HPP
 #define CONFIG_CONFIG_HPP
 
-// The directory containing the .json configuration files.
-#ifndef ARCHV_CONFIG_DIR
-#error "Archv config directory not found!"
-#endif
-
 // The path of the weights.json config file.
 #ifndef ARCHV_WEIGHTS_CONFIG_PATH
 #error "Archv weights config path not found!"

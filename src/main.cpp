@@ -37,7 +37,6 @@ static void init_logging()
 
 static auto log_config_vars() -> void
 {
-    BOOST_LOG_TRIVIAL(info) << "Found ARCHV_CONFIG_DIR: " << ARCHV_CONFIG_DIR;
     BOOST_LOG_TRIVIAL(info)
         << "Found ARCHV_RENDERING_CONFIG_PATH: " << ARCHV_RENDERING_CONFIG_PATH;
     BOOST_LOG_TRIVIAL(info)

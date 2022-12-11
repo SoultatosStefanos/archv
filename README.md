@@ -188,11 +188,9 @@ OGRE_PROCEDURAL_DIR
 ### CMake optional variables
 
 Before building the application, some final CMake variables can optionally be
-set. Namely, the: ARCHV_CONFIG_DIR, ARCHV_RENDERING_CONFIG_PATH, 
-ARCHV_GUI_CONFIG_PATH,  ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, 
-ARCHV_SCALING_CONFIG_PATH, ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_RESOURCE_GROUP.  
-The ARCHV_CONFIG_DIR CMake variable must be set to the directory path containing
-all of the .json runtime configuration files. (E.g. path/to/archv/data/config).  
+set. Namely, the: ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
+ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, ARCHV_SCALING_CONFIG_PATH,
+ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_RESOURCE_GROUP.  
 The ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
 ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, ARCHV_SCALING_CONFIG_PATH, 
 ARCHV_CLUSTERING_CONFIG_PATH CMake variables must be set in order to specify the
@@ -201,6 +199,13 @@ file path(s) to the .json configuration file(s) for each Archv subsystem.
 The ARCHV_RESOURCE_GROUP CMake variable is the resource group name used by Archv
 in order for Ogre to locate its assets. (see Configuration Files section at: 
 https://ogrecave.github.io/ogre/api/1.12/setup.html).
+
+> **_NOTE:_**  If any of the Archv config file paths have not been 
+specified, they will be defaulted to the respective seperate file paths under: 
+'data/config'.
+
+> **_NOTE:_**  If the Archv resource group name has not been manually specified,
+it will be defaulted to: 'Archv'.
 
 
 ### Notes
