@@ -214,13 +214,17 @@ Archv has been tested with GCC libstdc++.
 
 ### Building
 
+Clone the repο:  
+`git clone https://github.com/SoultatosStefanos/archv`  
+Init the git submodules:  
+`git submodule update --init --recursive`  
 You should create a build directory for Archv somewhere outside Archv's sources.  
 Then:  
 `cd build && cmake ..`  
-`make`  
-`make archv_app`  
+`make` or  
+`make archv_app` or  
 `make archv_tests`  
-In order to build all targets, the application, or the tests respectively.
+In order to build all the targets, the application, or the tests respectively.
 
 
 ### Set-Up
