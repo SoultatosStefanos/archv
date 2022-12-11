@@ -128,7 +128,7 @@
 
 	+ [x] Third-party
 
-	+ [ ] Building
+	+ [x] Building
 
 	+ [ ] Configuration
 
