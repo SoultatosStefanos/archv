@@ -202,10 +202,10 @@ https://ogrecave.github.io/ogre/api/1.12/setup.html).
 
 > **_NOTE:_**  If any of the Archv config file paths have not been 
 specified, they will be defaulted to the respective seperate file paths under: 
-'data/config'.
+'data/config'. (See [Configuration](#configuration)).  
 
 > **_NOTE:_**  If the Archv resource group name has not been manually specified,
-it will be defaulted to: 'Archv'.
+it will be defaulted to: 'Archv'. (See [Configuration](#configuration)).  
 
 
 ### Notes
