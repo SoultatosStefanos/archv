@@ -1,38 +1,41 @@
 {
-	"dependencies" : 
-	[
-		{
-			"Inherit" : 1
-		},
-		{
-			"Friend" : 1
-		},
-		{
-			"NestedClass" : 1
-		},
-		{
-			"ClassField" : 1
-		},
-		{
-			"ClassTemplateParent" : 1
-		},
-		{
-			"ClassTemplateArg" : 1
-		},
-		{
-			"MethodReturn" : 1
-		},
-		{
-			"MethodArg" : 1
-		},
-		{
-			"MethodDefinition" : 1
-		},
-		{
-			"MemberExpr" : 1
-		},
-		{
-			"MethodTemplateArgs" : 1
-		}
-	]
+	"weights" : 
+	{
+		"dependencies" : 
+		[
+			{
+				"Inherit" : 1
+			},
+			{
+				"Friend" : 1
+			},
+			{
+				"NestedClass" : 1
+			},
+			{
+				"ClassField" : 1
+			},
+			{
+				"ClassTemplateParent" : 1
+			},
+			{
+				"ClassTemplateArg" : 1
+			},
+			{
+				"MethodReturn" : 1
+			},
+			{
+				"MethodArg" : 1
+			},
+			{
+				"MethodDefinition" : 1
+			},
+			{
+				"MemberExpr" : 1
+			},
+			{
+				"MethodTemplateArgs" : 1
+			}
+		]
+	}
 }

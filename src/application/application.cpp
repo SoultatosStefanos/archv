@@ -28,6 +28,7 @@ namespace application
 {
 
 namespace pres = presentation;
+using misc::get;
 
 application::application(int argc, const char* argv[]) : base("ARCHV")
 {
@@ -110,10 +111,10 @@ auto application::setup_graph_interface() -> void
         std::move(st),
         std::move(g),
         std::move(m),
-        weights::deserialize(weights_root),
-        layout::deserialize(layout_root),
-        scaling::deserialize(scaling_root),
-        clustering::deserialize(clustering_root));
+        weights::deserialize(get(weights_root, "weights")),
+        layout::deserialize(get(layout_root, "layout")),
+        scaling::deserialize(get(scaling_root, "scaling")),
+        clustering::deserialize(get(clustering_root, "clustering")));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -133,7 +134,7 @@ auto application::setup_rendering() -> void
 
     const auto& jsons = archive::get();
     const auto& root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
-    const auto config = rendering::deserialize(root);
+    const auto config = rendering::deserialize(get(root, "rendering"));
 
     m_background_renderer = std::make_unique< background_renderer_type >(
         *getRenderWindow(), config.background);
@@ -396,7 +397,7 @@ auto application::setup_gui() -> void
     ImGui::GetIO().WantCaptureMouse = true;
 
     const auto& gui_root = archive::get().at(ARCHV_GUI_CONFIG_PATH);
-    gui::set_configs(gui::deserialize(gui_root));
+    gui::set_configs(gui::deserialize(get(gui_root, "gui")));
 
     m_gui = std::make_unique< gui_type >();
 

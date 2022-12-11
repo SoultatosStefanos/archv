@@ -1,32 +1,35 @@
 {
-	"factors" : 
-	[
-		{
-			"Fields" : 
+	"scaling" :
+	{
+		"factors" : 
+		[
 			{
-				"enabled" : true,
-				"dimensions" : [ true, true, true ],
-				"baseline" : 3,
-				"ratio" : { "min" : 0.5, "max" : 2.5 }
-			}
-		},
-		{
-			"Methods" : 
+				"Fields" : 
+				{
+					"enabled" : true,
+					"dimensions" : [ true, true, true ],
+					"baseline" : 3,
+					"ratio" : { "min" : 0.5, "max" : 2.5 }
+				}
+			},
 			{
-				"enabled" : false,
-				"dimensions" : [ true, true, true ],
-				"baseline" : 5,
-				"ratio" : { "min" : 1, "max" : 2 }
-			}
-		},
-		{
-			"Nested" : 
+				"Methods" : 
+				{
+					"enabled" : false,
+					"dimensions" : [ true, true, true ],
+					"baseline" : 5,
+					"ratio" : { "min" : 1, "max" : 2 }
+				}
+			},
 			{
-				"enabled" : false,
-				"dimensions" : [ true, true, true ],
-				"baseline" : 0.2,
-				"ratio" : { "min" : 1, "max" : 1 }
+				"Nested" : 
+				{
+					"enabled" : false,
+					"dimensions" : [ true, true, true ],
+					"baseline" : 0.2,
+					"ratio" : { "min" : 1, "max" : 1 }
+				}
 			}
-		}
-	]
+		]
+	}
 }
