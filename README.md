@@ -84,7 +84,7 @@ Then:
 `sudo make install`  
 Archv should now be able to locate a CMake configuration file for GTest.  If 
 not, the path to the directory containing the CMake configuration file must be 
-given to CMake with the CMake variable: GTest_DIR (see [Cmake](#cmake)).
+given to CMake with the CMake variable: GTest_DIR 
 
 * Boost  
 `sudo apt-get install libboost-all-dev`  
@@ -92,7 +92,7 @@ This will install all of the required Boost modules (Graph, Signals2, Log,
 Exception).  If a compile/linking error occurs when building Archv from source,
 make sure that the CMake variables: Boost_INCLUDE_DIR, Boost_LOG_LIBRARY_RELEASE
 , Boost_LOG_SETUP_LIBRARY_RELEASE and Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE are
-configured appropriately (see [Cmake](#cmake)).
+configured appropriately 
 
 * Jsoncpp  
 `sudo apt-get install libjsoncpp-dev`  
@@ -134,7 +134,7 @@ Then:
 `sudo make install`  
 Archv should now be able to locate a CMake configuration file for Freetype. If 
 not, the path to the directory containing the CMake configuration file must be 
-given to CMake with the CMake variable: FreeType_DIR (see [Cmake](#cmake)).
+given to CMake with the CMake variable: FreeType_DIR 
 
 * Stb  
 `sudo apt install libstb-dev`  
@@ -165,7 +165,7 @@ https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html).
 `sudo make install`  
 Archv should now be able to locate a CMake configuration file for Ogre. If 
 not, the path to the directory containing the CMake configuration file must be 
-given to CMake with the CMake variable: OGRE_DIR (see [Cmake](#cmake)).
+given to CMake with the CMake variable: OGRE_DIR 
 
 * Ogre Procedural  
 This is a dependency that is not packaged with Ogre from the previous step.  
@@ -182,10 +182,10 @@ containing a CMake configuration file for Ogre).
 Archv should now be able to locate a CMake configuration file for Ogre 
 Procedural.  If  not, the path to the directory containing the CMake 
 configuration file must be given to CMake with the CMake variable: 
-OGRE_PROCEDURAL_DIR (see [Cmake](#cmake)).
+OGRE_PROCEDURAL_DIR 
 
 
-### CMake
+### CMake optional variables
 
 Before building the application, some final CMake variables can optionally be
 set. Namely, the: ARCHV_CONFIG_DIR, ARCHV_RENDERING_CONFIG_PATH, 
@@ -201,11 +201,6 @@ file path(s) to the .json configuration file(s) for each Archv subsystem.
 The ARCHV_RESOURCE_GROUP CMake variable is the resource group name used by Archv
 in order for Ogre to locate its assets. (see Configuration Files section at: 
 https://ogrecave.github.io/ogre/api/1.12/setup.html).
-
-Example configuration (using the cmake-gui tool, see: 
-https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html): 
-
-![](data/screenshots/cmake_gui.png)
 
 
 ### Notes
@@ -235,17 +230,18 @@ the used assets must be specified for Ogre, under the Archv resource group name.
 Add the following lines to your resources.cfg file: (probably located under: 
 /usr/local/share/OGRE)  
 ```cfg
-[Archv]
+[<Archv resource group name>]
 FileSystem=/path/to/archv/data/textures
 FileSystem=/path/to/archv/data/materials
 FileSystem=/path/to/archv/data/models
 FileSystem=/path/to/archv/data/fonts
 FileSystem=/path/to/archv/data/particles   
 ```
-(Read more at the Configuration Files section at: 
-https://ogrecave.github.io/ogre/api/latest/setup.html, to get an idea of how 
-Ogre manages all of the resources).
+(See Configuration Files section at: 
+https://ogrecave.github.io/ogre/api/1.12/setup.html).
 
+> **_NOTE:_**  If the Archv resource group name has not been manually specified,
+it will be defaulted to: 'Archv'. (see [CMake optional variables](#cmake-optional-variables)).  
 
 ## Usage
 
