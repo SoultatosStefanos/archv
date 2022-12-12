@@ -180,7 +180,10 @@ appear smaller.
 
 Possible values: **any positive floating point number**.
 
-**ratio** (`double`)
+**ratio**  
+
+**min** (`double`)   
+**max** (`double`)  
 
 The min/max ratio values of each scaling factor underlying class metadata 
 property, in comparison to the baseline, can be specified here.  
@@ -291,7 +294,10 @@ Possible values: **any integral positive number**.
 ## Rendering
 
 Archv can be configured regarding the architecture graph's "external" rendering 
-properties, like the materials and meshes used to render the scene.
+properties, like the materials and meshes used to render the scene.  
+Additionally, Archv features particle system effects rendering at each vertex, 
+depending on the vertex in/out degree. Some configuration options for these 
+effects can be configured as well.
 
 Example .json configuration:
 
@@ -389,7 +395,7 @@ Example .json configuration:
 
 ```
 
-Possible mesh values: **any .mesh file defined under an imported directory**.  
+Possible mesh values: **any .mesh file name defined under an imported directory**.  
 (See **Set-Up** section at: 
 [`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
 
@@ -404,6 +410,42 @@ Possible font name values: **any font name defined in an imported .fontdef file*
 (See **Set-Up** section at: 
 [`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
 
+The particle system effects rendering options can be specified for both in and 
+out vertex degrees.  
+
+For each degree the following can be specified:  
+
+**thresholds**  
+
+**light** (`int`)  
+**medium** (`int`)  
+**heavy** (`int`)  
+
+Here, the thresholds for when to render each effect for each degree value are 
+specified.  
+
+Possible values: **any integral positive number**.
+
+**particle-systems**  
+
+**light** (`string`)  
+**medium** (`string`)  
+**heavy** (`string`)  
+
+Here, the name of the particle system to be rendered for each level of degree 
+is specified. When a vertex in/out degree is between the light and medium 
+thresholds, then the light particle system is rendered, when it's between the 
+medium and heavy thresholds, then the medium particle system is rendered, and 
+when it's above, or equal to the heavy threshold, then the heavy particle system 
+is rendered.
+
+Possible particle system name values: **any particle system name defined in an imported .particle file**.  
+(See **Set-Up** section at: 
+[`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
+
+**applied** (`bool`)  
+
+Wether to render the particle system for each type of vertex degree.  
 
 
 ## Gui
