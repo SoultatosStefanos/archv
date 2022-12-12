@@ -269,4 +269,81 @@ Or, in order to run the tests:
 
 ## Configuration
 
+Archv supports both interactive configuration, via GUI, and startup 
+configuration with .json config file(s).  
+This section will explain to you how to best configure the application's style, 
+and/or graph visualization properties.
 
+> **_NOTE:_** Wether each subsystem is configured seperately at its own .json 
+file, or a single config file is used for the entire application will be decided
+at **build** time. 
+(See [CMake optional variables](#cmake-optional-variables)).
+
+### Layout
+
+The graph's visualization properties regarding its layout & topology in 3D space
+can be configured.  
+The following json values can be specified.
+
+`layouts`
+
+The available layout algorithms that can be selected at runtime must be listed 
+here.  
+
+Possible values:  
+
+* `Gursoy Atun`   
+This algorithm attempts to distribute the vertices uniformly within a topology, 
+keeping vertices close to their neighbours.
+
+`topologies`
+
+The available descriptions of a space on which layout can be performed, that can 
+be selected at runtime, must be listed here.  
+
+Possible values:
+
+* `Cube`  
+A three-dimensional hypercube topology. 
+* `Sphere`  
+A three-dimensional ball topology. 
+
+`layout`
+
+The default layout algorithm used.   
+Must be one listed under: `layouts`.
+
+`topology`
+
+The default topology used.  
+Must be one listed under: `topologies`.
+
+`scale` 
+
+The default scale used to generate the graph layout.  
+This variable controls the "magnitude" of the layout, that is, how far the graph
+will take up space. 
+
+Possible values: any positive numeric/floating point value.
+
+Example json configuration:
+
+```json
+
+"layout" :
+{	
+	"layouts" :
+	[
+		"Gursoy Atun"
+	],
+	"topologies" :
+	[
+		"Cube",
+		"Sphere"
+	],
+	"layout" : "Gursoy Atun",
+	"topology" : "Sphere",
+	"scale" : 1300
+}
+
+```
