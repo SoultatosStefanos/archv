@@ -525,3 +525,29 @@ The "k" value of the **k-Spanning Tree** clustering algorithm.
 
 Possible values: **any positive integral number larger than one**.  
 
+**snn-threshold** (`int`)  
+
+The "t" value of the **Shared Nearest Neighbour** clustering algorithm.
+
+Possible values: **any integral number**.  
+
+**min-modularity** (`double`)  
+
+The minimum required modularity increase at each modularity optimization step, 
+of the **Louvain Method** clustering algorithm.  
+The resoultion of the algorithm.  
+
+Possible values: **any floating point number**.  
+
+**llp-gamma** (`double`)  
+
+The **Layered Label Propagation** clustering algorithm "gamma" variable.
+
+Possible values: **any floating point number**.  
+
+**llp-steps** (`double`)  
+
+The maximum number of iterations of the **Layered Label Propagation** clustering
+algorithm.
+
+Possible values: **any integral positive number**.  
