@@ -471,20 +471,20 @@ Example .json configuration:
 "clustering" :
 {
     "clusterers" :
-	[
-		"Louvain Method",
-		"Layered Label Propagation",
-		"Infomap"
-	],
+    [
+        "Louvain Method",
+        "Layered Label Propagation",
+        "Infomap"
+    ],
     "min-spanning-tree-finders" : 
-	[
+    [
         "Prim MST"
-	],
+    ],
     "clusterer": "Infomap",
-	"min-spanning-tree-finder" : "Prim MST",
-	"k" : 3,
+    "min-spanning-tree-finder" : "Prim MST",
+    "k" : 3,
     "snn-threshold" : 5,
-	"min-modularity" : 0.2,
+    "min-modularity" : 0.2,
     "llp-gamma" : 0.2,
     "llp-steps" : 2
 }
