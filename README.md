@@ -461,8 +461,9 @@ Possible values: **any positive floating point number**.
 ### Clustering
 
 Archv features real-time graph clustering, with plugged in graph clustering 
-algorithms. In addition, for many clustering algorithms, specific parameters can
-be configured.
+algorithms.  
+In addition, for many clustering algorithms, specific parameters can be 
+configured.
 
 Example .json configuration:
 
