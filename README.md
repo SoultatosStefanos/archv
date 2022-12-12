@@ -8,6 +8,13 @@ object-oriented, software architectural dependencies taken from global symbol
 tables, in the form of a 3D graph.
 
 
+## Table of Contents  
+[Features](#features)  
+[Set-Up / Build](#set-up--build)  
+[Usage](#usage)  
+[Configuration](#configuration)
+
+
 ## Features
 
 | 3D Graph rendering | Dynamic illumination
