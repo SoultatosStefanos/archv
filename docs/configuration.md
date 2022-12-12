@@ -8,7 +8,7 @@ and/or graph visualization properties.
 > **_NOTE:_** Wether each subsystem is configured seperately at its own .json 
 file, or a single config file is used for the entire application will be decided
 at **build** time. 
-(See [CMake optional variables](#cmake-optional-variables)).
+(See [`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) ).
 
 
 ## Layout
