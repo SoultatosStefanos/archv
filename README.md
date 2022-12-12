@@ -296,18 +296,18 @@ Example .json configuration:
 
 "layout" :
 {	
-	"layouts" :
-	[
-		"Gursoy Atun"
-	],
-	"topologies" :
-	[
-		"Cube",
-		"Sphere"
-	],
-	"layout" : "Gursoy Atun",
-	"topology" : "Sphere",
-	"scale" : 1300
+    "layouts" :
+    [
+        "Gursoy Atun"
+    ],
+    "topologies" :
+    [
+        "Cube",
+        "Sphere"
+    ],
+    "layout" : "Gursoy Atun",
+    "topology" : "Sphere",
+    "scale" : 1300
 }
 
 ```
@@ -361,42 +361,15 @@ Example .json configuration:
 
 "weights" : 
 {
-	"dependencies" : 
-	[
-		{
-			"Inherit" : 1
-		},
-		{
-			"Friend" : 1
-		},
-		{
-			"NestedClass" : 1
-		},
-		{
-			"ClassField" : 1
-		},
-		{
-			"ClassTemplateParent" : 1
-		},
-		{
-			"ClassTemplateArg" : 1
-		},
-		{
-			"MethodReturn" : 1
-		},
-		{
-			"MethodArg" : 1
-		},
-		{
-			"MethodDefinition" : 1
-		},
-		{
-			"MemberExpr" : 1
-		},
-		{
-			"MethodTemplateArgs" : 1
+    "dependencies" : 
+    [
+        {
+            "Inherit" : 1
+        },
+        {
+            "Friend" : 1
 		}
-	]
+    ]
 }
 
 ```
