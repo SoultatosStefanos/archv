@@ -281,7 +281,7 @@ at **build** time.
 
 ### Layout
 
-The graph's visualization properties regarding its layout & topology in 3D space.
+The graph's visualization properties regarding its layout & topology in 3D space.  
 
 Example .json configuration:
 
@@ -307,36 +307,29 @@ Example .json configuration:
 
 **layouts** (`string list`)
 
-The available layout algorithms that can be selected at runtime must be listed 
-here.  
+The available layout algorithms that can be selected at runtime.  
+A layout algorithm generates the position of each vertex inside the 3D space.
 
-Possible values:  
-
-* **Gursoy Atun**  
-This algorithm attempts to distribute the vertices uniformly within a topology, 
-keeping vertices close to their neighbours.
+Possible values: <**Gursoy Atun**>
 
 **topologies** (`string list`)
 
-The available descriptions of a space on which layout can be performed, that can 
-be selected at runtime, must be listed here.  
+The available topologies that can be selected at runtime.  
+A topology is a description of space inside which the layout is performed.  
 
-Possible values:
-
-* **Cube**  
-A three-dimensional hypercube topology. 
-* **Sphere**  
-A three-dimensional ball topology. 
+Possible values: <**Cube** | **Sphere**>
 
 **layout** (`string`)
 
 The default layout algorithm used.   
-Must be one listed under: **layouts**.
+
+Possible values: **one listed under layouts**.
 
 **topology** (`string`)
 
 The default topology used.  
-Must be one listed under: **topologies**.
+
+Possible values: **one listed under topologies**.
 
 **scale** (`double`)
 
@@ -344,5 +337,5 @@ The default scale used to generate the graph layout.
 This variable controls the "magnitude" of the layout, that is, how far the graph
 will take up space. 
 
-Possible values: any positive numeric/floating point value.
+Possible values: **any positive floating point number**.
 
