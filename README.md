@@ -524,5 +524,5 @@ Possible values: **one listed under min-spanning-tree-finders**.
 The "k" value of the **k-Spanning Tree** clustering algorithm.  
 That is, the maximum number of clusters that can be formed by the algorithm.  
 
-Possible values: **any positive inegral number larger than one**.  
+Possible values: **any positive integral number larger than one**.  
 
