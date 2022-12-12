@@ -286,6 +286,7 @@ file, or a single config file is used for the entire application will be decided
 at **build** time. 
 (See [CMake optional variables](#cmake-optional-variables)).
 
+
 ### Layout
 
 The graph's visualization properties regarding its layout & topology in 3D space.  
@@ -346,6 +347,7 @@ will take up space.
 
 Possible values: **any positive floating point number**.
 
+
 ### Weights
 
 Physical dependencies across C++ components are expressed with edges in the 
@@ -378,6 +380,7 @@ Where each **dependency** (`string`) is paired with a **weight** (`int`).
 
 > **_NOTE:_** Each dependency found in the graph .json input file must be 
 included here.
+
 
 ### Scaling
 
@@ -453,3 +456,37 @@ appear smaller than the average one.
 Useful in order to prevent vertices from going invisible or appearing too big.
 
 Possible values: **any positive floating point number**.
+
+
+### Clustering
+
+Archv features real-time graph clustering, with plugged in graph clustering 
+algorithms. In addition, for many clustering algorithms, specific parameters can
+be configured.
+
+Example .json configuration:
+
+```json
+
+"clustering" :
+{
+    "clusterers" :
+	[
+		"Louvain Method",
+		"Layered Label Propagation",
+		"Infomap"
+	],
+    "min-spanning-tree-finders" : 
+	[
+        "Prim MST"
+	],
+    "clusterer": "Infomap",
+	"min-spanning-tree-finder" : "Prim MST",
+	"k" : 3,
+    "snn-threshold" : 5,
+	"min-modularity" : 0.2,
+    "llp-gamma" : 0.2,
+    "llp-steps" : 2
+}
+
+```
