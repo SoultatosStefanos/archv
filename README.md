@@ -421,18 +421,18 @@ Example .json configuration:
 
 "scaling" :
 {
-	"factors" : 
-	[
-		{
-			"Fields" : 
-			{
-				"enabled" : true,
-				"dimensions" : [ true, true, true ],
-				"baseline" : 3,
-				"ratio" : { "min" : 0.5, "max" : 2.5 }
-			}
-		}
-	]
+    "factors" : 
+    [
+        {
+            "Fields" : 
+            {
+                "enabled" : true,
+                "dimensions" : [ true, true, true ],
+                "baseline" : 3,
+                "ratio" : { "min" : 0.5, "max" : 2.5 }
+            }
+        }
+    ]
 }
 
 ```
