@@ -5,6 +5,16 @@ ubuntu debian Pop!_OS version 22.04 LTS).
 This guide will explain to you how to use CMake to build Archv from source,
 under this OS.
 
+
+## Table of Contents  
+
+[Getting dependencies](#getting-dependencies)  
+[CMake optional variables](#cmake-optional-variables)  
+[Notes](#notes)  
+[Building](#building)  
+[Set-Up](#set-up)
+
+
 ## Getting dependencies
 
 * GoogleTest  

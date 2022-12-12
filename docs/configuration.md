@@ -11,6 +11,15 @@ at **build** time.
 (See [`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) ).
 
 
+## Table of Contents  
+
+[Layout](#layout)  
+[Weights](#weights)  
+[Scaling](#scaling)  
+[Clustering](#clustering)  
+[Rendering](#rendering)  
+[Gui](#gui)
+
 ## Layout
 
 The graph's visualization properties regarding its layout & topology in 3D space.  
