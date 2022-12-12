@@ -367,7 +367,7 @@ Example .json configuration:
             "Inherit" : 1
         },
         {
-        "Friend" : 1
+            "Friend" : 1
         }
     ]
 }
