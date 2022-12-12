@@ -389,5 +389,21 @@ Example .json configuration:
 
 ```
 
+Possible mesh values: **any .mesh file defined under an imported directory**.  
+(See **Set-Up** section at: 
+[`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
+
+Possible materials values: **any material name defined in any imported .material script**.  
+(See **Set-Up** section at: 
+[`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
+
+Possible color values: **any floating point value between 0 and 1**.  
+(See colour sections at: https://wiki.ogre3d.org/Materials).  
+
+Possible font name values: **any font name defined in an imported .fontdef file**.  
+(See **Set-Up** section at: 
+[`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) )
+
+
 
 ## Gui
