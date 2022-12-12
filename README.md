@@ -283,7 +283,28 @@ at **build** time.
 
 The graph's visualization properties regarding its layout & topology in 3D space
 can be configured.  
-The following json values can be specified.
+
+Example json configuration:
+
+```json
+
+"layout" :
+{	
+	"layouts" :
+	[
+		"Gursoy Atun"
+	],
+	"topologies" :
+	[
+		"Cube",
+		"Sphere"
+	],
+	"layout" : "Gursoy Atun",
+	"topology" : "Sphere",
+	"scale" : 1300
+}
+
+```
 
 `layouts`
 
@@ -326,24 +347,3 @@ will take up space.
 
 Possible values: any positive numeric/floating point value.
 
-Example json configuration:
-
-```json
-
-"layout" :
-{	
-	"layouts" :
-	[
-		"Gursoy Atun"
-	],
-	"topologies" :
-	[
-		"Cube",
-		"Sphere"
-	],
-	"layout" : "Gursoy Atun",
-	"topology" : "Sphere",
-	"scale" : 1300
-}
-
-```
