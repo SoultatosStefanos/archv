@@ -346,3 +346,62 @@ will take up space.
 
 Possible values: **any positive floating point number**.
 
+### Weights
+
+Physical dependencies across C++ components are expressed with edges in the 
+visualized dependencies graph. The "weight" value of each type of dependency can
+be specified here.  
+
+The weight values of each dependency affect the output of both clustering and 
+layout algorithms.
+
+Example .json configuration:
+
+```json
+
+"weights" : 
+{
+	"dependencies" : 
+	[
+		{
+			"Inherit" : 1
+		},
+		{
+			"Friend" : 1
+		},
+		{
+			"NestedClass" : 1
+		},
+		{
+			"ClassField" : 1
+		},
+		{
+			"ClassTemplateParent" : 1
+		},
+		{
+			"ClassTemplateArg" : 1
+		},
+		{
+			"MethodReturn" : 1
+		},
+		{
+			"MethodArg" : 1
+		},
+		{
+			"MethodDefinition" : 1
+		},
+		{
+			"MemberExpr" : 1
+		},
+		{
+			"MethodTemplateArgs" : 1
+		}
+	]
+}
+
+```
+
+Where each **dependency** (`string`) is paired with a **weight** (`int`).  
+
+> **_NOTE:_** Each dependency found in the graph .json input file must be 
+included here.
