@@ -405,3 +405,78 @@ Where each **dependency** (`string`) is paired with a **weight** (`int`).
 
 > **_NOTE:_** Each dependency found in the graph .json input file must be 
 included here.
+
+### Scaling
+
+Archv can be configured in order to apply dynamic scaling to each graph vertex, 
+depending on the vertex underlying class metadata.  
+That way, quick visual comparisons can be made between vertices.  
+Here, scaling factors are defined. These factors can be taken into account, 
+and/or combined, in order to scale the graph's vertices in relation to each 
+other.
+
+Example .json configuration:
+
+```json
+
+"scaling" :
+{
+	"factors" : 
+	[
+		{
+			"Fields" : 
+			{
+				"enabled" : true,
+				"dimensions" : [ true, true, true ],
+				"baseline" : 3,
+				"ratio" : { "min" : 0.5, "max" : 2.5 }
+			}
+		}
+	]
+}
+
+```
+
+**factors** (`objects list`)
+
+The available scaling factors that can be selected at runtime.  
+
+Possible values: <**Fields** | **Methods** | **Nested**>.  
+In order to scale according to the number of the vertex underlying class: fields
+, methods, nested classes, respectively.  
+
+For each scaling factor the following variables can be specified:
+
+**enabled** (`bool`)
+
+Wether this scaling factor / class metadata property is taken into account when
+computing the final vertex scale.
+
+**dimensions** (`bool array`)
+
+The axes on which the scaling is applied on the vertex. For each axis, (x, y, z) 
+,a boolean value is specified, in order to indicate that the scaling is applied.  
+E.g. `[true, false, true]` means that the scaling will be applied on the x, z 
+axes only.
+
+**baseline** (`double`)
+
+This is the assumed, system-wide, average value of each class metadata property.
+E.g. A baseline of: `3` for a `Methods` scaling factor means that it is assumed
+that on average a class of the visualized software contains 3 methods. Thus, 
+vertices whose underlying classes contain more than 3 methods will appear 
+larger, and vertices whose underlying classes contain less than 3 methods will
+appear smaller.
+
+Possible values: **any positive floating point number**.
+
+**ratio** (`double`)
+
+The min/max ratio values of each scaling factor underlying class metadata 
+property, in comparison to the baseline, can be specified here.  
+That way, with an e.g. min ratio value of `1`, we can be sure that vertices, 
+whose  underlying class metadata property fall behind the baseline, will never 
+appear smaller than the average one.  
+Useful in order to prevent vertices from going invisible or appearing too big.
+
+Possible values: **any positive floating point number**.
