@@ -317,29 +317,29 @@ Possible values:
 This algorithm attempts to distribute the vertices uniformly within a topology, 
 keeping vertices close to their neighbours.
 
-`topologies`
+**topologies** (`string list`)
 
 The available descriptions of a space on which layout can be performed, that can 
 be selected at runtime, must be listed here.  
 
 Possible values:
 
-* `Cube`  
+* **Cube**  
 A three-dimensional hypercube topology. 
-* `Sphere`  
+* **Sphere**  
 A three-dimensional ball topology. 
 
-`layout`
+**layout** (`string`)
 
 The default layout algorithm used.   
-Must be one listed under: `layouts`.
+Must be one listed under: **layouts**.
 
-`topology`
+**topology** (`string`)
 
 The default topology used.  
-Must be one listed under: `topologies`.
+Must be one listed under: **topologies**.
 
-`scale` 
+**scale** (`double`)
 
 The default scale used to generate the graph layout.  
 This variable controls the "magnitude" of the layout, that is, how far the graph
