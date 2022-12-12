@@ -1,0 +1,278 @@
+# Configuration
+
+Archv supports both interactive configuration, via GUI, and startup 
+configuration with .json config file(s).  
+This section will explain to you how to best configure the application's style, 
+and/or graph visualization properties.
+
+> **_NOTE:_** Wether each subsystem is configured seperately at its own .json 
+file, or a single config file is used for the entire application will be decided
+at **build** time. 
+(See [CMake optional variables](#cmake-optional-variables)).
+
+
+## Layout
+
+The graph's visualization properties regarding its layout & topology in 3D space.  
+
+Example .json configuration:
+
+```json
+
+"layout" :
+{	
+    "layouts" :
+    [
+        "Gursoy Atun"
+    ],
+    "topologies" :
+    [
+        "Cube",
+        "Sphere"
+    ],
+    "layout" : "Gursoy Atun",
+    "topology" : "Sphere",
+    "scale" : 1300
+}
+
+```
+
+**layouts** (`string list`)
+
+The available layout algorithms that can be selected at runtime.  
+A layout algorithm generates the position of each vertex inside the 3D space.
+
+Possible values: <**Gursoy Atun**>
+
+**topologies** (`string list`)
+
+The available topologies that can be selected at runtime.  
+A topology is a description of space inside which the layout is performed.  
+
+Possible values: <**Cube** | **Sphere**>
+
+**layout** (`string`)
+
+The default layout algorithm used.   
+
+Possible values: **one listed under layouts**.
+
+**topology** (`string`)
+
+The default topology used.  
+
+Possible values: **one listed under topologies**.
+
+**scale** (`double`)
+
+The default scale used to generate the graph layout.  
+This variable controls the "magnitude" of the layout, that is, how far the graph
+will take up space. 
+
+Possible values: **any positive floating point number**.
+
+
+## Weights
+
+Physical dependencies across C++ components are expressed with edges in the 
+visualized dependencies graph. The "weight" value of each type of dependency can
+be specified here.  
+
+The weight values of each dependency affect the output of both clustering and 
+layout algorithms.
+
+Example .json configuration:
+
+```json
+
+"weights" : 
+{
+    "dependencies" : 
+    [
+        {
+            "Inherit" : 1
+        },
+        {
+            "Friend" : 1
+        }
+    ]
+}
+
+```
+
+Where each **dependency** (`string`) is paired with a **weight** (`int`).  
+
+> **_NOTE:_** Each dependency found in the graph .json input file must be 
+included here.
+
+
+## Scaling
+
+Archv can be configured in order to apply dynamic scaling to each graph vertex, 
+depending on the vertex underlying class metadata.  
+That way, quick visual comparisons can be made between vertices.  
+Here, scaling factors are defined. These factors can be taken into account, 
+and/or combined, in order to scale the graph's vertices in relation to each 
+other.
+
+Example .json configuration:
+
+```json
+
+"scaling" :
+{
+    "factors" : 
+    [
+        {
+            "Fields" : 
+            {
+                "enabled" : true,
+                "dimensions" : [ true, true, true ],
+                "baseline" : 3,
+                "ratio" : { "min" : 0.5, "max" : 2.5 }
+            }
+        }
+    ]
+}
+
+```
+
+**factors** (`objects list`)
+
+The available scaling factors that can be selected at runtime.  
+
+Possible values: <**Fields** | **Methods** | **Nested**>.  
+In order to scale according to the number of the vertex underlying class: fields
+, methods, nested classes, respectively.  
+
+For each scaling factor the following variables can be specified:
+
+**enabled** (`bool`)
+
+Wether this scaling factor / class metadata property is taken into account when
+computing the final vertex scale.
+
+**dimensions** (`bool array`)
+
+The axes on which the scaling is applied on the vertex. For each axis, (x, y, z) 
+,a boolean value is specified, in order to indicate that the scaling is applied.  
+E.g. `[true, false, true]` means that the scaling will be applied on the x, z 
+axes only.
+
+**baseline** (`double`)
+
+This is the assumed, system-wide, average value of each class metadata property.
+E.g. A baseline of: `3` for a `Methods` scaling factor means that it is assumed
+that on average a class of the visualized software contains 3 methods. Thus, 
+vertices whose underlying classes contain more than 3 methods will appear 
+larger, and vertices whose underlying classes contain less than 3 methods will
+appear smaller.
+
+Possible values: **any positive floating point number**.
+
+**ratio** (`double`)
+
+The min/max ratio values of each scaling factor underlying class metadata 
+property, in comparison to the baseline, can be specified here.  
+That way, with an e.g. min ratio value of `1`, we can be sure that vertices, 
+whose  underlying class metadata property fall behind the baseline, will never 
+appear smaller than the average one.  
+Useful in order to prevent vertices from going invisible or appearing too big.
+
+Possible values: **any positive floating point number**.
+
+
+## Clustering
+
+Archv features real-time graph clustering, with plugged in graph clustering 
+algorithms.  
+In addition, for many clustering algorithms, specific parameters can be 
+configured.
+
+Example .json configuration:
+
+```json
+
+"clustering" :
+{
+    "clusterers" :
+    [
+        "Louvain Method",
+        "Layered Label Propagation",
+        "Infomap"
+    ],
+    "min-spanning-tree-finders" : 
+    [
+        "Prim MST"
+    ],
+    "clusterer": "Infomap",
+    "min-spanning-tree-finder" : "Prim MST",
+    "k" : 3,
+    "snn-threshold" : 5,
+    "min-modularity" : 0.2,
+    "llp-gamma" : 0.2,
+    "llp-steps" : 2
+}
+
+```
+
+**clusterers** (`string list`)  
+
+The available clustering algorithms that can be selected at runtime.  
+
+Possible values: 
+<**k-Spanning Tree** | **Shared Nearest Neighbour** | **Strong Components** | 
+**Maximal Clique Enumeration** | **Louvain Method** | 
+**Layered Label Propagation** | **Infomap**>
+
+**min-spanning-tree-finders** (`string list`)  
+
+The available minimum spanning tree finding algorithms used by the 
+**k-Spanning Tree** clustering algorithm.
+
+Possible values: <**Prim MST** | **Kruskal MST**>
+
+**clusterer** (`string`)  
+
+The default clustering algorithm selected.  
+
+Possible values: **one listed under clusterers**.
+
+**min-spanning-tree-finder** (`string`)  
+
+The default minimum spanning tree finding algorithm selected.  
+
+Possible values: **one listed under min-spanning-tree-finders**. 
+
+**k** (`int`)  
+
+The "k" value of the **k-Spanning Tree** clustering algorithm.  
+
+Possible values: **any positive integral number larger than one**.  
+
+**snn-threshold** (`int`)  
+
+The "t" value of the **Shared Nearest Neighbour** clustering algorithm.
+
+Possible values: **any integral number**.  
+
+**min-modularity** (`double`)  
+
+The minimum required modularity increase at each modularity optimization step, 
+of the **Louvain Method** clustering algorithm.  
+The resoultion of the algorithm.  
+
+Possible values: **any floating point number**.  
+
+**llp-gamma** (`double`)  
+
+The **Layered Label Propagation** clustering algorithm "gamma" variable.
+
+Possible values: **any floating point number**.  
+
+**llp-steps** (`double`)  
+
+The maximum number of iterations of the **Layered Label Propagation** clustering
+algorithm.
+
+Possible values: **any integral positive number**.  
