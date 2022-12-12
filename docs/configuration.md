@@ -449,3 +449,44 @@ Wether to render the particle system for each type of vertex degree.
 
 
 ## Gui
+
+Archv's gui style can be configured as well.  
+
+Example .json configuration:
+
+```json
+
+"gui" :
+{
+    "color-theme" : "Dark",
+    "frame-rounding" : 0,
+    "window-bordered" : true,
+    "frame-bordered" : true,
+    "popup-bordered" : true 
+}
+
+```
+
+**color-theme** (`string`)  
+
+The color theme of the gui.  
+
+Possible values: <**Dark** | **Light** | **Classic**>  
+
+**frame-rounding** (`double`)  
+
+Specifies how rounded the frames of the gui appear.  
+
+Possible values: **any floating point number**.  
+
+**window-bordered** (`bool`)  
+
+Wether the windows will appear bordered.  
+
+**frame-bordered** (`bool`)  
+
+Wether the frames will appear bordered.  
+
+**popup-bordered** (`bool`)  
+
+Wether the popups will appear bordered.
