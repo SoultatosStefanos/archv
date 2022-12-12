@@ -503,7 +503,8 @@ Possible values:
 
 **min-spanning-tree-finders** (`string list`)  
 
-The available minimum spanning tree finding algorithms used by the **k-Spanning Tree** clustering algorithm.
+The available minimum spanning tree finding algorithms used by the 
+**k-Spanning Tree** clustering algorithm.
 
 Possible values: <**Prim MST** | **Kruskal MST**>
 
