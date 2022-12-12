@@ -491,3 +491,38 @@ Example .json configuration:
 }
 
 ```
+
+**clusterers** (`string list`)  
+
+The available clustering algorithms that can be selected at runtime.  
+
+Possible values: 
+<**k-Spanning Tree** | **Shared Nearest Neighbour** | **Strong Components** | 
+**Maximal Clique Enumeration** | **Louvain Method** | 
+**Layered Label Propagation** | **Infomap**>
+
+**min-spanning-tree-finders** (`string list`)  
+
+The available minimum spanning tree finding algorithms used by the **k-Spanning Tree** clustering algorithm.
+
+Possible values: <**Prim MST** | **Kruskal MST**>
+
+**clusterer** (`string`)  
+
+The default clustering algorithm selected.  
+
+Possible values: **one listed under clusterers**.
+
+**min-spanning-tree-finder** (`string`)  
+
+The default minimum spanning tree finding algorithm selected.  
+
+Possible values: **one listed under min-spanning-tree-finders**. 
+
+**k** (`int`)  
+
+The "k" value of the **k-Spanning Tree** clustering algorithm.  
+That is, the maximum number of clusters that can be formed by the algorithm.  
+
+Possible values: **any positive inegral number larger than one**.  
+
