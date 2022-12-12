@@ -384,8 +384,8 @@ Example .json configuration:
         "render-edge-types" : false,
         "render-edge-tips" : false,
         "render-particles" : false
-		}
-	}
+    }
+}
 
 ```
 
