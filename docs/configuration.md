@@ -22,7 +22,8 @@ at **build** time.
 
 ## Layout
 
-The graph's visualization properties regarding its layout & topology in 3D space.  
+The graph's visualization properties regarding its layout & topology in 3D space 
+can be configured with plugged in algorithms and values.  
 
 Example .json configuration:
 
@@ -285,3 +286,108 @@ The maximum number of iterations of the **Layered Label Propagation** clustering
 algorithm.
 
 Possible values: **any integral positive number**.  
+
+
+## Rendering
+
+Archv can be configured regarding the architecture graph's "external" rendering 
+properties, like the materials and meshes used to render the scene.
+
+Example .json configuration:
+
+```json
+
+"rendering" :
+{
+    "background" : 
+    {
+        "skybox-material" : "Gradient/Dark",
+        "skybox-distance" : 5000,
+        "ambient-color" : [ 0, 0, 0 ],
+        "diffuse-color" : [ 0.4, 0.43, 0.42 ],
+        "specular-color" : [ 0.337, 0.325, 0.325 ],
+        "cam-far-clip-distance" : 0,
+        "cam-near-clip-distance" : 5
+    },
+    "graph" : 
+    {
+        "vertex-mesh" : "Cube.001.mesh",
+        "vertex-material" : "Shaded/StudioGold",
+        "vertex-scale" :  [	5, 5, 5 ],
+        "vertex-id" : 
+        {
+            "font-name" : "Gecko-Personal",
+            "char-height" : 6,
+            "color" : [ 1, 1, 1 ],
+            "space-width" : 0
+        },
+        "edge-material" : "Shaded/LightBlue",
+        "edge-tip-mesh" : "triangle.mesh",
+        "edge-tip-material" : "Shaded/LightBlue",
+        "edge-tip-scale" : [ 1.25, 1.25, 1.25 ],
+        "edge-type" :
+        {
+            "font-name" : "Gecko-Personal",
+            "char-height" : 2.5,
+            "color" : [ 1, 1, 1 ],
+            "space-width" : 0
+        }
+   },
+    "degrees" :
+    {
+        "in-degree" :
+        {
+            "thresholds" : 
+            { 
+                "light" : 1,
+                "medium" : 4,
+                "heavy": 8
+            },
+            "particle-systems" : 
+            {
+                "light" : "Degrees/SwarmLight",
+                "medium" : "Degrees/SwarmMedium",
+                "heavy" : "Degrees/SwarmHeavy" 
+            },
+            "applied" : true
+        },
+		"out-degree" :
+        {
+            "thresholds" : 
+            { 
+                "light" : 1,
+                "medium" : 4,
+                "heavy": 8
+            },
+            "particle-systems" : 
+            {
+                "light" : "Degrees/SwarmLight",
+                "medium" : "Degrees/SwarmMedium",
+                "heavy" : "Degrees/SwarmHeavy" 
+            },
+            "applied" : false
+        },
+    },
+    "minimap" : 
+    {
+        "left" : 0.5,
+        "top" : -0.5,
+        "right" : 0.95,
+        "bottom" : -0.95,
+        "background-color" : [ 0.0, 0.0, 0.0 ],
+        "zoom-out" : 300,
+        "render-shadows" : false,
+        "render-sky" : true,
+        "render-vertices" : true,
+        "render-vertex-ids" : false,
+        "render-edges" : true,
+        "render-edge-types" : false,
+        "render-edge-tips" : false,
+        "render-particles" : false
+		}
+	}
+
+```
+
+
+## Gui
