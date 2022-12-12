@@ -75,7 +75,7 @@ https://github.com/OGRECave/ogre
 ## Set-Up / Build
 
 Please read 
-[`build.md`](https://github.com/SoultatosStefanos/archv/docs/build.md) 
+[`build.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/build.md) 
 for details on how to setup/build this project.
 
 ## Usage
@@ -94,5 +94,5 @@ Or, in order to run the tests:
 ## Configuration
 
 Please read 
-[`configuration.md`](https://github.com/SoultatosStefanos/archv/docs/configuration.md) 
+[`configuration.md`](https://github.com/SoultatosStefanos/archv/blob/master/docs/configuration.md) 
 for details on how to configure this project for your needs.
