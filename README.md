@@ -281,10 +281,9 @@ at **build** time.
 
 ### Layout
 
-The graph's visualization properties regarding its layout & topology in 3D space
-can be configured.  
+The graph's visualization properties regarding its layout & topology in 3D space.
 
-Example json configuration:
+Example .json configuration:
 
 ```json
 
@@ -306,14 +305,14 @@ Example json configuration:
 
 ```
 
-`layouts`
+**layouts** (`string list`)
 
 The available layout algorithms that can be selected at runtime must be listed 
 here.  
 
 Possible values:  
 
-* `Gursoy Atun`   
+* **Gursoy Atun**  
 This algorithm attempts to distribute the vertices uniformly within a topology, 
 keeping vertices close to their neighbours.
 
