@@ -27,6 +27,10 @@
 
 	+ [x] Cluster with algorithm
 
+	+ [ ] Layout clusters as subgraphs
+
+	+ [ ] Cluster colors adjust
+
 
 # Layout / Topology
 
@@ -34,7 +38,7 @@
 
 	+ [x] Gursoy atun layout algorithm
 
-	+ [ ] Random layout algorithm
+	+ [n] Random layout algorithm
 
 ## Topology types
 
@@ -55,6 +59,8 @@
 
 	+ [x] Dynamic weight property map
 
+	+ [ ] Color coding
+
 ## Features
 
 	+ [x] Change dependency weight value
@@ -64,11 +70,18 @@
 
 ## Shared
 
-	+ [ ] Progress Bars
+	+ [n] Progress Bars
 
-	+ [ ] Blocked signals when running heavy algorithms
+	+ [n] Blocked signals when running heavy algorithms
 
 	+ [x] Interactive Configuration (deserialization/serialization/defaults)
+
+
+# Scaling
+
+	+ [x] Metadata scaling
+
+	+ [ ] Visual indicator for scaling (icon)
 
 # Rendering
 
@@ -130,7 +143,7 @@
 
 	+ [x] Building
 
-	+ [ ] Configuration
+	+ [x] Configuration
 
 
 # 08 / 07 / 2022
@@ -941,8 +954,8 @@
 	+ [x] Pan feature update
 
 
-# 10 / 12 / 2022
+# 14 / 12 / 2022
 
-	+ [ ] Edge filters
+	+ [ ] Clustering subgraph layout
 
-	+ [ ] Scaling feedback (icon nx scale)
+		+ [ ] Layout transform (with cluster-map) function
