@@ -28,8 +28,8 @@ auto make_induced_graph(const Graph& g, ClusterMap vertex_cluster) -> Graph
     using cluster_type = typename property_traits::value_type;
     using set_type = std::set< cluster_type >;
 
-    static_assert(std::is_convertible_v cluster_type, vertex_type >);
-    static_assert(std::is_convertible_v vertex_type, cluster_type >);
+    static_assert(std::is_convertible_v< cluster_type, vertex_type >);
+    static_assert(std::is_convertible_v< vertex_type, cluster_type >);
 
     set_type clusters_set;
     for (auto v : boost::make_iterator_range(boost::vertices(g)))
@@ -143,17 +143,17 @@ auto make_offsetted_layout(
     using cluster_type = typename property_traits::value_type;
     using derived_type = mutable_layout< Graph >;
 
-    static_assert(std::is_convertible_v cluster_type, vertex_type >);
-    static_assert(std::is_convertible_v vertex_type, cluster_type >);
+    static_assert(std::is_convertible_v< cluster_type, vertex_type >);
+    static_assert(std::is_convertible_v< vertex_type, cluster_type >);
     static_assert(std::is_default_constructible_v< derived_type >);
 
     auto res = std::make_unique< derived_type >();
     for (auto v : boost::make_iterator_range(boost::vertices(g)))
     {
         const auto c = boost::get(vertex_cluster, v);
-        res.x(v) = initial.x(v) + induced.x(c);
-        res.y(v) = initial.y(v) + induced.y(c);
-        res.z(v) = initial.z(v) + induced.z(c);
+        res->x(v) = initial.x(v) + induced.x(c);
+        res->y(v) = initial.y(v) + induced.y(c);
+        res->z(v) = initial.z(v) + induced.z(c);
     }
 
     return res;

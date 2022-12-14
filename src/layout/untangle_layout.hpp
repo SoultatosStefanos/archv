@@ -8,8 +8,9 @@
 #include "layout.hpp"                 // for layout
 
 #include <boost/graph/graph_concepts.hpp> // for GraphConcept, ReadablePropertyMapConcept
-#include <concepts>                       // for invocable
-#include <memory>                         // for unique_ptr
+#include <boost/graph/graph_traits.hpp> // for graph_traits
+#include <concepts>                     // for invocable
+#include <memory>                       // for unique_ptr
 
 // TODO Unit test these
 
@@ -68,6 +69,8 @@ inline auto untangle_layout(
     const Backend& b,
     Scale scale) -> std::unique_ptr< layout< Graph > >
 {
+    using graph_traits = boost::graph_traits< Graph >;
+    using edge_type = typename graph_traits::edge_descriptor;
     using layout_factory = typename Backend::layout_factory_type;
     using topology_factory = typename Backend::topology_factory_type;
 
@@ -80,9 +83,12 @@ inline auto untangle_layout(
         (const auto& g, auto scale)
         {
             assert(space);
-            // Doesn't matter what the weights of the induced graph edges are.
             return layout_factory::make_layout(
-                layout_id, g, boost::make_constant_property(1), *space);
+                layout_id,
+                g,
+                // Doesn't really matter
+                boost::make_constant_property< edge_type >(1),
+                *space);
         },
         scale);
 }

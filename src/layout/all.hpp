@@ -14,5 +14,6 @@
 #include "position_map.hpp"
 #include "sphere.hpp"
 #include "topology.hpp"
+#include "untangle_layout.hpp"
 
 #endif // LAYOUT_ALL_HPP
