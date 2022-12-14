@@ -939,3 +939,10 @@
 	+ [x] Resource group tidy
 
 	+ [x] Pan feature update
+
+
+# 10 / 12 / 2022
+
+	+ [ ] Edge filters
+
+	+ [ ] Scaling feedback (icon nx scale)
