@@ -351,18 +351,17 @@ namespace
         typename EmitLightFunc,
         typename EmitMediumFunc,
         typename EmitHeavyFunc >
-    requires std::
-        invocable< EmitLightFunc, degrees_editor::threshold_type > && std::
-            invocable< EmitMediumFunc, degrees_editor::threshold_type > && std::
-                invocable< EmitHeavyFunc, degrees_editor::threshold_type >
-    auto render_thresholds_editor(
-        degrees_editor::threshold_type light,
-        degrees_editor::threshold_type medium,
-        degrees_editor::threshold_type heavy,
-        EmitLightFunc emit_light,
-        EmitMediumFunc emit_medium,
-        EmitHeavyFunc emit_heavy,
-        const degrees_editor& self) -> void
+    requires std::invocable< EmitLightFunc, degrees_editor::threshold_type >
+        && std::invocable< EmitMediumFunc, degrees_editor::threshold_type >
+        && std::invocable< EmitHeavyFunc, degrees_editor::threshold_type >
+        auto render_thresholds_editor(
+                 degrees_editor::threshold_type light,
+                 degrees_editor::threshold_type medium,
+                 degrees_editor::threshold_type heavy,
+                 EmitLightFunc emit_light,
+                 EmitMediumFunc emit_medium,
+                 EmitHeavyFunc emit_heavy,
+                 const degrees_editor& self) -> void
     {
         ImGui::PushID(&self);
 
@@ -397,19 +396,18 @@ namespace
         typename EmitLightFunc,
         typename EmitMediumFunc,
         typename EmitHeavyFunc >
-    requires std::
-        invocable< EmitLightFunc, degrees_editor::particles_type > && std::
-            invocable< EmitMediumFunc, degrees_editor::particles_type > && std::
-                invocable< EmitHeavyFunc, degrees_editor::particles_type >
-    auto render_particles_editor(
-        degrees_editor::particles_type light,
-        degrees_editor::particles_type medium,
-        degrees_editor::particles_type heavy,
-        EmitLightFunc emit_light,
-        EmitMediumFunc emit_medium,
-        EmitHeavyFunc emit_heavy,
-        const std::vector< const char* >& particles,
-        const degrees_editor& self) -> void
+    requires std::invocable< EmitLightFunc, degrees_editor::particles_type >
+        && std::invocable< EmitMediumFunc, degrees_editor::particles_type >
+        && std::invocable< EmitHeavyFunc, degrees_editor::particles_type >
+        auto render_particles_editor(
+                 degrees_editor::particles_type light,
+                 degrees_editor::particles_type medium,
+                 degrees_editor::particles_type heavy,
+                 EmitLightFunc emit_light,
+                 EmitMediumFunc emit_medium,
+                 EmitHeavyFunc emit_heavy,
+                 const std::vector< const char* >& particles,
+                 const degrees_editor& self) -> void
     {
         using misc::find_index;
         using resources::particle_systems;

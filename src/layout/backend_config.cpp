@@ -30,7 +30,8 @@ auto is_layout_listed(const backend_config& cfg) -> bool
 }
 
 auto is_layout_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool
 {
     return misc::container_contains(cfg.layouts, id);
 }
@@ -41,7 +42,8 @@ auto is_topology_listed(const backend_config& cfg) -> bool
 }
 
 auto is_topology_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool
 {
     return misc::container_contains(cfg.topologies, id);
 }

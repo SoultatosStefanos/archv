@@ -83,8 +83,7 @@ auto minimap_renderer::setup_camera() -> void
 
     assert(!scene().hasSceneNode(cam_name));
     m_cam_node = main_cam_node->createChildSceneNode(
-        cam_name,
-        make_z_offsetted_pos(config_data().zoom_out));
+        cam_name, make_z_offsetted_pos(config_data().zoom_out));
     assert(m_cam_node);
     m_cam_node->attachObject(m_cam);
 
@@ -160,8 +159,7 @@ auto minimap_renderer::setup_mini_screen() -> void
     m_rect->setVisibilityFlags(detail::minimap_mask);
 
     auto material = MaterialManager::getSingleton().create(
-        material_name,
-        ARCHV_RESOURCE_GROUP);
+        material_name, ARCHV_RESOURCE_GROUP);
 
     assert(material);
     auto* pass = material->getTechnique(0)->getPass(0);

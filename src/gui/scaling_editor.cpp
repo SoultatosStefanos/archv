@@ -231,14 +231,14 @@ auto scaling_editor::emit_factor_dims(tag_type tag, const dims_type& dims) const
     m_dims_sig(tag, dims);
 }
 
-auto scaling_editor::emit_factor_baseline(
-    tag_type tag, baseline_type baseline) const -> void
+auto scaling_editor::emit_factor_baseline(tag_type tag, baseline_type baseline)
+    const -> void
 {
     m_baseline_sig(tag, baseline);
 }
 
-auto scaling_editor::emit_factor_enabled(
-    tag_type tag, enabled_type enabled) const -> void
+auto scaling_editor::emit_factor_enabled(tag_type tag, enabled_type enabled)
+    const -> void
 {
     m_enabled_sig(tag, enabled);
 }

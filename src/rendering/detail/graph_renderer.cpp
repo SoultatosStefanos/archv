@@ -122,9 +122,7 @@ namespace
         vertex_renderer::position_type pos)
     {
         return std::make_unique< vertex_properties >(
-            std::move(id),
-            pos,
-            make_vertex_txt_name(id));
+            std::move(id), pos, make_vertex_txt_name(id));
     }
 
     inline auto update_pos_if_effect(
@@ -804,9 +802,7 @@ auto edge_renderer::setup_tip(const edge_type& e, const path_type& path) -> void
     assert(!m_scene.hasSceneNode(e.tip_name));
 
     auto* entity = m_scene.createEntity(
-        e.tip_name,
-        m_cfg->edge_tip_mesh,
-        ARCHV_RESOURCE_GROUP);
+        e.tip_name, m_cfg->edge_tip_mesh, ARCHV_RESOURCE_GROUP);
     assert(entity);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
     entity->setMaterialName(m_cfg->edge_tip_material);
@@ -1121,9 +1117,7 @@ auto edge_renderer::draw_tip(const edge_type& e, const path_type& path) -> void
     node->detachObject(e.tip_name);
     m_scene.destroyEntity(e.tip_name);
     auto* entity = m_scene.createEntity(
-        e.tip_name,
-        m_cfg->edge_tip_mesh,
-        ARCHV_RESOURCE_GROUP);
+        e.tip_name, m_cfg->edge_tip_mesh, ARCHV_RESOURCE_GROUP);
     assert(entity);
     entity->setMaterialName(m_cfg->edge_tip_material);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);

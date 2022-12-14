@@ -59,7 +59,7 @@ background_renderer::~background_renderer()
 namespace
 {
     constexpr auto camera_name = "Main Camera";
-}
+} // namespace
 
 auto background_renderer::setup_scene() -> void
 {
@@ -165,10 +165,7 @@ auto background_renderer::draw_scene(const config_data_type& cfg) -> void
     assert(m_scene);
 
     scene().setSkyBox(
-        true,
-        cfg.skybox_material,
-        cfg.skybox_distance,
-        ARCHV_RESOURCE_GROUP);
+        true, cfg.skybox_material, cfg.skybox_distance, ARCHV_RESOURCE_GROUP);
 
     scene().setAmbientLight(cfg.ambient_color);
 

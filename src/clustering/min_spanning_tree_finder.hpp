@@ -51,7 +51,8 @@ public:
     virtual void operator()(
         const graph_type& g,
         output_iterator out,
-        weight_map_type edge_weight) const = 0;
+        weight_map_type edge_weight) const
+        = 0;
 
     virtual auto clone() const -> std::unique_ptr< self > = 0;
 };

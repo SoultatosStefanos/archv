@@ -26,8 +26,9 @@ auto sphere::distance(const point_type& p1, const point_type& p2) const
 }
 
 auto sphere::move_position_toward(
-    const point_type& p1, fraction_type fraction, const point_type& p2) const
-    -> point_type
+    const point_type& p1,
+    fraction_type fraction,
+    const point_type& p2) const -> point_type
 {
     return data().move_position_toward(p1, fraction, p2);
 }

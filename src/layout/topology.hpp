@@ -43,12 +43,14 @@ public:
     virtual auto random_point() const -> point_type = 0;
 
     virtual auto distance(const point_type& p1, const point_type& p2) const
-        -> distance_type = 0;
+        -> distance_type
+        = 0;
 
     virtual auto move_position_toward(
         const point_type& p1,
         fraction_type fraction,
-        const point_type& p2) const -> point_type = 0;
+        const point_type& p2) const -> point_type
+        = 0;
 
     virtual auto clone() const -> std::unique_ptr< topology > = 0;
 };

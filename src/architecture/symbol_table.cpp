@@ -13,6 +13,9 @@ auto symbol_table::insert(value_type s) -> void
     m_table.insert(std::make_pair(s.sym.id, std::move(s)));
 }
 
-auto symbol_table::clear() -> void { m_table.clear(); }
+auto symbol_table::clear() -> void
+{
+    m_table.clear();
+}
 
 } // namespace architecture

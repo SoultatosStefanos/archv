@@ -3,6 +3,7 @@ AlwaysBreakTemplateDeclarations: Yes
 AllowShortFunctionsOnASingleLine: InlineOnly
 
 AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: true
 
 BasedOnStyle: WebKit
 Standard: c++20
@@ -24,8 +25,12 @@ BinPackParameters: false
 BinPackArguments: false
 
 IncludeBlocks: Regroup
-IndentRequires: false
 
 UseTab: Never
 
 FixNamespaceComments: true
+NamespaceIndentation: Inner
+ShortNamespaceLines: 0
+
+IndentRequiresClause: false
+RequiresClausePosition: OwnLine

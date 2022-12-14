@@ -10,8 +10,7 @@
 namespace layout
 {
 
-auto topology_factory::make_topology(id_type id, scale_type scale)
-    -> pointer
+auto topology_factory::make_topology(id_type id, scale_type scale) -> pointer
 {
     if (id == cube_id)
     {

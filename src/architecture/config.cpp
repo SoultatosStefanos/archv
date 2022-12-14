@@ -20,9 +20,9 @@ namespace
     // Traverse json objects with ids.
     template < typename BinaryOperation >
     requires std::invocable<
-        BinaryOperation,
-        std::decay_t< Json::String >,
-        std::decay_t< json_val > >
+                 BinaryOperation,
+                 std::decay_t< Json::String >,
+                 std::decay_t< json_val > >
     auto for_each_object(const json_val& val, BinaryOperation func) -> void
     {
         if (val.isNull())

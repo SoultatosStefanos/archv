@@ -48,7 +48,8 @@ auto is_clusterer_listed(const backend_config& cfg) -> bool
 }
 
 auto is_clusterer_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool
 {
     return misc::container_contains(cfg.clusterers, id);
 }
@@ -59,7 +60,8 @@ auto is_mst_finder_listed(const backend_config& cfg) -> bool
 }
 
 auto is_mst_finder_listed(
-    const backend_config& cfg, backend_config::id_view_type id) -> bool
+    const backend_config& cfg,
+    backend_config::id_view_type id) -> bool
 {
     return misc::container_contains(cfg.mst_finders, id);
 }
