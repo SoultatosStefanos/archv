@@ -86,6 +86,9 @@ private:
     using topology_signal = boost::signals2::signal< void(const topology&) >;
 
 public:
+    using layout_factory_type = layout_factory< graph_type >;
+    using topology_factory_type = topology_factory;
+
     using layout_slot = typename layout_signal::slot_type;
     using topology_slot = topology_signal::slot_type;
     using connection = boost::signals2::connection;
@@ -109,8 +112,6 @@ public:
     auto connect_to_topology(const topology_slot& slot) -> connection;
 
 protected:
-    using layout_factory_type = layout_factory< graph_type >;
-
     auto set_layout(id_type id) -> void;
     auto set_topology(id_type id, scale_type scale) -> void;
 
@@ -215,7 +216,7 @@ template < typename Graph, typename WeightMap >
 inline auto
 backend< Graph, WeightMap >::set_topology(id_type id, scale_type scale) -> void
 {
-    m_topology = topology_factory::make_topology(id, scale);
+    m_topology = topology_factory_type::make_topology(id, scale);
     assert(m_topology);
 }
 
