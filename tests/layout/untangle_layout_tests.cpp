@@ -40,14 +40,12 @@ struct mock_layout : public layout::layout< graph >
 
 using nice_mock_layout = NiceMock< mock_layout >;
 
-TEST(
-    untangle_layout_tests,
-    two_vertices_on_the_same_cluster_will_just_be_displaced)
+TEST(untangle_layout_tests, two_vertices_on_the_same_cluster_will_be_untangled)
 {
     graph g;
     const auto v0 = boost::add_vertex(g);
     const auto v1 = boost::add_vertex(g);
-    auto vertex_cluster = boost::make_constant_property< vertex >(0);
+    const auto vertex_cluster = boost::make_constant_property< vertex >(0);
     nice_mock_layout initial;
     ON_CALL(initial, x(v0)).WillByDefault(Return(0));
     ON_CALL(initial, y(v0)).WillByDefault(Return(0));
@@ -63,14 +61,54 @@ TEST(
         ON_CALL(*res, z(_)).WillByDefault(Return(2));
         return res;
     };
-    double scale = 10;
+    const double scale = 10;
 
-    auto res = layout::untangle_layout(
+    const auto res = layout::untangle_layout(
         g, vertex_cluster, initial, layout_factory, scale);
 
     EXPECT_EQ(res->x(v0), 2);
     EXPECT_EQ(res->y(v0), 2);
     EXPECT_EQ(res->z(v0), 2);
+    EXPECT_EQ(res->x(v1), 3);
+    EXPECT_EQ(res->y(v1), 3);
+    EXPECT_EQ(res->z(v1), 3);
+}
+
+TEST(
+    untangle_layout_tests,
+    two_vertices_on_different_clusters_will_be_untangled)
+{
+    graph g;
+    const auto v0 = boost::add_vertex(g);
+    const auto v1 = boost::add_vertex(g);
+    const auto vertex_cluster
+        = boost::make_function_property_map< vertex >([](auto v) { return v; });
+    nice_mock_layout initial;
+    ON_CALL(initial, x(v0)).WillByDefault(Return(0));
+    ON_CALL(initial, y(v0)).WillByDefault(Return(0));
+    ON_CALL(initial, z(v0)).WillByDefault(Return(0));
+    ON_CALL(initial, x(v1)).WillByDefault(Return(1));
+    ON_CALL(initial, y(v1)).WillByDefault(Return(1));
+    ON_CALL(initial, z(v1)).WillByDefault(Return(1));
+    auto layout_factory = [](const auto&, auto)
+    {
+        auto res = std::make_unique< nice_mock_layout >();
+        ON_CALL(*res, x(0)).WillByDefault(Return(1));
+        ON_CALL(*res, y(0)).WillByDefault(Return(1));
+        ON_CALL(*res, z(0)).WillByDefault(Return(1));
+        ON_CALL(*res, x(1)).WillByDefault(Return(2));
+        ON_CALL(*res, y(1)).WillByDefault(Return(2));
+        ON_CALL(*res, z(1)).WillByDefault(Return(2));
+        return res;
+    };
+    const double scale = 10;
+
+    const auto res = layout::untangle_layout(
+        g, vertex_cluster, initial, layout_factory, scale);
+
+    EXPECT_EQ(res->x(v0), 1);
+    EXPECT_EQ(res->y(v0), 1);
+    EXPECT_EQ(res->z(v0), 1);
     EXPECT_EQ(res->x(v1), 3);
     EXPECT_EQ(res->y(v1), 3);
     EXPECT_EQ(res->z(v1), 3);
