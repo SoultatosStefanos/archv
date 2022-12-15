@@ -4,7 +4,8 @@
 #ifndef LAYOUT_DETAIL_UNTANGLE_LAYOUT_HPP
 #define LAYOUT_DETAIL_UNTANGLE_LAYOUT_HPP
 
-#include "layout/layout.hpp" // for layout
+#include "layout/layout.hpp"  // for layout
+#include "misc/algorithm.hpp" // for find_assoc_index
 
 #include <array>                          // for array
 #include <boost/graph/adjacency_list.hpp> // for vertices, edges, etc
@@ -21,8 +22,7 @@ namespace layout::detail
 template < typename Set >
 inline auto cardinality(const Set& set, const typename Set::key_type& key)
 {
-    assert(set.find(key) != std::cend(set));
-    return std::distance(std::cbegin(set), set.find(key));
+    return misc::find_assoc_index(set, key);
 }
 
 template < typename Graph, typename ClusterMap >
