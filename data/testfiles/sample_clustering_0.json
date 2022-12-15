@@ -9,6 +9,7 @@
 		"Popeye"
 	],
 	"clusterer" : "M",
+	"intensity" : 208,
 	"min-spanning-tree-finder" : "N",
 	"k" : 20,
 	"snn-threshold" : 9,

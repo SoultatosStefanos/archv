@@ -1233,7 +1233,7 @@ auto application::connect_clustering_presentation() -> void
                 m_graph_iface->get_graph(),
                 pres::vertex_cluster(*m_graph_iface),
                 m_graph_iface->get_layout_backend(),
-                layout::get_scale(m_graph_iface->get_layout_backend()) * 2);
+                layout::get_scale(m_graph_iface->get_layout_backend()) * 4);
 
             m_graph_renderer->render_layout(
                 layout::make_lposition_map(*untangled));

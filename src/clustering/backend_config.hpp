@@ -18,6 +18,7 @@ namespace clustering
 struct backend_config
 {
     using id_type = std::string;
+    using intensity_type = double;
     using id_view_type = std::string_view;
     using ids_type = std::vector< id_type >;
     using k_type = int;
@@ -30,6 +31,7 @@ struct backend_config
     ids_type mst_finders;
 
     id_type clusterer;
+    intensity_type intensity;
     id_type mst_finder;
     k_type k;
     snn_threshold_type snn_threshold;

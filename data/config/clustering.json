@@ -17,6 +17,7 @@
 			"Kruskal MST"
 		],
 		"clusterer" : "Shared Nearest Neighbour",
+		"intensity" : 5200,
 		"min-spanning-tree-finder" : "Kruskal MST",
 		"k" : 3,
 		"snn-threshold" : 5,

@@ -33,6 +33,7 @@ namespace
 auto deserialize(const json_val& root) -> config_data
 {
     using id_type = config_data::id_type;
+    using intensity_type = config_data::intensity_type;
     using k_type = config_data::k_type;
     using snn_thres_type = config_data::snn_threshold_type;
     using modularity_type = config_data::modularity_type;
@@ -43,6 +44,7 @@ auto deserialize(const json_val& root) -> config_data
     auto&& mst_finders
         = deserialize_ids(get(root, "min-spanning-tree-finders"));
     auto&& clusterer = as< id_type >(get(root, "clusterer"));
+    auto intensity = as< intensity_type >(get(root, "intensity"));
     auto&& mst_finder = as< id_type >(get(root, "min-spanning-tree-finder"));
     auto k = as< k_type >(get(root, "k"));
     auto snn_thres = as< snn_thres_type >(get(root, "snn-threshold"));
@@ -57,6 +59,7 @@ auto deserialize(const json_val& root) -> config_data
     return config_data { .clusterers = std::move(clusterers),
                          .mst_finders = std::move(mst_finders),
                          .clusterer = std::move(clusterer),
+                         .intensity = intensity,
                          .mst_finder = std::move(mst_finder),
                          .k = k,
                          .snn_threshold = snn_thres,

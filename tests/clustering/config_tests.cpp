@@ -16,6 +16,7 @@ inline auto make_sample_0() -> clustering::config_data
     return clustering::config_data { .clusterers = { "Bob", "Alice" },
                                      .mst_finders = { "Popeye" },
                                      .clusterer = "M",
+                                     .intensity = 208,
                                      .mst_finder = "N",
                                      .k = 20,
                                      .snn_threshold = 9,
