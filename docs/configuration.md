@@ -219,6 +219,7 @@ Example .json configuration:
         "Prim MST"
     ],
     "clusterer": "Infomap",
+    "intensity" : 2000,
     "min-spanning-tree-finder" : "Prim MST",
     "k" : 3,
     "snn-threshold" : 5,
@@ -249,7 +250,14 @@ Possible values: <**Prim MST** | **Kruskal MST**>
 
 The default clustering algorithm selected.  
 
-Possible values: **one listed under clusterers**.
+Possible values: **one listed under clusterers**.  
+
+**intensity** (`double`)  
+
+The scale of "clustered" layout, which attempts to showcase the adjacency of the 
+clusters.  
+
+Possible values: **any floating point number**.  
 
 **min-spanning-tree-finder** (`string`)  
 

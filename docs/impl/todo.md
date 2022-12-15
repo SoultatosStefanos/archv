@@ -963,7 +963,7 @@
 
 # 15 / 12 / 2022
 
-	+ [ ] Clustering subgraph layout
+	+ [x] Clustering subgraph layout
 
 		+ [x] Position map via layout
 
@@ -985,4 +985,4 @@
 
 		+ [n] Disable layout update on clustered graph
 
-		+ [ ] Update docs
+		+ [x] Update docs
