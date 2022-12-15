@@ -975,9 +975,13 @@
 
 			+ [x] From json
 
-			+ [ ] Update commands
-
 			+ [ ] Interactive configurable
+
+				+ [x] Update commands
+
+				+ [ ] Update gui
+
+				+ [ ] Update connections
 
 		+ [n] Disable layout update on clustered graph
 

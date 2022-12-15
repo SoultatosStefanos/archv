@@ -173,6 +173,11 @@ auto update_clusterer(
     clustering_backend& backend,
     clustering_backend::id_type id) -> void;
 
+auto update_clustering_intensity(
+    command_history& cmds,
+    clustering_backend& backend,
+    clustering_backend::intensity_type intensity) -> void;
+
 auto update_clustering_mst_finder(
     command_history& cmds,
     clustering_backend& backend,

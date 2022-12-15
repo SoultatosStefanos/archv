@@ -1357,6 +1357,34 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
+    struct update_clustering_intensity_cmd : undo_redo::command
+    {
+        using backend_type = clustering_backend;
+        using intensity_type = backend_type::intensity_type;
+
+        backend_type& backend;
+        intensity_type new_val, old_val;
+
+        update_clustering_intensity_cmd(backend_type& b, intensity_type x)
+        : backend { b }, new_val { x }
+        {
+        }
+        ~update_clustering_intensity_cmd() override = default;
+
+        auto execute() -> void override
+        {
+            old_val = clustering::get_intensity(backend);
+            clustering::update_intensity(backend, new_val);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_intensity(backend, old_val);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
     struct update_mst_finder_cmd : undo_redo::command
     {
         using backend_type = clustering_backend;
@@ -1573,6 +1601,15 @@ auto update_clusterer(
     clustering_backend::id_type id) -> void
 {
     cmds.execute(std::make_unique< update_clusterer_cmd >(backend, id));
+}
+
+auto update_clustering_intensity(
+    command_history& cmds,
+    clustering_backend& backend,
+    clustering_backend::intensity_type intensity) -> void
+{
+    cmds.execute(std::make_unique< update_clustering_intensity_cmd >(
+        backend, intensity));
 }
 
 auto update_clustering_mst_finder(
