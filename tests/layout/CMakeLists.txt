@@ -6,6 +6,7 @@ set(FILES
 	plugin_tests.cpp
 	position_map_tests.cpp
 	topology_factory_tests.cpp
+	untangle_layout_tests.cpp
 )
 set(SUBDIRECTORIES)
 

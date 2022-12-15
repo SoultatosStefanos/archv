@@ -86,11 +86,7 @@ public:
         return m_map.at(v)[0];
     }
 
-    auto x(vertex_type v) -> coord_type&
-    {
-        assert(m_map.contains(v));
-        return m_map[v][0];
-    }
+    auto x(vertex_type v) -> coord_type& { return m_map[v][0]; }
 
     auto y(vertex_type v) const -> coord_type override
     {
@@ -98,11 +94,7 @@ public:
         return m_map.at(v)[1];
     }
 
-    auto y(vertex_type v) -> coord_type&
-    {
-        assert(m_map.contains(v));
-        return m_map[v][1];
-    }
+    auto y(vertex_type v) -> coord_type& { return m_map[v][1]; }
 
     auto z(vertex_type v) const -> coord_type override
     {
@@ -110,11 +102,7 @@ public:
         return m_map.at(v)[2];
     }
 
-    auto z(vertex_type v) -> coord_type&
-    {
-        assert(m_map.contains(v));
-        return m_map[v][2];
-    }
+    auto z(vertex_type v) -> coord_type& { return m_map[v][2]; }
 
     auto clone() const -> std::unique_ptr< base > override
     {
