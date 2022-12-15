@@ -38,8 +38,8 @@ auto make_induced_graph(const Graph& g, ClusterMap vertex_cluster) -> Graph
     Graph induced;
     for (auto c [[maybe_unused]] : clusters_set)
     {
-        [[maybe_unused]] const auto v = boost::add_vertex(g);
-        assert(v == c && "1-1 correspondence");
+        [[maybe_unused]] const auto v = boost::add_vertex(induced);
+        assert(static_cast< vertex_type >(c) == v && "1-1 correspondence");
     }
 
     // Really only adding these for the layout algorithm later.
@@ -55,9 +55,6 @@ auto make_induced_graph(const Graph& g, ClusterMap vertex_cluster) -> Graph
     }
 
     assert(boost::num_vertices(induced) == clusters_set.size());
-    assert(
-        *(std::cend(clusters_set) - 1)
-        == *(boost::vertices(induced).second - 1));
     return induced;
 }
 
@@ -86,34 +83,37 @@ public:
     auto x(vertex_type v) const -> coord_type override
     {
         assert(m_map.contains(v));
-        return m_map[v][0];
+        return m_map.at(v)[0];
     }
 
     auto x(vertex_type v) -> coord_type&
     {
-        return const_cast< coord_type& >(std::as_const(*this).x(v));
+        assert(m_map.contains(v));
+        return m_map[v][0];
     }
 
     auto y(vertex_type v) const -> coord_type override
     {
         assert(m_map.contains(v));
-        return m_map[v][1];
+        return m_map.at(v)[1];
     }
 
     auto y(vertex_type v) -> coord_type&
     {
-        return const_cast< coord_type& >(std::as_const(*this).y(v));
+        assert(m_map.contains(v));
+        return m_map[v][1];
     }
 
     auto z(vertex_type v) const -> coord_type override
     {
         assert(m_map.contains(v));
-        return m_map[v][2];
+        return m_map.at(v)[2];
     }
 
     auto z(vertex_type v) -> coord_type&
     {
-        return const_cast< coord_type& >(std::as_const(*this).z(v));
+        assert(m_map.contains(v));
+        return m_map[v][2];
     }
 
     auto clone() const -> std::unique_ptr< base > override

@@ -25,7 +25,7 @@ template <
     typename ClusterMap,
     typename LayoutFactory,
     typename Scale = double >
-requires std::invocable< LayoutFactory, Scale >
+requires std::invocable< LayoutFactory, const Graph&, Scale >
 inline auto untangle_layout(
     const Graph& g,
     ClusterMap vertex_cluster,
@@ -86,9 +86,9 @@ inline auto untangle_layout(
             return layout_factory::make_layout(
                 layout_id,
                 g,
+                *space,
                 // Doesn't really matter
-                boost::make_constant_property< edge_type >(1),
-                *space);
+                boost::make_constant_property< edge_type >(1));
         },
         scale);
 }
