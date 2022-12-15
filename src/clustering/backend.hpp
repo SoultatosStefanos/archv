@@ -73,6 +73,7 @@ public:
 
     using id_type = id_t;
     using clusterer_type = clusterer< Graph >;
+    using intensity_type = double;
     using cluster_type = typename clusterer_type::cluster;
     using cluster_map_type = typename clusterer_type::cluster_map;
 
@@ -88,6 +89,7 @@ private:
         = boost::signals2::signal< void(const cluster_map_type&) >;
     using clusterer_signal
         = boost::signals2::signal< void(const clusterer_type&) >;
+    using intensity_signal = boost::signals2::signal< void(intensity_type) >;
     using mst_finder_signal
         = boost::signals2::signal< void(const mst_finder_type&) >;
     using k_signal = boost::signals2::signal< void(k_type) >;
@@ -100,6 +102,7 @@ private:
 public:
     using clusters_slot = typename clusters_signal::slot_type;
     using clusterer_slot = typename clusterer_signal::slot_type;
+    using intensity_slot = typename intensity_signal::slot_type;
     using mst_finder_slot = typename mst_finder_signal::slot_type;
     using k_slot = typename k_signal::slot_type;
     using snn_thres_slot = typename snn_thres_signal::slot_type;
@@ -119,6 +122,7 @@ public:
 
     auto get_clusters() const -> const cluster_map_type& { return m_clusters; }
     auto get_clusterer() const -> const clusterer_type& { return *m_clusterer; }
+    auto get_intensity() const -> intensity_type { return m_intensity; }
     auto get_mst_finder() const -> const mst_finder_type&;
     auto get_k() const -> k_type;
     auto get_snn_threshold() const -> snn_threshold_type;
@@ -129,6 +133,7 @@ public:
     auto update_clusters() -> void;
     auto update_clusters(cluster_map_type clusters) -> void;
     auto update_clusterer(id_type id) -> void;
+    auto update_intensity(intensity_type intense) -> void;
     auto update_mst_finder(id_type id) -> void;
     auto update_k(k_type k) -> void;
     auto update_snn_threshold(snn_threshold_type thres) -> void;
@@ -138,6 +143,7 @@ public:
 
     auto connect_to_clusters(const clusters_slot& f) -> connection;
     auto connect_to_clusterer(const clusterer_slot& f) -> connection;
+    auto connect_to_intensity(const intensity_slot& f) -> connection;
     auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
     auto connect_to_k(const k_slot& f) -> connection;
     auto connect_to_snn_threshold(const snn_thres_slot& f) -> connection;
@@ -148,6 +154,7 @@ public:
 protected:
     auto set_clusters(cluster_map_type clusters) -> void;
     auto set_clusterer(id_type id) -> void;
+    auto set_intensity(intensity_type intense) -> void;
     auto set_mst_finder(id_type id) -> void;
     auto set_k(k_type k) -> void;
     auto set_snn_threshold(snn_threshold_type thres) -> void;
@@ -157,6 +164,7 @@ protected:
 
     auto emit_clusters() const -> void;
     auto emit_clusterer() const -> void;
+    auto emit_intensity() const -> void;
     auto emit_mst_finder() const -> void;
     auto emit_k() const -> void;
     auto emit_snn_threshold() const -> void;
@@ -184,12 +192,15 @@ private:
 
     clusters_signal m_clusters_sig;
     clusterer_signal m_clusterer_sig;
+    intensity_signal m_intensity_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;
     snn_thres_signal m_snn_thres_sig;
     modularity_signal m_min_mod_sig;
     gamma_signal m_llp_gamma_sig;
     steps_signal m_llp_steps_sig;
+
+    intensity_type m_intensity;
 };
 
 /***********************************************************
@@ -212,6 +223,7 @@ inline backend< Graph, WeightMap >::backend(
     set_k(config_data().k);
     set_snn_threshold(config_data().snn_threshold);
     set_clusterer(config_data().clusterer);
+    set_intensity(config_data().intensity);
     set_min_modularity(config_data().min_modularity);
     set_llp_gamma(config_data().llp_gamma);
     set_llp_steps(config_data().llp_steps);
@@ -322,6 +334,14 @@ inline auto backend< Graph, WeightMap >::update_clusterer(id_type id) -> void
 }
 
 template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::update_intensity( //
+    intensity_type intense) -> void
+{
+    set_intensity(intense);
+    emit_intensity();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::update_mst_finder(id_type id) -> void
 {
     if (!is_mst_finder_listed(config_data(), id))
@@ -404,6 +424,14 @@ backend< Graph, WeightMap >::connect_to_clusterer(const clusterer_slot& f)
 
 template < typename Graph, typename WeightMap >
 inline auto
+backend< Graph, WeightMap >::connect_to_intensity(const intensity_slot& f)
+    -> connection
+{
+    return m_intensity_sig.connect(f);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto
 backend< Graph, WeightMap >::connect_to_mst_finder(const mst_finder_slot& f)
     -> connection
 {
@@ -463,6 +491,13 @@ inline auto backend< Graph, WeightMap >::set_clusterer(id_type id) -> void
 }
 
 template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::set_intensity(intensity_type intense)
+    -> void
+{
+    m_intensity = intense;
+}
+
+template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::set_mst_finder(id_type id) -> void
 {
     m_builder.set_mst_finder(mst_finder_factory_type::make_mst_finder(id));
@@ -510,6 +545,12 @@ template < typename Graph, typename WeightMap >
 inline auto backend< Graph, WeightMap >::emit_clusterer() const -> void
 {
     m_clusterer_sig(get_clusterer());
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::emit_intensity() const -> void
+{
+    m_intensity_sig(get_intensity());
 }
 
 template < typename Graph, typename WeightMap >
@@ -587,6 +628,12 @@ inline auto get_clusterer_id(const backend< Graph, WeightMap >& b)
 }
 
 template < typename Graph, typename WeightMap >
+inline auto get_intensity(const backend< Graph, WeightMap >& b)
+{
+    return b.get_intensity();
+}
+
+template < typename Graph, typename WeightMap >
 inline auto get_mst_finder_id(const backend< Graph, WeightMap >& b)
 {
     return b.get_mst_finder().id();
@@ -642,6 +689,14 @@ inline auto update_clusterer(
     typename backend< Graph, WeightMap >::id_type id)
 {
     b.update_clusterer(id);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto update_intensity(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::intensity_type intense)
+{
+    b.update_intensity(intense);
 }
 
 template < typename Graph, typename WeightMap >
@@ -701,6 +756,7 @@ inline auto restore_defaults(backend< Graph, WeightMap >& b)
     update_min_modularity(b, b.config_data().min_modularity);
     update_llp_gamma(b, b.config_data().llp_gamma);
     update_llp_steps(b, b.config_data().llp_steps);
+    update_intensity(b, b.config_data().intensity);
     update_clusterer(b, b.config_data().clusterer);
 }
 

@@ -127,6 +127,9 @@ using mock_clusters_slot_t = NiceMock<
 using mock_clusterer_slot_t = NiceMock<
     MockFunction< void(const typename backend_t::clusterer_type&) > >;
 
+using mock_intensity_slot_t
+    = NiceMock< MockFunction< void(typename backend_t::intensity_type) > >;
+
 using mock_mst_finder_slot_t = NiceMock<
     MockFunction< void(const typename backend_t::mst_finder_type&) > >;
 
@@ -151,6 +154,8 @@ protected:
     static constexpr auto defualt_clusterer
         = clustering::k_spanning_tree_clusterer_id;
 
+    static constexpr auto default_intensity = 2000.0;
+
     static constexpr auto defualt_mst_finder = clustering::prim_mst_id;
     static constexpr auto default_k = 3;
     static constexpr auto default_snn_threshold = 3;
@@ -166,6 +171,7 @@ protected:
     std::unique_ptr< backend_t > backend;
     mock_clusters_slot_t clusters_slot;
     mock_clusterer_slot_t clusterer_slot;
+    mock_intensity_slot_t intensity_slot;
     mock_mst_finder_slot_t mst_finder_slot;
     mock_k_slot_t k_slot;
     mock_snn_thres_slot_t snn_thres_slot;
@@ -195,6 +201,11 @@ TEST_F(given_a_clustering_backend, initially_given_default_clusterer_is_held)
     ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
 }
 
+TEST_F(given_a_clustering_backend, initially_given_default_intensity_is_held)
+{
+    ASSERT_EQ(clustering::get_intensity(*backend), default_intensity);
+}
+
 TEST_F(given_a_clustering_backend, initially_given_default_mst_finder_is_held)
 {
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
@@ -206,7 +217,8 @@ TEST_F(given_a_clustering_backend, initially_given_default_k_is_held)
 }
 
 TEST_F(
-    given_a_clustering_backend, initially_given_default_snn_threshold_is_held)
+    given_a_clustering_backend,
+    initially_given_default_snn_threshold_is_held)
 {
     ASSERT_EQ(clustering::get_snn_threshold(*backend), default_snn_threshold);
 }
@@ -260,7 +272,8 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_clustering_backend, when_updating_k_with_invalid_k_nothing_happens)
+    given_a_clustering_backend,
+    when_updating_k_with_invalid_k_nothing_happens)
 {
     backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
     backend->connect_to_k(k_slot.AsStdFunction());
@@ -319,6 +332,28 @@ TEST_F(
     clustering::update_clusterer(*backend, id);
 
     ASSERT_EQ(clustering::get_clusterer_id(*backend), id);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    when_updating_the_intensity_observers_are_notified)
+{
+    backend->connect_to_intensity(intensity_slot.AsStdFunction());
+
+    EXPECT_CALL(intensity_slot, Call(_)).Times(1);
+
+    clustering::update_intensity(*backend, 324);
+}
+
+TEST_F(
+    given_a_clustering_backend,
+    after_updating_the_intensity_new_intensity_is_held)
+{
+    constexpr auto intensity = 12312.0;
+
+    clustering::update_intensity(*backend, intensity);
+
+    ASSERT_EQ(clustering::get_intensity(*backend), intensity);
 }
 
 TEST_F(
@@ -480,6 +515,7 @@ TEST_F(
     constexpr auto q = 0.3f;
     constexpr auto gamma = 0.34f;
     constexpr auto steps = 999;
+    constexpr auto intensity = 999.0;
 
     static_assert(id != defualt_mst_finder);
     static_assert(k != default_k);
@@ -487,7 +523,9 @@ TEST_F(
     static_assert(q != default_min_q);
     static_assert(gamma != default_llp_gamma);
     static_assert(steps != default_llp_steps);
+    static_assert(intensity != default_intensity);
 
+    clustering::update_intensity(*backend, intensity);
     clustering::update_k(*backend, k);
     clustering::update_mst_finder(*backend, id);
     clustering::update_snn_threshold(*backend, snn_thres);
@@ -495,6 +533,7 @@ TEST_F(
     clustering::update_llp_gamma(*backend, gamma);
     clustering::update_llp_steps(*backend, steps);
 
+    EXPECT_EQ(clustering::get_intensity(*backend), intensity);
     EXPECT_EQ(clustering::get_k(*backend), k);
     EXPECT_EQ(clustering::get_mst_finder_id(*backend), id);
     EXPECT_EQ(clustering::get_snn_threshold(*backend), snn_thres);
@@ -504,6 +543,7 @@ TEST_F(
 
     clustering::restore_defaults(*backend);
 
+    ASSERT_EQ(clustering::get_intensity(*backend), default_intensity);
     ASSERT_EQ(clustering::get_clusterer_id(*backend), defualt_clusterer);
     ASSERT_EQ(clustering::get_mst_finder_id(*backend), defualt_mst_finder);
     ASSERT_EQ(clustering::get_k(*backend), default_k);

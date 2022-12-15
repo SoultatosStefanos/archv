@@ -971,4 +971,14 @@
 
 		+ [ ] Make the aggregated layout distance configurable
 
+			+ [x] From json
+
+			+ [x] Update backend
+
+			+ [ ] Update commands
+
+			+ [ ] Interactive configurable
+
 		+ [n] Disable layout update on clustered graph
+
+		+ [ ] Update docs

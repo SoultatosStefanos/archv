@@ -11,6 +11,7 @@ namespace clustering
 auto default_backend_config() -> backend_config
 {
     using id_type = backend_config::id_type;
+    using intensity_type [[maybe_unused]] = backend_config::intensity_type;
     using ids_type [[maybe_unused]] = backend_config::ids_type;
     using k_type [[maybe_unused]] = backend_config::k_type;
     using snn_t_type [[maybe_unused]] = backend_config::snn_threshold_type;
@@ -18,6 +19,7 @@ auto default_backend_config() -> backend_config
     return backend_config { .clusterers = all_clusterers(),
                             .mst_finders = all_mst_finders(),
                             .clusterer = id_type(k_spanning_tree_clusterer_id),
+                            .intensity = 2000.0,
                             .mst_finder = id_type(prim_mst_id),
                             .k = 3,
                             .snn_threshold = 3,
