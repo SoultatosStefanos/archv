@@ -11,19 +11,34 @@
 namespace layout
 {
 
-// A runtime managed 3D vertex-position property map from a layout.
+// A runtime managed 3D vertex-position property map from a backend.
 template < typename Backend >
 using position_map = boost::function_property_map<
     detail::position_dispatcher< Backend, std::size_t, double >,
     std::size_t,
     detail::position< double > >;
 
-// Creates a runtime managed 3D vertex-position property map from a layout.
+// A runtime managed 3D vertex-position property map from a layout.
+template < typename Layout >
+using lposition_map = boost::function_property_map<
+    detail::lposition_dispatcher< Layout, double >,
+    std::size_t,
+    detail::position< double > >;
+
+// Creates a runtime managed 3D vertex-position property map from a backend.
 template < typename Backend >
 inline auto make_position_map(const Backend& b)
 {
     return position_map< Backend >(
         detail::position_dispatcher< Backend, std::size_t, double >(b));
+}
+
+// Creates a runtime managed 3D vertex-position property map from a layout.
+template < typename Layout >
+inline auto make_lposition_map(const Layout& l)
+{
+    return lposition_map< Layout >(
+        detail::lposition_dispatcher< Layout, double >(l));
 }
 
 } // namespace layout

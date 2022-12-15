@@ -956,6 +956,19 @@
 
 # 14 / 12 / 2022
 
+	+ [x] Clustering subgraph layout
+
+		+ [x] Layout untangle (with cluster-map) function
+
+
+# 15 / 12 / 2022
+
 	+ [ ] Clustering subgraph layout
 
-		+ [ ] Layout transform (with cluster-map) function
+		+ [x] Position map via layout
+
+		+ [x] Update application
+
+		+ [ ] Make the aggregated layout distance configurable
+
+		+ [ ] Disable layout update on clustered graph

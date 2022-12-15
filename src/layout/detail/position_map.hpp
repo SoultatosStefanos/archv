@@ -36,6 +36,27 @@ private:
     const backend_type* m_backend { nullptr };
 };
 
+template < typename Layout, typename Coord >
+class lposition_dispatcher
+{
+public:
+    using layout_type = Layout;
+    using coord_type = Coord;
+    using position_type = position< coord_type >;
+
+    explicit lposition_dispatcher(const layout_type& l) : m_lay(&l) { }
+
+    template < typename Vertex >
+    auto operator()(Vertex v) const -> position_type
+    {
+        assert(m_lay);
+        return { .x = m_lay->x(v), .y = m_lay->y(v), .z = m_lay->z(v) };
+    }
+
+private:
+    const layout_type* m_lay { nullptr };
+};
+
 } // namespace layout::detail
 
 #endif // LAYOUT_DETAIL_POSITION_MAP_HPP

@@ -1161,6 +1161,8 @@ auto application::connect_clustering_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected hide clusters";
             m_graph_renderer->hide_clusters();
+            m_graph_renderer->render_layout(
+                pres::vertex_position(*m_graph_iface));
         });
 
     editor.connect_to_clusterer(
@@ -1224,6 +1226,18 @@ auto application::connect_clustering_presentation() -> void
         {
             m_graph_renderer->render_clusters(
                 pres::vertex_cluster(*m_graph_iface));
+
+            // TODO Make dist configurable
+
+            const auto untangled = layout::untangle_layout(
+                m_graph_iface->get_graph(),
+                pres::vertex_cluster(*m_graph_iface),
+                m_graph_iface->get_layout_backend(),
+                layout::get_scale(m_graph_iface->get_layout_backend()) * 2);
+
+            m_graph_renderer->render_layout(
+                layout::make_lposition_map(*untangled));
+
             BOOST_LOG_TRIVIAL(info) << "rendered clusters";
         });
 

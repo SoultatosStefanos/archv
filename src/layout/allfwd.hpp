@@ -40,11 +40,20 @@ namespace detail
     template < typename Backend, typename Vertex, typename Coord >
     class position_dispatcher;
 
+    template < typename Layout, typename Coord >
+    class lposition_dispatcher;
+
 } // namespace detail
 
 template < typename Backend >
 using position_map = boost::function_property_map<
     detail::position_dispatcher< Backend, std::size_t, double >,
+    std::size_t,
+    detail::position< double > >;
+
+template < typename Layout >
+using lposition_map = boost::function_property_map<
+    detail::lposition_dispatcher< Layout, double >,
     std::size_t,
     detail::position< double > >;
 
