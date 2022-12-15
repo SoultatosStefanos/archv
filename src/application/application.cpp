@@ -697,6 +697,9 @@ auto application::prepare_clustering_editor() -> void
     frontend.set_clusterer([this, &backend]()
                            { return clustering::get_clusterer_id(backend); });
 
+    frontend.set_intensity([this, &backend]()
+                           { return clustering::get_intensity(backend); });
+
     frontend.set_mst_finder([this, &backend]()
                             { return clustering::get_mst_finder_id(backend); });
 
@@ -1170,6 +1173,13 @@ auto application::connect_clustering_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected clusterer: " << id;
             pres::update_clusterer(*m_cmds, backend, id);
+        });
+
+    editor.connect_to_intensity(
+        [this, &backend](auto i)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected clustering intensity: " << i;
+            pres::update_clustering_intensity(*m_cmds, backend, i);
         });
 
     editor.connect_to_mst_finder(

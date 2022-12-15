@@ -969,19 +969,19 @@
 
 		+ [x] Update application
 
-		+ [ ] Make the aggregated layout distance configurable
+		+ [x] Make the aggregated layout distance configurable
 
 			+ [x] Update backend
 
 			+ [x] From json
 
-			+ [ ] Interactive configurable
+			+ [x] Interactive configurable
 
 				+ [x] Update commands
 
-				+ [ ] Update gui
+				+ [x] Update gui
 
-				+ [ ] Update connections
+				+ [x] Update connections
 
 		+ [n] Disable layout update on clustered graph
 

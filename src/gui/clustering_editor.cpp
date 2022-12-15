@@ -29,6 +29,12 @@ auto clustering_editor::clusterer() const -> clusterer_type
     return m_clusterer();
 }
 
+auto clustering_editor::intensity() const -> intensity_type
+{
+    assert(m_intensity);
+    return m_intensity();
+}
+
 auto clustering_editor::mst_finder() const -> mst_finder_type
 {
     assert(m_mst_finder);
@@ -71,6 +77,12 @@ auto clustering_editor::set_clusterer(clusterer_accessor f) -> void
     m_clusterer = std::move(f);
 }
 
+auto clustering_editor::set_intensity(intensity_accessor f) -> void
+{
+    assert(f);
+    m_intensity = std::move(f);
+}
+
 auto clustering_editor::set_mst_finder(mst_finder_accessor f) -> void
 {
     assert(f);
@@ -111,6 +123,12 @@ auto clustering_editor::connect_to_clusterer(const clustererer_slot& f)
     -> connection
 {
     return m_clusterer_sig.connect(f);
+}
+
+auto clustering_editor::connect_to_intensity(const intensity_slot& f)
+    -> connection
+{
+    return m_intensity_sig.connect(f);
 }
 
 auto clustering_editor::connect_to_mst_finder(const mst_finder_slot& f)
@@ -164,6 +182,11 @@ auto clustering_editor::connect_to_restore(const restore_slot& f) -> connection
 auto clustering_editor::emit_clusterer(clusterer_type c) const -> void
 {
     m_clusterer_sig(c);
+}
+
+auto clustering_editor::emit_intensity(intensity_type i) const -> void
+{
+    m_intensity_sig(i);
 }
 
 auto clustering_editor::emit_mst_finder(mst_finder_type mst) const -> void
@@ -238,6 +261,8 @@ auto clustering_editor::render() const -> void
     ImGui::Begin(ICON_FA_PENCIL_ALT " Clustering Edit", &m_visible);
     render_clusterer_editor();
     spaced_separator();
+    render_intensity_editor();
+    spaced_separator();
     ImGui::Spacing();
     ImGui::Spacing();
     ImGui::Spacing();
@@ -265,6 +290,25 @@ auto clustering_editor::render_clusterer_editor() const -> void
             clusterers().data(),
             clusterers().size()))
         emit_clusterer(clusterers().at(index));
+}
+
+auto clustering_editor::render_intensity_editor() const -> void
+{
+    auto f = intensity();
+
+    if (ImGui::InputFloat(
+            "Intensity##clustering",
+            &f,
+            1,
+            0,
+            "%.3f",
+            ImGuiInputTextFlags_EnterReturnsTrue))
+        emit_intensity(f);
+
+    ImGui::SameLine();
+    detail::render_help_marker(
+        "The scale of the \"clustered\" layout, which attempts to showcase the "
+        "adjacency of the clusters");
 }
 
 auto clustering_editor::render_settings_for_nerds_button() const -> void

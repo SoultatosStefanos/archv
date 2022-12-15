@@ -16,6 +16,7 @@ class clustering_editor
 {
 public:
     using clusterer_type = std::string_view;
+    using intensity_type = float;
     using mst_finder_type = std::string_view;
     using k_type = int;
     using snn_thres_type = int;
@@ -24,6 +25,7 @@ public:
     using steps_type = int;
 
     using clusterer_accessor = std::function< clusterer_type() >;
+    using intensity_accessor = std::function< intensity_type() >;
     using mst_finder_accessor = std::function< mst_finder_type() >;
     using k_accessor = std::function< k_type() >;
     using snn_thres_accessor = std::function< snn_thres_type() >;
@@ -33,6 +35,7 @@ public:
 
 private:
     using clusterer_signal = boost::signals2::signal< void(clusterer_type) >;
+    using intensity_signal = boost::signals2::signal< void(intensity_type) >;
     using mst_finder_signal = boost::signals2::signal< void(mst_finder_type) >;
     using k_signal = boost::signals2::signal< void(k_type) >;
     using snn_thres_signal = boost::signals2::signal< void(snn_thres_type) >;
@@ -45,6 +48,7 @@ private:
 
 public:
     using clustererer_slot = clusterer_signal::slot_type;
+    using intensity_slot = intensity_signal::slot_type;
     using mst_finder_slot = mst_finder_signal::slot_type;
     using k_slot = k_signal::slot_type;
     using snn_thres_slot = snn_thres_signal::slot_type;
@@ -65,6 +69,7 @@ public:
     auto render() const -> void;
 
     auto clusterer() const -> clusterer_type;
+    auto intensity() const -> intensity_type;
     auto mst_finder() const -> mst_finder_type;
     auto k() const -> k_type;
     auto snn_thres() const -> snn_thres_type;
@@ -73,6 +78,7 @@ public:
     auto llp_steps() const -> steps_type;
 
     auto set_clusterer(clusterer_accessor f) -> void;
+    auto set_intensity(intensity_accessor f) -> void;
     auto set_mst_finder(mst_finder_accessor f) -> void;
     auto set_k(k_accessor f) -> void;
     auto set_snn_thres(snn_thres_accessor f) -> void;
@@ -81,6 +87,7 @@ public:
     auto set_llp_steps(steps_accessor f) -> void;
 
     auto connect_to_clusterer(const clustererer_slot& f) -> connection;
+    auto connect_to_intensity(const intensity_slot& f) -> connection;
     auto connect_to_mst_finder(const mst_finder_slot& f) -> connection;
     auto connect_to_k(const k_slot& f) -> connection;
     auto connect_to_snn_thres(const snn_thres_slot& f) -> connection;
@@ -101,6 +108,7 @@ protected:
     auto mst_finders() -> render_vector& { return m_mst_finders; }
 
     auto emit_clusterer(clusterer_type c) const -> void;
+    auto emit_intensity(intensity_type i) const -> void;
     auto emit_mst_finder(mst_finder_type mst) const -> void;
     auto emit_k(k_type k) const -> void;
     auto emit_snn_thres(snn_thres_type t) const -> void;
@@ -113,6 +121,7 @@ protected:
 
 private:
     auto render_clusterer_editor() const -> void;
+    auto render_intensity_editor() const -> void;
     auto render_cluster_button() const -> void;
     auto render_hide_button() const -> void;
     auto render_settings_for_nerds_button() const -> void;
@@ -128,6 +137,7 @@ private:
 
     mutable bool m_visible { false };
     clusterer_signal m_clusterer_sig;
+    intensity_signal m_intensity_sig;
     mst_finder_signal m_mst_finder_sig;
     k_signal m_k_sig;
     snn_thres_signal m_snn_thres_sig;
@@ -139,6 +149,7 @@ private:
     restore_signal m_restore_sig;
 
     clusterer_accessor m_clusterer;
+    intensity_accessor m_intensity;
     mst_finder_accessor m_mst_finder;
     k_accessor m_k;
     snn_thres_accessor m_snn_thres;
