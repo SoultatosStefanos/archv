@@ -971,4 +971,4 @@
 
 		+ [ ] Make the aggregated layout distance configurable
 
-		+ [ ] Disable layout update on clustered graph
+		+ [n] Disable layout update on clustered graph
