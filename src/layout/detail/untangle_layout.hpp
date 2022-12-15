@@ -11,50 +11,74 @@
 #include <boost/graph/graph_traits.hpp>   // for graph_traits
 #include <cassert>                        // for assert
 #include <memory>                         // for unique_ptr
-#include <set>                            // for set
 #include <type_traits>   // for is_convertible_v, is_default_constructible_v
 #include <unordered_map> // for unordered_map
+#include <unordered_set> // for unordered_set
 
 namespace layout::detail
 {
 
+template < typename Set >
+inline auto cardinality(const Set& set, const typename Set::key_type& key)
+{
+    assert(set.find(key) != std::cend(set));
+    return std::distance(std::cbegin(set), set.find(key));
+}
+
 template < typename Graph, typename ClusterMap >
-auto make_induced_graph(const Graph& g, ClusterMap vertex_cluster) -> Graph
+inline auto make_clusters_set(const Graph& g, ClusterMap vertex_cluster)
+{
+    using property_traits = boost::property_traits< ClusterMap >;
+    using cluster_type = typename property_traits::value_type;
+    using set_type = std::unordered_set< cluster_type >;
+
+    set_type clusters;
+    for (auto v : boost::make_iterator_range(boost::vertices(g)))
+        clusters.insert(boost::get(vertex_cluster, v));
+
+    return clusters;
+}
+
+template < typename Graph, typename ClusterMap, typename ClusterSet >
+auto make_induced_graph(
+    const Graph& g,
+    ClusterMap vertex_cluster,
+    const ClusterSet& clusters)
 {
     using graph_traits = boost::graph_traits< Graph >;
     using vertex_type [[maybe_unused]] =
         typename graph_traits::vertex_descriptor;
     using property_traits = boost::property_traits< ClusterMap >;
     using cluster_type = typename property_traits::value_type;
-    using set_type = std::set< cluster_type >;
 
     static_assert(std::is_convertible_v< cluster_type, vertex_type >);
     static_assert(std::is_convertible_v< vertex_type, cluster_type >);
 
-    set_type clusters_set;
-    for (auto v : boost::make_iterator_range(boost::vertices(g)))
-        clusters_set.insert(boost::get(vertex_cluster, v));
-
     Graph induced;
-    for (auto c [[maybe_unused]] : clusters_set)
+
+    // Build vertices.
+    for (auto c [[maybe_unused]] : clusters)
     {
         [[maybe_unused]] const auto v = boost::add_vertex(induced);
-        assert(static_cast< vertex_type >(c) == v && "1-1 correspondence");
+        assert(cardinality(clusters, c) == v); // our invariant
     }
 
+    // Build edges.
     // Really only adding these for the layout algorithm later.
     for (auto e : boost::make_iterator_range(boost::edges(g)))
     {
-        const auto source_cluster
-            = boost::get(vertex_cluster, boost::source(e, g));
-        const auto target_cluster
-            = boost::get(vertex_cluster, boost::target(e, g));
+        const auto src_c = boost::get(vertex_cluster, boost::source(e, g));
+        const auto trgt_c = boost::get(vertex_cluster, boost::target(e, g));
 
-        if (source_cluster != target_cluster)
-            boost::add_edge(source_cluster, target_cluster, induced);
+        const bool between_clusters = (src_c != trgt_c);
+        if (between_clusters)
+            boost::add_edge(
+                cardinality(clusters, src_c),
+                cardinality(clusters, trgt_c),
+                induced);
     }
 
-    assert(boost::num_vertices(induced) == clusters_set.size());
+    assert(boost::num_vertices(induced) == clusters.size());
     return induced;
 }
 
@@ -117,10 +141,11 @@ private:
     storage m_map;
 };
 
-template < typename Graph, typename ClusterMap >
+template < typename Graph, typename ClusterMap, typename ClusterSet >
 auto make_offsetted_layout(
     const Graph& g,
     ClusterMap vertex_cluster,
+    const ClusterSet& set,
     const layout< Graph >& induced,
     const layout< Graph >& initial) -> std::unique_ptr< layout< Graph > >
 {
@@ -138,10 +163,17 @@ auto make_offsetted_layout(
     auto res = std::make_unique< derived_type >();
     for (auto v : boost::make_iterator_range(boost::vertices(g)))
     {
+        // NOTE: we use the cardinality of a cluster on the set to find the
+        // cluster's vertex descriptor in the induced graph.
         const auto c = boost::get(vertex_cluster, v);
-        res->x(v) = initial.x(v) + induced.x(c);
-        res->y(v) = initial.y(v) + induced.y(c);
-        res->z(v) = initial.z(v) + induced.z(c);
+        const auto vc = cardinality(set, c);
+
+        static_assert(std::is_convertible_v< decltype(vc), vertex_type >);
+        static_assert(std::is_convertible_v< vertex_type, decltype(vc) >);
+
+        res->x(v) = initial.x(v) + induced.x(vc);
+        res->y(v) = initial.y(v) + induced.y(vc);
+        res->z(v) = initial.z(v) + induced.z(vc);
     }
 
     return res;

@@ -48,10 +48,12 @@ inline auto untangle_layout(
                   const Graph&,
                   Scale >);
 
-    const auto g2 = detail::make_induced_graph(g, vertex_cluster);
+    const auto clusters = detail::make_clusters_set(g, vertex_cluster);
+    const auto g2 = detail::make_induced_graph(g, vertex_cluster, clusters);
     const auto g2_lay = layout_factory(g2, scale);
     assert(g2_lay);
-    return detail::make_offsetted_layout(g, vertex_cluster, *g2_lay, initial);
+    return detail::make_offsetted_layout(
+        g, vertex_cluster, clusters, *g2_lay, initial);
 }
 
 // Attempts to showcase the adjacency of a graph's clusters on a layout.
