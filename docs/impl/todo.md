@@ -971,9 +971,9 @@
 
 		+ [ ] Make the aggregated layout distance configurable
 
-			+ [x] From json
-
 			+ [x] Update backend
+
+			+ [x] From json
 
 			+ [ ] Update commands
 
