@@ -27,7 +27,7 @@
 
 	+ [x] Cluster with algorithm
 
-	+ [ ] Layout clusters as subgraphs
+	+ [x] Layout clusters as subgraphs
 
 	+ [ ] Cluster colors adjust
 
@@ -986,3 +986,14 @@
 		+ [n] Disable layout update on clustered graph
 
 		+ [x] Update docs
+
+
+# 16 / 12 / 2022
+
+	+ [ ] Dependencies color coding
+
+		+ [ ] Cleanup edge renderer "private" functions
+
+		+ [ ] Update weights editor
+
+		+ [ ] Update weights presentation
