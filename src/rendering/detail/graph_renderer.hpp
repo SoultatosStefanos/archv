@@ -84,6 +84,7 @@ public:
     auto render_position(const id_type& id, position_type pos) -> void;
 
     auto render_scale(const id_type& id, scale_type scale) -> void;
+    auto hide_scale(const id_type& id) -> void;
 
     auto render_in_degree_particles(
         const id_type& id,
@@ -92,10 +93,9 @@ public:
         const id_type&,
         const std::optional< name_type >& particles) -> void;
 
-    auto render_cluster(const id_type& id, const rgba_type& col) -> void;
-
-    auto hide_scale(const id_type& id) -> void;
-    auto hide_cluster(const id_type& id) -> void;
+    // NOTE: Shaded color.
+    auto render_col(const id_type& id, const rgba_type& col) -> void;
+    auto hide_col(const id_type& id) -> void;
 
     auto render_bounding_box(const id_type& id) -> void;
     auto hide_bounding_box(const id_type& id) -> void;
@@ -198,18 +198,19 @@ public:
         const dependency_type& dependency,
         weight_type weight) -> void;
 
-    auto render_cluster(
-        const vertex_id_type& source,
-        const vertex_id_type& target,
-        const dependency_type& dependency,
-        const rgba_type& col) -> void;
-
     auto hide_weight(
         const vertex_id_type& source,
         const vertex_id_type& target,
         const dependency_type& dependency) -> void;
 
-    auto hide_cluster(
+    // NOTE: Shaded color.
+    auto render_col(
+        const vertex_id_type& source,
+        const vertex_id_type& target,
+        const dependency_type& dependency,
+        const rgba_type& col) -> void;
+
+    auto hide_col(
         const vertex_id_type& source,
         const vertex_id_type& target,
         const dependency_type& dependency) -> void;

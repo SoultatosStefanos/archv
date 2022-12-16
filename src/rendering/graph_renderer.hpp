@@ -455,7 +455,7 @@ inline auto graph_renderer<
     visit_vertices(
         [this, vertex_cluster](auto v)
         {
-            m_vertex_renderer.render_cluster(
+            m_vertex_renderer.render_col(
                 boost::get(vertex_id(), v),
                 get_cluster_color_coder()(boost::get(vertex_cluster, v)));
         });
@@ -471,13 +471,13 @@ inline auto graph_renderer<
             const bool within_same_cluster = (src_c == trgt_c);
 
             if (within_same_cluster)
-                m_edge_renderer.render_cluster(
+                m_edge_renderer.render_col(
                     boost::get(vertex_id(), src),
                     boost::get(vertex_id(), trgt),
                     boost::get(edge_dependency(), e),
                     get_cluster_color_coder()(boost::get(vertex_cluster, src)));
             else // in case of rendered cluster
-                m_edge_renderer.hide_cluster(
+                m_edge_renderer.hide_col(
                     boost::get(vertex_id(), boost::source(e, graph())),
                     boost::get(vertex_id(), boost::target(e, graph())),
                     boost::get(edge_dependency(), e));
@@ -611,14 +611,13 @@ inline auto graph_renderer<
     DegreesEvaluator,
     ClusterColorCoder >::hide_clusters() -> void
 {
-    visit_vertices(
-        [this](auto v)
-        { m_vertex_renderer.hide_cluster(boost::get(vertex_id(), v)); });
+    visit_vertices([this](auto v)
+                   { m_vertex_renderer.hide_col(boost::get(vertex_id(), v)); });
 
     visit_edges(
         [this](auto e)
         {
-            m_edge_renderer.hide_cluster(
+            m_edge_renderer.hide_col(
                 boost::get(vertex_id(), boost::source(e, graph())),
                 boost::get(vertex_id(), boost::target(e, graph())),
                 boost::get(edge_dependency(), e));

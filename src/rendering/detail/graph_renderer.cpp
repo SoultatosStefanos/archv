@@ -41,7 +41,7 @@ struct vertex_properties
     std::optional< scale_type > scale = std::nullopt;
     std::optional< name_type > in_degree_effect = std::nullopt;
     std::optional< name_type > out_degree_effect = std::nullopt;
-    std::optional< rgba_type > cluster_col = std::nullopt;
+    std::optional< rgba_type > manual_col = std::nullopt;
 
     auto operator==(const vertex_properties&) const -> bool = default;
     auto operator!=(const vertex_properties&) const -> bool = default;
@@ -441,7 +441,7 @@ auto vertex_renderer::shutdown_degree_particles(
     curr_effect = std::nullopt;
 }
 
-auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
+auto vertex_renderer::render_col(const id_type& id, const rgba_type& col)
     -> void
 {
     assert(m_scene.hasEntity(id));
@@ -449,12 +449,12 @@ auto vertex_renderer::render_cluster(const id_type& id, const rgba_type& col)
     assert(e);
     e->setMaterial(shaded_color_material(col));
 
-    vertex(id).cluster_col = col;
+    vertex(id).manual_col = col;
 
-    BOOST_LOG_TRIVIAL(debug) << "rendered cluster for vertex: " << id;
+    BOOST_LOG_TRIVIAL(debug) << "rendered color for vertex: " << id;
 }
 
-auto vertex_renderer::hide_cluster(const id_type& id) -> void
+auto vertex_renderer::hide_col(const id_type& id) -> void
 {
     assert(m_scene.hasEntity(id));
 
@@ -462,9 +462,9 @@ auto vertex_renderer::hide_cluster(const id_type& id) -> void
     assert(e);
     e->setMaterialName(m_cfg->vertex_material);
 
-    vertex(id).cluster_col = std::nullopt;
+    vertex(id).manual_col = std::nullopt;
 
-    BOOST_LOG_TRIVIAL(debug) << "hid cluster of vertex: " << id;
+    BOOST_LOG_TRIVIAL(debug) << "hid color of vertex: " << id;
 }
 
 auto vertex_renderer::draw(const id_type& id, const config_data_type& cfg)
@@ -492,8 +492,8 @@ auto vertex_renderer::draw_model(const vertex_type& v) -> void
         = m_scene.createEntity(v.id, m_cfg->vertex_mesh, ARCHV_RESOURCE_GROUP);
     assert(e);
 
-    if (v.cluster_col)
-        e->setMaterial(shaded_color_material(*v.cluster_col));
+    if (v.manual_col)
+        e->setMaterial(shaded_color_material(*v.manual_col));
     else
         e->setMaterialName(m_cfg->vertex_material);
 
@@ -592,7 +592,7 @@ struct edge_properties
     name_type txt_name;
 
     std::optional< weight_type > weight = std::nullopt;
-    std::optional< rgba_type > cluster_col = std::nullopt;
+    std::optional< rgba_type > manual_col = std::nullopt;
 
     auto operator==(const edge_properties&) const -> bool = default;
     auto operator!=(const edge_properties&) const -> bool = default;
@@ -642,8 +642,10 @@ namespace
             make_edge_txt_name(name));
     }
 
-    inline auto
-    rotate(const Vector3& from, const Vector3& to, const Vector3& axis)
+    inline auto rotate(
+        const Vector3& from, //
+        const Vector3& to,
+        const Vector3& axis)
     {
         return axis.getRotationTo(to - from);
     }
@@ -676,8 +678,9 @@ namespace
         return across_line(from, to, d);
     }
 
-    inline auto
-    calculate_edge_end(const edge_properties& e, const SceneManager& scene)
+    inline auto calculate_edge_end(
+        const edge_properties& e, //
+        const SceneManager& scene)
     {
         assert(scene.hasSceneNode(e.source));
         assert(scene.hasSceneNode(e.target));
@@ -697,8 +700,9 @@ namespace
     //          |<--- (dist, randomly generated)
     //          |
     // (inter1) *---* (begin)
-    inline auto
-    calculate_edge_path(const edge_properties& e, const SceneManager& scene)
+    inline auto calculate_edge_path(
+        const edge_properties& e, //
+        const SceneManager& scene)
     {
         assert(scene.hasSceneNode(e.source));
         assert(scene.hasSceneNode(e.target));
@@ -745,7 +749,7 @@ namespace
         return first.midPoint(first.midPoint(last));
     }
 
-    inline auto produce_weighted_caption(
+    inline auto make_weighted_caption(
         const std::string& caption,
         edge_renderer::weight_type weight)
     {
@@ -946,10 +950,10 @@ auto edge_renderer::render_model_pos(const edge_type& e, const path_type& path)
     auto* entity = m_scene.createEntity(e.name, e.name);
     assert(entity);
 
-    if (!e.cluster_col)
+    if (!e.manual_col)
         entity->setMaterialName(m_cfg->edge_material);
     else
-        entity->setMaterial(shaded_color_material(*e.cluster_col));
+        entity->setMaterial(shaded_color_material(*e.manual_col));
 
     entity->setVisibilityFlags(detail::edge_mesh_mask);
     entity->setRenderQueueGroup(RENDER_QUEUE_MAIN);
@@ -999,38 +1003,15 @@ auto edge_renderer::render_weight(
     {
         auto& txt = edge_txt(first_parallel(e).txt_name);
         const auto [caption, w] = make_parallels_weighted_caption(e);
-        txt.setCaption(produce_weighted_caption(caption, w));
+        txt.setCaption(make_weighted_caption(caption, w));
     }
     else
     {
         auto& txt = edge_txt(e.txt_name);
-        txt.setCaption(produce_weighted_caption(dependency, weight));
+        txt.setCaption(make_weighted_caption(dependency, weight));
     }
 
     BOOST_LOG_TRIVIAL(debug) << "rendered weight for edge: " << name;
-}
-
-auto edge_renderer::render_cluster(
-    const vertex_id_type& source,
-    const vertex_id_type& target,
-    const dependency_type& dependency,
-    const rgba_type& col) -> void
-{
-    const auto name = make_edge_name(source, target, dependency);
-    assert(m_scene.hasEntity(name));
-    auto* e = m_scene.getEntity(name);
-    assert(e);
-    e->setMaterial(shaded_color_material(col));
-
-    const auto tip_name = make_edge_tip_name(name);
-    assert(m_scene.hasEntity(tip_name));
-    auto* tip_e = m_scene.getEntity(tip_name);
-    assert(tip_e);
-    tip_e->setMaterial(shaded_color_material(col));
-
-    edge(name).cluster_col = col;
-
-    BOOST_LOG_TRIVIAL(debug) << "rendered cluster for edge: " << name;
 }
 
 // NOTE: Performs only mutations, no allocations take place.
@@ -1059,7 +1040,30 @@ auto edge_renderer::hide_weight(
     BOOST_LOG_TRIVIAL(debug) << "hid weight for edge: " << name;
 }
 
-auto edge_renderer::hide_cluster(
+auto edge_renderer::render_col(
+    const vertex_id_type& source,
+    const vertex_id_type& target,
+    const dependency_type& dependency,
+    const rgba_type& col) -> void
+{
+    const auto name = make_edge_name(source, target, dependency);
+    assert(m_scene.hasEntity(name));
+    auto* e = m_scene.getEntity(name);
+    assert(e);
+    e->setMaterial(shaded_color_material(col));
+
+    const auto tip_name = make_edge_tip_name(name);
+    assert(m_scene.hasEntity(tip_name));
+    auto* tip_e = m_scene.getEntity(tip_name);
+    assert(tip_e);
+    tip_e->setMaterial(shaded_color_material(col));
+
+    edge(name).manual_col = col;
+
+    BOOST_LOG_TRIVIAL(debug) << "rendered color for edge: " << name;
+}
+
+auto edge_renderer::hide_col(
     const vertex_id_type& source,
     const vertex_id_type& target,
     const dependency_type& dependency) -> void
@@ -1076,9 +1080,9 @@ auto edge_renderer::hide_cluster(
     assert(tip_e);
     tip_e->setMaterialName(m_cfg->edge_tip_material);
 
-    edge(name).cluster_col = std::nullopt;
+    edge(name).manual_col = std::nullopt;
 
-    BOOST_LOG_TRIVIAL(debug) << "hid cluster for edge: " << name;
+    BOOST_LOG_TRIVIAL(debug) << "hid color for edge: " << name;
 }
 
 auto edge_renderer::draw(
