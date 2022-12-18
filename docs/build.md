@@ -134,11 +134,13 @@ OGRE_PROCEDURAL_DIR
 Before building the application, some final CMake variables can optionally be
 set. Namely, the: ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
 ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, ARCHV_SCALING_CONFIG_PATH,
-ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_RESOURCE_GROUP.  
+ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_COLOR_CODING_CONFIG_PATH, 
+ARCHV_RESOURCE_GROUP.  
 The ARCHV_RENDERING_CONFIG_PATH, ARCHV_GUI_CONFIG_PATH, 
 ARCHV_WEIGHTS_CONFIG_PATH, ARCHV_LAYOUT_CONFIG_PATH, ARCHV_SCALING_CONFIG_PATH, 
-ARCHV_CLUSTERING_CONFIG_PATH CMake variables must be set in order to specify the
-file path(s) to the .json configuration file(s) for each Archv subsystem.  
+ARCHV_CLUSTERING_CONFIG_PATH, ARCHV_COLOR_CODING_CONFIG_PATH CMake variables
+must be set in order to specify the file path(s) to the .json configuration 
+file(s) for each Archv subsystem.  
 The ARCHV_RESOURCE_GROUP CMake variable is the resource group name used by Archv
 in order for Ogre to locate its assets. (see Configuration Files section at: 
 https://ogrecave.github.io/ogre/api/1.12/setup.html).

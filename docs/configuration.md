@@ -17,6 +17,7 @@ at **build** time.
 [Weights](#weights)  
 [Scaling](#scaling)  
 [Clustering](#clustering)  
+[Color Coding](#color-coding)  
 [Rendering](#rendering)  
 [Gui](#gui)
 
@@ -297,6 +298,40 @@ The maximum number of iterations of the **Layered Label Propagation** clustering
 algorithm.
 
 Possible values: **any integral positive number**.  
+
+
+## Color Coding  
+
+Physical dependencies across C++ components are expressed with edges in the 
+visualized dependencies graph. The "color" value of each type of dependency can
+be specified here.  
+
+Example .json configuration:
+
+```json
+
+{
+    "color-coding" : 
+    {
+        "dependencies" : 
+        [
+            {
+                "dependency" : "Inherit",
+                "color" : [ 255, 0, 0, 1 ],
+                "active" : true
+            },
+        ]
+    }
+}
+
+```    
+
+Where each **dependency** (`string`) is paired with a **color** (`double array`), 
+and an **active** (`boolean`) value, which indicates wether the color coding 
+will be rendered. 
+
+> **_NOTE:_** Each dependency found in the graph .json input file must be 
+included here.
 
 
 ## Rendering
