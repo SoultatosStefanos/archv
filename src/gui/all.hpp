@@ -6,6 +6,7 @@
 
 #include "background_configurator.hpp"
 #include "clustering_editor.hpp"
+#include "color_coding_editor.hpp"
 #include "config.hpp"
 #include "controls_hud.hpp"
 #include "degrees_editor.hpp"

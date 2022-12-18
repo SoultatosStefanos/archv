@@ -6,16 +6,16 @@
 			{
 				"dependency" : "Inherit",
 				"color" : [ 255, 0, 0, 1 ],
-				"active" : false
+				"active" : true
 			},
 			{
 				"dependency" : "Friend",
-				"color" : [ 0, 0, 0, 1 ],
+				"color" : [ 255, 255, 0, 1 ],
 				"active" : false
 			},
 			{
 				"dependency" : "NestedClass",
-				"color" : [ 1, 0, 0, 1 ],
+				"color" : [ 0, 0, 255, 1 ],
 				"active" : false
 			},
 			{

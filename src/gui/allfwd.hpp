@@ -21,6 +21,7 @@ class layout_editor;
 class scaling_editor;
 class degrees_editor;
 class clustering_editor;
+class color_coding_editor;
 
 class frames_hud;
 class controls_hud;

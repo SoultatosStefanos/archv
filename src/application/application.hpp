@@ -68,6 +68,7 @@ private:
     auto prepare_scaling_editor() -> void;
     auto prepare_degrees_editor() -> void;
     auto prepare_clustering_editor() -> void;
+    auto prepare_color_coding_editor() -> void;
     auto prepare_background_configurator() -> void;
     auto prepare_graph_configurator() -> void;
     auto prepare_minimap_configurator() -> void;
@@ -79,6 +80,7 @@ private:
     auto connect_scaling_presentation() -> void;
     auto connect_degrees_presentation() -> void;
     auto connect_clustering_presentation() -> void;
+    auto connect_color_coding_presentation() -> void;
     auto connect_background_presentation() -> void;
     auto connect_graph_presentation() -> void;
     auto connect_minimap_presentation() -> void;

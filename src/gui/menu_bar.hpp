@@ -6,6 +6,7 @@
 
 #include "background_configurator.hpp" // for background_configurator
 #include "clustering_editor.hpp"       // for clustering_editor
+#include "color_coding_editor.hpp"     // for color_coding_editor
 #include "degrees_editor.hpp"          // for degrees_editor
 #include "graph_configurator.hpp"      // for graph_configurator
 #include "gui_configurator.hpp"        // for gui_configurator
@@ -61,6 +62,9 @@ public:
 
     auto get_clustering_editor() const -> const auto& { return m_c_editor; }
     auto get_clustering_editor() -> auto& { return m_c_editor; }
+
+    auto get_color_coding_editor() const -> const auto& { return m_col_editor; }
+    auto get_color_coding_editor() -> auto& { return m_col_editor; }
 
     auto get_bkg_configurator() const -> const auto& { return m_bkg_cfg; }
     auto get_bkg_configurator() -> auto& { return m_bkg_cfg; }
@@ -119,6 +123,7 @@ private:
     mutable scaling_editor m_scaling_editor;
     mutable degrees_editor m_degrees_editor;
     mutable clustering_editor m_c_editor;
+    mutable color_coding_editor m_col_editor;
     background_configurator m_bkg_cfg;
     graph_configurator m_graph_cfg;
     minimap_configurator m_map_cfg;

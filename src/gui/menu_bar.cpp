@@ -133,6 +133,10 @@ auto menu_bar::render_editor() const -> void
                 "Clustering", "", get_clustering_editor().visible(), true))
             toggle_show_hide(m_c_editor);
 
+        if (ImGui::MenuItem(
+                "Color Coding", "", get_color_coding_editor().visible(), true))
+            toggle_show_hide(m_col_editor);
+
         ImGui::EndMenu();
     }
 
@@ -141,6 +145,7 @@ auto menu_bar::render_editor() const -> void
     get_scaling_editor().render();
     get_degrees_editor().render();
     get_clustering_editor().render();
+    get_color_coding_editor().render();
 }
 
 auto menu_bar::render_configurator() const -> void

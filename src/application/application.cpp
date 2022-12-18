@@ -76,6 +76,7 @@ auto application::setup() -> void
     prepare_scaling_editor();
     prepare_degrees_editor();
     prepare_clustering_editor();
+    prepare_color_coding_editor();
     prepare_background_configurator();
     prepare_graph_configurator();
     prepare_minimap_configurator();
@@ -87,6 +88,7 @@ auto application::setup() -> void
     connect_scaling_presentation();
     connect_degrees_presentation();
     connect_clustering_presentation();
+    connect_color_coding_presentation();
     connect_background_presentation();
     connect_graph_presentation();
     connect_minimap_presentation();
@@ -723,6 +725,24 @@ auto application::prepare_clustering_editor() -> void
     BOOST_LOG_TRIVIAL(debug) << "prepared clustering editor";
 }
 
+auto application::prepare_color_coding_editor() -> void
+{
+    assert(m_graph_iface);
+
+    auto& backend = m_graph_iface->get_color_coding_backend();
+    auto& frontend = m_gui->get_menu_bar().get_color_coding_editor();
+
+    frontend.set_color(
+        [&backend](auto dependency)
+        { return color_coding::get_color(backend, dependency); });
+
+    frontend.set_active(
+        [&backend](auto dependency)
+        { return color_coding::is_color_active(backend, dependency); });
+
+    BOOST_LOG_TRIVIAL(debug) << "prepared color coding editor";
+}
+
 namespace // presentation translations
 {
     inline auto to_rgba(const Ogre::ColourValue& val)
@@ -1254,6 +1274,41 @@ auto application::connect_clustering_presentation() -> void
         });
 
     BOOST_LOG_TRIVIAL(debug) << "connected clustering presentation";
+}
+
+auto application::connect_color_coding_presentation() -> void
+{
+    assert(m_graph_renderer);
+    assert(m_graph_iface);
+
+    auto& backend = m_graph_iface->get_color_coding_backend();
+    auto& editor = m_gui->get_menu_bar().get_color_coding_editor();
+
+    editor.connect_to_color(
+        [&backend, this](auto dependency, const auto& rgba)
+        {
+            BOOST_LOG_TRIVIAL(info)
+                << "selected color coding col for " << dependency;
+
+            color_coding::update_color(backend, dependency, rgba);
+        });
+
+    editor.connect_to_active(
+        [&backend, this](auto dependency, auto val)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected active: " << val
+                                    << " for color coding of " << dependency;
+
+            color_coding::update_color_active(backend, dependency, val);
+        });
+
+    backend.connect(
+        [this](auto, const auto&) {
+            m_graph_renderer->render_color_coding(
+                pres::edge_color(*m_graph_iface));
+        });
+
+    BOOST_LOG_TRIVIAL(debug) << "connected color coding presentation";
 }
 
 auto application::connect_background_presentation() -> void

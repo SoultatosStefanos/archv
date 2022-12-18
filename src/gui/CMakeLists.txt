@@ -1,6 +1,7 @@
 set(FILES
 	background_configurator.cpp
 	clustering_editor.cpp
+	color_coding_editor.cpp
 	config.cpp
 	controls_hud.cpp
 	degrees_editor.cpp
