@@ -1302,10 +1302,20 @@ auto application::connect_color_coding_presentation() -> void
             color_coding::update_color_active(backend, dependency, val);
         });
 
+    editor.connect_to_restore(
+        [&backend, this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected color coding restore";
+            color_coding::restore_defaults(backend);
+        });
+
     backend.connect(
-        [this](auto, const auto&) {
+        [this](auto, const auto&)
+        {
             m_graph_renderer->render_color_coding(
                 pres::edge_color(*m_graph_iface));
+
+            BOOST_LOG_TRIVIAL(debug) << "rendered color coding";
         });
 
     BOOST_LOG_TRIVIAL(debug) << "connected color coding presentation";

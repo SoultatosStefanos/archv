@@ -6,7 +6,7 @@
 			{
 				"dependency" : "Inherit",
 				"color" : [ 255, 0, 0, 1 ],
-				"active" : true
+				"active" : false
 			},
 			{
 				"dependency" : "Friend",
