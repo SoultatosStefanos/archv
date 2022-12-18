@@ -34,10 +34,14 @@ tables, in the form of a 3D graph.
 |----|----|
 | ![](data/screenshots/vertex_by_property_scaling.png) | ![](data/screenshots/clustering.png) |
 
-| Particle system effects depending on vertex in/out degrees | Extensive configuration
+| Particle system effects depending on vertex in/out degrees | Edge dependencies color coding
 |----|----|
-| ![](data/screenshots/particle_effects.png) | ![](data/screenshots/extensive_configuration.png) |
+| ![](data/screenshots/particle_effects.png) | ![](data/screenshots/color_coding.png) |
 
+
+| Extensive configuration | <!-- Extensive configuration2 -->
+|----|----|
+| ![](data/screenshots/extensive_configuration.png) | ![](data/screenshots/extensive_configuration2.png) |
 
 ## Third-Party Dependencies
 
