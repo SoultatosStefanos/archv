@@ -3,6 +3,7 @@ set(SUBDIRECTORIES
 	application
 	architecture
 	clustering
+	color_coding
 	gui
 	input
 	layout

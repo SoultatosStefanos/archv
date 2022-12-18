@@ -990,10 +990,10 @@
 
 # 16 / 12 / 2022
 
-	+ [ ] Dependencies color coding
+	+ [x] Dependencies color coding
 
-		+ [ ] Cleanup edge renderer "private" functions
+		+ [x] Cleanup edge renderer "private" functions
 
-		+ [ ] Update weights editor
+		+ [n] Update weights editor
 
-		+ [ ] Update weights presentation
+		+ [n] Update weights presentation

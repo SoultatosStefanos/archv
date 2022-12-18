@@ -13,15 +13,14 @@
 namespace weights
 {
 
-// A runtime managed edge-weight property map from a dependencies backend.
+// A runtime managed edge-weight property map from a weights backend.
 template < typename Graph, typename DependencyMap >
 using weight_map = boost::function_property_map<
     detail::weight_dispatcher< Graph, DependencyMap >,
     typename Graph::edge_descriptor,
     backend::weight_type >;
 
-// Creates a runtime managed edge-weight property map from a dependencies
-// backend.
+// Creates a runtime managed edge-weight property map from a weights backend.
 template < typename Graph, typename DependencyMap >
 inline auto make_weight_map(const backend& b, DependencyMap edge_dependency)
 {
