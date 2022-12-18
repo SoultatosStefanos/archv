@@ -34,6 +34,11 @@
 #error "Archv clustering config path not found!"
 #endif
 
+// The path of the color_coding.json config file.
+#ifndef ARCHV_COLOR_CODING_CONFIG_PATH
+#error "Archv clustering config path not found!"
+#endif
+
 #ifndef ARCHV_RESOURCE_GROUP
 #error "Archv resource group not found!"
 #endif

@@ -49,6 +49,8 @@ static auto log_config_vars() -> void
         << "Found ARCHV_SCALING_CONFIG_PATH: " << ARCHV_SCALING_CONFIG_PATH;
     BOOST_LOG_TRIVIAL(info) << "Found ARCHV_CLUSTERING_CONFIG_PATH: "
                             << ARCHV_CLUSTERING_CONFIG_PATH;
+    BOOST_LOG_TRIVIAL(info) << "Found ARCHV_COLOR_CODING_CONFIG_PATH: "
+                            << ARCHV_COLOR_CODING_CONFIG_PATH;
     BOOST_LOG_TRIVIAL(info)
         << "Found ARCHV_RESOURCE_GROUP: " << ARCHV_RESOURCE_GROUP;
 }

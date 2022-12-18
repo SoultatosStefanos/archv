@@ -6,6 +6,7 @@
 
 #include "architecture/all.hpp"
 #include "clustering/all.hpp"
+#include "color_coding/all.hpp"
 #include "gui/all.hpp"
 #include "layout/all.hpp"
 #include "rendering/all.hpp"
@@ -25,12 +26,14 @@ using id_map = architecture::id_map;
 using dependency_map = architecture::dependency_map;
 using weight_map = weights::weight_map< graph, dependency_map >;
 using scale_map = scaling::scale_map< graph, metadata_counter >;
+using color_map = color_coding::color_map< graph, dependency_map >;
 
 using weights_backend = weights::backend;
 using layout_backend = layout::backend< graph, weight_map >;
 using scaling_backend = scaling::backend;
 using degrees_backend = rendering::degrees_ranked_backend;
 using clustering_backend = clustering::backend< graph, weight_map >;
+using color_coding_backend = color_coding::backend;
 
 using cluster_map = clustering::cluster_map< clustering_backend >;
 using position_map = layout::position_map< layout_backend >;
@@ -71,6 +74,7 @@ using weights_config = weights::config_data;
 using layout_config = layout::config_data;
 using scaling_config = scaling::config_data;
 using clustering_config = clustering::config_data;
+using color_coding_config = color_coding::config_data;
 using rendering_config = rendering::config_data;
 using gui_config = gui::config_data;
 

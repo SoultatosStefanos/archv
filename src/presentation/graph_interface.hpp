@@ -24,7 +24,8 @@ public:
         weights_config w_cfg,
         layout_config l_cfg,
         scaling_config scaling_cfg,
-        clustering_config clustering_cfg);
+        clustering_config clustering_cfg,
+        color_coding_config col_cfg);
 
     auto get_symbol_table() const -> const auto& { return m_st; }
     auto get_graph() const -> const auto& { return m_g; }
@@ -42,6 +43,9 @@ public:
     auto get_clustering_backend() const -> const auto& { return m_clustering; }
     auto get_clustering_backend() -> auto& { return m_clustering; }
 
+    auto get_color_coding_backend() const -> const auto& { return m_cols; }
+    auto get_color_coding_backend() -> auto& { return m_cols; }
+
 private:
     symbol_table m_st;
     graph m_g;
@@ -50,6 +54,7 @@ private:
     layout_backend m_layout;
     scaling_backend m_scaling;
     clustering_backend m_clustering;
+    color_coding_backend m_cols;
 };
 
 /***********************************************************
@@ -63,6 +68,7 @@ auto vertex_cluster(const graph_interface& g) -> cluster_map;
 
 auto edge_dependency(const graph_interface&) -> dependency_map;
 auto edge_weight(const graph_interface& g) -> weight_map;
+auto edge_color(const graph_interface& g) -> color_map;
 
 auto get_vertex(const graph_interface& g, const id_t& id) -> vertex;
 

@@ -10,7 +10,7 @@
 			},
 			{
 				"dependency" : "Friend",
-				"color" : [ 255, 240, 40, 1 ],
+				"color" : [ 0, 0, 0, 1 ],
 				"active" : false
 			},
 			{

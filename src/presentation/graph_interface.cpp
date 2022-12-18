@@ -10,7 +10,8 @@ graph_interface::graph_interface(
     weights_config w_cfg,
     layout_config l_cfg,
     scaling_config scaling_cfg,
-    clustering_config clus_cfg)
+    clustering_config clus_cfg,
+    color_coding_config col_cfg)
 : m_st { std::move(st) }
 , m_g { std::move(g) }
 , m_marker { std::move(m) }
@@ -18,6 +19,7 @@ graph_interface::graph_interface(
 , m_layout { m_g, edge_weight(*this), std::move(l_cfg) }
 , m_scaling { std::move(scaling_cfg) }
 , m_clustering { m_g, edge_weight(*this), std::move(clus_cfg) }
+, m_cols { std::move(col_cfg) }
 {
 }
 
@@ -52,6 +54,12 @@ auto edge_weight(const graph_interface& g) -> weight_map
 {
     return weights::make_weight_map< graph >(
         g.get_weights_backend(), edge_dependency(g));
+}
+
+auto edge_color(const graph_interface& g) -> color_map
+{
+    return color_coding::make_color_map< graph >(
+        g.get_color_coding_backend(), edge_dependency(g));
 }
 
 auto get_vertex(const graph_interface& g, const id_t& id) -> vertex

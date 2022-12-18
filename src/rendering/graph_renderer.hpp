@@ -115,18 +115,17 @@ public:
 
     template < typename ScaleMap >
     auto render_scaling(ScaleMap vertex_scale) -> void;
+    auto hide_scaling() -> void;
 
     template < typename WeightMap >
     auto render_weights(WeightMap edge_weight) -> void;
+    auto hide_weights() -> void;
 
     auto render_in_degree_particles() -> void;
     auto render_out_degree_particles() -> void;
 
     template < typename ClusterMap >
     auto render_clusters(ClusterMap vertex_cluster) -> void;
-
-    auto hide_scaling() -> void;
-    auto hide_weights() -> void;
     auto hide_clusters() -> void;
 
     auto render_vertex_bounding_box(const id_type& id) -> void;
@@ -134,6 +133,9 @@ public:
 
     auto render_vertex_pop_out_effect(const id_type& id) -> void;
     auto hide_vertex_pop_out_effect(const id_type& id) -> void;
+
+    template < typename ColorMap >
+    auto render_color_coding(ColorMap edge_color) -> void;
 
     auto draw(const config_data_type& cfg) -> void;
     auto draw(config_data_type&&) -> void = delete; // disallow temporaries
@@ -146,8 +148,11 @@ protected:
     auto visit_edges(UnaryOperation f) const;
 
 private:
-    template < typename Tuple >
-    static auto to_vector3(const Tuple& t);
+    template < typename Structure >
+    static auto to_vector3(const Structure& t);
+
+    template < typename Structure >
+    static auto to_color_val(const Structure& t);
 
     const graph_type& m_g;
     vertex_id_type m_vertex_id;
@@ -630,6 +635,39 @@ template <
     typename DependencyMap,
     typename DegreesEvaluator,
     typename ClusterColorCoder >
+template < typename ColorMap >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::render_color_coding(ColorMap edge_color) -> void
+{
+    visit_edges(
+        [this, edge_color](auto e)
+        {
+            const auto& col = boost::get(edge_color, e);
+
+            if (col)
+                m_edge_renderer.render_col(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e),
+                    to_color_val(*col));
+            else
+                m_edge_renderer.hide_col(
+                    boost::get(vertex_id(), boost::source(e, graph())),
+                    boost::get(vertex_id(), boost::target(e, graph())),
+                    boost::get(edge_dependency(), e));
+        });
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    typename DegreesEvaluator,
+    typename ClusterColorCoder >
 inline auto graph_renderer<
     Graph,
     VertexID,
@@ -658,16 +696,34 @@ template <
     typename DependencyMap,
     typename DegreesEvaluator,
     typename ClusterColorCoder >
-template < typename Tuple >
+template < typename Structure >
 inline auto graph_renderer<
     Graph,
     VertexID,
     DependencyMap,
     DegreesEvaluator,
-    ClusterColorCoder >::to_vector3(const Tuple& t)
+    ClusterColorCoder >::to_vector3(const Structure& t)
 {
     const auto& [x, y, z] = t;
     return Ogre::Vector3(x, y, z);
+}
+
+template <
+    typename Graph,
+    typename VertexID,
+    typename DependencyMap,
+    typename DegreesEvaluator,
+    typename ClusterColorCoder >
+template < typename Structure >
+inline auto graph_renderer<
+    Graph,
+    VertexID,
+    DependencyMap,
+    DegreesEvaluator,
+    ClusterColorCoder >::to_color_val(const Structure& t)
+{
+    const auto& [r, g, b, a] = t;
+    return Ogre::ColourValue(r, g, b, a);
 }
 
 /***********************************************************

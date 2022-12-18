@@ -52,6 +52,7 @@ set(ARCHV_WEIGHTS_CONFIG_PATH "${ARCHV_CONFIG_DIR}/weights.json" CACHE STRING "T
 set(ARCHV_LAYOUT_CONFIG_PATH "${ARCHV_CONFIG_DIR}/layout.json" CACHE STRING "The file path to the .json runtime configuration file for the graph layout management subsystem e.g. '/home/Descktop/archv/data/config/layout.json'.")
 set(ARCHV_SCALING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/scaling.json" CACHE STRING "The file path to the .json runtime configuration file for the vertex property scaling management subsystem e.g. '/home/Descktop/archv/data/config/scaling.json'.")
 set(ARCHV_CLUSTERING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/clustering.json" CACHE STRING "The file path to the .json runtime configuration file for the graph clustering subsystem e.g. '/home/Descktop/archv/data/config/clustering.json'.")
+set(ARCHV_COLOR_CODING_CONFIG_PATH "${ARCHV_CONFIG_DIR}/color_coding.json" CACHE STRING "The file path to the .json runtime configuration file for the graph color coding subsystem e.g. '/home/Descktop/archv/data/config/color_coding.json'.")
 set(ARCHV_RESOURCE_GROUP "Archv" CACHE STRING "The media resource group used, e.g. 'Archv'.")
 
 set(OGRE_PROCEDURAL_DIR "/usr/local/lib/OgreProcedural/cmake" CACHE STRING "The directory containing a CMake configuration file for the Ogre Procedural component.")
@@ -77,6 +78,7 @@ message("Found ARCHV_WEIGHTS_CONFIG_PATH: " ${ARCHV_WEIGHTS_CONFIG_PATH})
 message("Found ARCHV_LAYOUT_CONFIG_PATH: " ${ARCHV_LAYOUT_CONFIG_PATH})
 message("Found ARCHV_SCALING_CONFIG_PATH: " ${ARCHV_SCALING_CONFIG_PATH})
 message("Found ARCHV_CLUSTERING_CONFIG_PATH: " ${ARCHV_CLUSTERING_CONFIG_PATH})
+message("Found ARCHV_COLOR_CODING_CONFIG_PATH: " ${ARCHV_COLOR_CODING_CONFIG_PATH})
 message("Found ARCHV_RESOURCE_GROUP: " ${ARCHV_RESOURCE_GROUP})
 message("Found OGRE_PROCEDURAL_DIR: " ${OGRE_PROCEDURAL_DIR})
 message(" ")
@@ -88,6 +90,7 @@ target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_WEIGHTS_CONFIG_PATH="${AR
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_LAYOUT_CONFIG_PATH="${ARCHV_LAYOUT_CONFIG_PATH}")
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_SCALING_CONFIG_PATH="${ARCHV_SCALING_CONFIG_PATH}")
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_CLUSTERING_CONFIG_PATH="${ARCHV_CLUSTERING_CONFIG_PATH}")
+target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_COLOR_CODING_CONFIG_PATH="${ARCHV_COLOR_CODING_CONFIG_PATH}")
 target_compile_definitions(${PROJECT_LIB} PUBLIC ARCHV_RESOURCE_GROUP="${ARCHV_RESOURCE_GROUP}")
 
 # #####################################################################

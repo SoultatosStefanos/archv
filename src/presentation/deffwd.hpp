@@ -7,6 +7,7 @@
 #include "architecture/allfwd.hpp"
 #include "architecture/graph.hpp" // would not want to fwd declare boost::detail
 #include "clustering/allfwd.hpp"
+#include "color_coding/allfwd.hpp"
 #include "gui/allfwd.hpp"
 #include "layout/allfwd.hpp"
 #include "rendering/allfwd.hpp"
@@ -26,12 +27,14 @@ using id_map = architecture::id_map;
 using dependency_map = architecture::dependency_map;
 using weight_map = weights::weight_map< graph, dependency_map >;
 using scale_map = scaling::scale_map< graph, metadata_counter >;
+using color_map = color_coding::color_map< graph, dependency_map >;
 
 using weights_backend = weights::backend;
 using layout_backend = layout::backend< graph, weight_map >;
 using scaling_backend = scaling::backend;
 using degrees_backend = rendering::degrees_ranked_backend;
 using clustering_backend = clustering::backend< graph, weight_map >;
+using color_coding_backend = color_coding::backend;
 
 using cluster_map = clustering::cluster_map< clustering_backend >;
 using position_map = layout::position_map< layout_backend >;

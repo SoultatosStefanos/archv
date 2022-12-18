@@ -17,7 +17,7 @@ template < typename Graph, typename DependencyMap >
 using color_map = boost::function_property_map<
     detail::color_dispatcher< DependencyMap >,
     typename Graph::edge_descriptor,
-    typename detail::color_dispatcher< DependencyMap >::result_type >;
+    std::optional< std::array< float, 4 > > >;
 
 // Creates a runtime managed edge-color property map from a color coding
 // backend.

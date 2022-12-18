@@ -106,6 +106,7 @@ auto application::setup_graph_interface() -> void
     const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
     const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
     const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
+    const auto& colors_root = jsons.at(ARCHV_COLOR_CODING_CONFIG_PATH);
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
@@ -114,7 +115,8 @@ auto application::setup_graph_interface() -> void
         weights::deserialize(get(weights_root, "weights")),
         layout::deserialize(get(layout_root, "layout")),
         scaling::deserialize(get(scaling_root, "scaling")),
-        clustering::deserialize(get(clustering_root, "clustering")));
+        clustering::deserialize(get(clustering_root, "clustering")),
+        color_coding::deserialize(get(colors_root, "color-coding")));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -153,6 +155,7 @@ auto application::setup_rendering() -> void
     m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));
     m_graph_renderer->render_in_degree_particles();
     m_graph_renderer->render_out_degree_particles();
+    m_graph_renderer->render_color_coding(pres::edge_color(*m_graph_iface));
 
     m_graph_collisions = std::make_unique< graph_collision_checker_type >(
         m_graph_iface->get_graph(),

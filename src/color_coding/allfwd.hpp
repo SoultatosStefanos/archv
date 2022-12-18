@@ -7,6 +7,9 @@
 #include "misc/boost_property_mapfwd.hpp" // for function_property_map
 #include "misc/heterogeneous.hpp"         // for unordered_string_map
 
+#include <array>    // for array
+#include <optional> // for optional
+
 namespace color_coding
 {
 
@@ -23,7 +26,7 @@ template < typename Graph, typename DependencyMap >
 using color_map = boost::function_property_map<
     detail::color_dispatcher< DependencyMap >,
     typename Graph::edge_descriptor,
-    typename detail::color_dispatcher< DependencyMap >::result_type >;
+    std::optional< std::array< float, 4 > > >;
 
 } // namespace color_coding
 
