@@ -39,7 +39,7 @@ tables, in the form of a 3D graph.
 | ![](data/screenshots/particle_effects.png) | ![](data/screenshots/color_coding.png) |
 
 
-| Extensive configuration | <!-- Extensive configuration2 -->
+| Extensive rendering configuration | Extensive resource configuration
 |----|----|
 | ![](data/screenshots/extensive_configuration.png) | ![](data/screenshots/extensive_configuration2.png) |
 
