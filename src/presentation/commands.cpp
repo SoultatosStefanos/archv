@@ -797,6 +797,39 @@ auto restore_clustering(command_history& cmds, clustering_backend& backend)
  * Color Coding                                            *
  ***********************************************************/
 
+namespace
+{
+    struct restore_color_coding_command : undo_redo::command
+    {
+        using backend_type = color_coding_backend;
+        using repo_type = color_coding::color_repo;
+
+        backend_type& backend;
+        repo_type old_repo;
+
+        explicit restore_color_coding_command(backend_type& back)
+        : backend { back }
+        {
+        }
+
+        ~restore_color_coding_command() override = default;
+
+        auto execute() -> void override
+        {
+            old_repo = backend.repo();
+            color_coding::restore_defaults(backend);
+        }
+
+        auto undo() -> void override
+        {
+            for (const auto& [dependency, code] : old_repo)
+                color_coding::update_color_code(backend, dependency, code);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+} // namespace
+
 auto update_color_coding_color(
     command_history& cmds,
     color_coding_backend& backend,
@@ -826,8 +859,10 @@ auto update_color_coding_activeness(
         { color_coding::update_color_active(backend, dependency, val); }));
 }
 
-auto restore_color_coding(command_history& cmds) -> void
+auto restore_color_coding(command_history& cmds, color_coding_backend& backend)
+    -> void
 {
+    cmds.execute(std::make_unique< restore_color_coding_command >(backend));
 }
 
 } // namespace presentation

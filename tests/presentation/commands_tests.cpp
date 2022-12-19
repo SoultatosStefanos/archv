@@ -1493,4 +1493,76 @@ TEST_F(
     EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 2, 2, 1, 1 }));
 }
 
+TEST_F(
+    color_coding_commands_tests,
+    update_activeness_updates_the_backend_accordingly)
+{
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+
+    EXPECT_FALSE(color_coding::is_color_active(*backend, "weak"));
+}
+
+TEST_F(color_coding_commands_tests, update_activeness_can_be_undone)
+{
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_TRUE(color_coding::is_color_active(*backend, "weak"));
+}
+
+TEST_F(color_coding_commands_tests, update_activeness_can_be_undone_and_redone)
+{
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_FALSE(color_coding::is_color_active(*backend, "weak"));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    restore_color_coding_updates_the_backend_accordingly)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+
+    restore_color_coding(*cmds, *backend);
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 1, 1, 1, 1 }));
+    EXPECT_TRUE(color_coding::is_color_active(*backend, "weak"));
+}
+
+TEST_F(color_coding_commands_tests, restore_color_coding_can_be_undone)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 5, 1, 1, 1 }));
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+    restore_color_coding(*cmds, *backend);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 5, 1, 1, 1 }));
+    EXPECT_FALSE(color_coding::is_color_active(*backend, "weak"));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    restore_color_coding_can_be_undone_and_redone)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 5, 1, 1, 1 }));
+    update_color_coding_activeness(*cmds, *backend, "weak", false);
+    restore_color_coding(*cmds, *backend);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 1, 1, 1, 1 }));
+    EXPECT_TRUE(color_coding::is_color_active(*backend, "weak"));
+}
+
 } // namespace

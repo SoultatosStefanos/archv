@@ -1007,6 +1007,6 @@
 
 		+ [x] Generic trivial command
 
-	+ [ ] Color coding commands
+	+ [x] Color coding commands
 
 	+ [ ] Clustering undo/redo tidy

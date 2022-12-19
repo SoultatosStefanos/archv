@@ -220,7 +220,8 @@ auto update_color_coding_activeness(
     color_coding_backend::dependency_type dependency,
     bool active) -> void;
 
-auto restore_color_coding(command_history& cmds) -> void;
+auto restore_color_coding(command_history& cmds, color_coding_backend& backend)
+    -> void;
 
 } // namespace presentation
 

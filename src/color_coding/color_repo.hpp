@@ -30,7 +30,7 @@ public:
     using dependency_type = std::string_view;
     using hash_table = misc::unordered_string_map< color_code >;
 
-    explicit color_repo(hash_table map);
+    explicit color_repo(hash_table map = hash_table());
 
     // Precondition: the dependency must have been assigned on construction.
 
