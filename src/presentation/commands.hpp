@@ -204,6 +204,24 @@ auto update_clustering_llp_steps(
 auto restore_clustering(command_history& cmds, clustering_backend& backend)
     -> void;
 
+/***********************************************************
+ * Color Coding                                            *
+ ***********************************************************/
+
+auto update_color_coding_color(
+    command_history& cmds,
+    color_coding_backend& backend,
+    color_coding_backend::dependency_type dependency,
+    color_coding_backend::rgba_type rgba) -> void;
+
+auto update_color_coding_activeness(
+    command_history& cmds,
+    color_coding_backend& backend,
+    color_coding_backend::dependency_type dependency,
+    bool active) -> void;
+
+auto restore_color_coding(command_history& cmds) -> void;
+
 } // namespace presentation
 
 #endif // PRESENTATION_COMMANDS_HPP

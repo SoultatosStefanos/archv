@@ -1352,4 +1352,145 @@ TEST_F(clustering_commands_tests, restore_clustering_can_be_undone_and_redone)
     EXPECT_EQ(clustering::get_llp_steps(*backend), 1);
 }
 
+/***********************************************************
+ * Color Coding                                            *
+ ***********************************************************/
+
+class color_coding_commands_tests : public Test
+{
+protected:
+    using color_code = color_coding::color_code;
+    using rgba = color_code::rgba_type;
+
+    void SetUp() override
+    {
+        cmds = std::make_unique< command_history >();
+        backend = std::make_unique< color_coding_backend >(
+            color_coding_config({ { "weak", color_code({ 1, 1, 1, 1 }) } }));
+    }
+
+    std::unique_ptr< command_history > cmds;
+    std::unique_ptr< color_coding_backend > backend;
+};
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_updates_the_backend_accordingly)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+
+    EXPECT_EQ(
+        color_coding::get_color(*backend, "weak"), rgba({ 255, 1, 1, 1 }));
+}
+
+TEST_F(color_coding_commands_tests, update_color_can_be_undone)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 1, 1, 1, 1 }));
+}
+
+TEST_F(color_coding_commands_tests, update_color_can_be_undone_and_redone)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 5, 1, 1, 1 }));
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 5, 1, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_2_sequential_times_and_undo_undoes_first_one)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 50, 1, 1 }));
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 1, 1, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_n_sequential_times_and_undo_undoes_first_one)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 50, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 50, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 50, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 0, 50, 1, 1 }));
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 1, 1, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_n_non_sequential_times_and_undo_undoes_most_recent)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 5, 5, 1, 1 }));
+    update_color_coding_activeness(*cmds, *backend, "weak", true);
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 50, 1, 1 }));
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 5, 5, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_2_sequential_times_and_undo_and_redo_redoes_most_recent)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 1, 1, 1 }));
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 50, 1, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_n_sequential_times_and_undo_and_redo_redoes_most_recent)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 50, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 30, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 40, 1, 1, 1 }));
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 2, 2, 1, 1 }));
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 2, 2, 1, 1 }));
+}
+
+TEST_F(
+    color_coding_commands_tests,
+    update_color_n_non_sequential_times_and_undo_and_redoes_most_recent)
+{
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 255, 1, 1, 1 }));
+    update_color_coding_activeness(*cmds, *backend, "weak", true);
+    update_color_coding_color(*cmds, *backend, "weak", rgba({ 2, 2, 1, 1 }));
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(color_coding::get_color(*backend, "weak"), rgba({ 2, 2, 1, 1 }));
+}
+
 } // namespace

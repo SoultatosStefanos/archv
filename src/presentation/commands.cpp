@@ -58,6 +58,83 @@ namespace
             std::move(new_val), std::move(get), std::move(set));
     }
 
+    // "Snap" command, on undo/redo ignores intermediate executions.
+    // Plays along well with sliders, color pickers etc, where we wouldn't want
+    // to fallback to old/new values of each frame, but only to initial/end
+    // values.
+    // More intuitive for the user.
+    template < typename Value, typename Accessor, typename Mutator >
+    class snap_command : public undo_redo::command
+    {
+        using self = snap_command< Value, Accessor, Mutator >;
+
+    public:
+        using value_type = Value;
+        using accessor_type = Accessor;
+        using mutator_type = Mutator;
+
+        static_assert(std::is_invocable_r_v< value_type, accessor_type >);
+        static_assert(std::is_invocable_v< mutator_type, value_type >);
+        static_assert(std::is_default_constructible_v< value_type >);
+        static_assert(std::is_copy_constructible_v< accessor_type >);
+        static_assert(std::is_copy_constructible_v< mutator_type >);
+
+        snap_command(
+            command_history& cmds,
+            value_type new_val,
+            accessor_type get,
+            mutator_type set)
+        : m_cmds { cmds }
+        , m_new { std::move(new_val) }
+        , m_get { std::move(get) }
+        , m_set { std::move(set) }
+        {
+        }
+
+        ~snap_command() override = default;
+
+        auto execute() -> void override
+        {
+            m_old = m_get();
+            m_set(m_new);
+        }
+
+        auto undo() -> void override
+        {
+            if (dynamic_cast< const self* >(m_cmds.next_undo()) != nullptr)
+                m_cmds.undo(); // delegate to prev snap command if any
+            else
+                m_set(m_old);
+        }
+
+        auto redo() -> void override
+        {
+            if (dynamic_cast< const self* >(m_cmds.next_redo()) != nullptr)
+                m_cmds.redo(); // delegate to next snap command if any
+            else
+                execute();
+        }
+
+    private:
+        command_history& m_cmds;
+        value_type m_old, m_new;
+        accessor_type m_get;
+        mutator_type m_set;
+    };
+
+    // For type deduction.
+    template < typename Value, typename Accessor, typename Mutator >
+    inline auto make_snap(
+        command_history& cmds, //
+        Value new_val,
+        Accessor get,
+        Mutator set)
+    {
+        using command_type = snap_command< Value, Accessor, Mutator >;
+        return std::make_unique< command_type >(
+            cmds, std::move(new_val), std::move(get), std::move(set));
+    }
+
 } // namespace
 
 /***********************************************************
@@ -714,6 +791,43 @@ auto restore_clustering(command_history& cmds, clustering_backend& backend)
     -> void
 {
     cmds.execute(std::make_unique< restore_clustering_command >(backend));
+}
+
+/***********************************************************
+ * Color Coding                                            *
+ ***********************************************************/
+
+auto update_color_coding_color(
+    command_history& cmds,
+    color_coding_backend& backend,
+    color_coding_backend::dependency_type dependency,
+    color_coding_backend::rgba_type rgba) -> void
+{
+    cmds.execute(make_snap(
+        cmds,
+        rgba,
+        [&backend, dependency]()
+        { return color_coding::get_color(backend, dependency); },
+        [&backend, dependency](auto rgba)
+        { color_coding::update_color(backend, dependency, rgba); }));
+}
+
+auto update_color_coding_activeness(
+    command_history& cmds,
+    color_coding_backend& backend,
+    color_coding_backend::dependency_type dependency,
+    bool active) -> void
+{
+    cmds.execute(make_trivial(
+        active,
+        [&backend, dependency]()
+        { return color_coding::is_color_active(backend, dependency); },
+        [&backend, dependency](auto val)
+        { color_coding::update_color_active(backend, dependency, val); }));
+}
+
+auto restore_color_coding(command_history& cmds) -> void
+{
 }
 
 } // namespace presentation

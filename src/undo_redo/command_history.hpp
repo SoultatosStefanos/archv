@@ -18,10 +18,13 @@ public:
     auto can_undo() const -> bool;
     auto can_redo() const -> bool;
 
-    void execute(std::unique_ptr< command > cmd);
+    auto next_undo() const -> const command*;
+    auto next_redo() const -> const command*;
 
-    void undo();
-    void redo();
+    auto execute(std::unique_ptr< command > cmd) -> void;
+
+    auto undo() -> void;
+    auto redo() -> void;
 
 private:
     using cache = std::list< std::unique_ptr< command > >;

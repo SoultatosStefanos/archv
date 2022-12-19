@@ -9,15 +9,25 @@ namespace undo_redo
 
 auto command_history::can_undo() const -> bool
 {
-    return !m_history.empty() and m_i != std::begin(m_history);
+    return !m_history.empty() and m_i != std::cbegin(m_history);
 }
 
 auto command_history::can_redo() const -> bool
 {
-    return !m_history.empty() and m_i != std::end(m_history);
+    return !m_history.empty() and m_i != std::cend(m_history);
 }
 
-void command_history::execute(std::unique_ptr< command > cmd)
+auto command_history::next_undo() const -> const command*
+{
+    return m_i != std::cbegin(m_history) ? (*std::prev(m_i)).get() : nullptr;
+}
+
+auto command_history::next_redo() const -> const command*
+{
+    return m_i != std::cend(m_history) ? (*m_i).get() : nullptr;
+}
+
+auto command_history::execute(std::unique_ptr< command > cmd) -> void
 {
     assert(cmd);
 
@@ -31,7 +41,7 @@ void command_history::execute(std::unique_ptr< command > cmd)
     assert(m_i == std::end(m_history));
 }
 
-void command_history::undo()
+auto command_history::undo() -> void
 {
     if (!can_undo())
         return;
@@ -39,7 +49,7 @@ void command_history::undo()
         (*--m_i)->undo();
 }
 
-void command_history::redo()
+auto command_history::redo() -> void
 {
     if (!can_redo())
         return;
