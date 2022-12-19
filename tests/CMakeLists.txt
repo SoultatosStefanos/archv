@@ -18,6 +18,7 @@ set(SUBDIRECTORIES
   gui
   layout
   misc
+  presentation
   rendering
   scaling
   ui

@@ -997,3 +997,16 @@
 		+ [n] Update weights editor
 
 		+ [n] Update weights presentation
+
+
+# 19 / 12 / 2022
+
+	+ [ ] Commands impl tidy
+
+		+ [ ] Commands tests
+
+		+ [ ] Generic trivial command
+
+	+ [ ] Color coding commands
+
+	+ [ ] Clustering undo/redo tidy
