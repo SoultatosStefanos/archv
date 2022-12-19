@@ -1272,7 +1272,7 @@ auto application::connect_color_coding_presentation() -> void
             BOOST_LOG_TRIVIAL(info)
                 << "selected color coding col for " << dependency;
 
-            color_coding::update_color(backend, dependency, rgba);
+            pres::update_color_coding_color(*m_cmds, backend, dependency, rgba);
         });
 
     editor.connect_to_active(
@@ -1281,14 +1281,15 @@ auto application::connect_color_coding_presentation() -> void
             BOOST_LOG_TRIVIAL(info) << "selected active: " << val
                                     << " for color coding of " << dependency;
 
-            color_coding::update_color_active(backend, dependency, val);
+            pres::update_color_coding_activeness(
+                *m_cmds, backend, dependency, val);
         });
 
     editor.connect_to_restore(
         [&backend, this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected color coding restore";
-            color_coding::restore_defaults(backend);
+            pres::restore_color_coding(*m_cmds, backend);
         });
 
     backend.connect(
