@@ -1472,12 +1472,20 @@ namespace
         using id_type = backend_type::id_type;
         using k_type = backend_type::k_type;
         using snn_t_type = backend_type::snn_threshold_type;
+        using intensity_type = backend_type::intensity_type;
+        using modularity_type = backend_type::modularity_type;
+        using gamma_type = backend_type::gamma_type;
+        using steps_type = backend_type::steps_type;
 
         backend_type& backend;
         id_type clusterer_id;
+        intensity_type intensity;
         id_type mst_finder_id;
         k_type k;
         snn_t_type t;
+        modularity_type q;
+        gamma_type gamma;
+        steps_type steps;
 
         explicit restore_clustering_cmd(backend_type& b) : backend { b } { }
         ~restore_clustering_cmd() override = default;
@@ -1485,18 +1493,26 @@ namespace
         auto execute() -> void override
         {
             clusterer_id = clustering::get_clusterer_id(backend);
+            intensity = clustering::get_intensity(backend);
             mst_finder_id = clustering::get_mst_finder_id(backend);
             k = clustering::get_k(backend);
             t = clustering::get_snn_threshold(backend);
+            q = clustering::get_min_modularity(backend);
+            gamma = clustering::get_llp_gamma(backend);
+            steps = clustering::get_llp_steps(backend);
             clustering::restore_defaults(backend);
         }
 
         auto undo() -> void override
         {
             clustering::update_clusterer(backend, clusterer_id);
+            clustering::update_intensity(backend, intensity);
             clustering::update_mst_finder(backend, mst_finder_id);
             clustering::update_k(backend, k);
             clustering::update_snn_threshold(backend, t);
+            clustering::update_min_modularity(backend, q);
+            clustering::update_llp_gamma(backend, gamma);
+            clustering::update_llp_steps(backend, steps);
         }
 
         auto redo() -> void override { execute(); }

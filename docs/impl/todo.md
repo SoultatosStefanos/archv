@@ -1003,7 +1003,7 @@
 
 	+ [ ] Commands impl tidy
 
-		+ [ ] Commands tests
+		+ [x] Commands tests
 
 		+ [ ] Generic trivial command
 

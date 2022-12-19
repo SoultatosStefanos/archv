@@ -987,4 +987,369 @@ TEST_F(degrees_commands_tests, restore_degrees_can_be_undone_and_redone)
  * Clustering                                              *
  ***********************************************************/
 
+class clustering_commands_tests : public Test
+{
+protected:
+    void SetUp() override
+    {
+        cmds = std::make_unique< command_history >();
+        backend = std::make_unique< clustering_backend >(
+            g,
+            weights::make_weight_map< graph >(
+                w_backend, boost::get(boost::edge_bundle, std::as_const(g))),
+            clustering::default_backend_config());
+    }
+
+    graph g;
+    weights_backend w_backend { { { "weak", 2 } } };
+    std::unique_ptr< command_history > cmds;
+    std::unique_ptr< clustering_backend > backend;
+};
+
+TEST_F(
+    clustering_commands_tests,
+    update_clusterer_updates_the_backend_accordingly)
+{
+    update_clusterer(*cmds, *backend, clustering::louvain_method_clusterer_id);
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend),
+        clustering::louvain_method_clusterer_id);
+}
+
+TEST_F(clustering_commands_tests, update_clusterer_can_be_undone)
+{
+    update_clusterer(*cmds, *backend, clustering::infomap_clusterer_id);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend),
+        clustering::k_spanning_tree_clusterer_id);
+}
+
+TEST_F(clustering_commands_tests, update_clusterer_can_be_undone_and_redone)
+{
+    update_clusterer(*cmds, *backend, clustering::infomap_clusterer_id);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend),
+        clustering::infomap_clusterer_id);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_intensity_updates_the_backend_accordingly)
+{
+    update_clustering_intensity(*cmds, *backend, 80);
+
+    EXPECT_EQ(clustering::get_intensity(*backend), 80);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_intensity_can_be_undone)
+{
+    update_clustering_intensity(*cmds, *backend, 80);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_intensity(*backend), 2000);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_intensity_can_be_undone_and_redone)
+{
+    update_clustering_intensity(*cmds, *backend, 120.5);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_intensity(*backend), 120.5);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_mst_finder_updates_the_backend_accordingly)
+{
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+
+    EXPECT_EQ(
+        clustering::get_mst_finder_id(*backend), clustering::kruskal_mst_id);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_mst_finder_can_be_undone)
+{
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_mst_finder_id(*backend), clustering::prim_mst_id);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_mst_finder_can_be_undone_and_redone)
+{
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(
+        clustering::get_mst_finder_id(*backend), clustering::kruskal_mst_id);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_k_updates_the_backend_accordingly)
+{
+    update_clustering_k(*cmds, *backend, 20);
+
+    EXPECT_EQ(clustering::get_k(*backend), 20);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_k_can_be_undone)
+{
+    update_clustering_k(*cmds, *backend, 200);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_k(*backend), 3);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_k_can_be_undone_and_redone)
+{
+    update_clustering_k(*cmds, *backend, 1);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_k(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_snn_threshold_updates_the_backend_accordingly)
+{
+    update_clustering_snn_threshold(*cmds, *backend, 20);
+
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 20);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_snn_threshold_can_be_undone)
+{
+    update_clustering_snn_threshold(*cmds, *backend, 200);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 3);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_snn_threshold_can_be_undone_and_redone)
+{
+    update_clustering_snn_threshold(*cmds, *backend, 1);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_min_modularity_updates_the_backend_accordingly)
+{
+    update_clustering_min_modularity(*cmds, *backend, 20);
+
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 20);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_min_modularity_can_be_undone)
+{
+    update_clustering_min_modularity(*cmds, *backend, 200);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 0.5);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_min_modularity_can_be_undone_and_redone)
+{
+    update_clustering_min_modularity(*cmds, *backend, 1);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_llp_gamma_updates_the_backend_accordingly)
+{
+    update_clustering_llp_gamma(*cmds, *backend, 20);
+
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 20);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_llp_gamma_can_be_undone)
+{
+    update_clustering_llp_gamma(*cmds, *backend, 200);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 0);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_llp_gamma_can_be_undone_and_redone)
+{
+    update_clustering_llp_gamma(*cmds, *backend, 1);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_llp_steps_updates_the_backend_accordingly)
+{
+    update_clustering_llp_steps(*cmds, *backend, 20);
+
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 20);
+}
+
+TEST_F(clustering_commands_tests, update_clustering_llp_steps_can_be_undone)
+{
+    update_clustering_llp_steps(*cmds, *backend, 200);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    update_clustering_llp_steps_can_be_undone_and_redone)
+{
+    update_clustering_llp_steps(*cmds, *backend, 1);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 1);
+}
+
+TEST_F(
+    clustering_commands_tests,
+    restore_clustering_updates_the_backend_accordingly)
+{
+    update_clusterer(*cmds, *backend, clustering::llp_clusterer_id);
+    update_clustering_intensity(*cmds, *backend, 20);
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+    update_clustering_k(*cmds, *backend, 20);
+    update_clustering_snn_threshold(*cmds, *backend, 20);
+    update_clustering_min_modularity(*cmds, *backend, 20);
+    update_clustering_llp_gamma(*cmds, *backend, 20);
+    update_clustering_llp_steps(*cmds, *backend, 20);
+
+    restore_clustering(*cmds, *backend);
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend),
+        clustering::k_spanning_tree_clusterer_id);
+    EXPECT_EQ(clustering::get_intensity(*backend), 2000);
+    EXPECT_EQ(clustering::get_mst_finder_id(*backend), clustering::prim_mst_id);
+    EXPECT_EQ(clustering::get_k(*backend), 3);
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 3);
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 0.5);
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 0);
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 1);
+}
+
+TEST_F(clustering_commands_tests, restore_clustering_can_be_undone)
+{
+    update_clusterer(*cmds, *backend, clustering::llp_clusterer_id);
+    update_clustering_intensity(*cmds, *backend, 20);
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+    update_clustering_k(*cmds, *backend, 20);
+    update_clustering_snn_threshold(*cmds, *backend, 20);
+    update_clustering_min_modularity(*cmds, *backend, 20);
+    update_clustering_llp_gamma(*cmds, *backend, 20);
+    update_clustering_llp_steps(*cmds, *backend, 20);
+    restore_clustering(*cmds, *backend);
+
+    EXPECT_TRUE(cmds->can_undo());
+    cmds->undo();
+
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 20);
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend), clustering::llp_clusterer_id);
+    EXPECT_EQ(clustering::get_intensity(*backend), 20);
+    EXPECT_EQ(
+        clustering::get_mst_finder_id(*backend), clustering::kruskal_mst_id);
+    EXPECT_EQ(clustering::get_k(*backend), 20);
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 20);
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 20);
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 20);
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 20);
+}
+
+TEST_F(clustering_commands_tests, restore_clustering_can_be_undone_and_redone)
+{
+    update_clusterer(*cmds, *backend, clustering::llp_clusterer_id);
+    update_clustering_intensity(*cmds, *backend, 20);
+    update_clustering_mst_finder(*cmds, *backend, clustering::kruskal_mst_id);
+    update_clustering_k(*cmds, *backend, 20);
+    update_clustering_snn_threshold(*cmds, *backend, 20);
+    update_clustering_min_modularity(*cmds, *backend, 20);
+    update_clustering_llp_gamma(*cmds, *backend, 20);
+    update_clustering_llp_steps(*cmds, *backend, 20);
+    restore_clustering(*cmds, *backend);
+    cmds->undo();
+
+    EXPECT_TRUE(cmds->can_redo());
+    cmds->redo();
+
+    EXPECT_EQ(
+        clustering::get_clusterer_id(*backend),
+        clustering::k_spanning_tree_clusterer_id);
+    EXPECT_EQ(clustering::get_intensity(*backend), 2000);
+    EXPECT_EQ(clustering::get_mst_finder_id(*backend), clustering::prim_mst_id);
+    EXPECT_EQ(clustering::get_k(*backend), 3);
+    EXPECT_EQ(clustering::get_snn_threshold(*backend), 3);
+    EXPECT_EQ(clustering::get_min_modularity(*backend), 0.5);
+    EXPECT_EQ(clustering::get_llp_gamma(*backend), 0);
+    EXPECT_EQ(clustering::get_llp_steps(*backend), 1);
+}
+
 } // namespace
