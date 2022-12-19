@@ -1001,11 +1001,11 @@
 
 # 19 / 12 / 2022
 
-	+ [ ] Commands impl tidy
+	+ [x] Commands impl tidy
 
 		+ [x] Commands tests
 
-		+ [ ] Generic trivial command
+		+ [x] Generic trivial command
 
 	+ [ ] Color coding commands
 

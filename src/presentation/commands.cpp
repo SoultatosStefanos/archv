@@ -7,44 +7,66 @@
 namespace presentation
 {
 
+namespace
+{
+    // Trivial case, store old value, update with new, and use old on undo.
+    template < typename Value, typename Accessor, typename Mutator >
+    class trivial_command : public undo_redo::command
+    {
+    public:
+        using value_type = Value;
+        using accessor_type = Accessor;
+        using mutator_type = Mutator;
+
+        static_assert(std::is_invocable_r_v< value_type, accessor_type >);
+        static_assert(std::is_invocable_v< mutator_type, value_type >);
+        static_assert(std::is_default_constructible_v< value_type >);
+        static_assert(std::is_copy_constructible_v< accessor_type >);
+        static_assert(std::is_copy_constructible_v< mutator_type >);
+
+        trivial_command(value_type new_val, accessor_type get, mutator_type set)
+        : m_new { std::move(new_val) }
+        , m_get { std::move(get) }
+        , m_set { std::move(set) }
+        {
+        }
+
+        ~trivial_command() override = default;
+
+        auto execute() -> void override
+        {
+            m_old = m_get();
+            m_set(m_new);
+        }
+
+        auto undo() -> void override { m_set(m_old); }
+
+        auto redo() -> void override { execute(); }
+
+    private:
+        value_type m_old, m_new;
+        accessor_type m_get;
+        mutator_type m_set;
+    };
+
+    // For type deduction.
+    template < typename Value, typename Accessor, typename Mutator >
+    inline auto make_trivial(Value new_val, Accessor get, Mutator set)
+    {
+        using command_type = trivial_command< Value, Accessor, Mutator >;
+        return std::make_unique< command_type >(
+            std::move(new_val), std::move(get), std::move(set));
+    }
+
+} // namespace
+
 /***********************************************************
  * Dependencies                                            *
  ***********************************************************/
 
 namespace
 {
-    struct update_dependency_cmd : undo_redo::command
-    {
-        using backend_type = weights_backend;
-        using dependency_type = backend_type::dependency_type;
-        using weight_type = backend_type::weight_type;
-
-        backend_type& backend;
-        dependency_type dependency;
-        weight_type new_weight, old_weight;
-
-        update_dependency_cmd(backend_type& b, dependency_type d, weight_type w)
-        : backend { b }, dependency { d }, new_weight { w }
-        {
-        }
-
-        ~update_dependency_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_weight = backend.get_weight_repo().get_weight(dependency);
-            weights::update_weight(backend, dependency, new_weight);
-        }
-
-        auto undo() -> void override
-        {
-            weights::update_weight(backend, dependency, old_weight);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct restore_dependencies_defaults_cmd : undo_redo::command
+    struct restore_weights_command : undo_redo::command
     {
         using backend_type = weights_backend;
         using weight_repo_type = backend_type::weight_repo_type;
@@ -52,9 +74,9 @@ namespace
         backend_type& backend;
         weight_repo_type old_repo;
 
-        restore_dependencies_defaults_cmd(backend_type& b) : backend { b } { }
+        restore_weights_command(backend_type& b) : backend { b } { }
 
-        ~restore_dependencies_defaults_cmd() override = default;
+        ~restore_weights_command() override = default;
 
         auto execute() -> void override
         {
@@ -79,14 +101,17 @@ auto update_dependency_weight(
     weights_backend::dependency_type dependency,
     weights_backend::weight_type weight) -> void
 {
-    cmds.execute(
-        std::make_unique< update_dependency_cmd >(backend, dependency, weight));
+    cmds.execute(make_trivial(
+        weight,
+        [&backend, dependency]()
+        { return weights::get_weight(backend, dependency); },
+        [&backend, dependency](auto w)
+        { weights::update_weight(backend, dependency, w); }));
 }
 
 auto restore_weights(command_history& cmds, weights_backend& backend) -> void
 {
-    cmds.execute(
-        std::make_unique< restore_dependencies_defaults_cmd >(backend));
+    cmds.execute(std::make_unique< restore_weights_command >(backend));
 }
 
 /***********************************************************
@@ -95,91 +120,7 @@ auto restore_weights(command_history& cmds, weights_backend& backend) -> void
 
 namespace
 {
-    struct update_layout_cmd : undo_redo::command
-    {
-        using backend_type = layout_backend;
-        using id_type = backend_type::id_type;
-
-        backend_type& backend;
-        id_type new_id, old_id;
-
-        update_layout_cmd(backend_type& b, id_type id)
-        : backend { b }, new_id { id }
-        {
-        }
-
-        ~update_layout_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_id = layout::get_layout_id(backend);
-            layout::update_layout(backend, new_id);
-        }
-
-        auto undo() -> void override { layout::update_layout(backend, old_id); }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_topology_cmd : undo_redo::command
-    {
-        using backend_type = layout_backend;
-        using id_type = backend_type::id_type;
-
-        backend_type& backend;
-        id_type new_id, old_id;
-
-        update_topology_cmd(backend_type& b, id_type id)
-        : backend { b }, new_id { id }
-        {
-        }
-
-        ~update_topology_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_id = layout::get_topology_id(backend);
-            layout::update_topology(backend, new_id);
-        }
-
-        auto undo() -> void override
-        {
-            layout::update_topology(backend, old_id);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_layout_scale_cmd : undo_redo::command
-    {
-        using backend_type = layout_backend;
-        using scale_type = backend_type::scale_type;
-
-        backend_type& backend;
-        scale_type old_scale, new_scale;
-
-        update_layout_scale_cmd(backend_type& b, scale_type s)
-        : backend { b }, new_scale { s }
-        {
-        }
-
-        ~update_layout_scale_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_scale = layout::get_scale(backend);
-            layout::update_scale(backend, new_scale);
-        }
-
-        auto undo() -> void override
-        {
-            layout::update_scale(backend, old_scale);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct restore_layout_defaults_cmd : undo_redo::command
+    struct restore_layout_command : undo_redo::command
     {
         using backend_type = layout_backend;
         using id_type = backend_type::id_type;
@@ -190,9 +131,9 @@ namespace
         id_type old_topology;
         scale_type old_scale;
 
-        restore_layout_defaults_cmd(backend_type& b) : backend { b } { }
+        restore_layout_command(backend_type& b) : backend { b } { }
 
-        ~restore_layout_defaults_cmd() override = default;
+        ~restore_layout_command() override = default;
 
         auto execute() -> void override
         {
@@ -217,7 +158,10 @@ auto update_layout(
     layout_backend& backend,
     layout_backend::id_type layout_id) -> void
 {
-    cmds.execute(std::make_unique< update_layout_cmd >(backend, layout_id));
+    cmds.execute(make_trivial(
+        layout_id,
+        [&backend]() { return layout::get_layout_id(backend); },
+        [&backend](auto id) { layout::update_layout(backend, id); }));
 }
 
 auto update_layout_topology(
@@ -225,7 +169,10 @@ auto update_layout_topology(
     layout_backend& backend,
     layout_backend::id_type topology_id) -> void
 {
-    cmds.execute(std::make_unique< update_topology_cmd >(backend, topology_id));
+    cmds.execute(make_trivial(
+        topology_id,
+        [&backend]() { return layout::get_topology_id(backend); },
+        [&backend](auto id) { layout::update_topology(backend, id); }));
 }
 
 auto update_layout_scale(
@@ -233,12 +180,15 @@ auto update_layout_scale(
     layout_backend& backend,
     layout_backend::scale_type scale) -> void
 {
-    cmds.execute(std::make_unique< update_layout_scale_cmd >(backend, scale));
+    cmds.execute(make_trivial(
+        scale,
+        [&backend]() { return layout::get_scale(backend); },
+        [&backend](auto s) { layout::update_scale(backend, s); }));
 }
 
 auto restore_layout(command_history& cmds, layout_backend& backend) -> void
 {
-    cmds.execute(std::make_unique< restore_layout_defaults_cmd >(backend));
+    cmds.execute(std::make_unique< restore_layout_command >(backend));
 }
 
 /***********************************************************
@@ -247,181 +197,7 @@ auto restore_layout(command_history& cmds, layout_backend& backend) -> void
 
 namespace
 {
-    struct update_scaling_factor_dims_cmd : undo_redo::command
-    {
-        using backend_type = scaling_backend;
-        using tag_type = backend_type::tag_type;
-        using dims_type = backend_type::dims_type;
-
-        backend_type& backend;
-        tag_type tag;
-        dims_type new_dims;
-        dims_type old_dims;
-
-        update_scaling_factor_dims_cmd(
-            backend_type& b,
-            tag_type t,
-            dims_type dims)
-        : backend { b }, tag { t }, new_dims { dims }
-        {
-        }
-
-        ~update_scaling_factor_dims_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_dims = scaling::get_factor_dims(backend, tag);
-            scaling::update_factor_dims(backend, tag, new_dims);
-        }
-
-        auto undo() -> void override
-        {
-            scaling::update_factor_dims(backend, tag, old_dims);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_scaling_factor_baseline_cmd : undo_redo::command
-    {
-        using backend_type = scaling_backend;
-        using tag_type = backend_type::tag_type;
-        using baseline_type = backend_type::baseline_type;
-
-        backend_type& backend;
-        tag_type tag;
-        baseline_type new_baseline;
-        baseline_type old_baseline;
-
-        update_scaling_factor_baseline_cmd(
-            backend_type& b,
-            tag_type t,
-            baseline_type baseline)
-        : backend { b }, tag { t }, new_baseline { baseline }
-        {
-        }
-
-        ~update_scaling_factor_baseline_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_baseline = scaling::get_factor_baseline(backend, tag);
-            scaling::update_factor_baseline(backend, tag, new_baseline);
-        }
-
-        auto undo() -> void override
-        {
-            scaling::update_factor_baseline(backend, tag, old_baseline);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_scaling_factor_enablement_cmd : undo_redo::command
-    {
-        using backend_type = scaling_backend;
-        using tag_type = backend_type::tag_type;
-
-        backend_type& backend;
-        tag_type tag;
-        bool new_enabled;
-        bool old_enabled;
-
-        update_scaling_factor_enablement_cmd(
-            backend_type& b,
-            tag_type t,
-            bool enabled)
-        : backend { b }, tag { t }, new_enabled { enabled }
-        {
-        }
-
-        ~update_scaling_factor_enablement_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_enabled = scaling::is_factor_enabled(backend, tag);
-            scaling::update_factor_enablement(backend, tag, new_enabled);
-        }
-
-        auto undo() -> void override
-        {
-            scaling::update_factor_enablement(backend, tag, old_enabled);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_scaling_factor_min_ratio_cmd : undo_redo::command
-    {
-        using backend_type = scaling_backend;
-        using tag_type = backend_type::tag_type;
-        using ratio_type = backend_type::ratio_type;
-
-        backend_type& backend;
-        tag_type tag;
-        ratio_type new_ratio;
-        ratio_type old_ratio;
-
-        update_scaling_factor_min_ratio_cmd(
-            backend_type& b,
-            tag_type t,
-            ratio_type ratio)
-        : backend { b }, tag { t }, new_ratio { ratio }
-        {
-        }
-
-        ~update_scaling_factor_min_ratio_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_ratio = scaling::get_factor_min_ratio(backend, tag);
-            scaling::update_factor_min_ratio(backend, tag, new_ratio);
-        }
-
-        auto undo() -> void override
-        {
-            scaling::update_factor_min_ratio(backend, tag, old_ratio);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_scaling_factor_max_ratio_cmd : undo_redo::command
-    {
-        using backend_type = scaling_backend;
-        using tag_type = backend_type::tag_type;
-        using ratio_type = backend_type::ratio_type;
-
-        backend_type& backend;
-        tag_type tag;
-        ratio_type new_ratio;
-        ratio_type old_ratio;
-
-        update_scaling_factor_max_ratio_cmd(
-            backend_type& b,
-            tag_type t,
-            ratio_type ratio)
-        : backend { b }, tag { t }, new_ratio { ratio }
-        {
-        }
-
-        ~update_scaling_factor_max_ratio_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_ratio = scaling::get_factor_max_ratio(backend, tag);
-            scaling::update_factor_max_ratio(backend, tag, new_ratio);
-        }
-
-        auto undo() -> void override
-        {
-            scaling::update_factor_max_ratio(backend, tag, old_ratio);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct restore_scaling_defaults_cmd : undo_redo::command
+    struct restore_scaling_command : undo_redo::command
     {
         using backend_type = scaling_backend;
         using repo_type = scaling::factor_repo;
@@ -429,9 +205,9 @@ namespace
         backend_type& backend;
         repo_type old_repo;
 
-        restore_scaling_defaults_cmd(backend_type& b) : backend { b } { }
+        restore_scaling_command(backend_type& b) : backend { b } { }
 
-        ~restore_scaling_defaults_cmd() override = default;
+        ~restore_scaling_command() override = default;
 
         auto execute() -> void override
         {
@@ -459,57 +235,75 @@ namespace
 
 auto update_scaling_factor_dims(
     command_history& cmds,
-    scaling_backend& b,
+    scaling_backend& backend,
     scaling_backend::tag_type tag,
     scaling_backend::dims_type dims) -> void
 {
-    cmds.execute(
-        std::make_unique< update_scaling_factor_dims_cmd >(b, tag, dims));
+    cmds.execute(make_trivial(
+        dims,
+        [&backend, tag]() { return scaling::get_factor_dims(backend, tag); },
+        [&backend, tag](auto dims)
+        { scaling::update_factor_dims(backend, tag, dims); }));
 }
 
 auto update_scaling_factor_baseline(
     command_history& cmds,
-    scaling_backend& b,
+    scaling_backend& backend,
     scaling_backend::tag_type tag,
     scaling_backend::baseline_type baseline) -> void
 {
-    cmds.execute(std::make_unique< update_scaling_factor_baseline_cmd >(
-        b, tag, baseline));
+    cmds.execute(make_trivial(
+        baseline,
+        [&backend, tag]()
+        { return scaling::get_factor_baseline(backend, tag); },
+        [&backend, tag](auto val)
+        { scaling::update_factor_baseline(backend, tag, val); }));
 }
 
 auto update_scaling_factor_enablement(
     command_history& cmds,
-    scaling_backend& b,
+    scaling_backend& backend,
     scaling_backend::tag_type tag,
     scaling_backend::enabled_type enabled) -> void
 {
-    cmds.execute(std::make_unique< update_scaling_factor_enablement_cmd >(
-        b, tag, enabled));
+    cmds.execute(make_trivial(
+        enabled,
+        [&backend, tag]() { return scaling::is_factor_enabled(backend, tag); },
+        [&backend, tag](auto val)
+        { scaling::update_factor_enablement(backend, tag, val); }));
 }
 
 auto update_scaling_factor_min_ratio(
     command_history& cmds,
-    scaling_backend& b,
+    scaling_backend& backend,
     scaling_backend::tag_type tag,
     scaling_backend::ratio_type ratio) -> void
 {
-    cmds.execute(
-        std::make_unique< update_scaling_factor_min_ratio_cmd >(b, tag, ratio));
+    cmds.execute(make_trivial(
+        ratio,
+        [&backend, tag]()
+        { return scaling::get_factor_min_ratio(backend, tag); },
+        [&backend, tag](auto val)
+        { scaling::update_factor_min_ratio(backend, tag, val); }));
 }
 
 auto update_scaling_factor_max_ratio(
     command_history& cmds,
-    scaling_backend& b,
+    scaling_backend& backend,
     scaling_backend::tag_type tag,
     scaling_backend::ratio_type ratio) -> void
 {
-    cmds.execute(
-        std::make_unique< update_scaling_factor_max_ratio_cmd >(b, tag, ratio));
+    cmds.execute(make_trivial(
+        ratio,
+        [&backend, tag]()
+        { return scaling::get_factor_max_ratio(backend, tag); },
+        [&backend, tag](auto val)
+        { scaling::update_factor_max_ratio(backend, tag, val); }));
 }
 
 auto restore_scaling(command_history& cmds, scaling_backend& b) -> void
 {
-    cmds.execute(std::make_unique< restore_scaling_defaults_cmd >(b));
+    cmds.execute(std::make_unique< restore_scaling_command >(b));
 }
 
 /***********************************************************
@@ -518,524 +312,7 @@ auto restore_scaling(command_history& cmds, scaling_backend& b) -> void
 
 namespace
 {
-    struct in_degree_tag
-    {
-    };
-
-    struct out_degree_tag
-    {
-    };
-
-    struct light_tag
-    {
-    };
-
-    struct medium_tag
-    {
-    };
-
-    struct heavy_tag
-    {
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct get_degree_threshold
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& backend) const -> threshold_type
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< in_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_in_degrees_light_threshold(back);
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< in_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_in_degrees_medium_threshold(back);
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< in_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_in_degrees_heavy_threshold(back);
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< out_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_out_degrees_light_threshold(back);
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< out_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_out_degrees_medium_threshold(back);
-        }
-    };
-
-    template <>
-    struct get_degree_threshold< out_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& back) const
-        {
-            return rendering::get_out_degrees_heavy_threshold(back);
-        }
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct update_degree_threshold
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const -> void
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< in_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_in_degrees_light_threshold(b, t);
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< in_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_in_degrees_medium_threshold(b, t);
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< in_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_in_degrees_heavy_threshold(b, t);
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< out_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_out_degrees_light_threshold(b, t);
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< out_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_out_degrees_medium_threshold(b, t);
-        }
-    };
-
-    template <>
-    struct update_degree_threshold< out_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        inline auto operator()(backend_type& b, threshold_type t) const
-        {
-            rendering::update_out_degrees_heavy_threshold(b, t);
-        }
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct update_degree_threshold_cmd : undo_redo::command
-    {
-        using backend_type = degrees_backend;
-        using threshold_type = degrees_backend::threshold_type;
-
-        using degree_tag = DegreeTag;
-        using rank_tag = RankTag;
-        using accessor = get_degree_threshold< degree_tag, rank_tag >;
-        using updater = update_degree_threshold< degree_tag, rank_tag >;
-
-        backend_type& backend;
-        threshold_type new_thres, old_thres;
-
-        update_degree_threshold_cmd(backend_type& b, threshold_type thres)
-        : backend { b }, new_thres { thres }
-        {
-        }
-
-        ~update_degree_threshold_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_thres = accessor()(backend);
-            updater()(backend, new_thres);
-        }
-
-        auto undo() -> void override { updater()(backend, old_thres); }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct get_degree_particles
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct get_degree_particles< in_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_in_degrees_light_effect(backend);
-        }
-    };
-
-    template <>
-    struct get_degree_particles< in_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_in_degrees_medium_effect(backend);
-        }
-    };
-
-    template <>
-    struct get_degree_particles< in_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_in_degrees_heavy_effect(backend);
-        }
-    };
-
-    template <>
-    struct get_degree_particles< out_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_out_degrees_light_effect(backend);
-        }
-    };
-
-    template <>
-    struct get_degree_particles< out_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_out_degrees_medium_effect(backend);
-        }
-    };
-
-    template <>
-    struct get_degree_particles< out_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& backend) const -> particles_type
-        {
-            return rendering::get_out_degrees_heavy_effect(backend);
-        }
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct update_degree_particles
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct update_degree_particles< in_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_in_degrees_light_effect(b, std::move(t));
-        }
-    };
-
-    template <>
-    struct update_degree_particles< in_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_in_degrees_medium_effect(b, std::move(t));
-        }
-    };
-
-    template <>
-    struct update_degree_particles< in_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_in_degrees_heavy_effect(b, std::move(t));
-        }
-    };
-
-    template <>
-    struct update_degree_particles< out_degree_tag, light_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_out_degrees_light_effect(b, std::move(t));
-        }
-    };
-
-    template <>
-    struct update_degree_particles< out_degree_tag, medium_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_out_degrees_medium_effect(b, std::move(t));
-        }
-    };
-
-    template <>
-    struct update_degree_particles< out_degree_tag, heavy_tag >
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        inline auto operator()(backend_type& b, particles_type t) const -> void
-        {
-            rendering::update_out_degrees_heavy_effect(b, std::move(t));
-        }
-    };
-
-    template < typename DegreeTag, typename RankTag >
-    struct update_degree_particles_cmd : undo_redo::command
-    {
-        using backend_type = degrees_backend;
-        using particles_type = degrees_backend::particle_system_type;
-
-        using degree_tag = DegreeTag;
-        using rank_tag = RankTag;
-        using accessor = get_degree_particles< degree_tag, rank_tag >;
-        using updater = update_degree_particles< degree_tag, rank_tag >;
-
-        backend_type& backend;
-        particles_type new_parts, old_parts;
-
-        update_degree_particles_cmd(backend_type& b, particles_type parts)
-        : backend { b }, new_parts { std::move(parts) }
-        {
-        }
-
-        ~update_degree_particles_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_parts = accessor()(backend);
-            updater()(backend, new_parts);
-        }
-
-        auto undo() -> void override { updater()(backend, old_parts); }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    template < typename DegreeTag >
-    struct is_degree_applied
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& backend) const -> applied_type
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct is_degree_applied< in_degree_tag >
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& backend) const -> applied_type
-        {
-            return rendering::is_in_degrees_applied(backend);
-        }
-    };
-
-    template <>
-    struct is_degree_applied< out_degree_tag >
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& backend) const -> applied_type
-        {
-            return rendering::is_out_degrees_applied(backend);
-        }
-    };
-
-    template < typename DegreeTag >
-    struct update_degree_applied
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& b, applied_type v) const -> void
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct update_degree_applied< in_degree_tag >
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& b, applied_type v) const -> void
-        {
-            rendering::update_in_degrees_applied(b, v);
-        }
-    };
-
-    template <>
-    struct update_degree_applied< out_degree_tag >
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        inline auto operator()(backend_type& b, applied_type v) const -> void
-        {
-            rendering::update_out_degrees_applied(b, v);
-        }
-    };
-
-    template < typename DegreeTag >
-    struct update_degree_applied_cmd : undo_redo::command
-    {
-        using backend_type = degrees_backend;
-        using applied_type = degrees_backend::applied_type;
-
-        using degree_tag = DegreeTag;
-        using accessor = is_degree_applied< degree_tag >;
-        using updater = update_degree_applied< degree_tag >;
-
-        backend_type& backend;
-        applied_type new_val, old_val;
-
-        update_degree_applied_cmd(backend_type& b, applied_type val)
-        : backend { b }, new_val { val }
-        {
-        }
-
-        ~update_degree_applied_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_val = accessor()(backend);
-            updater()(backend, new_val);
-        }
-
-        auto undo() -> void override { updater()(backend, old_val); }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct restore_degrees_cmd : undo_redo::command
+    struct restore_degrees_command : undo_redo::command
     {
         using backend_type = degrees_backend;
         using data_type = rendering::degrees_ranked_evaluation_data;
@@ -1043,8 +320,8 @@ namespace
         backend_type& backend;
         data_type old_in, old_out;
 
-        restore_degrees_cmd(backend_type& b) : backend { b } { }
-        ~restore_degrees_cmd() override = default;
+        restore_degrees_command(backend_type& b) : backend { b } { }
+        ~restore_degrees_command() override = default;
 
         auto execute() -> void override
         {
@@ -1069,9 +346,12 @@ auto update_in_degrees_light_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< in_degree_tag, light_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_in_degrees_light_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_light_threshold(backend, val); }));
 }
 
 auto update_out_degrees_light_threshold(
@@ -1079,9 +359,12 @@ auto update_out_degrees_light_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< out_degree_tag, light_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_out_degrees_light_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_light_threshold(backend, val); }));
 }
 
 auto update_in_degrees_medium_threshold(
@@ -1089,9 +372,12 @@ auto update_in_degrees_medium_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< in_degree_tag, medium_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_in_degrees_medium_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_medium_threshold(backend, val); }));
 }
 
 auto update_out_degrees_medium_threshold(
@@ -1099,9 +385,12 @@ auto update_out_degrees_medium_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< out_degree_tag, medium_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_out_degrees_medium_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_medium_threshold(backend, val); }));
 }
 
 auto update_in_degrees_heavy_threshold(
@@ -1109,9 +398,12 @@ auto update_in_degrees_heavy_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< in_degree_tag, heavy_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_in_degrees_heavy_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_heavy_threshold(backend, val); }));
 }
 
 auto update_out_degrees_heavy_threshold(
@@ -1119,9 +411,12 @@ auto update_out_degrees_heavy_threshold(
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_threshold_cmd< out_degree_tag, heavy_tag > >(
-        backend, thres));
+    cmds.execute(make_trivial(
+        thres,
+        [&backend]()
+        { return rendering::get_out_degrees_heavy_threshold(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_heavy_threshold(backend, val); }));
 }
 
 auto update_in_degrees_light_particles(
@@ -1129,9 +424,12 @@ auto update_in_degrees_light_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< in_degree_tag, light_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_in_degrees_light_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_light_effect(backend, val); }));
 }
 
 auto update_out_degrees_light_particles(
@@ -1139,9 +437,12 @@ auto update_out_degrees_light_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< out_degree_tag, light_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_out_degrees_light_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_light_effect(backend, val); }));
 }
 
 auto update_in_degrees_medium_particles(
@@ -1149,9 +450,12 @@ auto update_in_degrees_medium_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< in_degree_tag, medium_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_in_degrees_medium_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_medium_effect(backend, val); }));
 }
 
 auto update_out_degrees_medium_particles(
@@ -1159,9 +463,12 @@ auto update_out_degrees_medium_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< out_degree_tag, medium_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_out_degrees_medium_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_medium_effect(backend, val); }));
 }
 
 auto update_in_degrees_heavy_particles(
@@ -1169,9 +476,12 @@ auto update_in_degrees_heavy_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< in_degree_tag, heavy_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_in_degrees_heavy_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_heavy_effect(backend, val); }));
 }
 
 auto update_out_degrees_heavy_particles(
@@ -1179,9 +489,12 @@ auto update_out_degrees_heavy_particles(
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
 {
-    cmds.execute(std::make_unique<
-                 update_degree_particles_cmd< out_degree_tag, heavy_tag > >(
-        backend, std::move(particles)));
+    cmds.execute(make_trivial(
+        particles,
+        [&backend]()
+        { return rendering::get_out_degrees_heavy_effect(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_heavy_effect(backend, val); }));
 }
 
 auto update_in_degrees_applied(
@@ -1189,8 +502,11 @@ auto update_in_degrees_applied(
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void
 {
-    cmds.execute(std::make_unique< update_degree_applied_cmd< in_degree_tag > >(
-        backend, applied));
+    cmds.execute(make_trivial(
+        applied,
+        [&backend]() { return rendering::is_in_degrees_applied(backend); },
+        [&backend](auto val)
+        { rendering::update_in_degrees_applied(backend, val); }));
 }
 
 auto update_out_degrees_applied(
@@ -1198,14 +514,16 @@ auto update_out_degrees_applied(
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void
 {
-    cmds.execute(
-        std::make_unique< update_degree_applied_cmd< out_degree_tag > >(
-            backend, applied));
+    cmds.execute(make_trivial(
+        applied,
+        [&backend]() { return rendering::is_out_degrees_applied(backend); },
+        [&backend](auto val)
+        { rendering::update_out_degrees_applied(backend, val); }));
 }
 
 auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void
 {
-    cmds.execute(std::make_unique< restore_degrees_cmd >(backend));
+    cmds.execute(std::make_unique< restore_degrees_command >(backend));
 }
 
 /***********************************************************
@@ -1243,230 +561,7 @@ namespace
         }
     };
 
-    struct update_clusterer_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using id_type = backend_type::id_type;
-
-        backend_type& backend;
-        id_type new_id, old_id;
-
-        update_clusterer_cmd(backend_type& b, id_type id)
-        : backend { b }, new_id { id }
-        {
-        }
-        ~update_clusterer_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_id = clustering::get_clusterer_id(backend);
-            clustering::update_clusterer(backend, new_id);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_clusterer(backend, old_id);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_intensity_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using intensity_type = backend_type::intensity_type;
-
-        backend_type& backend;
-        intensity_type new_val, old_val;
-
-        update_clustering_intensity_cmd(backend_type& b, intensity_type x)
-        : backend { b }, new_val { x }
-        {
-        }
-        ~update_clustering_intensity_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_val = clustering::get_intensity(backend);
-            clustering::update_intensity(backend, new_val);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_intensity(backend, old_val);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_mst_finder_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using id_type = backend_type::id_type;
-
-        backend_type& backend;
-        id_type new_id, old_id;
-
-        update_mst_finder_cmd(backend_type& b, id_type id)
-        : backend { b }, new_id { id }
-        {
-        }
-        ~update_mst_finder_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_id = clustering::get_mst_finder_id(backend);
-            clustering::update_mst_finder(backend, new_id);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_mst_finder(backend, old_id);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_k_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using k_type = backend_type::k_type;
-
-        backend_type& backend;
-        k_type new_k, old_k;
-
-        update_clustering_k_cmd(backend_type& b, k_type k)
-        : backend { b }, new_k { k }
-        {
-        }
-        ~update_clustering_k_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_k = clustering::get_k(backend);
-            clustering::update_k(backend, new_k);
-        }
-
-        auto undo() -> void override { clustering::update_k(backend, old_k); }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_snn_t_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using snn_t_type = backend_type::snn_threshold_type;
-
-        backend_type& backend;
-        snn_t_type new_thres, old_thres;
-
-        update_clustering_snn_t_cmd(backend_type& b, snn_t_type t)
-        : backend { b }, new_thres { t }
-        {
-        }
-        ~update_clustering_snn_t_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_thres = clustering::get_snn_threshold(backend);
-            clustering::update_snn_threshold(backend, new_thres);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_snn_threshold(backend, old_thres);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_min_q_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using modularity_type = backend_type::modularity_type;
-
-        backend_type& backend;
-        modularity_type new_q, old_q;
-
-        update_clustering_min_q_cmd(backend_type& b, modularity_type q)
-        : backend { b }, new_q { q }
-        {
-        }
-        ~update_clustering_min_q_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_q = clustering::get_min_modularity(backend);
-            clustering::update_min_modularity(backend, new_q);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_min_modularity(backend, old_q);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_llp_gamma_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using gamma_type = backend_type::gamma_type;
-
-        backend_type& backend;
-        gamma_type new_g, old_g;
-
-        update_clustering_llp_gamma_cmd(backend_type& b, gamma_type g)
-        : backend { b }, new_g { g }
-        {
-        }
-
-        ~update_clustering_llp_gamma_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_g = clustering::get_llp_gamma(backend);
-            clustering::update_llp_gamma(backend, new_g);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_llp_gamma(backend, old_g);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct update_clustering_llp_steps_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using steps_type = backend_type::steps_type;
-
-        backend_type& backend;
-        steps_type new_s, old_s;
-
-        update_clustering_llp_steps_cmd(backend_type& b, steps_type s)
-        : backend { b }, new_s { s }
-        {
-        }
-
-        ~update_clustering_llp_steps_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_s = clustering::get_llp_steps(backend);
-            clustering::update_llp_steps(backend, new_s);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_llp_steps(backend, old_s);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
-    struct restore_clustering_cmd : undo_redo::command
+    struct restore_clustering_command : undo_redo::command
     {
         using backend_type = clustering_backend;
         using id_type = backend_type::id_type;
@@ -1487,8 +582,8 @@ namespace
         gamma_type gamma;
         steps_type steps;
 
-        explicit restore_clustering_cmd(backend_type& b) : backend { b } { }
-        ~restore_clustering_cmd() override = default;
+        explicit restore_clustering_command(backend_type& b) : backend { b } { }
+        ~restore_clustering_command() override = default;
 
         auto execute() -> void override
         {
@@ -1530,7 +625,10 @@ auto update_clusterer(
     clustering_backend& backend,
     clustering_backend::id_type id) -> void
 {
-    cmds.execute(std::make_unique< update_clusterer_cmd >(backend, id));
+    cmds.execute(make_trivial(
+        id,
+        [&backend]() { return clustering::get_clusterer_id(backend); },
+        [&backend](auto val) { clustering::update_clusterer(backend, val); }));
 }
 
 auto update_clustering_intensity(
@@ -1538,8 +636,10 @@ auto update_clustering_intensity(
     clustering_backend& backend,
     clustering_backend::intensity_type intensity) -> void
 {
-    cmds.execute(std::make_unique< update_clustering_intensity_cmd >(
-        backend, intensity));
+    cmds.execute(make_trivial(
+        intensity,
+        [&backend]() { return clustering::get_intensity(backend); },
+        [&backend](auto val) { clustering::update_intensity(backend, val); }));
 }
 
 auto update_clustering_mst_finder(
@@ -1547,7 +647,10 @@ auto update_clustering_mst_finder(
     clustering_backend& backend,
     clustering_backend::id_type id) -> void
 {
-    cmds.execute(std::make_unique< update_mst_finder_cmd >(backend, id));
+    cmds.execute(make_trivial(
+        id,
+        [&backend]() { return clustering::get_mst_finder_id(backend); },
+        [&backend](auto val) { clustering::update_mst_finder(backend, val); }));
 }
 
 auto update_clustering_k(
@@ -1555,7 +658,10 @@ auto update_clustering_k(
     clustering_backend& backend,
     clustering_backend::k_type k) -> void
 {
-    cmds.execute(std::make_unique< update_clustering_k_cmd >(backend, k));
+    cmds.execute(make_trivial(
+        k,
+        [&backend]() { return clustering::get_k(backend); },
+        [&backend](auto val) { clustering::update_k(backend, val); }));
 }
 
 auto update_clustering_snn_threshold(
@@ -1563,7 +669,11 @@ auto update_clustering_snn_threshold(
     clustering_backend& backend,
     clustering_backend::snn_threshold_type t) -> void
 {
-    cmds.execute(std::make_unique< update_clustering_snn_t_cmd >(backend, t));
+    cmds.execute(make_trivial(
+        t,
+        [&backend]() { return clustering::get_snn_threshold(backend); },
+        [&backend](auto val)
+        { clustering::update_snn_threshold(backend, val); }));
 }
 
 auto update_clustering_min_modularity(
@@ -1571,7 +681,11 @@ auto update_clustering_min_modularity(
     clustering_backend& backend,
     clustering_backend::modularity_type q) -> void
 {
-    cmds.execute(std::make_unique< update_clustering_min_q_cmd >(backend, q));
+    cmds.execute(make_trivial(
+        q,
+        [&backend]() { return clustering::get_min_modularity(backend); },
+        [&backend](auto val)
+        { clustering::update_min_modularity(backend, val); }));
 }
 
 auto update_clustering_llp_gamma(
@@ -1579,8 +693,10 @@ auto update_clustering_llp_gamma(
     clustering_backend& backend,
     clustering_backend::gamma_type gamma) -> void
 {
-    cmds.execute(
-        std::make_unique< update_clustering_llp_gamma_cmd >(backend, gamma));
+    cmds.execute(make_trivial(
+        gamma,
+        [&backend]() { return clustering::get_llp_gamma(backend); },
+        [&backend](auto val) { clustering::update_llp_gamma(backend, val); }));
 }
 
 auto update_clustering_llp_steps(
@@ -1588,14 +704,16 @@ auto update_clustering_llp_steps(
     clustering_backend& backend,
     clustering_backend::steps_type steps) -> void
 {
-    cmds.execute(
-        std::make_unique< update_clustering_llp_steps_cmd >(backend, steps));
+    cmds.execute(make_trivial(
+        steps,
+        [&backend]() { return clustering::get_llp_steps(backend); },
+        [&backend](auto val) { clustering::update_llp_steps(backend, val); }));
 }
 
 auto restore_clustering(command_history& cmds, clustering_backend& backend)
     -> void
 {
-    cmds.execute(std::make_unique< restore_clustering_cmd >(backend));
+    cmds.execute(std::make_unique< restore_clustering_command >(backend));
 }
 
 } // namespace presentation
