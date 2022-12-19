@@ -1041,70 +1041,6 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
-    template < typename DegreeTag >
-    struct restore_degree
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& b) const -> void
-        {
-            __builtin_unreachable();
-        }
-    };
-
-    template <>
-    struct restore_degree< in_degree_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& b) const -> void
-        {
-            rendering::restore_in_degree_evaluation(b);
-        }
-    };
-
-    template <>
-    struct restore_degree< out_degree_tag >
-    {
-        using backend_type = degrees_backend;
-
-        inline auto operator()(backend_type& b) const -> void
-        {
-            rendering::restore_out_degree_evaluation(b);
-        }
-    };
-
-    template < typename DegreeTag >
-    struct restore_degree_cmd : undo_redo::command
-    {
-        using backend_type = degrees_backend;
-        using data_type = rendering::degrees_ranked_evaluation_data;
-
-        using degree_tag = DegreeTag;
-        using action = restore_degree< degree_tag >;
-
-        backend_type& backend;
-        data_type old_in, old_out;
-
-        restore_degree_cmd(backend_type& b) : backend { b } { }
-        ~restore_degree_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_in = rendering::get_in_degree_evaluation_data(backend);
-            old_out = rendering::get_out_degree_evaluation_data(backend);
-            action()(backend);
-        }
-
-        auto undo() -> void override
-        {
-            rendering::update_in_degree_evaluation(backend, old_in);
-            rendering::update_out_degree_evaluation(backend, old_out);
-        }
-
-        auto redo() -> void override { execute(); }
-    };
-
     struct restore_degrees_cmd : undo_redo::command
     {
         using backend_type = degrees_backend;
@@ -1271,22 +1207,6 @@ auto update_out_degree_evaluation_applied(
     cmds.execute(
         std::make_unique< update_degree_applied_cmd< out_degree_tag > >(
             backend, applied));
-}
-
-auto restore_in_degree_evaluation(
-    command_history& cmds,
-    degrees_backend& backend) -> void
-{
-    cmds.execute(
-        std::make_unique< restore_degree_cmd< in_degree_tag > >(backend));
-}
-
-auto restore_out_degree_evaluation(
-    command_history& cmds,
-    degrees_backend& backend) -> void
-{
-    cmds.execute(
-        std::make_unique< restore_degree_cmd< out_degree_tag > >(backend));
 }
 
 auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void
