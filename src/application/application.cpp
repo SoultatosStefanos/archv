@@ -648,27 +648,27 @@ auto application::prepare_degrees_editor() -> void
         { return rendering::get_out_degrees_heavy_threshold(backend); });
 
     frontend.set_in_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_light_effect(backend);
+        return rendering::get_in_degrees_light_particles(backend);
     });
 
     frontend.set_out_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_light_effect(backend);
+        return rendering::get_out_degrees_light_particles(backend);
     });
 
     frontend.set_in_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_medium_effect(backend);
+        return rendering::get_in_degrees_medium_particles(backend);
     });
 
     frontend.set_out_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_medium_effect(backend);
+        return rendering::get_out_degrees_medium_particles(backend);
     });
 
     frontend.set_in_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_heavy_effect(backend);
+        return rendering::get_in_degrees_heavy_particles(backend);
     });
 
     frontend.set_out_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_heavy_effect(backend);
+        return rendering::get_out_degrees_heavy_particles(backend);
     });
 
     frontend.set_in_applied(

@@ -327,7 +327,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_in_degrees_light_effect(*b, new_effect);
+    update_in_degrees_light_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -336,9 +336,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_in_degrees_light_effect(*b, new_effect);
+    update_in_degrees_light_particles(*b, new_effect);
 
-    ASSERT_EQ(get_in_degrees_light_effect(*b), new_effect);
+    ASSERT_EQ(get_in_degrees_light_particles(*b), new_effect);
 }
 
 TEST_F(
@@ -353,7 +353,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_out_degrees_light_effect(*b, new_effect);
+    update_out_degrees_light_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -362,9 +362,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_out_degrees_light_effect(*b, new_effect);
+    update_out_degrees_light_particles(*b, new_effect);
 
-    ASSERT_EQ(get_out_degrees_light_effect(*b), new_effect);
+    ASSERT_EQ(get_out_degrees_light_particles(*b), new_effect);
 }
 
 TEST_F(
@@ -379,7 +379,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_in_degrees_medium_effect(*b, new_effect);
+    update_in_degrees_medium_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -388,9 +388,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_in_degrees_medium_effect(*b, new_effect);
+    update_in_degrees_medium_particles(*b, new_effect);
 
-    ASSERT_EQ(get_in_degrees_medium_effect(*b), new_effect);
+    ASSERT_EQ(get_in_degrees_medium_particles(*b), new_effect);
 }
 
 TEST_F(
@@ -405,7 +405,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_out_degrees_medium_effect(*b, new_effect);
+    update_out_degrees_medium_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -414,9 +414,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_out_degrees_medium_effect(*b, new_effect);
+    update_out_degrees_medium_particles(*b, new_effect);
 
-    ASSERT_EQ(get_out_degrees_medium_effect(*b), new_effect);
+    ASSERT_EQ(get_out_degrees_medium_particles(*b), new_effect);
 }
 
 TEST_F(
@@ -431,7 +431,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_in_degrees_heavy_effect(*b, new_effect);
+    update_in_degrees_heavy_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -440,9 +440,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_in_degrees_heavy_effect(*b, new_effect);
+    update_in_degrees_heavy_particles(*b, new_effect);
 
-    ASSERT_EQ(get_in_degrees_heavy_effect(*b), new_effect);
+    ASSERT_EQ(get_in_degrees_heavy_particles(*b), new_effect);
 }
 
 TEST_F(
@@ -457,7 +457,7 @@ TEST_F(
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
-    update_out_degrees_heavy_effect(*b, new_effect);
+    update_out_degrees_heavy_particles(*b, new_effect);
 }
 
 TEST_F(
@@ -466,9 +466,9 @@ TEST_F(
 {
     constexpr auto new_effect = "bob";
 
-    update_out_degrees_heavy_effect(*b, new_effect);
+    update_out_degrees_heavy_particles(*b, new_effect);
 
-    ASSERT_EQ(get_out_degrees_heavy_effect(*b), new_effect);
+    ASSERT_EQ(get_out_degrees_heavy_particles(*b), new_effect);
 }
 
 TEST_F(

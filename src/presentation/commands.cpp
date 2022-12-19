@@ -504,9 +504,9 @@ auto update_in_degrees_light_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_in_degrees_light_effect(backend); },
+        { return rendering::get_in_degrees_light_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_light_effect(backend, val); }));
+        { rendering::update_in_degrees_light_particles(backend, val); }));
 }
 
 auto update_out_degrees_light_particles(
@@ -517,9 +517,9 @@ auto update_out_degrees_light_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_out_degrees_light_effect(backend); },
+        { return rendering::get_out_degrees_light_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_light_effect(backend, val); }));
+        { rendering::update_out_degrees_light_particles(backend, val); }));
 }
 
 auto update_in_degrees_medium_particles(
@@ -530,9 +530,9 @@ auto update_in_degrees_medium_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_in_degrees_medium_effect(backend); },
+        { return rendering::get_in_degrees_medium_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_medium_effect(backend, val); }));
+        { rendering::update_in_degrees_medium_particles(backend, val); }));
 }
 
 auto update_out_degrees_medium_particles(
@@ -543,9 +543,9 @@ auto update_out_degrees_medium_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_out_degrees_medium_effect(backend); },
+        { return rendering::get_out_degrees_medium_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_medium_effect(backend, val); }));
+        { rendering::update_out_degrees_medium_particles(backend, val); }));
 }
 
 auto update_in_degrees_heavy_particles(
@@ -556,9 +556,9 @@ auto update_in_degrees_heavy_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_in_degrees_heavy_effect(backend); },
+        { return rendering::get_in_degrees_heavy_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_heavy_effect(backend, val); }));
+        { rendering::update_in_degrees_heavy_particles(backend, val); }));
 }
 
 auto update_out_degrees_heavy_particles(
@@ -569,9 +569,9 @@ auto update_out_degrees_heavy_particles(
     cmds.execute(make_trivial(
         particles,
         [&backend]()
-        { return rendering::get_out_degrees_heavy_effect(backend); },
+        { return rendering::get_out_degrees_heavy_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_heavy_effect(backend, val); }));
+        { rendering::update_out_degrees_heavy_particles(backend, val); }));
 }
 
 auto update_in_degrees_applied(

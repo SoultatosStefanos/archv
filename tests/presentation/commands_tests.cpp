@@ -705,7 +705,7 @@ TEST_F(
 {
     update_in_degrees_light_particles(*cmds, *backend, "z");
 
-    EXPECT_EQ(rendering::get_in_degrees_light_effect(*backend), "z");
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "z");
 }
 
 TEST_F(degrees_commands_tests, update_in_light_particles_can_be_undone)
@@ -715,7 +715,7 @@ TEST_F(degrees_commands_tests, update_in_light_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_in_degrees_light_effect(*backend), "a");
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "a");
 }
 
 TEST_F(
@@ -728,7 +728,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_in_degrees_light_effect(*backend), "z");
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "z");
 }
 
 TEST_F(
@@ -737,7 +737,7 @@ TEST_F(
 {
     update_out_degrees_light_particles(*cmds, *backend, "z");
 
-    EXPECT_EQ(rendering::get_out_degrees_light_effect(*backend), "z");
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "z");
 }
 
 TEST_F(degrees_commands_tests, update_out_light_particles_can_be_undone)
@@ -747,7 +747,7 @@ TEST_F(degrees_commands_tests, update_out_light_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_out_degrees_light_effect(*backend), "aa");
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "aa");
 }
 
 TEST_F(
@@ -760,7 +760,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_out_degrees_light_effect(*backend), "cc");
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "cc");
 }
 
 TEST_F(
@@ -769,7 +769,7 @@ TEST_F(
 {
     update_in_degrees_medium_particles(*cmds, *backend, "z");
 
-    EXPECT_EQ(rendering::get_in_degrees_medium_effect(*backend), "z");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "z");
 }
 
 TEST_F(degrees_commands_tests, update_in_medium_particles_can_be_undone)
@@ -779,7 +779,7 @@ TEST_F(degrees_commands_tests, update_in_medium_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_in_degrees_medium_effect(*backend), "b");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "b");
 }
 
 TEST_F(
@@ -792,7 +792,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_in_degrees_medium_effect(*backend), "o");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "o");
 }
 
 TEST_F(
@@ -801,7 +801,7 @@ TEST_F(
 {
     update_out_degrees_medium_particles(*cmds, *backend, "a");
 
-    EXPECT_EQ(rendering::get_out_degrees_medium_effect(*backend), "a");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "a");
 }
 
 TEST_F(degrees_commands_tests, update_out_medium_particles_can_be_undone)
@@ -811,7 +811,7 @@ TEST_F(degrees_commands_tests, update_out_medium_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_out_degrees_medium_effect(*backend), "bb");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "bb");
 }
 
 TEST_F(
@@ -824,7 +824,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_out_degrees_medium_effect(*backend), "aaa");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "aaa");
 }
 
 TEST_F(
@@ -833,7 +833,7 @@ TEST_F(
 {
     update_in_degrees_heavy_particles(*cmds, *backend, "a");
 
-    EXPECT_EQ(rendering::get_in_degrees_heavy_effect(*backend), "a");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "a");
 }
 
 TEST_F(degrees_commands_tests, update_in_heavy_particles_can_be_undone)
@@ -843,7 +843,7 @@ TEST_F(degrees_commands_tests, update_in_heavy_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_in_degrees_heavy_effect(*backend), "c");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "c");
 }
 
 TEST_F(
@@ -856,7 +856,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_in_degrees_heavy_effect(*backend), "ca");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "ca");
 }
 
 TEST_F(
@@ -865,7 +865,7 @@ TEST_F(
 {
     update_out_degrees_heavy_particles(*cmds, *backend, "qq");
 
-    EXPECT_EQ(rendering::get_out_degrees_heavy_effect(*backend), "qq");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "qq");
 }
 
 TEST_F(degrees_commands_tests, update_out_heavy_particles_can_be_undone)
@@ -875,7 +875,7 @@ TEST_F(degrees_commands_tests, update_out_heavy_particles_can_be_undone)
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
-    EXPECT_EQ(rendering::get_out_degrees_heavy_effect(*backend), "cc");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "cc");
 }
 
 TEST_F(
@@ -888,7 +888,7 @@ TEST_F(
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
-    EXPECT_EQ(rendering::get_out_degrees_heavy_effect(*backend), "l");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "l");
 }
 
 TEST_F(

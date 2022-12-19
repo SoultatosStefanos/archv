@@ -132,37 +132,37 @@ inline auto get_out_degrees_particles(const degrees_ranked_backend& b) -> const
     return get_out_degrees_data(b).particles;
 }
 
-inline auto get_in_degrees_light_effect(const degrees_ranked_backend& b)
+inline auto get_in_degrees_light_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_in_degrees_particles(b).light;
 }
 
-inline auto get_out_degrees_light_effect(const degrees_ranked_backend& b)
+inline auto get_out_degrees_light_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_out_degrees_particles(b).light;
 }
 
-inline auto get_in_degrees_medium_effect(const degrees_ranked_backend& b)
+inline auto get_in_degrees_medium_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_in_degrees_particles(b).medium;
 }
 
-inline auto get_out_degrees_medium_effect(const degrees_ranked_backend& b)
+inline auto get_out_degrees_medium_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_out_degrees_particles(b).medium;
 }
 
-inline auto get_in_degrees_heavy_effect(const degrees_ranked_backend& b)
+inline auto get_in_degrees_heavy_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_in_degrees_particles(b).heavy;
 }
 
-inline auto get_out_degrees_heavy_effect(const degrees_ranked_backend& b)
+inline auto get_out_degrees_heavy_particles(const degrees_ranked_backend& b)
     -> const auto&
 {
     return get_out_degrees_particles(b).heavy;
@@ -273,7 +273,7 @@ inline auto update_out_degrees_heavy_threshold(
         is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degrees_light_effect(
+inline auto update_in_degrees_light_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
@@ -281,12 +281,12 @@ inline auto update_in_degrees_light_effect(
         get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
-            get_in_degrees_medium_effect(b),
-            get_in_degrees_heavy_effect(b)),
+            get_in_degrees_medium_particles(b),
+            get_in_degrees_heavy_particles(b)),
         is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degrees_light_effect(
+inline auto update_out_degrees_light_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
@@ -294,59 +294,59 @@ inline auto update_out_degrees_light_effect(
         get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
-            get_out_degrees_medium_effect(b),
-            get_out_degrees_heavy_effect(b)),
+            get_out_degrees_medium_particles(b),
+            get_out_degrees_heavy_particles(b)),
         is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degrees_medium_effect(
+inline auto update_in_degrees_medium_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
     b.update_in_degrees(degrees_ranked_evaluation_data(
         get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_in_degrees_light_effect(b),
+            get_in_degrees_light_particles(b),
             std::move(effect),
-            get_in_degrees_heavy_effect(b)),
+            get_in_degrees_heavy_particles(b)),
         is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degrees_medium_effect(
+inline auto update_out_degrees_medium_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
     b.update_out_degrees(degrees_ranked_evaluation_data(
         get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_out_degrees_light_effect(b),
+            get_out_degrees_light_particles(b),
             std::move(effect),
-            get_out_degrees_heavy_effect(b)),
+            get_out_degrees_heavy_particles(b)),
         is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degrees_heavy_effect(
+inline auto update_in_degrees_heavy_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
     b.update_in_degrees(degrees_ranked_evaluation_data(
         get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_in_degrees_light_effect(b),
-            get_in_degrees_medium_effect(b),
+            get_in_degrees_light_particles(b),
+            get_in_degrees_medium_particles(b),
             std::move(effect)),
         is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degrees_heavy_effect(
+inline auto update_out_degrees_heavy_particles(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
     b.update_out_degrees(degrees_ranked_evaluation_data(
         get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_out_degrees_light_effect(b),
-            get_out_degrees_medium_effect(b),
+            get_out_degrees_light_particles(b),
+            get_out_degrees_medium_particles(b),
             std::move(effect)),
         is_out_degrees_applied(b)));
 }
