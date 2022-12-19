@@ -557,7 +557,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_in_degree_evaluation_light_threshold(back);
+            return rendering::get_in_degrees_light_threshold(back);
         }
     };
 
@@ -568,7 +568,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_in_degree_evaluation_medium_threshold(back);
+            return rendering::get_in_degrees_medium_threshold(back);
         }
     };
 
@@ -579,7 +579,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_in_degree_evaluation_heavy_threshold(back);
+            return rendering::get_in_degrees_heavy_threshold(back);
         }
     };
 
@@ -590,7 +590,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_out_degree_evaluation_light_threshold(back);
+            return rendering::get_out_degrees_light_threshold(back);
         }
     };
 
@@ -601,7 +601,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_out_degree_evaluation_medium_threshold(back);
+            return rendering::get_out_degrees_medium_threshold(back);
         }
     };
 
@@ -612,7 +612,7 @@ namespace
 
         inline auto operator()(backend_type& back) const
         {
-            return rendering::get_out_degree_evaluation_heavy_threshold(back);
+            return rendering::get_out_degrees_heavy_threshold(back);
         }
     };
 
@@ -636,7 +636,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_in_degree_evaluation_light_threshold(b, t);
+            rendering::update_in_degrees_light_threshold(b, t);
         }
     };
 
@@ -648,7 +648,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_in_degree_evaluation_medium_threshold(b, t);
+            rendering::update_in_degrees_medium_threshold(b, t);
         }
     };
 
@@ -660,7 +660,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_in_degree_evaluation_heavy_threshold(b, t);
+            rendering::update_in_degrees_heavy_threshold(b, t);
         }
     };
 
@@ -672,7 +672,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_out_degree_evaluation_light_threshold(b, t);
+            rendering::update_out_degrees_light_threshold(b, t);
         }
     };
 
@@ -684,7 +684,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_out_degree_evaluation_medium_threshold(b, t);
+            rendering::update_out_degrees_medium_threshold(b, t);
         }
     };
 
@@ -696,7 +696,7 @@ namespace
 
         inline auto operator()(backend_type& b, threshold_type t) const
         {
-            rendering::update_out_degree_evaluation_heavy_threshold(b, t);
+            rendering::update_out_degrees_heavy_threshold(b, t);
         }
     };
 
@@ -752,7 +752,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_in_degree_evaluation_light_effect(backend);
+            return rendering::get_in_degrees_light_effect(backend);
         }
     };
 
@@ -764,7 +764,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_in_degree_evaluation_medium_effect(backend);
+            return rendering::get_in_degrees_medium_effect(backend);
         }
     };
 
@@ -776,7 +776,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_in_degree_evaluation_heavy_effect(backend);
+            return rendering::get_in_degrees_heavy_effect(backend);
         }
     };
 
@@ -788,7 +788,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_out_degree_evaluation_light_effect(backend);
+            return rendering::get_out_degrees_light_effect(backend);
         }
     };
 
@@ -800,7 +800,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_out_degree_evaluation_medium_effect(backend);
+            return rendering::get_out_degrees_medium_effect(backend);
         }
     };
 
@@ -812,7 +812,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> particles_type
         {
-            return rendering::get_out_degree_evaluation_heavy_effect(backend);
+            return rendering::get_out_degrees_heavy_effect(backend);
         }
     };
 
@@ -836,8 +836,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_in_degree_evaluation_light_effect(
-                b, std::move(t));
+            rendering::update_in_degrees_light_effect(b, std::move(t));
         }
     };
 
@@ -849,8 +848,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_in_degree_evaluation_medium_effect(
-                b, std::move(t));
+            rendering::update_in_degrees_medium_effect(b, std::move(t));
         }
     };
 
@@ -862,8 +860,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_in_degree_evaluation_heavy_effect(
-                b, std::move(t));
+            rendering::update_in_degrees_heavy_effect(b, std::move(t));
         }
     };
 
@@ -875,8 +872,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_out_degree_evaluation_light_effect(
-                b, std::move(t));
+            rendering::update_out_degrees_light_effect(b, std::move(t));
         }
     };
 
@@ -888,8 +884,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_out_degree_evaluation_medium_effect(
-                b, std::move(t));
+            rendering::update_out_degrees_medium_effect(b, std::move(t));
         }
     };
 
@@ -901,8 +896,7 @@ namespace
 
         inline auto operator()(backend_type& b, particles_type t) const -> void
         {
-            rendering::update_out_degree_evaluation_heavy_effect(
-                b, std::move(t));
+            rendering::update_out_degrees_heavy_effect(b, std::move(t));
         }
     };
 
@@ -958,7 +952,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> applied_type
         {
-            return rendering::is_in_degree_evaluation_applied(backend);
+            return rendering::is_in_degrees_applied(backend);
         }
     };
 
@@ -970,7 +964,7 @@ namespace
 
         inline auto operator()(backend_type& backend) const -> applied_type
         {
-            return rendering::is_out_degree_evaluation_applied(backend);
+            return rendering::is_out_degrees_applied(backend);
         }
     };
 
@@ -994,7 +988,7 @@ namespace
 
         inline auto operator()(backend_type& b, applied_type v) const -> void
         {
-            rendering::update_in_degree_evaluation_applied(b, v);
+            rendering::update_in_degrees_applied(b, v);
         }
     };
 
@@ -1006,7 +1000,7 @@ namespace
 
         inline auto operator()(backend_type& b, applied_type v) const -> void
         {
-            rendering::update_out_degree_evaluation_applied(b, v);
+            rendering::update_out_degrees_applied(b, v);
         }
     };
 
@@ -1054,15 +1048,15 @@ namespace
 
         auto execute() -> void override
         {
-            old_in = rendering::get_in_degree_evaluation_data(backend);
-            old_out = rendering::get_out_degree_evaluation_data(backend);
+            old_in = rendering::get_in_degrees_data(backend);
+            old_out = rendering::get_out_degrees_data(backend);
             rendering::restore_defaults(backend);
         }
 
         auto undo() -> void override
         {
-            rendering::update_in_degree_evaluation(backend, old_in);
-            rendering::update_out_degree_evaluation(backend, old_out);
+            rendering::update_in_degrees(backend, old_in);
+            rendering::update_out_degrees(backend, old_out);
         }
 
         auto redo() -> void override { execute(); }
@@ -1070,7 +1064,7 @@ namespace
 
 } // namespace
 
-auto update_in_degree_evaluation_light_threshold(
+auto update_in_degrees_light_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1080,7 +1074,7 @@ auto update_in_degree_evaluation_light_threshold(
         backend, thres));
 }
 
-auto update_out_degree_evaluation_light_threshold(
+auto update_out_degrees_light_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1090,7 +1084,7 @@ auto update_out_degree_evaluation_light_threshold(
         backend, thres));
 }
 
-auto update_in_degree_evaluation_medium_threshold(
+auto update_in_degrees_medium_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1100,7 +1094,7 @@ auto update_in_degree_evaluation_medium_threshold(
         backend, thres));
 }
 
-auto update_out_degree_evaluation_medium_threshold(
+auto update_out_degrees_medium_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1110,7 +1104,7 @@ auto update_out_degree_evaluation_medium_threshold(
         backend, thres));
 }
 
-auto update_in_degree_evaluation_heavy_threshold(
+auto update_in_degrees_heavy_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1120,7 +1114,7 @@ auto update_in_degree_evaluation_heavy_threshold(
         backend, thres));
 }
 
-auto update_out_degree_evaluation_heavy_threshold(
+auto update_out_degrees_heavy_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void
@@ -1130,7 +1124,7 @@ auto update_out_degree_evaluation_heavy_threshold(
         backend, thres));
 }
 
-auto update_in_degree_evaluation_light_particles(
+auto update_in_degrees_light_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1140,7 +1134,7 @@ auto update_in_degree_evaluation_light_particles(
         backend, std::move(particles)));
 }
 
-auto update_out_degree_evaluation_light_particles(
+auto update_out_degrees_light_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1150,7 +1144,7 @@ auto update_out_degree_evaluation_light_particles(
         backend, std::move(particles)));
 }
 
-auto update_in_degree_evaluation_medium_particles(
+auto update_in_degrees_medium_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1160,7 +1154,7 @@ auto update_in_degree_evaluation_medium_particles(
         backend, std::move(particles)));
 }
 
-auto update_out_degree_evaluation_medium_particles(
+auto update_out_degrees_medium_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1170,7 +1164,7 @@ auto update_out_degree_evaluation_medium_particles(
         backend, std::move(particles)));
 }
 
-auto update_in_degree_evaluation_heavy_particles(
+auto update_in_degrees_heavy_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1180,7 +1174,7 @@ auto update_in_degree_evaluation_heavy_particles(
         backend, std::move(particles)));
 }
 
-auto update_out_degree_evaluation_heavy_particles(
+auto update_out_degrees_heavy_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void
@@ -1190,7 +1184,7 @@ auto update_out_degree_evaluation_heavy_particles(
         backend, std::move(particles)));
 }
 
-auto update_in_degree_evaluation_applied(
+auto update_in_degrees_applied(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void
@@ -1199,7 +1193,7 @@ auto update_in_degree_evaluation_applied(
         backend, applied));
 }
 
-auto update_out_degree_evaluation_applied(
+auto update_out_degrees_applied(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void

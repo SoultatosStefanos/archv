@@ -36,15 +36,15 @@ public:
     auto in_degree_data() const -> const auto& { return m_in_degree_data; }
     auto out_degree_data() const -> const auto& { return m_out_degree_data; }
 
-    auto connect_to_in_degree_evaluation(const slot& f) -> connection;
-    auto connect_to_out_degree_evaluation(const slot& f) -> connection;
+    auto connect_to_in_degrees(const slot& f) -> connection;
+    auto connect_to_out_degrees(const slot& f) -> connection;
 
-    auto update_in_degree_evaluation(degrees_ranked_evaluation_data d) -> void;
-    auto update_out_degree_evaluation(degrees_ranked_evaluation_data d) -> void;
+    auto update_in_degrees(degrees_ranked_evaluation_data d) -> void;
+    auto update_out_degrees(degrees_ranked_evaluation_data d) -> void;
 
 protected:
-    auto emit_in_degree_evaluation_data() const -> void;
-    auto emit_out_degree_evaluation_data() const -> void;
+    auto emit_in_degrees_data() const -> void;
+    auto emit_out_degrees_data() const -> void;
 
 private:
     config_data_type m_cfg;
@@ -58,129 +58,114 @@ private:
  * Usecases                                                *
  ***********************************************************/
 
-inline auto get_in_degree_evaluation_data(const degrees_ranked_backend& b)
-    -> const auto&
+inline auto get_in_degrees_data(const degrees_ranked_backend& b) -> const auto&
 {
     return b.in_degree_data();
 }
 
-inline auto get_out_degree_evaluation_data(const degrees_ranked_backend& b)
-    -> const auto&
+inline auto get_out_degrees_data(const degrees_ranked_backend& b) -> const auto&
 {
     return b.out_degree_data();
 }
 
-inline auto is_in_degree_evaluation_applied(const degrees_ranked_backend& b)
+inline auto is_in_degrees_applied(const degrees_ranked_backend& b)
 {
-    return get_in_degree_evaluation_data(b).applied;
+    return get_in_degrees_data(b).applied;
 }
 
-inline auto is_out_degree_evaluation_applied(const degrees_ranked_backend& b)
+inline auto is_out_degrees_applied(const degrees_ranked_backend& b)
 {
-    return get_out_degree_evaluation_data(b).applied;
+    return get_out_degrees_data(b).applied;
 }
 
-inline auto get_in_degree_evaluation_thresholds(const degrees_ranked_backend& b)
+inline auto get_in_degrees_thresholds(const degrees_ranked_backend& b) -> const
+    auto&
+{
+    return get_in_degrees_data(b).thresholds;
+}
+
+inline auto get_out_degrees_thresholds(const degrees_ranked_backend& b) -> const
+    auto&
+{
+    return get_out_degrees_data(b).thresholds;
+}
+
+inline auto get_in_degrees_light_threshold(const degrees_ranked_backend& b)
+{
+    return get_in_degrees_thresholds(b).light;
+}
+
+inline auto get_out_degrees_light_threshold(const degrees_ranked_backend& b)
+{
+    return get_out_degrees_thresholds(b).light;
+}
+
+inline auto get_in_degrees_medium_threshold(const degrees_ranked_backend& b)
+{
+    return get_in_degrees_thresholds(b).medium;
+}
+
+inline auto get_out_degrees_medium_threshold(const degrees_ranked_backend& b)
+{
+    return get_out_degrees_thresholds(b).medium;
+}
+
+inline auto get_in_degrees_heavy_threshold(const degrees_ranked_backend& b)
+{
+    return get_in_degrees_thresholds(b).heavy;
+}
+
+inline auto get_out_degrees_heavy_threshold(const degrees_ranked_backend& b)
+{
+    return get_out_degrees_thresholds(b).heavy;
+}
+
+inline auto get_in_degrees_particles(const degrees_ranked_backend& b) -> const
+    auto&
+{
+    return get_in_degrees_data(b).particles;
+}
+
+inline auto get_out_degrees_particles(const degrees_ranked_backend& b) -> const
+    auto&
+{
+    return get_out_degrees_data(b).particles;
+}
+
+inline auto get_in_degrees_light_effect(const degrees_ranked_backend& b)
     -> const auto&
 {
-    return get_in_degree_evaluation_data(b).thresholds;
+    return get_in_degrees_particles(b).light;
 }
 
-inline auto
-get_out_degree_evaluation_thresholds(const degrees_ranked_backend& b) -> const
-    auto&
-{
-    return get_out_degree_evaluation_data(b).thresholds;
-}
-
-inline auto
-get_in_degree_evaluation_light_threshold(const degrees_ranked_backend& b)
-{
-    return get_in_degree_evaluation_thresholds(b).light;
-}
-
-inline auto
-get_out_degree_evaluation_light_threshold(const degrees_ranked_backend& b)
-{
-    return get_out_degree_evaluation_thresholds(b).light;
-}
-
-inline auto
-get_in_degree_evaluation_medium_threshold(const degrees_ranked_backend& b)
-{
-    return get_in_degree_evaluation_thresholds(b).medium;
-}
-
-inline auto
-get_out_degree_evaluation_medium_threshold(const degrees_ranked_backend& b)
-{
-    return get_out_degree_evaluation_thresholds(b).medium;
-}
-
-inline auto
-get_in_degree_evaluation_heavy_threshold(const degrees_ranked_backend& b)
-{
-    return get_in_degree_evaluation_thresholds(b).heavy;
-}
-
-inline auto
-get_out_degree_evaluation_heavy_threshold(const degrees_ranked_backend& b)
-{
-    return get_out_degree_evaluation_thresholds(b).heavy;
-}
-
-inline auto get_in_degree_evaluation_effects(const degrees_ranked_backend& b)
+inline auto get_out_degrees_light_effect(const degrees_ranked_backend& b)
     -> const auto&
 {
-    return get_in_degree_evaluation_data(b).particles;
+    return get_out_degrees_particles(b).light;
 }
 
-inline auto get_out_degree_evaluation_effects(const degrees_ranked_backend& b)
+inline auto get_in_degrees_medium_effect(const degrees_ranked_backend& b)
     -> const auto&
 {
-    return get_out_degree_evaluation_data(b).particles;
+    return get_in_degrees_particles(b).medium;
 }
 
-inline auto
-get_in_degree_evaluation_light_effect(const degrees_ranked_backend& b) -> const
-    auto&
-{
-    return get_in_degree_evaluation_effects(b).light;
-}
-
-inline auto
-get_out_degree_evaluation_light_effect(const degrees_ranked_backend& b) -> const
-    auto&
-{
-    return get_out_degree_evaluation_effects(b).light;
-}
-
-inline auto
-get_in_degree_evaluation_medium_effect(const degrees_ranked_backend& b) -> const
-    auto&
-{
-    return get_in_degree_evaluation_effects(b).medium;
-}
-
-inline auto
-get_out_degree_evaluation_medium_effect(const degrees_ranked_backend& b)
+inline auto get_out_degrees_medium_effect(const degrees_ranked_backend& b)
     -> const auto&
 {
-    return get_out_degree_evaluation_effects(b).medium;
+    return get_out_degrees_particles(b).medium;
 }
 
-inline auto
-get_in_degree_evaluation_heavy_effect(const degrees_ranked_backend& b) -> const
-    auto&
+inline auto get_in_degrees_heavy_effect(const degrees_ranked_backend& b)
+    -> const auto&
 {
-    return get_in_degree_evaluation_effects(b).heavy;
+    return get_in_degrees_particles(b).heavy;
 }
 
-inline auto
-get_out_degree_evaluation_heavy_effect(const degrees_ranked_backend& b) -> const
-    auto&
+inline auto get_out_degrees_heavy_effect(const degrees_ranked_backend& b)
+    -> const auto&
 {
-    return get_out_degree_evaluation_effects(b).heavy;
+    return get_out_degrees_particles(b).heavy;
 }
 
 inline auto evaluate_in_degree(const degrees_ranked_backend& b, degree_t degree)
@@ -196,210 +181,206 @@ evaluate_out_degree(const degrees_ranked_backend& b, degree_t degree)
     return evaluate(degree, b.out_degree_data());
 }
 
-inline auto update_in_degree_evaluation(
+inline auto update_in_degrees(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data data)
 {
-    b.update_in_degree_evaluation(std::move(data));
+    b.update_in_degrees(std::move(data));
 }
 
-inline auto update_out_degree_evaluation(
+inline auto update_out_degrees(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data data)
 {
-    b.update_out_degree_evaluation(std::move(data));
+    b.update_out_degrees(std::move(data));
 }
 
-inline auto update_in_degree_evaluation_light_threshold(
+inline auto update_in_degrees_light_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_in_degrees(degrees_ranked_evaluation_data(
         make_ranked(
             threshold,
-            get_in_degree_evaluation_medium_threshold(b),
-            get_in_degree_evaluation_heavy_threshold(b)),
-        get_in_degree_evaluation_effects(b),
-        is_in_degree_evaluation_applied(b)));
+            get_in_degrees_medium_threshold(b),
+            get_in_degrees_heavy_threshold(b)),
+        get_in_degrees_particles(b),
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_light_threshold(
+inline auto update_out_degrees_light_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_out_degrees(degrees_ranked_evaluation_data(
         make_ranked(
             threshold,
-            get_out_degree_evaluation_medium_threshold(b),
-            get_out_degree_evaluation_heavy_threshold(b)),
-        get_out_degree_evaluation_effects(b),
-        is_out_degree_evaluation_applied(b)));
+            get_out_degrees_medium_threshold(b),
+            get_out_degrees_heavy_threshold(b)),
+        get_out_degrees_particles(b),
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_medium_threshold(
+inline auto update_in_degrees_medium_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold) -> void
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_in_degrees(degrees_ranked_evaluation_data(
         make_ranked(
-            get_in_degree_evaluation_light_threshold(b),
+            get_in_degrees_light_threshold(b),
             threshold,
-            get_in_degree_evaluation_heavy_threshold(b)),
-        get_in_degree_evaluation_effects(b),
-        is_in_degree_evaluation_applied(b)));
+            get_in_degrees_heavy_threshold(b)),
+        get_in_degrees_particles(b),
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_medium_threshold(
+inline auto update_out_degrees_medium_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold) -> void
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_out_degrees(degrees_ranked_evaluation_data(
         make_ranked(
-            get_out_degree_evaluation_light_threshold(b),
+            get_out_degrees_light_threshold(b),
             threshold,
-            get_out_degree_evaluation_heavy_threshold(b)),
-        get_out_degree_evaluation_effects(b),
-        is_out_degree_evaluation_applied(b)));
+            get_out_degrees_heavy_threshold(b)),
+        get_out_degrees_particles(b),
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_heavy_threshold(
+inline auto update_in_degrees_heavy_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_in_degrees(degrees_ranked_evaluation_data(
         make_ranked(
-            get_in_degree_evaluation_light_threshold(b),
-            get_in_degree_evaluation_medium_threshold(b),
+            get_in_degrees_light_threshold(b),
+            get_in_degrees_medium_threshold(b),
             threshold),
-        get_in_degree_evaluation_effects(b),
-        is_in_degree_evaluation_applied(b)));
+        get_in_degrees_particles(b),
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_heavy_threshold(
+inline auto update_out_degrees_heavy_threshold(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::threshold_type threshold)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
+    b.update_out_degrees(degrees_ranked_evaluation_data(
         make_ranked(
-            get_out_degree_evaluation_light_threshold(b),
-            get_out_degree_evaluation_medium_threshold(b),
+            get_out_degrees_light_threshold(b),
+            get_out_degrees_medium_threshold(b),
             threshold),
-        get_out_degree_evaluation_effects(b),
-        is_out_degree_evaluation_applied(b)));
+        get_out_degrees_particles(b),
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_light_effect(
+inline auto update_in_degrees_light_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
-        get_in_degree_evaluation_thresholds(b),
+    b.update_in_degrees(degrees_ranked_evaluation_data(
+        get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
-            get_in_degree_evaluation_medium_effect(b),
-            get_in_degree_evaluation_heavy_effect(b)),
-        is_in_degree_evaluation_applied(b)));
+            get_in_degrees_medium_effect(b),
+            get_in_degrees_heavy_effect(b)),
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_light_effect(
+inline auto update_out_degrees_light_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
-        get_out_degree_evaluation_thresholds(b),
+    b.update_out_degrees(degrees_ranked_evaluation_data(
+        get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
             std::move(effect),
-            get_out_degree_evaluation_medium_effect(b),
-            get_out_degree_evaluation_heavy_effect(b)),
-        is_out_degree_evaluation_applied(b)));
+            get_out_degrees_medium_effect(b),
+            get_out_degrees_heavy_effect(b)),
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_medium_effect(
+inline auto update_in_degrees_medium_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
-        get_in_degree_evaluation_thresholds(b),
+    b.update_in_degrees(degrees_ranked_evaluation_data(
+        get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_in_degree_evaluation_light_effect(b),
+            get_in_degrees_light_effect(b),
             std::move(effect),
-            get_in_degree_evaluation_heavy_effect(b)),
-        is_in_degree_evaluation_applied(b)));
+            get_in_degrees_heavy_effect(b)),
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_medium_effect(
+inline auto update_out_degrees_medium_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
-        get_out_degree_evaluation_thresholds(b),
+    b.update_out_degrees(degrees_ranked_evaluation_data(
+        get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_out_degree_evaluation_light_effect(b),
+            get_out_degrees_light_effect(b),
             std::move(effect),
-            get_out_degree_evaluation_heavy_effect(b)),
-        is_out_degree_evaluation_applied(b)));
+            get_out_degrees_heavy_effect(b)),
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_heavy_effect(
+inline auto update_in_degrees_heavy_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
-        get_in_degree_evaluation_thresholds(b),
+    b.update_in_degrees(degrees_ranked_evaluation_data(
+        get_in_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_in_degree_evaluation_light_effect(b),
-            get_in_degree_evaluation_medium_effect(b),
+            get_in_degrees_light_effect(b),
+            get_in_degrees_medium_effect(b),
             std::move(effect)),
-        is_in_degree_evaluation_applied(b)));
+        is_in_degrees_applied(b)));
 }
 
-inline auto update_out_degree_evaluation_heavy_effect(
+inline auto update_out_degrees_heavy_effect(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::particle_system_type effect)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
-        get_out_degree_evaluation_thresholds(b),
+    b.update_out_degrees(degrees_ranked_evaluation_data(
+        get_out_degrees_thresholds(b),
         make_ranked< degrees_ranked_evaluation_data::particle_system_type >(
-            get_out_degree_evaluation_light_effect(b),
-            get_out_degree_evaluation_medium_effect(b),
+            get_out_degrees_light_effect(b),
+            get_out_degrees_medium_effect(b),
             std::move(effect)),
-        is_out_degree_evaluation_applied(b)));
+        is_out_degrees_applied(b)));
 }
 
-inline auto update_in_degree_evaluation_applied(
+inline auto update_in_degrees_applied(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::applied_type applied)
 {
-    b.update_in_degree_evaluation(degrees_ranked_evaluation_data(
-        get_in_degree_evaluation_thresholds(b),
-        get_in_degree_evaluation_effects(b),
-        applied));
+    b.update_in_degrees(degrees_ranked_evaluation_data(
+        get_in_degrees_thresholds(b), get_in_degrees_particles(b), applied));
 }
 
-inline auto update_out_degree_evaluation_applied(
+inline auto update_out_degrees_applied(
     degrees_ranked_backend& b,
     degrees_ranked_evaluation_data::applied_type applied)
 {
-    b.update_out_degree_evaluation(degrees_ranked_evaluation_data(
-        get_out_degree_evaluation_thresholds(b),
-        get_out_degree_evaluation_effects(b),
-        applied));
+    b.update_out_degrees(degrees_ranked_evaluation_data(
+        get_out_degrees_thresholds(b), get_out_degrees_particles(b), applied));
 }
 
-inline auto restore_in_degree_evaluation(degrees_ranked_backend& b)
+inline auto restore_in_degrees(degrees_ranked_backend& b)
 {
-    b.update_in_degree_evaluation(b.config_data().in_data);
+    b.update_in_degrees(b.config_data().in_data);
 }
 
-inline auto restore_out_degree_evaluation(degrees_ranked_backend& b)
+inline auto restore_out_degrees(degrees_ranked_backend& b)
 {
-    b.update_out_degree_evaluation(b.config_data().out_data);
+    b.update_out_degrees(b.config_data().out_data);
 }
 
 inline auto restore_defaults(degrees_ranked_backend& b)
 {
-    restore_in_degree_evaluation(b);
-    restore_out_degree_evaluation(b);
+    restore_in_degrees(b);
+    restore_out_degrees(b);
 }
 
 } // namespace rendering

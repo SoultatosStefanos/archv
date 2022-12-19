@@ -624,70 +624,60 @@ auto application::prepare_degrees_editor() -> void
     auto& frontend = m_gui->get_menu_bar().get_degrees_editor();
 
     frontend.set_in_light_threshold(
-        [this, &backend]() {
-            return rendering::get_in_degree_evaluation_light_threshold(backend);
-        });
+        [this, &backend]()
+        { return rendering::get_in_degrees_light_threshold(backend); });
 
     frontend.set_out_light_threshold(
-        [this, &backend]() {
-            return rendering::get_out_degree_evaluation_light_threshold(
-                backend);
-        });
+        [this, &backend]()
+        { return rendering::get_out_degrees_light_threshold(backend); });
 
     frontend.set_in_medium_threshold(
-        [this, &backend]() {
-            return rendering::get_in_degree_evaluation_medium_threshold(
-                backend);
-        });
+        [this, &backend]()
+        { return rendering::get_in_degrees_medium_threshold(backend); });
 
     frontend.set_out_medium_threshold(
-        [this, &backend]() {
-            return rendering::get_out_degree_evaluation_medium_threshold(
-                backend);
-        });
+        [this, &backend]()
+        { return rendering::get_out_degrees_medium_threshold(backend); });
 
     frontend.set_in_heavy_threshold(
-        [this, &backend]() {
-            return rendering::get_in_degree_evaluation_heavy_threshold(backend);
-        });
+        [this, &backend]()
+        { return rendering::get_in_degrees_heavy_threshold(backend); });
 
     frontend.set_out_heavy_threshold(
-        [this, &backend]() {
-            return rendering::get_out_degree_evaluation_heavy_threshold(
-                backend);
-        });
+        [this, &backend]()
+        { return rendering::get_out_degrees_heavy_threshold(backend); });
 
     frontend.set_in_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degree_evaluation_light_effect(backend);
+        return rendering::get_in_degrees_light_effect(backend);
     });
 
     frontend.set_out_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degree_evaluation_light_effect(backend);
+        return rendering::get_out_degrees_light_effect(backend);
     });
 
     frontend.set_in_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degree_evaluation_medium_effect(backend);
+        return rendering::get_in_degrees_medium_effect(backend);
     });
 
     frontend.set_out_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degree_evaluation_medium_effect(backend);
+        return rendering::get_out_degrees_medium_effect(backend);
     });
 
     frontend.set_in_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degree_evaluation_heavy_effect(backend);
+        return rendering::get_in_degrees_heavy_effect(backend);
     });
 
     frontend.set_out_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degree_evaluation_heavy_effect(backend);
+        return rendering::get_out_degrees_heavy_effect(backend);
     });
 
     frontend.set_in_applied(
         [this, &backend]()
-        { return rendering::is_in_degree_evaluation_applied(backend); });
+        { return rendering::is_in_degrees_applied(backend); });
 
     frontend.set_out_applied(
         [this, &backend]()
-        { return rendering::is_out_degree_evaluation_applied(backend); });
+        { return rendering::is_out_degrees_applied(backend); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared degrees editor";
 }
@@ -1022,8 +1012,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees light threshold: " << thres;
-            pres::update_in_degree_evaluation_light_threshold(
-                *m_cmds, backend, thres);
+            pres::update_in_degrees_light_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_in_medium_threshold(
@@ -1031,8 +1020,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees medium threshold: " << thres;
-            pres::update_in_degree_evaluation_medium_threshold(
-                *m_cmds, backend, thres);
+            pres::update_in_degrees_medium_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_in_heavy_threshold(
@@ -1040,8 +1028,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees heavy threshold: " << thres;
-            pres::update_in_degree_evaluation_heavy_threshold(
-                *m_cmds, backend, thres);
+            pres::update_in_degrees_heavy_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_out_light_threshold(
@@ -1049,8 +1036,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees light threshold: " << thres;
-            pres::update_out_degree_evaluation_light_threshold(
-                *m_cmds, backend, thres);
+            pres::update_out_degrees_light_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_out_medium_threshold(
@@ -1058,8 +1044,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees medium threshold: " << thres;
-            pres::update_out_degree_evaluation_medium_threshold(
-                *m_cmds, backend, thres);
+            pres::update_out_degrees_medium_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_out_heavy_threshold(
@@ -1067,8 +1052,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees heavy threshold: " << thres;
-            pres::update_out_degree_evaluation_heavy_threshold(
-                *m_cmds, backend, thres);
+            pres::update_out_degrees_heavy_threshold(*m_cmds, backend, thres);
         });
 
     editor.connect_to_in_light_particles(
@@ -1076,7 +1060,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees light particles: " << particles;
-            pres::update_in_degree_evaluation_light_particles(
+            pres::update_in_degrees_light_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1085,7 +1069,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees medium particles: " << particles;
-            pres::update_in_degree_evaluation_medium_particles(
+            pres::update_in_degrees_medium_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1094,7 +1078,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees heavy particles: " << particles;
-            pres::update_in_degree_evaluation_heavy_particles(
+            pres::update_in_degrees_heavy_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1103,7 +1087,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees light particles: " << particles;
-            pres::update_out_degree_evaluation_light_particles(
+            pres::update_out_degrees_light_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1112,7 +1096,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees medium particles: " << particles;
-            pres::update_out_degree_evaluation_medium_particles(
+            pres::update_out_degrees_medium_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1121,7 +1105,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees heavy particles: " << particles;
-            pres::update_out_degree_evaluation_heavy_particles(
+            pres::update_out_degrees_heavy_particles(
                 *m_cmds, backend, std::string(particles));
         });
 
@@ -1130,8 +1114,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected in degrees applied: " << applied;
-            pres::update_in_degree_evaluation_applied(
-                *m_cmds, backend, applied);
+            pres::update_in_degrees_applied(*m_cmds, backend, applied);
         });
 
     editor.connect_to_out_applied(
@@ -1139,8 +1122,7 @@ auto application::connect_degrees_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info)
                 << "selected out degrees applied: " << applied;
-            pres::update_out_degree_evaluation_applied(
-                *m_cmds, backend, applied);
+            pres::update_out_degrees_applied(*m_cmds, backend, applied);
         });
 
     editor.connect_to_restore(
@@ -1150,14 +1132,14 @@ auto application::connect_degrees_presentation() -> void
             pres::restore_degrees(*m_cmds, backend);
         });
 
-    backend.connect_to_in_degree_evaluation(
+    backend.connect_to_in_degrees(
         [this](const auto&)
         {
             m_graph_renderer->render_in_degree_particles();
             BOOST_LOG_TRIVIAL(info) << "rendered out degree particles";
         });
 
-    backend.connect_to_out_degree_evaluation(
+    backend.connect_to_out_degrees(
         [this](const auto&)
         {
             m_graph_renderer->render_out_degree_particles();

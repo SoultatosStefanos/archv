@@ -12,14 +12,12 @@ degrees_ranked_backend::degrees_ranked_backend(config_data_type degree_data)
 {
 }
 
-auto degrees_ranked_backend::connect_to_in_degree_evaluation(const slot& f)
-    -> connection
+auto degrees_ranked_backend::connect_to_in_degrees(const slot& f) -> connection
 {
     return m_in_degree_sig.connect(f);
 }
 
-auto degrees_ranked_backend::connect_to_out_degree_evaluation(const slot& f)
-    -> connection
+auto degrees_ranked_backend::connect_to_out_degrees(const slot& f) -> connection
 {
     return m_out_degree_sig.connect(f);
 }
@@ -34,7 +32,7 @@ namespace
     }
 } // namespace
 
-auto degrees_ranked_backend::update_in_degree_evaluation(
+auto degrees_ranked_backend::update_in_degrees(
     degrees_ranked_evaluation_data data) -> void
 {
     if (must_ignore(data))
@@ -44,10 +42,10 @@ auto degrees_ranked_backend::update_in_degree_evaluation(
     }
 
     m_in_degree_data = std::move(data);
-    emit_in_degree_evaluation_data();
+    emit_in_degrees_data();
 }
 
-auto degrees_ranked_backend::update_out_degree_evaluation(
+auto degrees_ranked_backend::update_out_degrees(
     degrees_ranked_evaluation_data data) -> void
 {
     if (must_ignore(data))
@@ -57,15 +55,15 @@ auto degrees_ranked_backend::update_out_degree_evaluation(
     }
 
     m_out_degree_data = std::move(data);
-    emit_out_degree_evaluation_data();
+    emit_out_degrees_data();
 }
 
-auto degrees_ranked_backend::emit_in_degree_evaluation_data() const -> void
+auto degrees_ranked_backend::emit_in_degrees_data() const -> void
 {
     m_in_degree_sig(in_degree_data());
 }
 
-auto degrees_ranked_backend::emit_out_degree_evaluation_data() const -> void
+auto degrees_ranked_backend::emit_out_degrees_data() const -> void
 {
     m_out_degree_sig(out_degree_data());
 }

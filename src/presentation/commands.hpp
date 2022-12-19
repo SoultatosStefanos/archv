@@ -82,72 +82,72 @@ auto restore_scaling(command_history& cmds, scaling_backend& b) -> void;
  * Degrees                                                 *
  ***********************************************************/
 
-auto update_in_degree_evaluation_light_threshold(
+auto update_in_degrees_light_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_out_degree_evaluation_light_threshold(
+auto update_out_degrees_light_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_in_degree_evaluation_medium_threshold(
+auto update_in_degrees_medium_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_out_degree_evaluation_medium_threshold(
+auto update_out_degrees_medium_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_in_degree_evaluation_heavy_threshold(
+auto update_in_degrees_heavy_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_out_degree_evaluation_heavy_threshold(
+auto update_out_degrees_heavy_threshold(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::threshold_type thres) -> void;
 
-auto update_in_degree_evaluation_light_particles(
+auto update_in_degrees_light_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_out_degree_evaluation_light_particles(
+auto update_out_degrees_light_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_in_degree_evaluation_medium_particles(
+auto update_in_degrees_medium_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_out_degree_evaluation_medium_particles(
+auto update_out_degrees_medium_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_in_degree_evaluation_heavy_particles(
+auto update_in_degrees_heavy_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_out_degree_evaluation_heavy_particles(
+auto update_out_degrees_heavy_particles(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::particle_system_type particles) -> void;
 
-auto update_in_degree_evaluation_applied(
+auto update_in_degrees_applied(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void;
 
-auto update_out_degree_evaluation_applied(
+auto update_out_degrees_applied(
     command_history& cmds,
     degrees_backend& backend,
     degrees_backend::applied_type applied) -> void;
