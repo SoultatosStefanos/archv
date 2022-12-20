@@ -1157,22 +1157,6 @@ auto application::connect_clustering_presentation() -> void
     auto& backend = m_graph_iface->get_clustering_backend();
     auto& editor = m_gui->get_menu_bar().get_clustering_editor();
 
-    editor.connect_to_cluster(
-        [this, &backend]()
-        {
-            BOOST_LOG_TRIVIAL(info) << "selected cluster";
-            pres::update_clusters(*m_cmds, backend);
-        });
-
-    editor.connect_to_hide(
-        [this]()
-        {
-            BOOST_LOG_TRIVIAL(info) << "selected hide clusters";
-            m_graph_renderer->hide_clusters();
-            m_graph_renderer->render_layout(
-                pres::vertex_position(*m_graph_iface));
-        });
-
     editor.connect_to_clusterer(
         [this, &backend](auto id)
         {
@@ -1234,6 +1218,22 @@ auto application::connect_clustering_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected clustering restore";
             pres::restore_clustering(*m_cmds, backend);
+        });
+
+    editor.connect_to_cluster(
+        [this, &backend]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected cluster";
+            pres::update_clusters(*m_cmds, backend);
+        });
+
+    editor.connect_to_hide(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected hide clusters";
+            m_graph_renderer->hide_clusters();
+            m_graph_renderer->render_layout(
+                pres::vertex_position(*m_graph_iface));
         });
 
     backend.connect_to_clusters(

@@ -953,33 +953,120 @@ TEST_F(degrees_commands_tests, update_out_applied_can_be_undone_and_redone)
 
 TEST_F(degrees_commands_tests, restore_degrees_updates_the_backend_accordingly)
 {
+    update_in_degrees_light_threshold(*cmds, *backend, 2);
+    update_in_degrees_medium_threshold(*cmds, *backend, 4);
+    update_in_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_in_degrees_light_particles(*cmds, *backend, "z");
+    update_in_degrees_medium_particles(*cmds, *backend, "z");
+    update_in_degrees_heavy_particles(*cmds, *backend, "z");
+    update_in_degrees_applied(*cmds, *backend, false);
+
+    update_out_degrees_light_threshold(*cmds, *backend, 1);
+    update_out_degrees_medium_threshold(*cmds, *backend, 3);
+    update_out_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_out_degrees_light_particles(*cmds, *backend, "z");
+    update_out_degrees_medium_particles(*cmds, *backend, "z");
+    update_out_degrees_heavy_particles(*cmds, *backend, "z");
     update_out_degrees_applied(*cmds, *backend, false);
 
     restore_degrees(*cmds, *backend);
 
+    EXPECT_EQ(rendering::get_in_degrees_light_threshold(*backend), 1);
+    EXPECT_EQ(rendering::get_in_degrees_medium_threshold(*backend), 3);
+    EXPECT_EQ(rendering::get_in_degrees_heavy_threshold(*backend), 5);
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "a");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "b");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "c");
+    EXPECT_TRUE(rendering::is_in_degrees_applied(*backend));
+
+    EXPECT_EQ(rendering::get_out_degrees_light_threshold(*backend), 2);
+    EXPECT_EQ(rendering::get_out_degrees_medium_threshold(*backend), 4);
+    EXPECT_EQ(rendering::get_out_degrees_heavy_threshold(*backend), 6);
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "aa");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "bb");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "cc");
     EXPECT_TRUE(rendering::is_out_degrees_applied(*backend));
 }
 
 TEST_F(degrees_commands_tests, restore_degrees_can_be_undone)
 {
+    update_in_degrees_light_threshold(*cmds, *backend, 2);
+    update_in_degrees_medium_threshold(*cmds, *backend, 4);
+    update_in_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_in_degrees_light_particles(*cmds, *backend, "z");
+    update_in_degrees_medium_particles(*cmds, *backend, "z");
+    update_in_degrees_heavy_particles(*cmds, *backend, "z");
+    update_in_degrees_applied(*cmds, *backend, false);
+
+    update_out_degrees_light_threshold(*cmds, *backend, 1);
+    update_out_degrees_medium_threshold(*cmds, *backend, 3);
+    update_out_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_out_degrees_light_particles(*cmds, *backend, "z");
+    update_out_degrees_medium_particles(*cmds, *backend, "z");
+    update_out_degrees_heavy_particles(*cmds, *backend, "z");
     update_out_degrees_applied(*cmds, *backend, false);
+
     restore_degrees(*cmds, *backend);
 
     EXPECT_TRUE(cmds->can_undo());
     cmds->undo();
 
+    EXPECT_EQ(rendering::get_in_degrees_light_threshold(*backend), 2);
+    EXPECT_EQ(rendering::get_in_degrees_medium_threshold(*backend), 4);
+    EXPECT_EQ(rendering::get_in_degrees_heavy_threshold(*backend), 9);
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "z");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "z");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "z");
+    EXPECT_FALSE(rendering::is_in_degrees_applied(*backend));
+
+    EXPECT_EQ(rendering::get_out_degrees_light_threshold(*backend), 1);
+    EXPECT_EQ(rendering::get_out_degrees_medium_threshold(*backend), 3);
+    EXPECT_EQ(rendering::get_out_degrees_heavy_threshold(*backend), 9);
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "z");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "z");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "z");
     EXPECT_FALSE(rendering::is_out_degrees_applied(*backend));
 }
 
 TEST_F(degrees_commands_tests, restore_degrees_can_be_undone_and_redone)
 {
+
+    update_in_degrees_light_threshold(*cmds, *backend, 2);
+    update_in_degrees_medium_threshold(*cmds, *backend, 4);
+    update_in_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_in_degrees_light_particles(*cmds, *backend, "z");
+    update_in_degrees_medium_particles(*cmds, *backend, "z");
+    update_in_degrees_heavy_particles(*cmds, *backend, "z");
+    update_in_degrees_applied(*cmds, *backend, false);
+
+    update_out_degrees_light_threshold(*cmds, *backend, 1);
+    update_out_degrees_medium_threshold(*cmds, *backend, 3);
+    update_out_degrees_heavy_threshold(*cmds, *backend, 9);
+    update_out_degrees_light_particles(*cmds, *backend, "z");
+    update_out_degrees_medium_particles(*cmds, *backend, "z");
+    update_out_degrees_heavy_particles(*cmds, *backend, "z");
     update_out_degrees_applied(*cmds, *backend, false);
+
     restore_degrees(*cmds, *backend);
     cmds->undo();
 
     EXPECT_TRUE(cmds->can_redo());
     cmds->redo();
 
+    EXPECT_EQ(rendering::get_in_degrees_light_threshold(*backend), 1);
+    EXPECT_EQ(rendering::get_in_degrees_medium_threshold(*backend), 3);
+    EXPECT_EQ(rendering::get_in_degrees_heavy_threshold(*backend), 5);
+    EXPECT_EQ(rendering::get_in_degrees_light_particles(*backend), "a");
+    EXPECT_EQ(rendering::get_in_degrees_medium_particles(*backend), "b");
+    EXPECT_EQ(rendering::get_in_degrees_heavy_particles(*backend), "c");
+    EXPECT_TRUE(rendering::is_in_degrees_applied(*backend));
+
+    EXPECT_EQ(rendering::get_out_degrees_light_threshold(*backend), 2);
+    EXPECT_EQ(rendering::get_out_degrees_medium_threshold(*backend), 4);
+    EXPECT_EQ(rendering::get_out_degrees_heavy_threshold(*backend), 6);
+    EXPECT_EQ(rendering::get_out_degrees_light_particles(*backend), "aa");
+    EXPECT_EQ(rendering::get_out_degrees_medium_particles(*backend), "bb");
+    EXPECT_EQ(rendering::get_out_degrees_heavy_particles(*backend), "cc");
     EXPECT_TRUE(rendering::is_out_degrees_applied(*backend));
 }
 
