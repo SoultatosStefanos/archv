@@ -12,8 +12,6 @@
 #include <concepts>                     // for invocable
 #include <memory>                       // for unique_ptr
 
-// TODO Unit test these
-
 namespace layout
 {
 
