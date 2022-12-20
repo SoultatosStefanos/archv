@@ -1009,4 +1009,7 @@
 
 	+ [x] Color coding commands
 
-	+ [ ] Clustering undo/redo tidy
+
+# 20 / 12 / 2022
+
+	+ [x] Clustering undo/redo tidy

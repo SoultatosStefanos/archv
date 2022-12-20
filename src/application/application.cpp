@@ -1224,36 +1224,19 @@ auto application::connect_clustering_presentation() -> void
         [this, &backend]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected cluster";
-            pres::update_clusters(*m_cmds, backend);
+            pres::cluster(*m_cmds, backend);
         });
 
     editor.connect_to_hide(
         [this]()
         {
             BOOST_LOG_TRIVIAL(info) << "selected hide clusters";
-            m_graph_renderer->hide_clusters();
-            m_graph_renderer->render_layout(
-                pres::vertex_position(*m_graph_iface));
+            pres::hide_clusters(*m_cmds, *m_graph_iface, *m_graph_renderer);
         });
 
     backend.connect_to_clusters(
         [this](const auto&)
-        {
-            m_graph_renderer->render_clusters(
-                pres::vertex_cluster(*m_graph_iface));
-
-            const auto untangled = layout::untangle_layout(
-                m_graph_iface->get_graph(),
-                pres::vertex_cluster(*m_graph_iface),
-                m_graph_iface->get_layout_backend(),
-                clustering::get_intensity(
-                    m_graph_iface->get_clustering_backend()));
-
-            m_graph_renderer->render_layout(
-                layout::make_lposition_map(*untangled));
-
-            BOOST_LOG_TRIVIAL(info) << "rendered clusters";
-        });
+        { pres::show_clusters(*m_graph_iface, *m_graph_renderer); });
 
     BOOST_LOG_TRIVIAL(debug) << "connected clustering presentation";
 }

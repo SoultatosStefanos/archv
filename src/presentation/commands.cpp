@@ -1,5 +1,7 @@
 #include "commands.hpp"
 
+#include "clustering.hpp"
+#include "graph_interface.hpp"
 #include "undo_redo/all.hpp"
 
 #include <memory>
@@ -609,34 +611,6 @@ auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void
 
 namespace
 {
-    struct update_clusters_cmd : undo_redo::command
-    {
-        using backend_type = clustering_backend;
-        using cluster_map = backend_type::cluster_map_type;
-
-        backend_type& backend;
-        cluster_map old_clusters, new_clusters;
-
-        update_clusters_cmd(backend_type& b) : backend { b } { }
-        ~update_clusters_cmd() override = default;
-
-        auto execute() -> void override
-        {
-            old_clusters = clustering::get_clusters(backend);
-            clustering::update_clusters(backend);
-            new_clusters = clustering::get_clusters(backend);
-        }
-
-        auto undo() -> void override
-        {
-            clustering::update_clusters(backend, old_clusters);
-        }
-
-        auto redo() -> void override
-        {
-            clustering::update_clusters(backend, new_clusters);
-        }
-    };
 
     struct restore_clustering_command : undo_redo::command
     {
@@ -690,12 +664,49 @@ namespace
         auto redo() -> void override { execute(); }
     };
 
-} // namespace
+    struct cluster_command : undo_redo::command
+    {
+        using backend_type = clustering_backend;
+        using cluster_map = backend_type::cluster_map_type;
 
-auto update_clusters(command_history& cmds, clustering_backend& backend) -> void
-{
-    cmds.execute(std::make_unique< update_clusters_cmd >(backend));
-}
+        backend_type& backend;
+        cluster_map old_clusters;
+
+        cluster_command(backend_type& b) : backend { b } { }
+        ~cluster_command() override = default;
+
+        auto execute() -> void override
+        {
+            old_clusters = clustering::get_clusters(backend);
+            clustering::update_clusters(backend);
+        }
+
+        auto undo() -> void override
+        {
+            clustering::update_clusters(backend, old_clusters);
+        }
+
+        auto redo() -> void override { execute(); }
+    };
+
+    struct hide_clusters_command : undo_redo::command
+    {
+        const graph_interface& g;
+        graph_renderer& renderer;
+
+        hide_clusters_command(const graph_interface& i, graph_renderer& r)
+        : g { i }, renderer { r }
+        {
+        }
+
+        ~hide_clusters_command() override = default;
+
+        auto execute() -> void override { hide_clusters(g, renderer); }
+        auto undo() -> void override { show_clusters(g, renderer); }
+        auto redo() -> void override { execute(); }
+    };
+
+} // namespace
 
 auto update_clusterer(
     command_history& cmds,
@@ -791,6 +802,19 @@ auto restore_clustering(command_history& cmds, clustering_backend& backend)
     -> void
 {
     cmds.execute(std::make_unique< restore_clustering_command >(backend));
+}
+
+auto cluster(command_history& cmds, clustering_backend& backend) -> void
+{
+    cmds.execute(std::make_unique< cluster_command >(backend));
+}
+
+auto hide_clusters(
+    command_history& cmds,
+    const graph_interface& g,
+    graph_renderer& renderer) -> void
+{
+    cmds.execute(std::make_unique< hide_clusters_command >(g, renderer));
 }
 
 /***********************************************************

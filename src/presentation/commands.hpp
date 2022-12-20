@@ -9,6 +9,8 @@
 namespace presentation
 {
 
+class graph_interface;
+
 /***********************************************************
  * Weights                                                 *
  ***********************************************************/
@@ -158,9 +160,6 @@ auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void;
  * Clustering                                              *
  ***********************************************************/
 
-// FIXME
-auto update_clusters(command_history& cmds, clustering_backend& b) -> void;
-
 auto update_clusterer(
     command_history& cmds,
     clustering_backend& backend,
@@ -203,6 +202,13 @@ auto update_clustering_llp_steps(
 
 auto restore_clustering(command_history& cmds, clustering_backend& backend)
     -> void;
+
+auto cluster(command_history& cmds, clustering_backend& backend) -> void;
+
+auto hide_clusters(
+    command_history& cmds,
+    const graph_interface& g,
+    graph_renderer& renderer) -> void;
 
 /***********************************************************
  * Color Coding                                            *

@@ -5,6 +5,7 @@
 #define PRESENTATION_ALL_HPP
 
 #include "camera.hpp"
+#include "clustering.hpp"
 #include "commands.hpp"
 #include "def.hpp"
 #include "graph_interface.hpp"

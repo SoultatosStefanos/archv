@@ -1,5 +1,6 @@
 set(FILES
 	camera.cpp
+	clustering.cpp
 	commands.cpp
 	graph_interface.cpp
 )

@@ -228,7 +228,7 @@ inline backend< Graph, WeightMap >::backend(
     set_llp_gamma(config_data().llp_gamma);
     set_llp_steps(config_data().llp_steps);
 
-    set_clusters(cluster(*this)); // just to be safe
+    assert(m_clusters.empty());
 }
 
 template < typename Graph, typename WeightMap >
