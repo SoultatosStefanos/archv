@@ -237,7 +237,7 @@ auto deserialize(const json_val& root) -> config_data
     return config_data { .background = std::move(bkg),
                          .graph = std::move(g),
                          .degrees = std::move(degrees),
-                         .minimap = std::move(minimap) };
+                         .minimap = minimap };
 }
 
 } // namespace rendering

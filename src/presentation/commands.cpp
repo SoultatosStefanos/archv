@@ -504,7 +504,7 @@ auto update_in_degrees_light_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_in_degrees_light_particles(backend); },
         [&backend](auto val)
@@ -517,7 +517,7 @@ auto update_out_degrees_light_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_out_degrees_light_particles(backend); },
         [&backend](auto val)
@@ -530,7 +530,7 @@ auto update_in_degrees_medium_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_in_degrees_medium_particles(backend); },
         [&backend](auto val)
@@ -543,7 +543,7 @@ auto update_out_degrees_medium_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_out_degrees_medium_particles(backend); },
         [&backend](auto val)
@@ -556,7 +556,7 @@ auto update_in_degrees_heavy_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_in_degrees_heavy_particles(backend); },
         [&backend](auto val)
@@ -569,7 +569,7 @@ auto update_out_degrees_heavy_particles(
     degrees_backend::particle_system_type particles) -> void
 {
     cmds.execute(make_trivial(
-        particles,
+        std::move(particles),
         [&backend]()
         { return rendering::get_out_degrees_heavy_particles(backend); },
         [&backend](auto val)
