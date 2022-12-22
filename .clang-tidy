@@ -1,1 +1,1 @@
-Checks: '-*,performance-*,modernize-*,bugprone-*,misc-*,readability-*,'
+Checks: '-*,performance-*'
