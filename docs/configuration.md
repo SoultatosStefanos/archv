@@ -53,7 +53,7 @@ Example .json configuration:
 The available layout algorithms that can be selected at runtime.  
 A layout algorithm generates the position of each vertex inside the 3D space.
 
-Possible values: <**Gursoy Atun**>
+Possible values: <**Gursoy Atun** | **Random**>
 
 **topologies** (`string list`)
 

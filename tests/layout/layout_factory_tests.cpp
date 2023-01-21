@@ -55,4 +55,12 @@ TEST(a_layout_factory, will_create_a_gursoy_atun_layout_upon_request)
     ASSERT_EQ(typeid(*lay), typeid(layout::gursoy_atun_layout< graph >));
 }
 
+TEST(a_layout_factory, will_create_a_random_layout_upon_request)
+{
+    auto lay = layout_factory::make_layout(
+        layout::random_id, graph(), nice_mock_topology(), weight_map());
+
+    ASSERT_EQ(typeid(*lay), typeid(layout::random_layout< graph >));
+}
+
 } // namespace

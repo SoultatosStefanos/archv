@@ -51,7 +51,7 @@ auto is_topology_listed(
 auto all_layouts() -> backend_config::ids_type
 {
     using id_type = backend_config::id_type;
-    return { id_type(gursoy_atun_id) };
+    return { id_type(gursoy_atun_id), id_type(random_id) };
 }
 
 auto all_topologies() -> backend_config::ids_type

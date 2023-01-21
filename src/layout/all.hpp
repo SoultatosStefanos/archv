@@ -12,6 +12,7 @@
 #include "layout.hpp"
 #include "plugin.hpp"
 #include "position_map.hpp"
+#include "random_layout.hpp"
 #include "sphere.hpp"
 #include "topology.hpp"
 #include "untangle_layout.hpp"

@@ -19,8 +19,9 @@ using id_t = std::string_view;
  ***********************************************************/
 
 constexpr id_t gursoy_atun_id = "Gursoy Atun";
+constexpr id_t random_id = "Random";
 
-constexpr auto layout_ids = std::array { gursoy_atun_id };
+constexpr auto layout_ids = std::array { gursoy_atun_id, random_id };
 
 constexpr auto is_layout_plugged_in(id_t id) -> bool
 {
@@ -28,6 +29,7 @@ constexpr auto is_layout_plugged_in(id_t id) -> bool
 }
 
 static_assert(is_layout_plugged_in(gursoy_atun_id));
+static_assert(is_layout_plugged_in(random_id));
 
 /***********************************************************
  * Topologies                                              *

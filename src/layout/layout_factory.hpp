@@ -7,6 +7,7 @@
 #include "gursoy_atun_layout.hpp" // for gursoy_atun_layout
 #include "layout.hpp"             // for layout
 #include "plugin.hpp"             // for id_t
+#include "random_layout.hpp"      // for random_layout
 #include "topology.hpp"           // for topology
 
 #include <boost/log/trivial.hpp> // for BOOST_LOG_TRIVIAL
@@ -59,10 +60,15 @@ inline auto layout_factory< Graph >::make_layout(
     WeightMap edge_weight) -> pointer
 {
     using gursoy_atun_type = gursoy_atun_layout< graph_type >;
+    using random_type = random_layout< graph_type >;
 
     if (id == gursoy_atun_id)
     {
         return std::make_unique< gursoy_atun_type >(g, space, edge_weight);
+    }
+    else if (id == random_id)
+    {
+        return std::make_unique< random_type >(g, space);
     }
     else
     {

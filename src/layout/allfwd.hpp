@@ -24,6 +24,9 @@ class layout;
 template < typename Graph >
 class gursoy_atun_layout;
 
+template < typename Graph >
+class random_layout;
+
 struct backend_config;
 using config_data = backend_config;
 

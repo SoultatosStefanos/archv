@@ -38,7 +38,7 @@
 
 	+ [x] Gursoy atun layout algorithm
 
-	+ [n] Random layout algorithm
+	+ [x] Random layout algorithm
 
 ## Topology types
 
@@ -59,7 +59,7 @@
 
 	+ [x] Dynamic weight property map
 
-	+ [ ] Color coding
+	+ [x] Color coding
 
 ## Features
 
@@ -120,6 +120,8 @@
 	+ [x] Mini Map
 
 	+ [x] Search Bar
+
+	+ [ ] Search bar autocompletion
 
 	+ [ ] More configurations (all of em)
 
