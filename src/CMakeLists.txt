@@ -2,6 +2,7 @@ set(FILES)
 set(SUBDIRECTORIES
 	application
 	architecture
+	autocompletion
 	clustering
 	color_coding
 	gui

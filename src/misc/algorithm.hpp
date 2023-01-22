@@ -17,6 +17,31 @@ namespace misc
 {
 
 /***********************************************************
+ * Utils                                                   *
+ ***********************************************************/
+
+// Like std::copy, but stops when pred is evaluated as false.
+template <
+    std::input_iterator InputIterator,
+    typename OutputIterator,
+    typename Predicate >
+requires std::output_iterator<
+             OutputIterator,
+             typename std::iterator_traits< InputIterator >::value_type >
+    && std::predicate<
+           Predicate,
+           typename std::iterator_traits< InputIterator >::value_type >
+    inline auto copy_until(
+             InputIterator first,
+             InputIterator last,
+             OutputIterator out,
+             Predicate pred) -> void
+{
+    while ((first != last) && pred(*first))
+        *out++ = *first++;
+}
+
+/***********************************************************
  * Ranges                                                  *
  ***********************************************************/
 
@@ -154,8 +179,8 @@ template <
 requires std::invocable<
              BinaryOperation,
              std::decay_t< T >,
-             std::ranges::range_value_t< InputRange > > inline auto
-accumulate(InputRange range, T init, BinaryOperation f) -> T
+             std::ranges::range_value_t< InputRange > >
+inline auto accumulate(InputRange range, T init, BinaryOperation f) -> T
 {
     return std::accumulate(std::cbegin(range), std::cend(range), init, f);
 }

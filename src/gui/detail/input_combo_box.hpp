@@ -7,12 +7,11 @@
 #include "imgui_stdlib.h" // for InputTextWithHint
 
 #include <OGRE/Overlay/imgui.h> // for ImGui
-#include <boost/log/trivial.hpp>
-#include <concepts>    // for concepts
-#include <functional>  // for invoke
-#include <ranges>      // for input_range, range_value_t
-#include <string>      // for string
-#include <string_view> // for string_view
+#include <concepts>             // for concepts
+#include <functional>           // for invoke
+#include <ranges>               // for input_range, range_value_t
+#include <string>               // for string
+#include <string_view>          // for string_view
 
 namespace gui::detail
 {

@@ -2,9 +2,11 @@
 
 #include "IconsFontAwesome5.h"
 #include "detail/imgui_stdlib.h"
+#include "detail/input_combo_box.hpp"
 #include "overlay.hpp"
 
 #include <OGRE/Overlay/imgui.h>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <memory>
 #include <string_view>
@@ -237,7 +239,28 @@ auto menu_bar::render_search_bar() const -> void
     {
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-        if (ImGui::InputTextWithHint(" Where Is", "buzz::Foo", &m_query, flags))
+        if (detail::input_combo_box(
+                " Where Is",
+                "buzz::Foo",
+                m_query,
+                [](auto prefix)
+                {
+                    using namespace std::string_view_literals;
+
+                    static constexpr auto matches
+                        = std::array { "cats"sv, "dogs"sv, "caats"sv };
+
+                    std::vector< std::string_view > res;
+
+                    std::copy_if(
+                        std::cbegin(matches),
+                        std::cend(matches),
+                        std::back_inserter(res),
+                        [prefix](auto match)
+                        { return match.rfind(prefix, 0) == 0; });
+
+                    return res;
+                }))
             emit_search();
 
         ImGui::EndMenu();
