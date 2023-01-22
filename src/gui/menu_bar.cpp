@@ -235,32 +235,13 @@ auto menu_bar::render_helper() const -> void
 
 auto menu_bar::render_search_bar() const -> void
 {
+    assert(get_autocomplete());
     if (ImGui::BeginMenu(ICON_FA_SEARCH " Search"))
     {
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
         if (detail::input_combo_box(
-                " Where Is",
-                "buzz::Foo",
-                m_query,
-                [](auto prefix)
-                {
-                    using namespace std::string_view_literals;
-
-                    static constexpr auto matches
-                        = std::array { "cats"sv, "dogs"sv, "caats"sv };
-
-                    std::vector< std::string_view > res;
-
-                    std::copy_if(
-                        std::cbegin(matches),
-                        std::cend(matches),
-                        std::back_inserter(res),
-                        [prefix](auto match)
-                        { return match.rfind(prefix, 0) == 0; });
-
-                    return res;
-                }))
+                " Where Is", "buzz::Foo", m_query, get_autocomplete()))
             emit_search();
 
         ImGui::EndMenu();

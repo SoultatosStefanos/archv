@@ -53,7 +53,7 @@ auto input_combo_box(
                 "##input_combo_box",
                 &is_open,
                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove
-                    | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Tooltip))
+                    | ImGuiWindowFlags_NoResize))
         {
             for (auto suggestion : suggestions)
             {

@@ -2,6 +2,7 @@
 
 #include "IconsFontAwesome5.h"
 #include "archive.hpp"
+#include "autocompletion/all.hpp"
 #include "config/config.hpp"
 #include "input/all.hpp"
 #include "misc/all.hpp"
@@ -849,6 +850,20 @@ auto application::prepare_menu_bar() -> void
 
     bar.set_can_undo([this]() { return m_cmds->can_undo(); });
     bar.set_can_redo([this]() { return m_cmds->can_redo(); });
+
+    static const auto gen = autocompletion::binary_generator(
+        [this]()
+        {
+            using result_t = autocompletion::binary_generator::vocabulary_type;
+            using std::ranges::views::keys;
+            result_t res;
+            const auto ids = keys(m_graph_iface->get_symbol_table());
+            std::copy(std::begin(ids), std::end(ids), std::back_inserter(res));
+            return res;
+        }());
+
+    bar.get_autocomplete()
+        = [&](auto prefix) { return gen.autocomplete(prefix); };
 
     BOOST_LOG_TRIVIAL(debug) << "prepared menu bar";
 }

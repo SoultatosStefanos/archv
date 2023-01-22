@@ -48,6 +48,9 @@ public:
     using search_slot = search_signal::slot_type;
     using connection = boost::signals2::connection;
 
+    using autocomplete
+        = std::function< std::vector< std::string_view >(std::string_view) >;
+
     auto get_weights_editor() const -> const auto& { return m_weights_editor; }
     auto get_weights_editor() -> auto& { return m_weights_editor; }
 
@@ -77,6 +80,9 @@ public:
 
     auto get_gui_configurator() const -> const auto& { return m_gui_cfg; }
     auto get_gui_configurator() -> auto& { return m_gui_cfg; }
+
+    auto get_autocomplete() const -> const auto& { return m_autocomplete; }
+    auto get_autocomplete() -> auto& { return m_autocomplete; }
 
     auto visible() const -> bool { return m_visible; }
     auto show() -> void { m_visible = true; }
@@ -140,6 +146,8 @@ private:
     size_type m_num_vertices {};
     size_type m_num_edges {};
     mutable search_type m_query;
+
+    autocomplete m_autocomplete;
 };
 
 } // namespace gui

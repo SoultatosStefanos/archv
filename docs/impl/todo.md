@@ -121,7 +121,7 @@
 
 	+ [x] Search Bar
 
-	+ [ ] Search bar autocompletion
+	+ [x] Search bar autocompletion
 
 	+ [ ] More configurations (all of em)
 
