@@ -47,13 +47,20 @@ auto input_combo_box(
     {
         ImGui::SetNextWindowPos(
             { ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y });
-        ImGui::SetNextWindowSize({ ImGui::GetItemRectSize().x, 0 });
+
+        ImGui::SetNextWindowSizeConstraints(
+            { ImGui::GetItemRectSize().x, 0 },
+            { ImGui::GetItemRectSize().x, 300 });
 
         if (ImGui::Begin(
                 "##input_combo_box",
                 &is_open,
-                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove
-                    | ImGuiWindowFlags_NoResize))
+                ImGuiWindowFlags_NoTitleBar     //
+                    | ImGuiWindowFlags_NoMove   //
+                    | ImGuiWindowFlags_NoResize //
+                    | ImGuiWindowFlags_NoCollapse
+                    | ImGuiWindowFlags_HorizontalScrollbar
+                    | ImGuiWindowFlags_AlwaysAutoResize))
         {
             for (auto suggestion : suggestions)
             {
