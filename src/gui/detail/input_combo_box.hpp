@@ -60,7 +60,8 @@ auto input_combo_box(
                     | ImGuiWindowFlags_NoResize //
                     | ImGuiWindowFlags_NoCollapse
                     | ImGuiWindowFlags_HorizontalScrollbar
-                    | ImGuiWindowFlags_AlwaysAutoResize))
+                    | ImGuiWindowFlags_AlwaysAutoResize
+                    | ImGuiWindowFlags_NoFocusOnAppearing))
         {
             for (auto suggestion : suggestions)
             {
