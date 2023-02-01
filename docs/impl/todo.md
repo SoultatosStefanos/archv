@@ -1039,7 +1039,7 @@
 
 	+ [ ] Save/Load configs mechanism
 
-		+ [ ] Archive config management subsystem? 
+		+ [x] Archive config management subsystem
 
 		+ [ ] Menu bar update 
 
