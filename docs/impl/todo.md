@@ -1033,7 +1033,7 @@
 
 	+ [x] Refactor clustering color coder 
 
-	+ [ ] Refactor configuration process to utilize one config
+	+ [x] Refactor configuration process to utilize one config
 
 	+ [ ] Pick configs at runtime (cmd line args)
 
