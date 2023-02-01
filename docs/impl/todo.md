@@ -1025,7 +1025,9 @@
 
 # 1 / 02 / 2023 
 
-	+ [ ] Refactor/Introduce degrees configs/subsystem
+	+ [ ] Refactor/Introduce degrees subsystem
+
+	+ [ ] Refactor configuration process to utilize one config
 
 	+ [ ] Pick configs at runtime
 
@@ -1034,8 +1036,11 @@
 		+ [ ] Config management subsystem? 
 
 		+ [ ] Menu bar update 
+
 			+ [ ] Save
+
 			+ [ ] Save as...
+
 			+ [ ] Open..
 
 		+ [ ] File browser
