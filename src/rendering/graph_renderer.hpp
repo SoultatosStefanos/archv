@@ -101,14 +101,11 @@ public:
     auto config_api() const -> const config_api_type& { return m_cfg_api; }
     auto config_api() -> config_api_type& { return m_cfg_api; }
 
-    auto get_degrees_evaluator() const -> const auto& { return m_degrees_eval; }
-    auto get_degrees_evaluator() -> auto& { return m_degrees_eval; }
+    auto degrees_evaluator() const -> const auto& { return m_degrees_eval; }
+    auto degrees_evaluator() -> auto& { return m_degrees_eval; }
 
-    auto get_cluster_color_coder() const -> const auto&
-    {
-        return m_cluster_col_coder;
-    }
-    auto get_cluster_color_coder() -> auto& { return m_cluster_col_coder; }
+    auto cluster_color_coder() const -> const auto& { return m_cluster_coder; }
+    auto cluster_color_coder() -> auto& { return m_cluster_coder; }
 
     template < typename PositionMap >
     auto render_layout(PositionMap vertex_pos) -> void;
@@ -166,7 +163,7 @@ private:
     detail::edge_renderer m_edge_renderer;
 
     degrees_evaluator_type m_degrees_eval;
-    cluster_color_coder_type m_cluster_col_coder;
+    cluster_color_coder_type m_cluster_coder;
 };
 
 /***********************************************************
@@ -205,7 +202,7 @@ inline graph_renderer<
 , m_vertex_renderer { scene, config_data() }
 , m_edge_renderer { scene, config_data() }
 , m_degrees_eval { std::move(degrees_eval) }
-, m_cluster_col_coder { std::move(color_coder) }
+, m_cluster_coder { std::move(color_coder) }
 {
     BOOST_CONCEPT_ASSERT(
         (boost::ReadablePropertyMapConcept< PositionMap, vertex_type >));
@@ -410,7 +407,7 @@ inline auto graph_renderer<
         {
             m_vertex_renderer.render_in_degree_particles(
                 boost::get(vertex_id(), v),
-                get_degrees_evaluator().in_degree_particles(
+                degrees_evaluator().in_degree_particles(
                     boost::in_degree(v, graph())));
         });
 }
@@ -433,7 +430,7 @@ inline auto graph_renderer<
         {
             m_vertex_renderer.render_out_degree_particles(
                 boost::get(vertex_id(), v),
-                get_degrees_evaluator().out_degree_particles(
+                degrees_evaluator().out_degree_particles(
                     boost::out_degree(v, graph())));
         });
 }
@@ -463,7 +460,7 @@ inline auto graph_renderer<
             m_vertex_renderer.render_col(
                 boost::get(vertex_id(), v),
                 to_color_val(
-                    get_cluster_color_coder()(boost::get(vertex_cluster, v))));
+                    cluster_color_coder()(boost::get(vertex_cluster, v))));
         });
 
     visit_edges(
@@ -481,7 +478,7 @@ inline auto graph_renderer<
                     boost::get(vertex_id(), src),
                     boost::get(vertex_id(), trgt),
                     boost::get(edge_dependency(), e),
-                    to_color_val(get_cluster_color_coder()(
+                    to_color_val(cluster_color_coder()(
                         boost::get(vertex_cluster, src))));
             else // in case of rendered cluster
                 m_edge_renderer.hide_col(
