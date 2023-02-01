@@ -1027,6 +1027,12 @@
 
 	+ [ ] Refactor/Introduce degrees subsystem
 
+		+ [x] Introduce degrees subsystem
+
+		+ [ ] Refactor graph_interface/app
+
+	+ [ ] Refactor clustering color coder 
+
 	+ [ ] Refactor configuration process to utilize one config
 
 	+ [ ] Pick configs at runtime

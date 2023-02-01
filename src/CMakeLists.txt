@@ -5,6 +5,7 @@ set(SUBDIRECTORIES
 	autocompletion
 	clustering
 	color_coding
+	degrees
 	gui
 	input
 	layout

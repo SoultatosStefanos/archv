@@ -1,34 +1,37 @@
 {
-	"in-degree" :
+	"degrees" : 
 	{
-		"thresholds" : 
-		{ 
-			"light" : 2,
-			"medium" : 5,
-			"heavy": 10 
-		},
-		"particle-systems" : 
+		"in-degree" :
 		{
-			"light" : "aa",
-			"medium" : "bb",
-			"heavy" : "cc" 
+			"thresholds" : 
+			{ 
+				"light" : 2,
+				"medium" : 5,
+				"heavy": 10 
+			},
+			"particle-systems" : 
+			{
+				"light" : "aa",
+				"medium" : "bb",
+				"heavy" : "cc" 
+			},
+			"applied" : true
 		},
-		"applied" : true
-	},
-	"out-degree" :
-	{
-		"thresholds" : 
-		{ 
-			"light" : 1,
-			"medium" : 2,
-			"heavy": 3 
-		},
-		"particle-systems" : 
+		"out-degree" :
 		{
-			"light" : "aaa",
-			"medium" : "bbb",
-			"heavy" : "ccc" 
-		},
-		"applied" : true
+			"thresholds" : 
+			{ 
+				"light" : 1,
+				"medium" : 2,
+				"heavy": 3 
+			},
+			"particle-systems" : 
+			{
+				"light" : "aaa",
+				"medium" : "bbb",
+				"heavy" : "ccc" 
+			},
+			"applied" : true
+		}
 	}
 }
