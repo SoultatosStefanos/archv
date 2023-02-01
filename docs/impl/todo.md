@@ -1015,3 +1015,8 @@
 # 20 / 12 / 2022
 
 	+ [x] Clustering undo/redo tidy
+
+
+# 01 / 02 / 2023
+
+	+ [ ] Search feature while clustered bug fix
