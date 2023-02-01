@@ -1,10 +1,10 @@
 #include "application.hpp"
 
 #include "IconsFontAwesome5.h"
-#include "archive.hpp"
 #include "autocompletion/all.hpp"
 #include "config/config.hpp"
 #include "input/all.hpp"
+#include "json_archive.hpp"
 #include "misc/all.hpp"
 #include "presentation/all.hpp"
 #include "ui/all.hpp"
@@ -33,13 +33,18 @@ using misc::get;
 
 application::application(int argc, const char* argv[]) : base("ARCHV")
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cout << "usage: `./<exec> <path/to/graph.json>`\n";
+        std::cout
+            << "usage: `./<exec> <path/to/graph.json> <path/to/config.json>`\n";
         std::exit(EXIT_FAILURE);
     }
 
     m_graph_path = argv[1];
+    m_config_path = argv[2];
+
+    import(jsons, m_graph_path);
+    import(jsons, m_config_path);
 }
 
 application::~application() = default;
@@ -101,27 +106,25 @@ auto application::setup() -> void
 
 auto application::setup_graph_interface() -> void
 {
-    const auto& jsons = archive::get();
+    auto&& [st, g, m] = architecture::deserialize(jsons.get(m_graph_path));
 
-    auto&& [st, g, m] = architecture::deserialize(jsons.at(m_graph_path));
-
-    const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
-    const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
-    const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
-    const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
-    const auto& colors_root = jsons.at(ARCHV_COLOR_CODING_CONFIG_PATH);
-    const auto& degrees_root = jsons.at(ARCHV_DEGREES_CONFIG_PATH);
+    const auto& weights_root = get(jsons.get(m_config_path), "weights");
+    const auto& layout_root = get(jsons.get(m_config_path), "layout");
+    const auto& scaling_root = get(jsons.get(m_config_path), "scaling");
+    const auto& clustering_root = get(jsons.get(m_config_path), "clustering");
+    const auto& colors_root = get(jsons.get(m_config_path), "color-coding");
+    const auto& degrees_root = get(jsons.get(m_config_path), "degrees");
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
         std::move(g),
         std::move(m),
-        weights::deserialize(get(weights_root, "weights")),
-        layout::deserialize(get(layout_root, "layout")),
-        scaling::deserialize(get(scaling_root, "scaling")),
-        clustering::deserialize(get(clustering_root, "clustering")),
-        color_coding::deserialize(get(colors_root, "color-coding")),
-        degrees::deserialize(get(degrees_root, "degrees")));
+        weights::deserialize(weights_root),
+        layout::deserialize(layout_root),
+        scaling::deserialize(scaling_root),
+        clustering::deserialize(clustering_root),
+        color_coding::deserialize(colors_root),
+        degrees::deserialize(degrees_root));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -135,9 +138,8 @@ auto application::setup_commands() -> void
 
 auto application::setup_rendering() -> void
 {
-    const auto& jsons = archive::get();
-    const auto& root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
-    const auto config = rendering::deserialize(get(root, "rendering"));
+    const auto& root = get(jsons.get(m_config_path), "rendering");
+    const auto config = rendering::deserialize(root);
 
     m_background_renderer = std::make_unique< background_renderer_type >(
         *getRenderWindow(), config.background);
@@ -400,8 +402,8 @@ auto application::setup_gui() -> void
 
     ImGui::GetIO().WantCaptureMouse = true;
 
-    const auto& gui_root = archive::get().at(ARCHV_GUI_CONFIG_PATH);
-    gui::set_configs(gui::deserialize(get(gui_root, "gui")));
+    const auto& root = get(jsons.get(m_config_path), "gui");
+    gui::set_configs(gui::deserialize(root));
 
     m_gui = std::make_unique< gui_type >();
 

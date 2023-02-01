@@ -88,6 +88,7 @@ private:
     auto connect_menu_bar_presentation() -> void;
 
     const char* m_graph_path { nullptr };
+    const char* m_config_path { nullptr };
 
     std::unique_ptr< graph_interface_type > m_graph_iface;
     std::unique_ptr< command_history_type > m_cmds;

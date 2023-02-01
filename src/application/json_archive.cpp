@@ -4,7 +4,7 @@
 #include <cassert>
 #include <fstream>
 
-namespace config
+namespace application
 {
 
 auto json_archive::archived(str_ref_type file) const -> bool
@@ -79,6 +79,6 @@ auto dump(const json_archive& archive, const file_path_t& to) -> void
     dump(archive.get(to.c_str()), to);
 }
 
-json_archive configs;
+json_archive jsons;
 
-} // namespace config
+} // namespace application

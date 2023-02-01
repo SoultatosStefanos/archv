@@ -1,4 +1,4 @@
-#include "config/json_archive.hpp"
+#include "application/json_archive.hpp"
 #include "misc/source.hpp"
 
 #include <fstream>
@@ -8,7 +8,7 @@
 
 using namespace testing;
 using namespace misc;
-using namespace config;
+using namespace application;
 
 namespace
 {

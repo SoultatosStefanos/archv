@@ -1,8 +1,8 @@
 // Contains a utility json archive class.
 // Soultatos Stefanos 2022
 
-#ifndef CONFIG_JSON_ARCHIVE_HPP
-#define CONFIG_JSON_ARCHIVE_HPP
+#ifndef APPLICATION_JSON_ARCHIVE_HPP
+#define APPLICATION_JSON_ARCHIVE_HPP
 
 #include "misc/heterogeneous.hpp" // for unordered_string_map
 
@@ -14,7 +14,7 @@
 #include <string>                         // for string
 #include <string_view>                    // for string_view
 
-namespace config
+namespace application
 {
 
 /***********************************************************
@@ -75,11 +75,11 @@ auto dump(const json_t& json, const file_path_t& to) -> void;
 auto dump(const json_archive& archive, const file_path_t& to) -> void;
 
 /***********************************************************
- * Configs                                                 *
+ * Jsons                                                   *
  ***********************************************************/
 
-extern json_archive configs;
+extern json_archive jsons;
 
 } // namespace config
 
-#endif // CONFIG_JSON_ARCHIVE_HPP
+#endif // APPLICATION_JSON_ARCHIVE_HPP
