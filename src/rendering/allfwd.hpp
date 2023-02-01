@@ -26,8 +26,6 @@ class graph_renderer;
 template < typename Graph, typename VertexID, typename DependencyMap >
 class graph_collision_checker;
 
-struct cluster_color_pool;
-
 struct minimap_config;
 class minimap_config_api;
 class minimap_renderer;

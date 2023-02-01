@@ -6,7 +6,6 @@
 
 #include "background_config.hpp"
 #include "background_renderer.hpp"
-#include "cluster_color_pool.hpp"
 #include "config.hpp"
 #include "graph_collision_checker.hpp"
 #include "graph_config.hpp"

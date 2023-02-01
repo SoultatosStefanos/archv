@@ -3,6 +3,7 @@ set(FILES
 	backend_tests.cpp
 	cluster_map_tests.cpp
 	clusterer_builder_tests.cpp
+	color_pool_tests.cpp
 	config_tests.cpp
 	k_spanning_tree_clustering_tests.cpp
 	layered_label_propagation_clustering_tests.cpp

@@ -1,5 +1,4 @@
 set(FILES
-	cluster_color_pool_tests.cpp
 	config_tests.cpp
 )
 set(SUBDIRECTORIES)

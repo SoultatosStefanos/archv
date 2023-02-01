@@ -52,7 +52,7 @@ using graph_renderer = rendering::graph_renderer<
     architecture::id_map,
     architecture::dependency_map,
     degrees::evaluator,
-    rendering::cluster_color_pool >;
+    clustering::color_pool >;
 
 using graph_collision_checker = rendering::graph_collision_checker<
     architecture::graph,

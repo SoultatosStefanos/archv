@@ -1031,7 +1031,7 @@
 
 		+ [x] Refactor graph_interface/app
 
-	+ [ ] Refactor clustering color coder 
+	+ [x] Refactor clustering color coder 
 
 	+ [ ] Refactor configuration process to utilize one config
 

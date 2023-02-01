@@ -462,7 +462,8 @@ inline auto graph_renderer<
         {
             m_vertex_renderer.render_col(
                 boost::get(vertex_id(), v),
-                get_cluster_color_coder()(boost::get(vertex_cluster, v)));
+                to_color_val(
+                    get_cluster_color_coder()(boost::get(vertex_cluster, v))));
         });
 
     visit_edges(
@@ -480,7 +481,8 @@ inline auto graph_renderer<
                     boost::get(vertex_id(), src),
                     boost::get(vertex_id(), trgt),
                     boost::get(edge_dependency(), e),
-                    get_cluster_color_coder()(boost::get(vertex_cluster, src)));
+                    to_color_val(get_cluster_color_coder()(
+                        boost::get(vertex_cluster, src))));
             else // in case of rendered cluster
                 m_edge_renderer.hide_col(
                     boost::get(vertex_id(), boost::source(e, graph())),

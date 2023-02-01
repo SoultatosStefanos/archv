@@ -1,9 +1,9 @@
-#include "cluster_color_pool.hpp"
+#include "color_pool.hpp"
 
-#include <OGRE/OgreColourValue.h>
 #include <cassert>
+#include <string>
 
-namespace rendering
+namespace clustering
 {
 
 namespace
@@ -158,7 +158,7 @@ namespace
         "9E5585", "BA6200"
     };
 
-    using rgba_type = cluster_color_pool::rgba_type;
+    using rgba_type = color_pool::rgba_type;
     using rgbas_type = std::array< rgba_type, hexes.size() >;
 
     inline auto to_rgba(const char* str)
@@ -169,7 +169,7 @@ namespace
         const auto r = ((value >> 16) & 0xff) / 255.0f;
         const auto g = ((value >> 8) & 0xff) / 255.0f;
         const auto b = ((value >> 0) & 0xff) / 255.0f;
-        return rgba_type(r, g, b, a);
+        return rgba_type({ r, g, b, a });
     }
 
     // NOTE: It would be better if we computed this values at compile time
@@ -193,14 +193,14 @@ namespace
 
 } // namespace
 
-auto cluster_color_pool::operator()(cluster c) const -> rgba_type
+auto color_pool::operator()(cluster c) const -> rgba_type
 {
     return rgbas()[c % hexes.size()];
 }
 
-auto color_code(cluster_color_pool::cluster c) -> cluster_color_pool::rgba_type
+auto color_code(color_pool::cluster c) -> color_pool::rgba_type
 {
-    return cluster_color_pool()(c);
+    return color_pool()(c);
 }
 
-} // namespace rendering
+} // namespace clustering

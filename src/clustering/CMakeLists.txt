@@ -1,5 +1,6 @@
 set(FILES
 	backend_config.cpp
+	color_pool.cpp
 	config.cpp
 )
 set(SUBDIRECTORIES)

@@ -1,7 +1,6 @@
 set(FILES
 	background_config.cpp
 	background_renderer.cpp
-	cluster_color_pool.cpp
 	config.cpp
 	graph_config.cpp
 	minimap_config.cpp

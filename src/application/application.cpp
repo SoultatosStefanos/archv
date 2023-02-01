@@ -135,8 +135,6 @@ auto application::setup_commands() -> void
 
 auto application::setup_rendering() -> void
 {
-    using cluster_color_coder = rendering::cluster_color_pool;
-
     const auto& jsons = archive::get();
     const auto& root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
     const auto config = rendering::deserialize(get(root, "rendering"));
@@ -152,7 +150,7 @@ auto application::setup_rendering() -> void
         m_background_renderer->scene(),
         config.graph,
         degrees::evaluator(m_graph_iface->get_degrees_backend()),
-        cluster_color_coder());
+        clustering::color_pool());
 
     m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
     m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));
