@@ -1035,11 +1035,18 @@
 
 	+ [x] Refactor configuration process to utilize one config
 
-	+ [ ] Pick configs at runtime (cmd line args)
+	+ [x] Pick configs at runtime (cmd line args)
+
+	+ [x] Archive config management subsystem
+
+	+ [x] Remove Archv resource paths compilation flags
+
+
+# 2 / 02 / 2023
 
 	+ [ ] Save/Load configs mechanism
 
-		+ [x] Archive config management subsystem
+		+ [ ] Dump backends
 
 		+ [ ] Menu bar update 
 
@@ -1048,5 +1055,7 @@
 			+ [ ] Save as...
 
 		+ [ ] File browser
+
+	+ [ ] Update docs 
 
 		

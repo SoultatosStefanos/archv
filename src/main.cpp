@@ -35,32 +35,11 @@ static void init_logging()
 #endif
 }
 
-static auto log_config_vars() -> void
-{
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_RENDERING_CONFIG_PATH: " << ARCHV_RENDERING_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_GUI_CONFIG_PATH: " << ARCHV_GUI_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_WEIGHTS_CONFIG_PATH: " << ARCHV_WEIGHTS_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_LAYOUT_CONFIG_PATH: " << ARCHV_LAYOUT_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_SCALING_CONFIG_PATH: " << ARCHV_SCALING_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info) << "Found ARCHV_CLUSTERING_CONFIG_PATH: "
-                            << ARCHV_CLUSTERING_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info) << "Found ARCHV_COLOR_CODING_CONFIG_PATH: "
-                            << ARCHV_COLOR_CODING_CONFIG_PATH;
-    BOOST_LOG_TRIVIAL(info)
-        << "Found ARCHV_RESOURCE_GROUP: " << ARCHV_RESOURCE_GROUP;
-}
-
 auto main(int argc, const char* argv[]) -> int
 {
     try
     {
         init_logging();
-        log_config_vars();
 
         application::application app { argc, argv };
         app.initApp();
