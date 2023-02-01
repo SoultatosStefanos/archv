@@ -1035,19 +1035,17 @@
 
 	+ [ ] Refactor configuration process to utilize one config
 
-	+ [ ] Pick configs at runtime
+	+ [ ] Pick configs at runtime (cmd line args)
 
 	+ [ ] Save/Load configs mechanism
 
-		+ [ ] Config management subsystem? 
+		+ [ ] Archive config management subsystem? 
 
 		+ [ ] Menu bar update 
 
 			+ [ ] Save
 
 			+ [ ] Save as...
-
-			+ [ ] Open..
 
 		+ [ ] File browser
 
