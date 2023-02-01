@@ -31,6 +31,10 @@
 
 	+ [ ] Cluster colors adjust
 
+	+ [ ] Hide/Show specific clusters
+
+	+ [ ] List/Count all clusters 
+
 
 # Layout / Topology
 
@@ -75,6 +79,8 @@
 	+ [n] Blocked signals when running heavy algorithms
 
 	+ [x] Interactive Configuration (deserialization/serialization/defaults)
+
+	+ [ ] Save/Load config files
 
 
 # Scaling
@@ -1015,3 +1021,23 @@
 # 20 / 12 / 2022
 
 	+ [x] Clustering undo/redo tidy
+
+
+# 1 / 02 / 2023 
+
+	+ [ ] Refactor/Introduce degrees configs/subsystem
+
+	+ [ ] Pick configs at runtime
+
+	+ [ ] Save/Load configs mechanism
+
+		+ [ ] Config management subsystem? 
+
+		+ [ ] Menu bar update 
+			+ [ ] Save
+			+ [ ] Save as...
+			+ [ ] Open..
+
+		+ [ ] File browser
+
+		

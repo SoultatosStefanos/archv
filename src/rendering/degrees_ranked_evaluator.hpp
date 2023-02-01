@@ -12,6 +12,7 @@ namespace rendering
 
 // Graph vertex degree evaluation policy based on ranked thresholds.
 // Proxy to the degrees evaluation backend.
+// TODO template on the backend.
 class degrees_ranked_evaluator
 {
 public:
