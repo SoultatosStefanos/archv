@@ -1,10 +1,17 @@
 // Contains a configuration module for the default degrees evaluation backend.
 // Soultatos Stefanos 2022
 
+#ifndef DEGREES_BACKEND_CONFIG_HPP
+#define DEGREES_BACKEND_CONFIG_HPP
+
 #include "evaluation.hpp" // for evaluation_data
 
 namespace degrees
 {
+
+/***********************************************************
+ * Backend Config                                          *
+ ***********************************************************/
 
 struct backend_config
 {
@@ -16,3 +23,5 @@ struct backend_config
 };
 
 } // namespace degrees
+
+#endif // DEGREES_BACKEND_CONFIG_HPP

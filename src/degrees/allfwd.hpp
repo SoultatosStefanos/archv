@@ -19,6 +19,7 @@ using degree_t = int;
 using particle_system_t = std::optional< std::string >;
 
 struct backend_config;
+class backend;
 
 class evaluator;
 

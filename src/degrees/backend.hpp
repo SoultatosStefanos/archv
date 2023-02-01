@@ -12,6 +12,10 @@
 namespace degrees
 {
 
+/***********************************************************
+ * Backend                                                 *
+ ***********************************************************/
+
 class backend
 {
     using signal = boost::signals2::signal< void(const evaluation_data&) >;

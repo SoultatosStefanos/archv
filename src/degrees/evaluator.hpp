@@ -5,22 +5,12 @@
 #ifndef DEGREES_EVALUATOR_HPP
 #define DEGREES_EVALUATOR_HPP
 
+#include "evaluation.hpp" // for degree_t, particle_system_t, backend
+
 #include <string> // for string
 
 namespace degrees
 {
-
-/***********************************************************
- * Fwd declarations                                        *
- ***********************************************************/
-
-using degree_t = int;
-using particle_system_t = std::string;
-
-class backend;
-
-extern auto evaluate_in_degree(const backend&, degree_t) -> particle_system_t;
-extern auto evaluate_out_degree(const backend&, degree_t) -> particle_system_t;
 
 /***********************************************************
  * Evaluator                                               *
@@ -35,19 +25,16 @@ public:
     using particles_type = particle_system_t;
     using backend_type = backend;
 
-    explicit evaluator(const backend_type& backend) : m_backend { backend } { }
-
-    auto backend() const -> const auto& { return m_backend; }
-    auto backend() -> auto& { return m_backend; }
+    explicit evaluator(const backend_type& back) : m_backend { back } { }
 
     inline auto in_degree_particles(degree_type degree) const -> particles_type
     {
-        return evaluate_in_degree(backend(), degree);
+        return evaluate_in_degree(m_backend, degree);
     }
 
     inline auto out_degree_particles(degree_type degree) const -> particles_type
     {
-        return evaluate_out_degree(backend(), degree);
+        return evaluate_out_degree(m_backend, degree);
     }
 
 private:

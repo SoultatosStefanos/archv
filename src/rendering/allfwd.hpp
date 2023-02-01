@@ -26,9 +26,6 @@ class graph_renderer;
 template < typename Graph, typename VertexID, typename DependencyMap >
 class graph_collision_checker;
 
-class degrees_ranked_evaluator;
-class degrees_ranked_backend;
-
 struct cluster_color_pool;
 
 struct minimap_config;

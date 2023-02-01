@@ -394,7 +394,7 @@ namespace
     struct restore_degrees_command : undo_redo::command
     {
         using backend_type = degrees_backend;
-        using data_type = rendering::degrees_ranked_evaluation_data;
+        using data_type = degrees::evaluation_data;
 
         backend_type& backend;
         data_type old_in, old_out;
@@ -404,15 +404,15 @@ namespace
 
         auto execute() -> void override
         {
-            old_in = rendering::get_in_degrees_data(backend);
-            old_out = rendering::get_out_degrees_data(backend);
-            rendering::restore_defaults(backend);
+            old_in = degrees::get_in_degrees_data(backend);
+            old_out = degrees::get_out_degrees_data(backend);
+            degrees::restore_defaults(backend);
         }
 
         auto undo() -> void override
         {
-            rendering::update_in_degrees(backend, old_in);
-            rendering::update_out_degrees(backend, old_out);
+            degrees::update_in_degrees(backend, old_in);
+            degrees::update_out_degrees(backend, old_out);
         }
 
         auto redo() -> void override { execute(); }
@@ -428,9 +428,9 @@ auto update_in_degrees_light_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_in_degrees_light_threshold(backend); },
+        { return degrees::get_in_degrees_light_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_light_threshold(backend, val); }));
+        { degrees::update_in_degrees_light_threshold(backend, val); }));
 }
 
 auto update_out_degrees_light_threshold(
@@ -441,9 +441,9 @@ auto update_out_degrees_light_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_out_degrees_light_threshold(backend); },
+        { return degrees::get_out_degrees_light_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_light_threshold(backend, val); }));
+        { degrees::update_out_degrees_light_threshold(backend, val); }));
 }
 
 auto update_in_degrees_medium_threshold(
@@ -454,9 +454,9 @@ auto update_in_degrees_medium_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_in_degrees_medium_threshold(backend); },
+        { return degrees::get_in_degrees_medium_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_medium_threshold(backend, val); }));
+        { degrees::update_in_degrees_medium_threshold(backend, val); }));
 }
 
 auto update_out_degrees_medium_threshold(
@@ -467,9 +467,9 @@ auto update_out_degrees_medium_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_out_degrees_medium_threshold(backend); },
+        { return degrees::get_out_degrees_medium_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_medium_threshold(backend, val); }));
+        { degrees::update_out_degrees_medium_threshold(backend, val); }));
 }
 
 auto update_in_degrees_heavy_threshold(
@@ -480,9 +480,9 @@ auto update_in_degrees_heavy_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_in_degrees_heavy_threshold(backend); },
+        { return degrees::get_in_degrees_heavy_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_heavy_threshold(backend, val); }));
+        { degrees::update_in_degrees_heavy_threshold(backend, val); }));
 }
 
 auto update_out_degrees_heavy_threshold(
@@ -493,9 +493,9 @@ auto update_out_degrees_heavy_threshold(
     cmds.execute(make_trivial(
         thres,
         [&backend]()
-        { return rendering::get_out_degrees_heavy_threshold(backend); },
+        { return degrees::get_out_degrees_heavy_threshold(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_heavy_threshold(backend, val); }));
+        { degrees::update_out_degrees_heavy_threshold(backend, val); }));
 }
 
 auto update_in_degrees_light_particles(
@@ -506,9 +506,9 @@ auto update_in_degrees_light_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_in_degrees_light_particles(backend); },
+        { return degrees::get_in_degrees_light_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_light_particles(backend, val); }));
+        { degrees::update_in_degrees_light_particles(backend, val); }));
 }
 
 auto update_out_degrees_light_particles(
@@ -519,9 +519,9 @@ auto update_out_degrees_light_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_out_degrees_light_particles(backend); },
+        { return degrees::get_out_degrees_light_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_light_particles(backend, val); }));
+        { degrees::update_out_degrees_light_particles(backend, val); }));
 }
 
 auto update_in_degrees_medium_particles(
@@ -532,9 +532,9 @@ auto update_in_degrees_medium_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_in_degrees_medium_particles(backend); },
+        { return degrees::get_in_degrees_medium_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_medium_particles(backend, val); }));
+        { degrees::update_in_degrees_medium_particles(backend, val); }));
 }
 
 auto update_out_degrees_medium_particles(
@@ -545,9 +545,9 @@ auto update_out_degrees_medium_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_out_degrees_medium_particles(backend); },
+        { return degrees::get_out_degrees_medium_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_medium_particles(backend, val); }));
+        { degrees::update_out_degrees_medium_particles(backend, val); }));
 }
 
 auto update_in_degrees_heavy_particles(
@@ -558,9 +558,9 @@ auto update_in_degrees_heavy_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_in_degrees_heavy_particles(backend); },
+        { return degrees::get_in_degrees_heavy_particles(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_heavy_particles(backend, val); }));
+        { degrees::update_in_degrees_heavy_particles(backend, val); }));
 }
 
 auto update_out_degrees_heavy_particles(
@@ -571,9 +571,9 @@ auto update_out_degrees_heavy_particles(
     cmds.execute(make_trivial(
         std::move(particles),
         [&backend]()
-        { return rendering::get_out_degrees_heavy_particles(backend); },
+        { return degrees::get_out_degrees_heavy_particles(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_heavy_particles(backend, val); }));
+        { degrees::update_out_degrees_heavy_particles(backend, val); }));
 }
 
 auto update_in_degrees_applied(
@@ -583,9 +583,9 @@ auto update_in_degrees_applied(
 {
     cmds.execute(make_trivial(
         applied,
-        [&backend]() { return rendering::is_in_degrees_applied(backend); },
+        [&backend]() { return degrees::is_in_degrees_applied(backend); },
         [&backend](auto val)
-        { rendering::update_in_degrees_applied(backend, val); }));
+        { degrees::update_in_degrees_applied(backend, val); }));
 }
 
 auto update_out_degrees_applied(
@@ -595,9 +595,9 @@ auto update_out_degrees_applied(
 {
     cmds.execute(make_trivial(
         applied,
-        [&backend]() { return rendering::is_out_degrees_applied(backend); },
+        [&backend]() { return degrees::is_out_degrees_applied(backend); },
         [&backend](auto val)
-        { rendering::update_out_degrees_applied(backend, val); }));
+        { degrees::update_out_degrees_applied(backend, val); }));
 }
 
 auto restore_degrees(command_history& cmds, degrees_backend& backend) -> void

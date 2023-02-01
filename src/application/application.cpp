@@ -110,6 +110,7 @@ auto application::setup_graph_interface() -> void
     const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
     const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
     const auto& colors_root = jsons.at(ARCHV_COLOR_CODING_CONFIG_PATH);
+    const auto& degrees_root = jsons.at(ARCHV_DEGREES_CONFIG_PATH);
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
@@ -119,7 +120,8 @@ auto application::setup_graph_interface() -> void
         layout::deserialize(get(layout_root, "layout")),
         scaling::deserialize(get(scaling_root, "scaling")),
         clustering::deserialize(get(clustering_root, "clustering")),
-        color_coding::deserialize(get(colors_root, "color-coding")));
+        color_coding::deserialize(get(colors_root, "color-coding")),
+        degrees::deserialize(get(degrees_root, "degrees")));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -133,8 +135,6 @@ auto application::setup_commands() -> void
 
 auto application::setup_rendering() -> void
 {
-    using degrees_evaluator = rendering::degrees_ranked_evaluator;
-    using degrees_backend = rendering::degrees_ranked_backend;
     using cluster_color_coder = rendering::cluster_color_pool;
 
     const auto& jsons = archive::get();
@@ -151,7 +151,7 @@ auto application::setup_rendering() -> void
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene(),
         config.graph,
-        degrees_evaluator(degrees_backend(config.degrees)),
+        degrees::evaluator(m_graph_iface->get_degrees_backend()),
         cluster_color_coder());
 
     m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
@@ -621,64 +621,63 @@ auto application::prepare_degrees_editor() -> void
 {
     assert(m_graph_renderer);
 
-    auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& backend = m_graph_iface->get_degrees_backend();
     auto& frontend = m_gui->get_menu_bar().get_degrees_editor();
 
     frontend.set_in_light_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_light_threshold(backend); });
+        { return degrees::get_in_degrees_light_threshold(backend); });
 
     frontend.set_out_light_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_light_threshold(backend); });
+        { return degrees::get_out_degrees_light_threshold(backend); });
 
     frontend.set_in_medium_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_medium_threshold(backend); });
+        { return degrees::get_in_degrees_medium_threshold(backend); });
 
     frontend.set_out_medium_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_medium_threshold(backend); });
+        { return degrees::get_out_degrees_medium_threshold(backend); });
 
     frontend.set_in_heavy_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_heavy_threshold(backend); });
+        { return degrees::get_in_degrees_heavy_threshold(backend); });
 
     frontend.set_out_heavy_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_heavy_threshold(backend); });
+        { return degrees::get_out_degrees_heavy_threshold(backend); });
 
     frontend.set_in_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_light_particles(backend);
+        return degrees::get_in_degrees_light_particles(backend);
     });
 
     frontend.set_out_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_light_particles(backend);
+        return degrees::get_out_degrees_light_particles(backend);
     });
 
     frontend.set_in_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_medium_particles(backend);
+        return degrees::get_in_degrees_medium_particles(backend);
     });
 
     frontend.set_out_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_medium_particles(backend);
+        return degrees::get_out_degrees_medium_particles(backend);
     });
 
     frontend.set_in_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_heavy_particles(backend);
+        return degrees::get_in_degrees_heavy_particles(backend);
     });
 
     frontend.set_out_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_heavy_particles(backend);
+        return degrees::get_out_degrees_heavy_particles(backend);
     });
 
     frontend.set_in_applied(
-        [this, &backend]()
-        { return rendering::is_in_degrees_applied(backend); });
+        [this, &backend]() { return degrees::is_in_degrees_applied(backend); });
 
     frontend.set_out_applied(
         [this, &backend]()
-        { return rendering::is_out_degrees_applied(backend); });
+        { return degrees::is_out_degrees_applied(backend); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared degrees editor";
 }
@@ -1019,7 +1018,7 @@ auto application::connect_degrees_presentation() -> void
 {
     assert(m_graph_renderer);
 
-    auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& backend = m_graph_iface->get_degrees_backend();
     auto& editor = m_gui->get_menu_bar().get_degrees_editor();
 
     editor.connect_to_in_light_threshold(

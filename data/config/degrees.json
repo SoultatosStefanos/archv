@@ -1,0 +1,37 @@
+{
+	"degrees" :
+	{
+		"in-degree" :
+		{
+			"thresholds" : 
+			{ 
+				"light" : 1,
+				"medium" : 4,
+				"heavy": 8
+			},
+			"particle-systems" : 
+			{
+				"light" : "Degrees/SwarmLight",
+				"medium" : "Degrees/SwarmMedium",
+				"heavy" : "Degrees/SwarmHeavy" 
+			},
+			"applied" : true
+		},
+		"out-degree" :
+		{
+			"thresholds" : 
+			{ 
+				"light" : 2,
+				"medium" : 5,
+				"heavy": 10
+			},
+			"particle-systems" : 
+			{
+				"light" : "Degrees/BigRingWhite",
+				"medium" : "Degrees/BigRingYellow",
+				"heavy" : "Degrees/BigRingRed" 
+			},
+			"applied" : false
+		}
+	}
+}

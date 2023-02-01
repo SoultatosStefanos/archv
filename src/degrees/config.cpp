@@ -52,18 +52,13 @@ namespace
             applied);
     }
 
-    inline auto deserialize_degrees(const json_val& root) -> config_data
-    {
-        return config_data(
-            deserialize_degrees_section(get(root, "in-degree")),
-            deserialize_degrees_section(get(root, "out-degree")));
-    }
-
 } // namespace
 
 auto deserialize(const json_val& root) -> config_data
 {
-    return deserialize_degrees(get(root, "degrees"));
+    return config_data(
+        deserialize_degrees_section(get(root, "in-degree")),
+        deserialize_degrees_section(get(root, "out-degree")));
 }
 
 } // namespace degrees

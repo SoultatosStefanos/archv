@@ -4,11 +4,10 @@
 #ifndef RENDERING_CONFIG_HPP
 #define RENDERING_CONFIG_HPP
 
-#include "background_config.hpp"     // for background_config
-#include "degrees_ranked_config.hpp" // for degrees_ranked_config
-#include "graph_config.hpp"          // for graph_config
-#include "minimap_config.hpp"        // for minimap_config
-#include "misc/jsoncppfwd.hpp"       // for Value
+#include "background_config.hpp" // for background_config
+#include "graph_config.hpp"      // for graph_config
+#include "minimap_config.hpp"    // for minimap_config
+#include "misc/jsoncppfwd.hpp"   // for Value
 
 namespace rendering
 {
@@ -17,7 +16,6 @@ struct config_data
 {
     background_config background;
     graph_config graph;
-    degrees_ranked_config degrees;
     minimap_config minimap;
 
     auto operator==(const config_data&) const -> bool = default;

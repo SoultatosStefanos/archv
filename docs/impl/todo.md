@@ -1025,11 +1025,11 @@
 
 # 1 / 02 / 2023 
 
-	+ [ ] Refactor/Introduce degrees subsystem
+	+ [x] Refactor/Introduce degrees subsystem
 
 		+ [x] Introduce degrees subsystem
 
-		+ [ ] Refactor graph_interface/app
+		+ [x] Refactor graph_interface/app
 
 	+ [ ] Refactor clustering color coder 
 

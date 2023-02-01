@@ -42,13 +42,6 @@ auto make_sample_rendering_0()
                                   .edge_type_color = ColourValue(1.0, 1.0, 1.0),
                                   .edge_type_space_width = 1.0 };
 
-    auto&& degrees = degrees_ranked_config {
-        .in_data = degrees_ranked_evaluation_data(
-            { 2, 5, 10 }, { "aa", "bb", "cc" }, true),
-        .out_data = degrees_ranked_evaluation_data(
-            { 1, 2, 3 }, { "aaa", "bbb", "ccc" }, true)
-    };
-
     auto&& minimap
         = minimap_config { .left = 0,
                            .top = 0.2,
@@ -67,7 +60,6 @@ auto make_sample_rendering_0()
 
     return config_data { .background = std::move(background),
                          .graph = std::move(graph),
-                         .degrees = std::move(degrees),
                          .minimap = std::move(minimap) };
 }
 
