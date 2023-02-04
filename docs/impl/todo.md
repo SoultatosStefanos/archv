@@ -2,118 +2,111 @@
 
 ## Components
 
-	+ [x] Symbols
+    + [x] Symbols
 
-	+ [x] Symbol table
+    + [x] Symbol table
 
-	+ [x] Dependencies graph
+    + [x] Dependencies graph
 
 ## Modules
 
-	+ [x] Deserialization
-	
+    + [x] Deserialization
 
 # Clustering
 
 ## Algorithms
 
-	+ [x] Louvain method
+    + [x] Louvain method
 
-	+ [x] Layered label propagation
- 
- 	+ [x] Info map
+    + [x] Layered label propagation
+
+- [x] Info map
 
 ## Features
 
-	+ [x] Cluster with algorithm
+    + [x] Cluster with algorithm
 
-	+ [x] Layout clusters as subgraphs
+    + [x] Layout clusters as subgraphs
 
-	+ [ ] Cluster colors adjust
+    + [ ] Cluster colors adjust
 
-	+ [ ] Hide/Show specific clusters
+    + [ ] Hide/Show specific clusters
 
-	+ [ ] List/Count all clusters 
-
+    + [ ] List/Count all clusters
 
 # Layout / Topology
 
 ## Layout algorithms
 
-	+ [x] Gursoy atun layout algorithm
+    + [x] Gursoy atun layout algorithm
 
-	+ [x] Random layout algorithm
+    + [x] Random layout algorithm
 
 ## Topology types
 
-	+ [x] Cube topology
+    + [x] Cube topology
 
-	+ [x] Sphere topology
+    + [x] Sphere topology
 
 ## Features
 
-	+ [x] Update layout
+    + [x] Update layout
 
-	+ [x] Update topology
+    + [x] Update topology
 
-	+ [x] Revert to defaults
-
+    + [x] Revert to defaults
 
 # Dependencies
 
-	+ [x] Dynamic weight property map
+    + [x] Dynamic weight property map
 
-	+ [x] Color coding
+    + [x] Color coding
 
 ## Features
 
-	+ [x] Change dependency weight value
+    + [x] Change dependency weight value
 
-	+ [x] Restore defaults
-
+    + [x] Restore defaults
 
 ## Shared
 
-	+ [n] Progress Bars
+    + [n] Progress Bars
 
-	+ [n] Blocked signals when running heavy algorithms
+    + [n] Blocked signals when running heavy algorithms
 
-	+ [x] Interactive Configuration (deserialization/serialization/defaults)
+    + [x] Interactive Configuration (deserialization/serialization/defaults)
 
-	+ [ ] Save/Load config files
-
+    + [ ] Save/Load config files
 
 # Scaling
 
-	+ [x] Metadata scaling
+    + [x] Metadata scaling
 
-	+ [ ] Visual indicator for scaling (icon)
+    + [ ] Visual indicator for scaling (icon)
 
 # Rendering
 
 ## Features
 
-	+ [x] Boxes
+    + [x] Boxes
 
-	+ [x] Illumintation
+    + [x] Illumintation
 
-	+ [x] Texts
+    + [x] Texts
 
-	+ [x] Controlls Hud
-
+    + [x] Controlls Hud
 
 # Controls
 
-	+ [x] Free Camera 
+    + [x] Free Camera
 
-	+ [x] Control Hud on/off
+    + [x] Control Hud on/off
 
-	+ [x] Frame Hud on/off
+    + [x] Frame Hud on/off
 
-	+ [x] Pause/Resume
+    + [x] Pause/Resume
 
-	+ [x] Quit
-
+    + [x] Quit
 
 ## User input sanitizing
 
@@ -121,941 +114,864 @@
 
 ## Features
 
-	+ [x] Helpers with question marks
+    + [x] Helpers with question marks
 
-	+ [x] Mini Map
+    + [x] Mini Map
 
-	+ [x] Search Bar
+    + [x] Search Bar
 
-	+ [x] Search bar autocompletion
+    + [x] Search bar autocompletion
 
-	+ [ ] More configurations (all of em)
-
+    + [ ] More configurations (all of em)
 
 # CMakeLists
 
-	+ [x] Variables with descriptions
-
+    + [x] Variables with descriptions
 
 # README
 
-	+ [x] Skeleton
+    + [x] Skeleton
 
-	+ [x] Summary
+    + [x] Summary
 
-	+ [x] Features
+    + [x] Features
 
-	+ [x] Usage
+    + [x] Usage
 
-	+ [x] Third-party
+    + [x] Third-party
 
-	+ [x] Building
+    + [x] Building
 
-	+ [x] Configuration
-
+    + [x] Configuration
 
 # 08 / 07 / 2022
 
-	+ [x] Visualizer/layout sybsystem tests
+    + [x] Visualizer/layout sybsystem tests
 
-	+ [x] Check logging best practices
+    + [x] Check logging best practices
 
-	+ [x] Remake layout demo with user input
+    + [x] Remake layout demo with user input
 
-	+ [x] Read about message buses vs notiffier pattern
-
+    + [x] Read about message buses vs notiffier pattern
 
 # 09 / 07 / 2022
 
-	+ [x] Ogre input handling
-
+    + [x] Ogre input handling
 
 # 21 / 07 / 2022
 
-	+ [x] See MyGUI
+    + [x] See MyGUI
 
-	+ [n] Implement layout factory caching
+    + [n] Implement layout factory caching
 
-	+ [x] Implement layout revert to defaults use case
-
+    + [x] Implement layout revert to defaults use case
 
 # 29 / 07 / 2022
 
-	+ [x] Clean up the app fix fullscreen
+    + [x] Clean up the app fix fullscreen
 
-	+ [x] Make a mock gui
-
+    + [x] Make a mock gui
 
 # 31 / 07 / 2022
 
-	+ [n] OIS Input
+    + [n] OIS Input
 
-	+ [x] Make responsive GUI
-
+    + [x] Make responsive GUI
 
 # 01 / 08 / 2022
 
-	+ [x] Refactor architecture::graph dependencies out of each sybsystem
+    + [x] Refactor architecture::graph dependencies out of each sybsystem
 
-	+ [x] Introduce SDL2
-
+    + [x] Introduce SDL2
 
 # 03 / 08 / 2022
 
-	+ [x] Fix cursor alignment issues with MYGUI
+    + [x] Fix cursor alignment issues with MYGUI
 
-	+ [x] Write logs to archv.log file switch file every now and then
+    + [x] Write logs to archv.log file switch file every now and then
 
-	+ [n] Application specific input listener (fullscreen/exit/pause etc)
+    + [n] Application specific input listener (fullscreen/exit/pause etc)
 
-	+ [x] Introduce states
-
+    + [x] Introduce states
 
 # 05 / 08 / 2022
 
-	+ [x] Seperate app into states
+    + [x] Seperate app into states
 
-		+ [x] Introduce testing/utility package
+    	+ [x] Introduce testing/utility package
 
-		+ [x] Introduce undo/redo package
+    	+ [x] Introduce undo/redo package
 
-		+ [x] Introduce manager class for architecture package
+    	+ [x] Introduce manager class for architecture package
 
-		+ [x] Implement allfwd.hpp files at each package
+    	+ [x] Implement allfwd.hpp files at each package
 
-		+ [x] Implement running state
+    	+ [x] Implement running state
 
-		+ [x] Reimplement app
-		
-		+ [x] Implement paused state
+    	+ [x] Reimplement app
 
-	+ [x] Make GUI popup
+    	+ [x] Implement paused state
 
+    + [x] Make GUI popup
 
 # 06 / 08 / 2022
 
-	+ [n] Zoom out on running state pause
-
+    + [n] Zoom out on running state pause
 
 # 08 / 08 / 2022
 
-	+ [x] Finish GUI Mockup
-	
-		+ [x] Implement running state
+    + [x] Finish GUI Mockup
 
-		+ [x] Implement app
-		
-		+ [x] Implement paused state
+    	+ [x] Implement running state
 
-			+ [x] Integrate imgui
+    	+ [x] Implement app
 
-			+ [x] Make demo with imgui demo window across states
+    	+ [x] Implement paused state
 
-			+ [x] Make pause menu gui
+    		+ [x] Integrate imgui
 
-	+ [n] Create new GUI Mockups
+    		+ [x] Make demo with imgui demo window across states
 
+    		+ [x] Make pause menu gui
+
+    + [n] Create new GUI Mockups
 
 # 09 / 08 / 2022
 
-	+ [x] Dependencies responsive gui
+    + [x] Dependencies responsive gui
 
-	+ [x] Clang tidy check
-
+    + [x] Clang tidy check
 
 # 13 / 08 / 2022
 
-	+ [x] At Layout interactors run no checks before applying functions
-	(What if only the dependencies weights change?)
+    + [x] At Layout interactors run no checks before applying functions
+    (What if only the dependencies weights change?)
 
-	+ [n] Exceptions instead of assertions on invalid requests
+    + [n] Exceptions instead of assertions on invalid requests
 
 # 14 / 08 / 2022
 
-	+ [x] Undo/Redo frontend
+    + [x] Undo/Redo frontend
 
-	+ [x] Flow from data to gui
+    + [x] Flow from data to gui
 
-	+ [x] Restore defaults buttons
+    + [x] Restore defaults buttons
 
-	+ [x] Default selected gui items
+    + [x] Default selected gui items
 
-	+ [x] Frame dispatching cleanup
-
+    + [x] Frame dispatching cleanup
 
 # 15 / 08 / 2022
 
-	+ [x] Central deserialization module
-
+    + [x] Central deserialization module
 
 # 16 / 08 / 2022
 
-	+ [x] Dependencies deserialization module
+    + [x] Dependencies deserialization module
 
-	+ [x] Layout deserialization module
+    + [x] Layout deserialization module
 
-	+ [x] Integrate configs
+    + [x] Integrate configs
 
-	+ [x] Death tests cleanup
+    + [x] Death tests cleanup
 
-	+ [n] Add hardcoded default config values
-
-
+    + [n] Add hardcoded default config values
 
 # 17 / 08 / 2022
 
-	+ [n] Fix layout restore use case
-	
-	+ [n] Progress bars pre work
+    + [n] Fix layout restore use case
 
+    + [n] Progress bars pre work
 
 # 18 / 08 / 2022
 
-	+ [?] Rendering package wth states and app -> Gui package, remove view
-
+    + [?] Rendering package wth states and app -> Gui package, remove view
 
 # 19 / 08 / 2022
 
-	+ [x] Multithreaded task test
+    + [x] Multithreaded task test
 
-	+ [x] Arch generator task
-	
-	+ [x] Gui overlay system
+    + [x] Arch generator task
 
-	+ [x] Application package
+    + [x] Gui overlay system
 
-		+ [x] Rename deserialization modules to config
+    + [x] Application package
 
-		+ [x] Remove config package
+    	+ [x] Rename deserialization modules to config
 
-		+ [x] Copy modules to application package
+    	+ [x] Remove config package
 
-		+ [x] Remove view dispatchers
+    	+ [x] Copy modules to application package
 
-		+ [x] Remove view
+    	+ [x] Remove view dispatchers
 
+    	+ [x] Remove view
 
 # 20 / 08 / 2022
 
-	+ [n] Architecture generation task with progress bar
-
+    + [n] Architecture generation task with progress bar
 
 # 26 / 08 / 2022
 
-	+ [x] Refactor arch generation - no monotoring
+    + [x] Refactor arch generation - no monotoring
 
-	+ [x] Remove progress bar gui
+    + [x] Remove progress bar gui
 
-	+ [x] Cleanup app from asio
+    + [x] Cleanup app from asio
 
-	+ [n] Make a separate file dialog
+    + [n] Make a separate file dialog
 
-	+ [x] Make Graph Renderer dependent on the graph
-
+    + [x] Make Graph Renderer dependent on the graph
 
 # 27 / 08 / 2022
 
-	+ [x] (Clang) Tidy
+    + [x] (Clang) Tidy
 
-		+ [x] Remove unneeded input listeners on visualization state
+    	+ [x] Remove unneeded input listeners on visualization state
 
-	+ [?] Check for Ogre leaks?
-
+    + [?] Check for Ogre leaks?
 
 # 29 / 08 / 2022
 
-	+ [x] Arch generation via ui (no progress bar)
+    + [x] Arch generation via ui (no progress bar)
 
-		+ [n] layout::core::set_graph()
+    	+ [n] layout::core::set_graph()
 
-		+ [x] Dynamic graph setup via ui
+    	+ [x] Dynamic graph setup via ui
 
-		+ [x] Remove graph renderer setter
+    	+ [x] Remove graph renderer setter
 
-		+ [n] Shutdown on app if not null
+    	+ [n] Shutdown on app if not null
 
-		+ [n] Avoid unnecessary subsystem setups 
- 
-	+ [n] Config from project root
+    	+ [n] Avoid unnecessary subsystem setups
 
+    + [n] Config from project root
 
 # 02 / 09 / 2022
 
-	+ [x] Background Renderer
+    + [x] Background Renderer
 
-		+ [x] Studio Skybox
+    	+ [x] Studio Skybox
 
-		+ [x] Configs
+    	+ [x] Configs
 
-	
 # 03 / 09 / 2022
 
-	+ [ ] Graph Renderer
+    + [ ] Graph Renderer
 
-		+ [x] Configs
-		
-		+ [x] Box meshes
+    	+ [x] Configs
 
-		+ [ ] Arrow Edges
+    	+ [x] Box meshes
 
-	+ [n] Slider layout scale
+    	+ [ ] Arrow Edges
 
+    + [n] Slider layout scale
 
 # 04 / 09 / 2022
 
-	+ [n] Any configurable layout
-	
-	+ [x] Graph Renderer
+    + [n] Any configurable layout
 
-		+ [x] Configs
-		
-		+ [x] Box meshes
+    + [x] Graph Renderer
 
-		+ [x] Line edges (Configurable)
+    	+ [x] Configs
 
-		+ [n] Direction on edges
+    	+ [x] Box meshes
 
+    	+ [x] Line edges (Configurable)
+
+    	+ [n] Direction on edges
 
 # 06 / 09 / 2022
 
-	+ [x] Backends Cleanup
+    + [x] Backends Cleanup
 
-		+ [x] Layout
+    	+ [x] Layout
 
-		+ [x] Dependencies
+    	+ [x] Dependencies
 
-	+ [n] Graph Data Access Layer
+    + [n] Graph Data Access Layer
 
-	+ [x] Application Layer
-
+    + [x] Application Layer
 
 # 09 / 09 / 2022
 
-	+ [x] Id text billboards on each vertex
+    + [x] Id text billboards on each vertex
 
-		+ [x] Id overlays
+    	+ [x] Id overlays
 
-		+ [x] Configurable
+    	+ [x] Configurable
 
-	+ [n] Vertex material
-
+    + [n] Vertex material
 
 # 10 / 09 / 2022
 
-	+ [x] GUI to config style
-
+    + [x] GUI to config style
 
 # 11 / 09 / 2022
 
-	+ [ny] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
+    + [ny] GUI Icons https://stackoverflow.com/questions/69189190/dear-imgui-how-to-create-buttons-with-icons-and-text
 
-	+ [x] GUI Rendering Configurator
+    + [x] GUI Rendering Configurator
 
-	+ [x] GUI GUI Configurator
+    + [x] GUI GUI Configurator
 
-	+ [x] GUI Dependencies Editor 
+    + [x] GUI Dependencies Editor
 
-	+ [x] GUI Layout Editor 
+    + [x] GUI Layout Editor
 
-	+ [x] GUI Config Facade / GUI as a UI Component
+    + [x] GUI Config Facade / GUI as a UI Component
 
-	+ [x] GUI Graph Actions Cleanup
+    + [x] GUI Graph Actions Cleanup
 
-	+ [ ] GUI File Browser
+    + [ ] GUI File Browser
 
+# 17 / 09 / 2022
 
-# 17 / 09 / 2022 
+    + [x] GUI Defaults
 
-	+ [x] GUI Defaults
+    + [x] GUI Plugins
 
-	+ [x] GUI Plugins
+# 20 / 09 / 2022
 
+    + [x] GUI resources
 
-# 20 / 09 / 2022 
+    	+ [x] Layout plugins
 
-	+ [x] GUI resources
+    	+ [x] Configure Resources manually
 
-		+ [x] Layout plugins
+    + [n] GUI Editor Hooks
 
-		+ [x] Configure Resources manually
-
-	+ [n] GUI Editor Hooks
-
-	+ [x] GUI Connections
-
+    + [x] GUI Connections
 
 # 21 / 09 / 2022
 
-	+ [x] Background Renderer Config
+    + [x] Background Renderer Config
 
-	+ [x] Graph Renderer Config
-
+    + [x] Graph Renderer Config
 
 # 22 / 09 / 2022
 
-	+ [x] Graph Renderer Cleanup
+    + [x] Graph Renderer Cleanup
 
-	+ [x] Edge Arrows Rendering
-
+    + [x] Edge Arrows Rendering
 
 # 23 / 09 / 2022
 
-	+ [x] Edge tips cleanup
+    + [x] Edge tips cleanup
 
-	+ [n] Configurable vertex material
+    + [n] Configurable vertex material
 
-	+ [x] Configurable edge tips
-
+    + [x] Configurable edge tips
 
 # 30 / 09 / 2022
 
-	+ [x] Vertex scaling depending on symbol metadata
+    + [x] Vertex scaling depending on symbol metadata
 
-	+ [x] Vertex scaling with gui editing
-	
+    + [x] Vertex scaling with gui editing
 
 # 01 / 10 / 2022
 
-	+ [n] Overlays https://wiki.ogre3d.org/-Overlay
+    + [n] Overlays https://wiki.ogre3d.org/-Overlay
 
-	+ [ ] Edge dependencies rendering
+    + [ ] Edge dependencies rendering
 
-		+ [ ] See https://wiki.ogre3d.org/-Particle
-
+    	+ [ ] See https://wiki.ogre3d.org/-Particle
 
 # 03 / 10 / 2022
 
-	+ [n] Parallel edges
+    + [n] Parallel edges
 
-	+ [x] Misc cleanup
+    + [x] Misc cleanup
 
-	+ [x] Vertex id overlay on seperate nodes (don't scale with vertex).
+    + [x] Vertex id overlay on seperate nodes (don't scale with vertex).
 
-	+ [x] File browser
-
+    + [x] File browser
 
 # 04 / 10 / 2022
 
-	+ [x] Multiple dependencies
+    + [x] Multiple dependencies
 
-	+ [ ] Edge types rendering
-
+    + [ ] Edge types rendering
 
 # 05 / 10 / 2022
 
-	+ [x] Fix graph redraw and edge tips
+    + [x] Fix graph redraw and edge tips
 
-	+ [x] Edge types rendering
-
+    + [x] Edge types rendering
 
 # 09 / 10 / 2022
 
-	+ [x] Handle dependency type rendering on parallels
+    + [x] Handle dependency type rendering on parallels
 
-	+ [x] Edge text configuration
+    + [x] Edge text configuration
 
-	+ [x] Edge tip mesh
-
+    + [x] Edge tip mesh
 
 # 11 / 10 / 2022
 
-	+ [x] Edge weight rendering
-
+    + [x] Edge weight rendering
 
 # 12 / 10 / 2022
 
-	+ [x] See effects (https://wiki.ogre3d.org/-Particle)
+    + [x] See effects (https://wiki.ogre3d.org/-Particle)
 
-	+ [x] Proof of concept in-degree rendering with particles
-
+    + [x] Proof of concept in-degree rendering with particles
 
 # 13 / 10 / 2022
 
-	+ [n] See Particle Universe editor https://wiki.ogre3d.org/tiki-index.php?page=Particle%20Universe%20plugin
+    + [n] See Particle Universe editor https://wiki.ogre3d.org/tiki-index.php?page=Particle%20Universe%20plugin
 
-	+ [n] Install Particle Universe editor
-
+    + [n] Install Particle Universe editor
 
 # 15 / 10 / 2022
 
-	+ [x] Easily configurable renderer with degree particle systems
-
+    + [x] Easily configurable renderer with degree particle systems
 
 # 18 / 10 / 2022
 
-	+ [x] Degrees particle system management backend
+    + [x] Degrees particle system management backend
 
-	+ [x] Particle Systems Editor			
-
+    + [x] Particle Systems Editor
 
 # 24 / 10 / 2022
 
-	+ [x] Particle system degree renderer
+    + [x] Particle system degree renderer
 
-	+ [x] Introduce config modules to ease compile times
+    + [x] Introduce config modules to ease compile times
 
-	+ [x] Gui configuration exceptions
+    + [x] Gui configuration exceptions
 
-	+ [x] Create nifty particle systems for in/out-degrees (3 each)
-	Note: Hollow Ellipsoid Emitter (3d ring)
+    + [x] Create nifty particle systems for in/out-degrees (3 each)
+    Note: Hollow Ellipsoid Emitter (3d ring)
 
-		+ [x] In-degree systems (Direction inward)
+    	+ [x] In-degree systems (Direction inward)
 
-			+ [x] Heavy
+    		+ [x] Heavy
 
-			+ [x] Medium
+    		+ [x] Medium
 
-			+ [x] Light
-			
-		+ [x] Out-degree systems (Direction outward)
+    		+ [x] Light
 
-			+ [x] Heavy
+    	+ [x] Out-degree systems (Direction outward)
 
-			+ [x] Medium
+    		+ [x] Heavy
 
-			+ [x] Light
+    		+ [x] Medium
 
-	+ [x] Gui configurable degree particle systems
+    		+ [x] Light
 
-		+ [x] Gui editor
+    + [x] Gui configurable degree particle systems
 
-		+ [x] Gui preparation
+    	+ [x] Gui editor
 
-		+ [x] Degree editing commands
+    	+ [x] Gui preparation
 
-		+ [x] Gui connections
+    	+ [x] Degree editing commands
 
-	+ [x] Degrees user input sanitizing
+    	+ [x] Gui connections
 
-	+ [n] File Browser
+    + [x] Degrees user input sanitizing
 
+    + [n] File Browser
 
 # 27 / 10 / 2022
 
-	+ [n] Compiler flags controlling wether to render degrees/clusters immediately
+    + [n] Compiler flags controlling wether to render degrees/clusters immediately
 
-	+ [x] POC clustering rendering
+    + [x] POC clustering rendering
 
-		+ [x] k-Spanning Tree clusterer
+    	+ [x] k-Spanning Tree clusterer
 
-			+ [x] Prim MST
+    		+ [x] Prim MST
 
-			+ [x] Kruskal MST
+    		+ [x] Kruskal MST
 
-		+ [x] Backend
+    	+ [x] Backend
 
-		+ [x] Cluster vertex property map
+    	+ [x] Cluster vertex property map
 
-		+ [x] Json configurable
-
+    	+ [x] Json configurable
 
 # 28 / 10 / 2022
 
-	+ [x] Expand Graph Renderer to color clusters
+    + [x] Expand Graph Renderer to color clusters
 
-	+ [x] Rendering Cluster Color Coder policy class
-
+    + [x] Rendering Cluster Color Coder policy class
 
 # 31 / 10 / 2022
 
-	+ [x] Hide clusters at graph renderer, draw update
+    + [x] Hide clusters at graph renderer, draw update
 
-		+ [x] Add vertex material configuration
+    	+ [x] Add vertex material configuration
 
-		+ [x] Revert to config materials on hide
+    	+ [x] Revert to config materials on hide
 
-		+ [x] Do not draw materials on draw if clustered
+    	+ [x] Do not draw materials on draw if clustered
 
-	+ [x] Integrate the rest of the clusterers
+    + [x] Integrate the rest of the clusterers
 
-		+ [x] Shared nearest neighbour clustering
-
+    	+ [x] Shared nearest neighbour clustering
 
 # 01 / 11 / 2022
 
-	+ [x] Integrate the rest of the clusterers
+    + [x] Integrate the rest of the clusterers
 
-		+ [x] Strong Components
-
+    	+ [x] Strong Components
 
 # 02 / 11 / 2022
 
-	+ [x] Integrate the rest of the clusterers
+    + [x] Integrate the rest of the clusterers
 
-		+ [x] Maximal Clique Enumeration
+    	+ [x] Maximal Clique Enumeration
 
-	+ [x] GUI Configurable clusterers
-
+    + [x] GUI Configurable clusterers
 
 # 04 / 11 / 2022
 
-	+ [x] Clustering GUI Commands
+    + [x] Clustering GUI Commands
 
-	+ [x] Clustering GUI Connections
+    + [x] Clustering GUI Connections
 
-	+ [x] GUI Help Markers
+    + [x] GUI Help Markers
 
-	+ [x] GUI Icons
-	
+    + [x] GUI Icons
 
 # 05 / 11 / 2022
 
-	+ [x] Louvain Method
-
+    + [x] Louvain Method
 
 # 07 / 11 / 2022
 
-	+ [n] Fix cluster type typedef
+    + [n] Fix cluster type typedef
 
-	+ [x] Implement the rest of the backend objects for louvain clustering
+    + [x] Implement the rest of the backend objects for louvain clustering
 
-	+ [x] Alternatives to rendering materials for clustering
-
+    + [x] Alternatives to rendering materials for clustering
 
 # 09 / 11 / 2022
 
-	+ [x] Edge tip material configuration
+    + [x] Edge tip material configuration
 
-	+ [x] Configs tweaks
-	
-	+ [x] Clustering rendering update
+    + [x] Configs tweaks
 
-	+ [x] Louvain method randomness fix
-	
-	+ [x] Introduce the Louvain min parameter on the clustering backend
+    + [x] Clustering rendering update
 
-	+ [x] Interactive Louvain Method settings for nerds
+    + [x] Louvain method randomness fix
 
+    + [x] Introduce the Louvain min parameter on the clustering backend
+
+    + [x] Interactive Louvain Method settings for nerds
 
 # 10 / 11 / 2022
 
-	+ [n] GUI Configs
+    + [n] GUI Configs
 
-	+ [n/y] Multithreaded clustering
+    + [n/y] Multithreaded clustering
 
-	+ [n/y] Layered Label Propagation pre work
+    + [n/y] Layered Label Propagation pre work
 
-	+ [x] Info overlays
+    + [x] Info overlays
 
-		+ [x] Clickable vertices
+    	+ [x] Clickable vertices
 
-	+ [x] Gui structure dialog manager
-
+    + [x] Gui structure dialog manager
 
 # 11 / 11 / 2022
 
-	+ [ ] Gui structure dialog
+    + [ ] Gui structure dialog
 
-	+ [ ] Presentation Layer
+    + [ ] Presentation Layer
 
-	+ [ ] Input unit tests
-
+    + [ ] Input unit tests
 
 # 13 / 11 / 2022
 
-	+ [x] Cameraman input lock/unlock
+    + [x] Cameraman input lock/unlock
 
-	+ [x] Display GUI always
+    + [x] Display GUI always
 
-	+ [x] HUD
+    + [x] HUD
 
-	+ [x] Frames
+    + [x] Frames
 
-	+ [x] Gui cleanup, extract menu and global state
+    + [x] Gui cleanup, extract menu and global state
 
-		+ [x] Overlays hierarchy
+    	+ [x] Overlays hierarchy
 
-		+ [x] Extract menu bar
+    	+ [x] Extract menu bar
 
-		+ [x] Extract global state
-
+    	+ [x] Extract global state
 
 # 14 / 11 / 2022
 
-	+ [x] Finished up refactored input
+    + [x] Finished up refactored input
 
-	+ [x] Input cleanup
-
+    + [x] Input cleanup
 
 # 15 / 11 / 2022
 
-	+ [x] Structure popups
+    + [x] Structure popups
 
-	+ [x] Vertex effect on hover
-
+    + [x] Vertex effect on hover
 
 # 16 / 11 / 2022
 
-	+ [x] Poc popup code inspection
+    + [x] Poc popup code inspection
 
-	+ [x] Popup code inspection with all info
+    + [x] Popup code inspection with all info
 
-	+ [x] Fix button click resolution on inspection
+    + [x] Fix button click resolution on inspection
 
-	+ [x] Menu bar num vertices/edges
+    + [x] Menu bar num vertices/edges
 
-	+ [x] Menu bar TODO
+    + [x] Menu bar TODO
 
-		+ [x] Menu bar helper
+    	+ [x] Menu bar helper
 
-		+ [x] Menu bar Quit
+    	+ [x] Menu bar Quit
 
-	+ [x] Hide clusters before drawing graph
-
+    + [x] Hide clusters before drawing graph
 
 # 17 / 11 / 2022
 
-	+ [n/y] GUI Configs
+    + [n/y] GUI Configs
 
-	+ [x] Layered label propagation
-
+    + [x] Layered label propagation
 
 # 19 / 11 / 2022
 
-	+ [x] Layered label propagation plugin
+    + [x] Layered label propagation plugin
 
-	+ [x] Layered label propagation backend details
+    + [x] Layered label propagation backend details
 
-	+ [x] Layered label propagation gui details
+    + [x] Layered label propagation gui details
 
-	+ [x] Layered label propagation commands
+    + [x] Layered label propagation commands
 
-	+ [x] Presentation Layer
-
+    + [x] Presentation Layer
 
 # 20 / 11 / 2022
 
-	+ [x] Fwd typedefs issue
+    + [x] Fwd typedefs issue
 
-	+ [x] Clustering undo/redo
+    + [x] Clustering undo/redo
 
-	+ [x] LLP GUI helpers
+    + [x] LLP GUI helpers
 
-	+ [x] Fix input propagation from gui
+    + [x] Fix input propagation from gui
 
-	+ [x] Graph interface for accessing vertices by ids
-
+    + [x] Graph interface for accessing vertices by ids
 
 # 21 / 11 / 2022
 
-	+ [x] Search bar with camera pan
+    + [x] Search bar with camera pan
 
-		+ [x] Vertex Marker
+    	+ [x] Vertex Marker
 
-		+ [x] Graph Interface functions
+    	+ [x] Graph Interface functions
 
-		+ [x] Vertex position by id
+    	+ [x] Vertex position by id
 
-		+ [x] Menu search bar
+    	+ [x] Menu search bar
 
-		+ [x] Camera pan function
-
+    	+ [x] Camera pan function
 
 # 28 / 11 / 2022
 
-	+ [x] Info Map Adaptor
+    + [x] Info Map Adaptor
 
-	+ [x] Info Map
+    + [x] Info Map
 
-	+ [n] Menu search autocompletion
-
+    + [n] Menu search autocompletion
 
 # 29 / 11 / 2022
 
-	+ [x] Mini Map
+    + [x] Mini Map
 
-		+ [x] Search in Ogre tutorials
+    	+ [x] Search in Ogre tutorials
 
-		+ [n] Google for common tecnhiques
+    	+ [n] Google for common tecnhiques
 
-		+ [n] Converter functions in constrained 2D space
+    	+ [n] Converter functions in constrained 2D space
 
-		+ [x] 2nd Camera view (zoomed out)
+    	+ [x] 2nd Camera view (zoomed out)
 
-			+ [x] 2nd Camera input
+    		+ [x] 2nd Camera input
 
-		+ [x] Visibility flags
-
+    	+ [x] Visibility flags
 
 # 30 / 11 / 2022
 
-	+ [x] Mini Map
+    + [x] Mini Map
 
-		+ [n] Disable shadows for main render queue group (Don't need to it's about the angle)
+    	+ [n] Disable shadows for main render queue group (Don't need to it's about the angle)
 
-		+ [n] Cameraman marker (Don't need to)
+    	+ [n] Cameraman marker (Don't need to)
 
-		+ [x] Configs via jsons
+    	+ [x] Configs via jsons
 
-		+ [x] Interactive configuration
+    	+ [x] Interactive configuration
 
-		+ [x] Toggle on and off
+    	+ [x] Toggle on and off
 
-			+ [x] Input handling
+    		+ [x] Input handling
 
-			+ [x] Update controls
+    		+ [x] Update controls
 
-	+ [x] Popups beautify
-
+    + [x] Popups beautify
 
 # 01 / 12 / 2022
 
-	+ [x] Tweaks
+    + [x] Tweaks
 
-	+ [?] Autocompletion revisit
-
+    + [?] Autocompletion revisit
 
 # 06 / 12 / 2022
 
-	+ [x] Typedefs
+    + [x] Typedefs
 
-	+ [x] Fwd decls
-		
-		+ [x] Misc
+    + [x] Fwd decls
 
-		+ [x] UI
+    	+ [x] Misc
 
-		+ [x] Undo/Redo
+    	+ [x] UI
 
-		+ [x] Scaling
+    	+ [x] Undo/Redo
 
-		+ [x] Weights
+    	+ [x] Scaling
 
-		+ [x] Architecture
+    	+ [x] Weights
 
-		+ [x] Layout
+    	+ [x] Architecture
 
-		+ [x] Clustering
+    	+ [x] Layout
 
-		+ [x] Gui
+    	+ [x] Clustering
 
-		+ [x] Rendering
+    	+ [x] Gui
 
-		+ [x] Presentation
+    	+ [x] Rendering
 
-		+ [x] Input
+    	+ [x] Presentation
 
-		+ [x] Application
+    	+ [x] Input
 
-	+ [x] Presentation cleanup
+    	+ [x] Application
 
-	+ [x] Introduce 3rd party fwd headers
+    + [x] Presentation cleanup
 
+    + [x] Introduce 3rd party fwd headers
 
 # 07 / 12 / 2022
 
-	+ [x] Jsoncpp wrapper for exceptions
+    + [x] Jsoncpp wrapper for exceptions
 
-	+ [x] Static ui adaptor
+    + [x] Static ui adaptor
 
-	+ [n] Pimpl at Infomap clustering impl
+    + [n] Pimpl at Infomap clustering impl
 
-	+ [ ] Gui setup cleanup
-
+    + [ ] Gui setup cleanup
 
 # 09 / 12 / 2022
 
-	+ [x] Minimap update
+    + [x] Minimap update
 
-	+ [x] Resource group tidy
+    + [x] Resource group tidy
 
-	+ [x] Pan feature update
-
+    + [x] Pan feature update
 
 # 14 / 12 / 2022
 
-	+ [x] Clustering subgraph layout
+    + [x] Clustering subgraph layout
 
-		+ [x] Layout untangle (with cluster-map) function
-
+    	+ [x] Layout untangle (with cluster-map) function
 
 # 15 / 12 / 2022
 
-	+ [x] Clustering subgraph layout
+    + [x] Clustering subgraph layout
 
-		+ [x] Position map via layout
+    	+ [x] Position map via layout
 
-		+ [x] Update application
+    	+ [x] Update application
 
-		+ [x] Make the aggregated layout distance configurable
+    	+ [x] Make the aggregated layout distance configurable
 
-			+ [x] Update backend
+    		+ [x] Update backend
 
-			+ [x] From json
+    		+ [x] From json
 
-			+ [x] Interactive configurable
+    		+ [x] Interactive configurable
 
-				+ [x] Update commands
+    			+ [x] Update commands
 
-				+ [x] Update gui
+    			+ [x] Update gui
 
-				+ [x] Update connections
+    			+ [x] Update connections
 
-		+ [n] Disable layout update on clustered graph
+    	+ [n] Disable layout update on clustered graph
 
-		+ [x] Update docs
-
+    	+ [x] Update docs
 
 # 16 / 12 / 2022
 
-	+ [x] Dependencies color coding
+    + [x] Dependencies color coding
 
-		+ [x] Cleanup edge renderer "private" functions
+    	+ [x] Cleanup edge renderer "private" functions
 
-		+ [n] Update weights editor
+    	+ [n] Update weights editor
 
-		+ [n] Update weights presentation
-
+    	+ [n] Update weights presentation
 
 # 19 / 12 / 2022
 
-	+ [x] Commands impl tidy
+    + [x] Commands impl tidy
 
-		+ [x] Commands tests
+    	+ [x] Commands tests
 
-		+ [x] Generic trivial command
+    	+ [x] Generic trivial command
 
-	+ [x] Color coding commands
-
+    + [x] Color coding commands
 
 # 20 / 12 / 2022
 
-	+ [x] Clustering undo/redo tidy
+    + [x] Clustering undo/redo tidy
+
+# 1 / 02 / 2023
+
+    + [x] Refactor/Introduce degrees subsystem
+
+    	+ [x] Introduce degrees subsystem
+
+    	+ [x] Refactor graph_interface/app
+
+    + [x] Refactor clustering color coder
+
+    + [x] Refactor configuration process to utilize one config
+
+    + [x] Pick configs at runtime (cmd line args)
+
+    + [x] Archive config management subsystem
+
+    + [x] Remove Archv resource paths compilation flags
+
+# 4 / 02 / 2023
+
+    + [ ] Save/Load configs mechanism
+
+    	+ [ ] Import/Export configs
+
+    		+ [ ] Backends
+
+    		+ [ ] Renderers
+
+    	+ [ ] Menu bar update
+
+    		+ [ ] Save
+
+    		+ [ ] Save as...
+
+    	+ [ ] File browser
+
+    + [ ] Update docs
 
 
-# 1 / 02 / 2023 
-
-	+ [x] Refactor/Introduce degrees subsystem
-
-		+ [x] Introduce degrees subsystem
-
-		+ [x] Refactor graph_interface/app
-
-	+ [x] Refactor clustering color coder 
-
-	+ [x] Refactor configuration process to utilize one config
-
-	+ [x] Pick configs at runtime (cmd line args)
-
-	+ [x] Archive config management subsystem
-
-	+ [x] Remove Archv resource paths compilation flags
-
-
-# 2 / 02 / 2023
-
-	+ [ ] Save/Load configs mechanism
-
-		+ [ ] Dump backends
-
-		+ [ ] Menu bar update 
-
-			+ [ ] Save
-
-			+ [ ] Save as...
-
-		+ [ ] File browser
-
-	+ [ ] Update docs 
-
-		
