@@ -29,6 +29,9 @@ dummy_config drawn_data;
 
 struct dummy_ui_component
 {
+    using config_data_type = dummy_config;
+    using config_api_type = dummy_config_api;
+
     dummy_config cfg, default_cfg;
     dummy_config_api api;
 
@@ -80,7 +83,8 @@ TEST_F(given_a_dummy_ui_component, end_preview_draws_current_data)
 }
 
 TEST_F(
-    given_a_dummy_ui_component, apply_config_draws_and_sets_intermediate_data)
+    given_a_dummy_ui_component,
+    apply_config_draws_and_sets_intermediate_data)
 {
     ui_comp->config_api().config_data().i = 30;
 
@@ -108,6 +112,25 @@ TEST_F(
     ASSERT_EQ(drawn_data, ui_comp->default_cfg);
     ASSERT_EQ(ui_comp->config_data(), ui_comp->default_cfg);
     ASSERT_TRUE(drawn_data.i == 0);
+}
+
+TEST_F(given_a_dummy_ui_component, import_configs_applies_new_configs)
+{
+    dummy_config cfg { .i = 20 };
+    ui::import_configs(*ui_comp, cfg);
+
+    EXPECT_EQ(drawn_data, cfg);
+    EXPECT_EQ(ui_comp->config_data(), cfg);
+    EXPECT_EQ(ui_comp->config_api().config_data(), cfg);
+}
+
+TEST_F(given_a_dummy_ui_component, export_configs_simply_returns_a_config_copy)
+{
+    dummy_config cfg { .i = 20 };
+    ui::import_configs(*ui_comp, cfg);
+    ASSERT_EQ(ui_comp->config_data(), cfg);
+
+    EXPECT_EQ(ui::export_configs(*ui_comp), cfg);
 }
 
 } // namespace

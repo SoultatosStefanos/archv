@@ -962,7 +962,7 @@
 
     		+ [ ] Backends
 
-    		+ [ ] Renderers
+    		+ [x] Renderers
 
     	+ [ ] Menu bar update
 
@@ -973,5 +973,3 @@
     	+ [ ] File browser
 
     + [ ] Update docs
-
-
