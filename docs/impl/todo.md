@@ -954,22 +954,18 @@
 
     + [x] Remove Archv resource paths compilation flags
 
-# 4 / 02 / 2023
+# 5 / 02 / 2023
 
-    + [ ] Save/Load configs mechanism
+    + [n] Impot Configs
 
-    	+ [ ] Import/Export configs
+    + [x] Export Configs
 
-    		+ [ ] Backends
+    + [x] Sav/Load
 
-    		+ [x] Renderers
+    + [ ] Menu bar update
 
-    	+ [ ] Menu bar update
+        + [x] Save
 
-    		+ [ ] Save
-
-    		+ [ ] Save as...
-
-    	+ [ ] File browser
+        + [ ] Save As...
 
     + [ ] Update docs
