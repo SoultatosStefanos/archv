@@ -4,7 +4,8 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "input/allfwd.hpp"       // for the input modules
+#include "input/allfwd.hpp" // for the input modules
+#include "json_archive.hpp"
 #include "misc/ogre_bitesfwd.hpp" // for CameraMan, ImGuiInputListener, TrayManager
 #include "presentation/allfwd.hpp" // for the presentation modules
 
@@ -108,6 +109,8 @@ private:
     std::unique_ptr< shortcut_input_handler_type > m_shortcut_input_handler;
     std::unique_ptr< inspection_handler_type > m_inspection_input_handler;
     std::unique_ptr< event_dispatcher_type > m_input_chain;
+
+    json_archive m_jsons;
 };
 
 } // namespace application

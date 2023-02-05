@@ -79,6 +79,4 @@ auto dump(const json_archive& archive, const file_path_t& to) -> void
     dump(archive.get(to.c_str()), to);
 }
 
-json_archive jsons;
-
 } // namespace application

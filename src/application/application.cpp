@@ -43,8 +43,8 @@ application::application(int argc, const char* argv[]) : base("ARCHV")
     m_graph_path = argv[1];
     m_config_path = argv[2];
 
-    import(jsons, m_graph_path);
-    import(jsons, m_config_path);
+    import(m_jsons, m_graph_path);
+    import(m_jsons, m_config_path);
 }
 
 application::~application() = default;
@@ -106,14 +106,14 @@ auto application::setup() -> void
 
 auto application::setup_graph_interface() -> void
 {
-    auto&& [st, g, m] = architecture::deserialize(jsons.get(m_graph_path));
+    auto&& [st, g, m] = architecture::deserialize(m_jsons.get(m_graph_path));
 
-    const auto& weights_root = get(jsons.get(m_config_path), "weights");
-    const auto& layout_root = get(jsons.get(m_config_path), "layout");
-    const auto& scaling_root = get(jsons.get(m_config_path), "scaling");
-    const auto& clustering_root = get(jsons.get(m_config_path), "clustering");
-    const auto& colors_root = get(jsons.get(m_config_path), "color-coding");
-    const auto& degrees_root = get(jsons.get(m_config_path), "degrees");
+    const auto& weights_root = get(m_jsons.get(m_config_path), "weights");
+    const auto& layout_root = get(m_jsons.get(m_config_path), "layout");
+    const auto& scaling_root = get(m_jsons.get(m_config_path), "scaling");
+    const auto& clustering_root = get(m_jsons.get(m_config_path), "clustering");
+    const auto& colors_root = get(m_jsons.get(m_config_path), "color-coding");
+    const auto& degrees_root = get(m_jsons.get(m_config_path), "degrees");
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
@@ -138,7 +138,7 @@ auto application::setup_commands() -> void
 
 auto application::setup_rendering() -> void
 {
-    const auto& root = get(jsons.get(m_config_path), "rendering");
+    const auto& root = get(m_jsons.get(m_config_path), "rendering");
     const auto config = rendering::deserialize(root);
 
     m_background_renderer = std::make_unique< background_renderer_type >(
@@ -402,7 +402,7 @@ auto application::setup_gui() -> void
 
     ImGui::GetIO().WantCaptureMouse = true;
 
-    const auto& root = get(jsons.get(m_config_path), "gui");
+    const auto& root = get(m_jsons.get(m_config_path), "gui");
     gui::set_configs(gui::deserialize(root));
 
     m_gui = std::make_unique< gui_type >();

@@ -74,12 +74,6 @@ auto import(json_archive& archive, const file_path_t& from) -> void;
 auto dump(const json_t& json, const file_path_t& to) -> void;
 auto dump(const json_archive& archive, const file_path_t& to) -> void;
 
-/***********************************************************
- * Jsons                                                   *
- ***********************************************************/
-
-extern json_archive jsons;
-
-} // namespace config
+} // namespace application
 
 #endif // APPLICATION_JSON_ARCHIVE_HPP
