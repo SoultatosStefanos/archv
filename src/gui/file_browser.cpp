@@ -8,7 +8,9 @@ namespace gui
 {
 
 file_browser::file_browser()
-: m_impl { std::make_unique< impl_type >(ImGuiFileBrowserFlags_NoModal) }
+: m_impl { std::make_unique< impl_type >(
+    ImGuiFileBrowserFlags_NoModal | ImGuiFileBrowserFlags_EnterNewFilename
+    | ImGuiFileBrowserFlags_CreateNewDir) }
 {
     m_impl->SetTypeFilters({ ".json" });
 }

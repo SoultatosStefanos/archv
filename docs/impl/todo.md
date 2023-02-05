@@ -962,10 +962,10 @@
 
     + [x] Sav/Load
 
-    + [ ] Menu bar update
+    + [x] Menu bar update
 
         + [x] Save
 
-        + [ ] Save As...
+        + [x] Save As...
 
     + [ ] Update docs

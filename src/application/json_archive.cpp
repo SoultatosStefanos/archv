@@ -1,6 +1,7 @@
 #include "json_archive.hpp"
 
 #include <boost/exception/all.hpp>
+#include <boost/log/trivial.hpp>
 #include <cassert>
 #include <fstream>
 
@@ -48,6 +49,8 @@ auto import(const file_path_t& from) -> json_t
         BOOST_THROW_EXCEPTION(
             invalid_file_path() << file_path_info(from.string()));
     }
+
+    BOOST_LOG_TRIVIAL(debug) << "imported: " << from.c_str();
 }
 
 auto import(json_archive& archive, const file_path_t& from) -> void
@@ -72,6 +75,8 @@ auto dump(const json_t& json, const file_path_t& to) -> void
         BOOST_THROW_EXCEPTION(
             invalid_file_path() << file_path_info(to.string()));
     }
+
+    BOOST_LOG_TRIVIAL(debug) << "dumped: " << to.c_str();
 }
 
 auto dump(const json_archive& archive, const file_path_t& to) -> void

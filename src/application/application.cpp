@@ -22,6 +22,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <fstream>
 #include <map>
 #include <ranges>
 
@@ -64,6 +65,7 @@ auto application::go() -> void
     getRoot()->startRendering();
 }
 
+// NOTE: Doesn't update the archive (no need).
 auto application::save(std::string_view path) -> void
 {
     // Enabe ADL
@@ -88,19 +90,24 @@ auto application::save(std::string_view path) -> void
     auto scale_cfg = export_configs(m_graph_iface->get_scaling_backend());
     auto weights_cfg = export_configs(m_graph_iface->get_weights_backend());
 
-    auto& root = m_jsons.get(path);
-    root.clear();
+    if (m_jsons.archived(path))
+        m_jsons.get(path).clear();
+
+    Json::Value root;
 
     serialize(root["clustering"], cluster_cfg);
     serialize(root["color-coding"], cc_cfg);
     serialize(root["degrees"], degrees_cfg);
-    serialize(root["gui"], gui_cfg);
     serialize(root["layout"], layout_cfg);
+    serialize(root["scaling"], scale_cfg);
+    serialize(root["weights"], weights_cfg);
+    serialize(root["gui"], gui_cfg);
     serialize_background(root["rendering"]["background"], background_cfg);
     serialize_graph(root["rendering"]["graph"], graph_cfg);
     serialize_minimap(root["rendering"]["minimap"], minimap_cfg);
-    serialize(root["scaling"], scale_cfg);
-    serialize(root["weights"], weights_cfg);
+
+    if (!std::filesystem::exists(path))
+        std::ofstream { path.data() }; // Creates a new file at path.
 
     dump(root, path);
 }
@@ -1802,6 +1809,13 @@ auto application::connect_menu_bar_presentation() -> void
         {
             BOOST_LOG_TRIVIAL(info) << "selected save";
             save(m_config_path);
+        });
+
+    bar.get_save_browser().connect(
+        [this](auto path)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected save to: " << path;
+            save(path);
         });
 
     bar.connect_to_quit(
