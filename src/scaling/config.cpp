@@ -71,4 +71,31 @@ auto deserialize(const json_val& root) -> config_data
     return res;
 }
 
+namespace
+{
+    inline auto serialize_dims(json_val& root, const factor::dims_type& dims)
+    {
+        for (auto i = 0; i < dims.size(); ++i)
+            root[i] = dims[i];
+    }
+} // namespace
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    for (const auto& [tag, factor] : cfg)
+    {
+        json_val val;
+
+        auto& tagged_val = val[tag];
+        tagged_val["enabled"] = factor.enabled;
+        serialize_dims(tagged_val["dimensions"], factor.applied_dims);
+        tagged_val["baseline"] = factor.baseline;
+        auto& ratio_val = tagged_val["ratio"];
+        ratio_val["min"] = factor.min_ratio;
+        ratio_val["max"] = factor.max_ratio;
+
+        root["factors"].append(std::move(val));
+    }
+}
+
 } // namespace scaling
