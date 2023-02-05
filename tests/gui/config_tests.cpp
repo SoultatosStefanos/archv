@@ -33,4 +33,15 @@ TEST(gui_deserialization, sample_gui_0)
     ASSERT_EQ(expected, actual);
 }
 
+TEST(gui_serialization, sample_gui_0)
+{
+    auto root = json_val();
+    const auto cfg = build_sample_gui_0();
+
+    serialize(root, cfg);
+    auto deserialized = deserialize(root);
+
+    EXPECT_EQ(deserialized, cfg);
+}
+
 } // namespace
