@@ -15,6 +15,8 @@ namespace input
  * Shortcut Handler                                        *
  ***********************************************************/
 
+// TODO Refactor to take gui
+// TODO Save shortcut
 class shortcut_handler : public OgreBites::InputListener
 {
     using base = OgreBites::InputListener;

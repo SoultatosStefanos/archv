@@ -16,6 +16,7 @@
 namespace gui::detail
 {
 
+// TODO Calc suggestions on input only, not in each frame.
 template < typename ListFunc >
 requires std::invocable< ListFunc, std::string_view >
 auto input_combo_box(

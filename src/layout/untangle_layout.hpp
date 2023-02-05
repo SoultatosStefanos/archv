@@ -15,6 +15,8 @@
 namespace layout
 {
 
+// TODO Store layout somewhere, for search functionality while clustered
+
 // Attempts to showcase the adjacency of a graph's clusters on a layout.
 // "Untangles" neighbour vertices in a cluster by placing them together, while
 // still somewhat following the original layout.
