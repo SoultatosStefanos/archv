@@ -30,4 +30,15 @@ TEST(color_coding_deserialization, sample_color_coding_0)
     ASSERT_EQ(actual, expected);
 }
 
+TEST(color_coding_serialization, sample_color_coding_0)
+{
+    auto root = json_val();
+    const auto cfg = make_sample_color_coding_0();
+
+    serialize(root, cfg);
+    auto deserialized = deserialize(root);
+
+    EXPECT_EQ(deserialized, cfg);
+}
+
 } // namespace
