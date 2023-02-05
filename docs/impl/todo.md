@@ -968,4 +968,4 @@
 
         + [x] Save As...
 
-    + [ ] Update docs
+    + [x] Update docs
