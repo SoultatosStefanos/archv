@@ -471,7 +471,7 @@ auto application::setup_input() -> void
     m_quit_handler = make_unique< quit_handler_type >(*getRoot());
 
     m_shortcut_input_handler
-        = make_unique< shortcut_input_handler_type >(*m_cmds);
+        = make_unique< shortcut_input_handler_type >(*m_gui);
 
     m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_renderer,

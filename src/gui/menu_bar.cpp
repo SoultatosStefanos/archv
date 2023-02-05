@@ -88,6 +88,23 @@ auto menu_bar::emit_search() const -> void
     m_search_sig(m_query);
 }
 
+auto menu_bar::undo_shortcut() const -> void
+{
+    if (can_undo())
+        emit_undo();
+}
+
+auto menu_bar::redo_shortcut() const -> void
+{
+    if (can_redo())
+        emit_redo();
+}
+
+auto menu_bar::save_shortcut() const -> void
+{
+    emit_save();
+}
+
 auto menu_bar::render() const -> void
 {
     if (ImGui::BeginMainMenuBar())

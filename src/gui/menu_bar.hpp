@@ -110,6 +110,10 @@ public:
     auto connect_to_redo(const redo_slot& f) -> connection;
     auto connect_to_search(const search_slot& f) -> connection;
 
+    auto undo_shortcut() const -> void;
+    auto redo_shortcut() const -> void;
+    auto save_shortcut() const -> void;
+
 protected:
     auto emit_save() const -> void;
     auto emit_quit() const -> void;
