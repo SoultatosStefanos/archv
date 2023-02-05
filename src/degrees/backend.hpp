@@ -369,6 +369,12 @@ inline auto restore_defaults(backend& b)
     restore_out_degrees(b);
 }
 
+inline auto export_configs(const backend& b) -> backend::config_data_type
+{
+    return { .in_data = get_in_degrees_data(b),
+             .out_data = get_out_degrees_data(b) };
+}
+
 } // namespace degrees
 
 #endif // DEGREES_BACKEND_HPP

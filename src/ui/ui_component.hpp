@@ -51,32 +51,8 @@ inline auto restore_defaults(UIComponent& c) -> void
 }
 
 template < typename UIComponent >
-requires configurable< UIComponent > &&
-         drawable< UIComponent > && 
-         std::movable< typename UIComponent::config_data_type >
-inline auto import_configs(
-             UIComponent& c,
-             typename UIComponent::config_data_type cfg) -> void
-{
-    c.draw(c.config_data() = std::move(cfg));
-}
-
-template < typename UIComponent >
-requires interactive_configurable< UIComponent > &&
-         drawable< UIComponent > && 
-         std::movable< typename UIComponent::config_data_type >
-inline auto import_configs(
-             UIComponent& c,
-             typename UIComponent::config_data_type cfg) -> void
-{
-    c.config_api().config_data() = std::move(cfg);
-    apply_configs(c);
-}
-
-template < typename UIComponent >
 requires configurable< UIComponent >
 inline auto export_configs(const UIComponent& c) 
-    -> typename UIComponent::config_data_type 
 {
     // NOTE: UI components configs are always up to date.
     return c.config_data();

@@ -12,8 +12,6 @@ namespace ui
 template < typename Class >
 concept configurable = requires(Class val)
 {
-    typename Class::config_data_type;
-
     { val.config_data() };
     { val.config_data() = val.config_data() };
 };
@@ -28,8 +26,6 @@ concept default_configurable = configurable< Class > && requires(Class val)
 template < typename Class >
 concept interactive_configurable = configurable< Class > && requires(Class val)
 {
-    typename Class::config_api_type;
-
     { val.config_api() };
     { val.config_api().config_data() };
     { val.config_api().config_data() = val.config_data() };

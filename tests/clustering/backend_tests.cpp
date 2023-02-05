@@ -612,58 +612,9 @@ TEST_F(given_a_clustering_backend, updating_snn_clustering_details_use_case)
     EXPECT_EQ(downcasted.threshold(), thres);
 }
 
-TEST_F(given_a_clustering_backend, import_callbacks_all_slots)
+TEST_F(given_a_clustering_backend, export_config_returns_current_state_copy)
 {
-    using id_type = backend_config::id_type;
-
-    backend_config cfg { .clusterers = all_clusterers(),
-                         .mst_finders = all_mst_finders(),
-                         .clusterer = id_type(louvain_method_clusterer_id),
-                         .intensity = 1000.0,
-                         .mst_finder = id_type(kruskal_mst_id),
-                         .k = 2,
-                         .snn_threshold = 1,
-                         .min_modularity = 0.0,
-                         .llp_gamma = 1,
-                         .llp_steps = 3 };
-
-    clustering::import_configs(*backend, cfg);
-}
-
-TEST_F(given_a_clustering_backend, import_export_updates_configs)
-{
-    using id_type = backend_config::id_type;
-
-    backend_config cfg { .clusterers = all_clusterers(),
-                         .mst_finders = all_mst_finders(),
-                         .clusterer = id_type(louvain_method_clusterer_id),
-                         .intensity = 1000.0,
-                         .mst_finder = id_type(kruskal_mst_id),
-                         .k = 2,
-                         .snn_threshold = 1,
-                         .min_modularity = 0.0,
-                         .llp_gamma = 1,
-                         .llp_steps = 3 };
-
-    backend->connect_to_snn_threshold(snn_thres_slot.AsStdFunction());
-    backend->connect_to_mst_finder(mst_finder_slot.AsStdFunction());
-    backend->connect_to_k(k_slot.AsStdFunction());
-    backend->connect_to_clusterer(clusterer_slot.AsStdFunction());
-    backend->connect_to_intensity(intensity_slot.AsStdFunction());
-    backend->connect_to_min_modularity(modularity_slot.AsStdFunction());
-    backend->connect_to_llp_gamma(gamma_slot.AsStdFunction());
-    backend->connect_to_llp_steps(steps_slot.AsStdFunction());
-
-    EXPECT_CALL(snn_thres_slot, Call(1)).Times(1);
-    EXPECT_CALL(mst_finder_slot, Call(_)).Times(1);
-    EXPECT_CALL(k_slot, Call(2)).Times(1);
-    EXPECT_CALL(clusterer_slot, Call(_)).Times(1);
-    EXPECT_CALL(intensity_slot, Call(1000.0)).Times(1);
-    EXPECT_CALL(modularity_slot, Call(0.0)).Times(1);
-    EXPECT_CALL(gamma_slot, Call(1)).Times(1);
-    EXPECT_CALL(steps_slot, Call(3)).Times(1);
-
-    clustering::import_configs(*backend, cfg);
+    EXPECT_EQ(clustering::export_configs(*backend), cfg);
 }
 
 } // namespace clustering

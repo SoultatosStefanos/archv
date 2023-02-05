@@ -36,14 +36,16 @@ TEST(a_scaling_backend, cant_be_made_with_any_negative_max_ratio)
 using mock_t = MockFunction< void(const factor&) >;
 using nice_mock_t = NiceMock< mock_t >;
 
+inline auto initial_data()
+{
+    return backend::config_data_type { { "f",
+                                         make_x_factor(10, true, 0, 10) } };
+}
+
 class given_a_scaling_backend : public Test
 {
 protected:
-    void SetUp() override
-    {
-        b = std::make_unique< backend >(backend::config_data_type {
-            { "f", make_x_factor(10, true, 0, 10) } });
-    }
+    void SetUp() override { b = std::make_unique< backend >(initial_data()); }
 
     std::unique_ptr< backend > b;
     nice_mock_t mock;
@@ -129,7 +131,8 @@ TEST_F(given_a_scaling_backend, factor_applied_dims_can_be_unset)
 }
 
 TEST_F(
-    given_a_scaling_backend, unsetting_factor_applied_dims_notifies_observers)
+    given_a_scaling_backend,
+    unsetting_factor_applied_dims_notifies_observers)
 {
     b->connect(mock.AsStdFunction());
 
@@ -226,6 +229,11 @@ TEST_F(given_a_scaling_backend, restoring_to_defaults_notifies_observers)
     EXPECT_CALL(mock, Call(make_x_factor(10, true, 0, 10))).Times(1);
 
     restore_defaults(*b);
+}
+
+TEST_F(given_a_scaling_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_data(), export_configs(*b));
 }
 
 } // namespace

@@ -553,4 +553,9 @@ TEST_F(
     ASSERT_EQ(get_out_degrees_data(*b), initial_data().out_data);
 }
 
+TEST_F(given_a_degrees_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_data(), export_configs(*b));
+}
+
 } // namespace

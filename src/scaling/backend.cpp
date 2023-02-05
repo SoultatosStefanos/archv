@@ -87,4 +87,12 @@ auto restore_defaults(backend& b) -> void
     }
 }
 
+auto export_configs(const backend& b) -> backend::config_data_type
+{
+    backend::config_data_type cfg;
+    for (const auto& [tag, factor] : b.get_factor_repo())
+        cfg[tag] = factor;
+    return cfg;
+}
+
 } // namespace scaling

@@ -111,26 +111,29 @@ TEST(
         layout::negative_scale);
 }
 
+static constexpr auto initial_layout = layout::gursoy_atun_id;
+static constexpr auto initial_topology = layout::cube_id;
+static constexpr auto initial_scale = 22;
+
+inline auto initial_data()
+{
+    return backend::config_data_type {
+        .layouts
+        = { std::cbegin(layout::layout_ids), std::cend(layout::layout_ids) },
+        .topologies = { std::cbegin(layout::topology_ids),
+                        std::cend(layout::topology_ids) },
+        .layout = std::string(initial_layout),
+        .topology = std::string(initial_topology),
+        .scale = initial_scale
+    };
+}
+
 class given_a_layout_backend : public testing::Test
 {
 public:
-    static constexpr auto initial_layout = layout::gursoy_atun_id;
-    static constexpr auto initial_topology = layout::cube_id;
-    static constexpr auto initial_scale = 22;
-
     void SetUp() override
     {
-        inst = std::make_unique< backend >(
-            g,
-            weight_map(),
-            backend::config_data_type {
-                .layouts = { std::cbegin(layout::layout_ids),
-                             std::cend(layout::layout_ids) },
-                .topologies = { std::cbegin(layout::topology_ids),
-                                std::cend(layout::topology_ids) },
-                .layout = std::string(initial_layout),
-                .topology = std::string(initial_topology),
-                .scale = initial_scale });
+        inst = std::make_unique< backend >(g, weight_map(), initial_data());
     }
 
 protected:
@@ -239,6 +242,11 @@ TEST_F(given_a_layout_backend, restoring_defaults_sets_initial_values)
 
     ASSERT_EQ(layout::get_topology_id(*inst), initial_topology);
     ASSERT_EQ(inst->get_topology().scale(), initial_scale);
+}
+
+TEST_F(given_a_layout_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_data(), export_configs(*inst));
 }
 
 } // namespace

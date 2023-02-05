@@ -9,8 +9,8 @@ namespace
 
 using namespace testing;
 
-using mock_slot = MockFunction< void(
-    weights::backend::dependency_type, weights::backend::weight_type) >;
+using mock_slot = MockFunction<
+    void(weights::backend::dependency_type, weights::backend::weight_type) >;
 
 using nice_mock_slot = NiceMock< mock_slot >;
 
@@ -64,6 +64,11 @@ TEST_F(given_a_weights_backend, updating_a_weight_callbacks_the_observers)
     EXPECT_CALL(mock, Call(_, _)).Times(1);
 
     weights::update_weight(*backend, "Type1", 300);
+}
+
+TEST_F(given_a_weights_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_config(), export_configs(*backend));
 }
 
 } // namespace

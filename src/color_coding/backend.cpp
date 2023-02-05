@@ -32,4 +32,12 @@ auto restore_defaults(backend& b) -> void
         update_color_code(b, dep, col);
 }
 
+auto export_configs(const backend& b) -> backend::config_data_type
+{
+    backend::config_data_type cfg;
+    for (const auto& [dep, col] : b.repo())
+        cfg[dep] = col;
+    return cfg;
+}
+
 } // namespace color_coding

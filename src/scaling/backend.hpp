@@ -325,6 +325,8 @@ inline auto update_factor_max_ratio(
 
 auto restore_defaults(backend& b) -> void;
 
+auto export_configs(const backend& b) -> backend::config_data_type;
+
 } // namespace scaling
 
 #endif // SCALING_BACKEND_HPP

@@ -143,4 +143,9 @@ TEST_F(
     restore_defaults(*inst);
 }
 
+TEST_F(given_a_color_coding_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_config(), export_configs(*inst));
+}
+
 } // namespace
