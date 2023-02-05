@@ -61,4 +61,31 @@ auto deserialize(const json_val& root) -> config_data
         deserialize_degrees_section(get(root, "out-degree")));
 }
 
+namespace
+{
+    template < typename Ranked >
+    inline auto serialize_degree_ranks(json_val& val, const Ranked& ranked)
+    {
+        val["light"] = ranked.light;
+        val["medium"] = ranked.medium;
+        val["heavy"] = ranked.heavy;
+    }
+
+    inline auto serialize_degrees_section(
+        json_val& val, //
+        const evaluation_data& data)
+    {
+        serialize_degree_ranks(val["thresholds"], data.thresholds);
+        serialize_degree_ranks(val["particle-systems"], data.particles);
+        val["applied"] = data.applied;
+    }
+
+} // namespace
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    serialize_degrees_section(root["in-degree"], cfg.in_data);
+    serialize_degrees_section(root["out-degree"], cfg.out_data);
+}
+
 } // namespace degrees
