@@ -4,6 +4,7 @@
 #include "misc/deserialization.hpp"
 
 #include <algorithm>
+#include <boost/log/trivial.hpp>
 #include <jsoncpp/json/json.h>
 
 namespace clustering
@@ -67,6 +68,33 @@ auto deserialize(const json_val& root) -> config_data
                          = static_cast< modularity_type >(min_q),
                          .llp_gamma = static_cast< gamma_type >(llp_gamma),
                          .llp_steps = llp_steps };
+}
+
+namespace
+{
+
+    auto serialize_ids(json_val& val, const config_data::ids_type& ids)
+    {
+        for (const auto& id : ids)
+            val.append(id);
+    }
+
+} // namespace
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    serialize_ids(root["clusterers"], cfg.clusterers);
+    serialize_ids(root["min-spanning-tree-finders"], cfg.mst_finders);
+    root["clusterer"] = cfg.clusterer;
+    root["intensity"] = cfg.intensity;
+    root["min-spanning-tree-finder"] = cfg.mst_finder;
+    root["k"] = cfg.k;
+    root["snn-threshold"] = cfg.snn_threshold;
+    root["min-modularity"] = cfg.min_modularity;
+    root["llp-gamma"] = cfg.llp_gamma;
+    root["llp-steps"] = cfg.llp_steps;
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized clustering";
 }
 
 } // namespace clustering

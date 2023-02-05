@@ -15,6 +15,7 @@ using json_val = Json::Value;
 using config_data = backend_config;
 
 auto deserialize(const json_val& root) -> config_data;
+auto serialize(json_val& root, const config_data& cfg) -> void;
 
 } // namespace clustering
 
