@@ -89,10 +89,13 @@ auto application::save(std::string_view path) -> void
     auto weights_cfg = export_configs(m_graph_iface->get_weights_backend());
 
     auto& root = m_jsons.get(path);
+    root.clear();
 
     serialize(root["clustering"], cluster_cfg);
     serialize(root["color-coding"], cc_cfg);
     serialize(root["degrees"], degrees_cfg);
+    serialize(root["gui"], gui_cfg);
+    serialize(root["layout"], layout_cfg);
     serialize_background(root["rendering"]["background"], background_cfg);
     serialize_graph(root["rendering"]["graph"], graph_cfg);
     serialize_minimap(root["rendering"]["minimap"], minimap_cfg);
@@ -1793,6 +1796,13 @@ auto application::connect_gui_presentation() -> void
 auto application::connect_menu_bar_presentation() -> void
 {
     auto& bar = m_gui->get_menu_bar();
+
+    bar.connect_to_save(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected save";
+            save(m_config_path);
+        });
 
     bar.connect_to_quit(
         [this]()
