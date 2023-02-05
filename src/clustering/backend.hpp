@@ -120,6 +120,8 @@ public:
     auto edge_weight() const -> auto { return m_edge_weight; }
     auto config_data() const -> const auto& { return m_cfg; }
 
+    auto import_configs(config_data_type cfg) -> void;
+
     auto get_clusters() const -> const cluster_map_type& { return m_clusters; }
     auto get_clusterer() const -> const clusterer_type& { return *m_clusterer; }
     auto get_intensity() const -> intensity_type { return m_intensity; }
@@ -260,6 +262,23 @@ inline auto backend< Graph, WeightMap >::verify_config_data() const -> void
 
     assert(are_clusterers_plugged_in(config_data()));
     assert(are_mst_finders_plugged_in(config_data()));
+}
+
+template < typename Graph, typename WeightMap >
+inline auto backend< Graph, WeightMap >::import_configs(config_data_type cfg)
+    -> void
+{
+    m_cfg = std::move(cfg);
+    verify_config_data();
+
+    update_mst_finder(config_data().mst_finder);
+    update_k(config_data().k);
+    update_snn_threshold(config_data().snn_threshold);
+    update_clusterer(config_data().clusterer);
+    update_intensity(config_data().intensity);
+    update_min_modularity(config_data().min_modularity);
+    update_llp_gamma(config_data().llp_gamma);
+    update_llp_steps(config_data().llp_steps);
 }
 
 template < typename Graph, typename WeightMap >
@@ -758,6 +777,35 @@ inline auto restore_defaults(backend< Graph, WeightMap >& b)
     update_llp_steps(b, b.config_data().llp_steps);
     update_intensity(b, b.config_data().intensity);
     update_clusterer(b, b.config_data().clusterer);
+}
+
+template < typename Graph, typename WeightMap >
+inline auto import_configs(
+    backend< Graph, WeightMap >& b,
+    typename backend< Graph, WeightMap >::config_data_type cfg)
+{
+    b.import_configs(std::move(cfg));
+}
+
+template < typename Graph, typename WeightMap >
+inline auto export_configs(const backend< Graph, WeightMap >& b)
+{
+    using config_data_type =
+        typename backend< Graph, WeightMap >::config_data_type;
+
+    config_data_type cfg;
+    cfg.clusterers = b.config_data().clusterers;   // cannot update with gui
+    cfg.mst_finders = b.config_data().mst_finders; // cannot update with gui
+    cfg.clusterer = get_clusterer_id(b);
+    cfg.intensity = get_intensity(b);
+    cfg.mst_finder = get_mst_finder_id(b);
+    cfg.k = get_k(b);
+    cfg.snn_threshold = get_snn_threshold(b);
+    cfg.min_modularity = get_min_modularity(b);
+    cfg.llp_gamma = get_llp_gamma(b);
+    cfg.llp_steps = get_llp_steps(b);
+
+    return cfg;
 }
 
 } // namespace clustering
