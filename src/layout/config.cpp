@@ -63,4 +63,24 @@ auto deserialize(const json_val& root) -> config_data
     return res;
 }
 
+namespace
+{
+    auto serialize_ids(json_val& val, const config_data::ids_type& ids)
+    {
+        for (const auto& id : ids)
+            val.append(id);
+    }
+} // namespace
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    serialize_ids(root["layouts"], cfg.layouts);
+    serialize_ids(root["topologies"], cfg.topologies);
+    root["layout"] = cfg.layout;
+    root["topology"] = cfg.topology;
+    root["scale"] = cfg.scale;
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized layout";
+}
+
 } // namespace layout
