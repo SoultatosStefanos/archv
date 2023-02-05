@@ -24,6 +24,9 @@ struct config_data
 
 using json_val = Json::Value;
 
+auto deserialize_background(const json_val& root) -> background_config;
+auto deserialize_graph(const json_val& root) -> graph_config;
+auto deserialize_minimap(const json_val& root) -> minimap_config;
 auto deserialize(const json_val& root) -> config_data;
 
 } // namespace rendering

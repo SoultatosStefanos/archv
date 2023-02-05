@@ -49,34 +49,6 @@ namespace
         return Ogre::ColourValue(r, g, b);
     }
 
-    auto deserialize_background(const json_val& val) -> background_config
-    {
-        using real = double;
-        using string = std::string;
-
-        static_assert(std::is_convertible_v< real, Ogre::Real >);
-        static_assert(std::is_convertible_v< string, Ogre::String >);
-
-        auto&& skybox_material = as< string >(get(val, "skybox-material"));
-        auto skybox_dist = as< real >(get(val, "skybox-distance"));
-        auto&& ambient_color = deserialize_rgb(get(val, "ambient-color"));
-        auto&& diffuse_color = deserialize_rgb(get(val, "diffuse-color"));
-        auto&& specular_color = deserialize_rgb(get(val, "specular-color"));
-        auto cam_near_clip_dist
-            = as< real >(get(val, "cam-near-clip-distance"));
-        auto cam_far_clip_dist = as< real >(get(val, "cam-far-clip-distance"));
-
-        BOOST_LOG_TRIVIAL(debug) << "deserialized rendering background";
-
-        return { std::move(skybox_material),
-                 static_cast< Ogre::Real >(skybox_dist),
-                 ambient_color,
-                 diffuse_color,
-                 specular_color,
-                 static_cast< Ogre::Real >(cam_near_clip_dist),
-                 static_cast< Ogre::Real >(cam_far_clip_dist) };
-    }
-
     inline auto deserialize_vector3(const json_val& val) -> Ogre::Vector3
     {
         using real = double;
@@ -89,96 +61,118 @@ namespace
         return Ogre::Vector3(xs, ys, zs);
     }
 
-    auto deserialize_graph(const json_val& val) -> graph_config
-    {
-        using string = std::string;
-        using real = double;
-
-        static_assert(std::is_convertible_v< string, Ogre::String >);
-
-        auto&& vertex_mesh = as< string >(get(val, "vertex-mesh"));
-        auto&& vertex_material = as< string >(get(val, "vertex-material"));
-        auto&& vertex_scale = deserialize_vector3(get(val, "vertex-scale"));
-
-        const auto& vboard_val = get(val, "vertex-id");
-        auto&& vboard_font_name = as< string >(get(vboard_val, "font-name"));
-        auto vboard_char_height = as< real >(get(vboard_val, "char-height"));
-        auto&& vboard_color = deserialize_rgb(get(vboard_val, "color"));
-        auto vboard_space_width = as< real >(get(vboard_val, "space-width"));
-
-        auto&& edge_material = as< string >(get(val, "edge-material"));
-        auto&& edge_tip_mesh = as< string >(get(val, "edge-tip-mesh"));
-        auto&& edge_tip_mat = as< string >(get(val, "edge-tip-material"));
-        auto&& edge_tip_scale = deserialize_vector3(get(val, "edge-tip-scale"));
-
-        const auto& edgetype_val = get(val, "edge-type");
-        auto&& edgetype_font_name
-            = as< string >(get(edgetype_val, "font-name"));
-        auto edgetype_char_height
-            = as< real >(get(edgetype_val, "char-height"));
-        auto&& edgetype_color = deserialize_rgb(get(edgetype_val, "color"));
-        auto edgetype_space_width
-            = as< real >(get(edgetype_val, "space-width"));
-
-        BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
-
-        return { std::move(vertex_mesh),
-                 std::move(vertex_material),
-                 vertex_scale,
-                 std::move(vboard_font_name),
-                 static_cast< float >(vboard_char_height),
-                 vboard_color,
-                 static_cast< float >(vboard_space_width),
-                 std::move(edge_material),
-                 std::move(edge_tip_mesh),
-                 std::move(edge_tip_mat),
-                 edge_tip_scale,
-                 std::move(edgetype_font_name),
-                 static_cast< float >(edgetype_char_height),
-                 edgetype_color,
-                 static_cast< float >(edgetype_space_width) };
-    }
-
-    inline auto deserialize_minimap(const json_val& root) -> minimap_config
-    {
-        using coord_type = minimap_config::coord_type;
-        using dist_type = minimap_config::dist_type;
-
-        const auto left = as< double >(get(root, "left"));
-        const auto top = as< double >(get(root, "top"));
-        const auto right = as< double >(get(root, "right"));
-        const auto bottom = as< double >(get(root, "bottom"));
-        const auto bkg_col = deserialize_rgb(get(root, "background-color"));
-        const auto zoom_out = as< double >(get(root, "zoom-out"));
-        const auto render_shadows = as< bool >(get(root, "render-shadows"));
-        const auto render_sky = as< bool >(get(root, "render-sky"));
-        const auto render_vertices = as< bool >(get(root, "render-vertices"));
-        const auto render_vertex_ids
-            = as< bool >(get(root, "render-vertex-ids"));
-        const auto render_edges = as< bool >(get(root, "render-edges"));
-        const auto render_edge_types
-            = as< bool >(get(root, "render-edge-types"));
-        const auto render_edge_tips = as< bool >(get(root, "render-edge-tips"));
-        const auto render_particles = as< bool >(get(root, "render-particles"));
-
-        return minimap_config(
-            left,
-            top,
-            right,
-            bottom,
-            bkg_col,
-            zoom_out,
-            render_shadows,
-            render_sky,
-            render_vertices,
-            render_vertex_ids,
-            render_edges,
-            render_edge_types,
-            render_edge_tips,
-            render_particles);
-    }
-
 } // namespace
+
+auto deserialize_background(const json_val& val) -> background_config
+{
+    using real = double;
+    using string = std::string;
+
+    static_assert(std::is_convertible_v< real, Ogre::Real >);
+    static_assert(std::is_convertible_v< string, Ogre::String >);
+
+    auto&& skybox_material = as< string >(get(val, "skybox-material"));
+    auto skybox_dist = as< real >(get(val, "skybox-distance"));
+    auto&& ambient_color = deserialize_rgb(get(val, "ambient-color"));
+    auto&& diffuse_color = deserialize_rgb(get(val, "diffuse-color"));
+    auto&& specular_color = deserialize_rgb(get(val, "specular-color"));
+    auto cam_near_clip_dist = as< real >(get(val, "cam-near-clip-distance"));
+    auto cam_far_clip_dist = as< real >(get(val, "cam-far-clip-distance"));
+
+    BOOST_LOG_TRIVIAL(debug) << "deserialized rendering background";
+
+    return { std::move(skybox_material),
+             static_cast< Ogre::Real >(skybox_dist),
+             ambient_color,
+             diffuse_color,
+             specular_color,
+             static_cast< Ogre::Real >(cam_near_clip_dist),
+             static_cast< Ogre::Real >(cam_far_clip_dist) };
+}
+
+auto deserialize_graph(const json_val& val) -> graph_config
+{
+    using string = std::string;
+    using real = double;
+
+    static_assert(std::is_convertible_v< string, Ogre::String >);
+
+    auto&& vertex_mesh = as< string >(get(val, "vertex-mesh"));
+    auto&& vertex_material = as< string >(get(val, "vertex-material"));
+    auto&& vertex_scale = deserialize_vector3(get(val, "vertex-scale"));
+
+    const auto& vboard_val = get(val, "vertex-id");
+    auto&& vboard_font_name = as< string >(get(vboard_val, "font-name"));
+    auto vboard_char_height = as< real >(get(vboard_val, "char-height"));
+    auto&& vboard_color = deserialize_rgb(get(vboard_val, "color"));
+    auto vboard_space_width = as< real >(get(vboard_val, "space-width"));
+
+    auto&& edge_material = as< string >(get(val, "edge-material"));
+    auto&& edge_tip_mesh = as< string >(get(val, "edge-tip-mesh"));
+    auto&& edge_tip_mat = as< string >(get(val, "edge-tip-material"));
+    auto&& edge_tip_scale = deserialize_vector3(get(val, "edge-tip-scale"));
+
+    const auto& edgetype_val = get(val, "edge-type");
+    auto&& edgetype_font_name = as< string >(get(edgetype_val, "font-name"));
+    auto edgetype_char_height = as< real >(get(edgetype_val, "char-height"));
+    auto&& edgetype_color = deserialize_rgb(get(edgetype_val, "color"));
+    auto edgetype_space_width = as< real >(get(edgetype_val, "space-width"));
+
+    BOOST_LOG_TRIVIAL(debug) << "deserialized rendering graph";
+
+    return { std::move(vertex_mesh),
+             std::move(vertex_material),
+             vertex_scale,
+             std::move(vboard_font_name),
+             static_cast< float >(vboard_char_height),
+             vboard_color,
+             static_cast< float >(vboard_space_width),
+             std::move(edge_material),
+             std::move(edge_tip_mesh),
+             std::move(edge_tip_mat),
+             edge_tip_scale,
+             std::move(edgetype_font_name),
+             static_cast< float >(edgetype_char_height),
+             edgetype_color,
+             static_cast< float >(edgetype_space_width) };
+}
+
+auto deserialize_minimap(const json_val& root) -> minimap_config
+{
+    using coord_type = minimap_config::coord_type;
+    using dist_type = minimap_config::dist_type;
+
+    const auto left = as< double >(get(root, "left"));
+    const auto top = as< double >(get(root, "top"));
+    const auto right = as< double >(get(root, "right"));
+    const auto bottom = as< double >(get(root, "bottom"));
+    const auto bkg_col = deserialize_rgb(get(root, "background-color"));
+    const auto zoom_out = as< double >(get(root, "zoom-out"));
+    const auto render_shadows = as< bool >(get(root, "render-shadows"));
+    const auto render_sky = as< bool >(get(root, "render-sky"));
+    const auto render_vertices = as< bool >(get(root, "render-vertices"));
+    const auto render_vertex_ids = as< bool >(get(root, "render-vertex-ids"));
+    const auto render_edges = as< bool >(get(root, "render-edges"));
+    const auto render_edge_types = as< bool >(get(root, "render-edge-types"));
+    const auto render_edge_tips = as< bool >(get(root, "render-edge-tips"));
+    const auto render_particles = as< bool >(get(root, "render-particles"));
+
+    return minimap_config(
+        left,
+        top,
+        right,
+        bottom,
+        bkg_col,
+        zoom_out,
+        render_shadows,
+        render_sky,
+        render_vertices,
+        render_vertex_ids,
+        render_edges,
+        render_edge_types,
+        render_edge_tips,
+        render_particles);
+}
 
 auto deserialize(const json_val& root) -> config_data
 {
