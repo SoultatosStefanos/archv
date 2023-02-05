@@ -5,6 +5,7 @@ set(FILES
 	config.cpp
 	controls_hud.cpp
 	degrees_editor.cpp
+	file_browser.cpp
 	frames_hud.cpp
 	graph_configurator.cpp
 	gui_config.cpp

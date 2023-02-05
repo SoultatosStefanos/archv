@@ -8,6 +8,7 @@
 #include "clustering_editor.hpp"       // for clustering_editor
 #include "color_coding_editor.hpp"     // for color_coding_editor
 #include "degrees_editor.hpp"          // for degrees_editor
+#include "file_browser.hpp"            // for file_browser
 #include "graph_configurator.hpp"      // for graph_configurator
 #include "gui_configurator.hpp"        // for gui_configurator
 #include "layout_editor.hpp"           // for layout_editor
@@ -86,6 +87,9 @@ public:
     auto get_autocomplete() const -> const auto& { return m_autocomplete; }
     auto get_autocomplete() -> auto& { return m_autocomplete; }
 
+    auto get_save_browser() const -> const auto& { return m_save_browser; }
+    auto get_save_browser() -> auto& { return m_save_browser; }
+
     auto visible() const -> bool { return m_visible; }
     auto show() -> void { m_visible = true; }
     auto hide() -> void { m_visible = false; }
@@ -157,6 +161,8 @@ private:
     mutable search_type m_query;
 
     autocomplete m_autocomplete;
+
+    mutable file_browser m_save_browser;
 };
 
 } // namespace gui

@@ -122,13 +122,15 @@ auto menu_bar::render() const -> void
 
 auto menu_bar::render_file_editor() const -> void
 {
+    get_save_browser().render();
+
     if (ImGui::BeginMenu(ICON_FA_FILE " File"))
     {
         if (ImGui::MenuItem(ICON_FA_SAVE " Save", "CTRL+S"))
             emit_save();
 
-        if (ImGui::MenuItem(ICON_FA_SAVE " Save As...")) // TODO
-            ;
+        if (ImGui::MenuItem(ICON_FA_SAVE " Save As..."))
+            m_save_browser.open();
 
         ImGui::Separator();
 
