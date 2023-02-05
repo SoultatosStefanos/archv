@@ -24,6 +24,7 @@ class clustering_editor;
 class color_coding_editor;
 
 class frames_hud;
+class file_browser;
 class controls_hud;
 
 class structure_popup;

@@ -8,6 +8,7 @@
 #include "clustering_editor.hpp"       // for clustering_editor
 #include "color_coding_editor.hpp"     // for color_coding_editor
 #include "degrees_editor.hpp"          // for degrees_editor
+#include "file_browser.hpp"            // for file_browser
 #include "graph_configurator.hpp"      // for graph_configurator
 #include "gui_configurator.hpp"        // for gui_configurator
 #include "layout_editor.hpp"           // for layout_editor
@@ -33,6 +34,7 @@ public:
     using search_type = std::string;
 
 private:
+    using save_signal = boost::signals2::signal< void() >;
     using quit_signal = boost::signals2::signal< void() >;
     using undo_signal = boost::signals2::signal< void() >;
     using redo_signal = boost::signals2::signal< void() >;
@@ -42,6 +44,7 @@ public:
     using pred = std::function< bool() >;
     using size_type = std::size_t;
 
+    using save_slot = save_signal::slot_type;
     using quit_slot = quit_signal::slot_type;
     using undo_slot = undo_signal::slot_type;
     using redo_slot = redo_signal::slot_type;
@@ -84,6 +87,9 @@ public:
     auto get_autocomplete() const -> const auto& { return m_autocomplete; }
     auto get_autocomplete() -> auto& { return m_autocomplete; }
 
+    auto get_save_browser() const -> const auto& { return m_save_browser; }
+    auto get_save_browser() -> auto& { return m_save_browser; }
+
     auto visible() const -> bool { return m_visible; }
     auto show() -> void { m_visible = true; }
     auto hide() -> void { m_visible = false; }
@@ -102,12 +108,18 @@ public:
     auto num_edges() const -> const size_type& { return m_num_edges; }
     auto num_edges() -> size_type& { return m_num_edges; }
 
+    auto connect_to_save(const save_slot& f) -> connection;
     auto connect_to_quit(const quit_slot& f) -> connection;
     auto connect_to_undo(const undo_slot& f) -> connection;
     auto connect_to_redo(const redo_slot& f) -> connection;
     auto connect_to_search(const search_slot& f) -> connection;
 
+    auto undo_shortcut() const -> void;
+    auto redo_shortcut() const -> void;
+    auto save_shortcut() const -> void;
+
 protected:
+    auto emit_save() const -> void;
     auto emit_quit() const -> void;
     auto emit_undo() const -> void;
     auto emit_redo() const -> void;
@@ -138,6 +150,7 @@ private:
     pred m_undo_enabled;
     pred m_redo_enabled;
 
+    save_signal m_save;
     quit_signal m_quit;
     undo_signal m_undo_sig;
     redo_signal m_redo_sig;
@@ -148,6 +161,8 @@ private:
     mutable search_type m_query;
 
     autocomplete m_autocomplete;
+
+    mutable file_browser m_save_browser;
 };
 
 } // namespace gui

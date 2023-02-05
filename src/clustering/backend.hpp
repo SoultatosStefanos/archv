@@ -760,6 +760,27 @@ inline auto restore_defaults(backend< Graph, WeightMap >& b)
     update_clusterer(b, b.config_data().clusterer);
 }
 
+template < typename Graph, typename WeightMap >
+inline auto export_configs(const backend< Graph, WeightMap >& b)
+{
+    using backend_t = backend< Graph, WeightMap >;
+    using config_data_t = typename backend_t::config_data_type;
+
+    config_data_t cfg;
+    cfg.clusterers = b.config_data().clusterers;   // cannot update with gui
+    cfg.mst_finders = b.config_data().mst_finders; // cannot update with gui
+    cfg.clusterer = get_clusterer_id(b);
+    cfg.intensity = get_intensity(b);
+    cfg.mst_finder = get_mst_finder_id(b);
+    cfg.k = get_k(b);
+    cfg.snn_threshold = get_snn_threshold(b);
+    cfg.min_modularity = get_min_modularity(b);
+    cfg.llp_gamma = get_llp_gamma(b);
+    cfg.llp_steps = get_llp_steps(b);
+
+    return cfg;
+}
+
 } // namespace clustering
 
 #endif // CLUSTERING_BACKEND_HPP

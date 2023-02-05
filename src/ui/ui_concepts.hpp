@@ -7,6 +7,8 @@
 namespace ui
 {
 
+// clang-format off
+
 template < typename Class >
 concept configurable = requires(Class val)
 {
@@ -35,6 +37,8 @@ concept drawable = configurable< Class > && requires(Class val)
 {
     { val.draw(val.config_data()) };
 };
+
+// clang-format on
 
 } // namespace ui
 

@@ -25,7 +25,8 @@ public:
         layout_config l_cfg,
         scaling_config scaling_cfg,
         clustering_config clustering_cfg,
-        color_coding_config col_cfg);
+        color_coding_config col_cfg,
+        degrees_config deg_cfg);
 
     auto get_symbol_table() const -> const auto& { return m_st; }
     auto get_graph() const -> const auto& { return m_g; }
@@ -46,6 +47,9 @@ public:
     auto get_color_coding_backend() const -> const auto& { return m_cols; }
     auto get_color_coding_backend() -> auto& { return m_cols; }
 
+    auto get_degrees_backend() const -> const auto& { return m_degrees; }
+    auto get_degrees_backend() -> auto& { return m_degrees; }
+
 private:
     symbol_table m_st;
     graph m_g;
@@ -55,6 +59,7 @@ private:
     scaling_backend m_scaling;
     clustering_backend m_clustering;
     color_coding_backend m_cols;
+    degrees_backend m_degrees;
 };
 
 /***********************************************************

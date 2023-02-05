@@ -1,10 +1,10 @@
 #include "application.hpp"
 
 #include "IconsFontAwesome5.h"
-#include "archive.hpp"
 #include "autocompletion/all.hpp"
 #include "config/config.hpp"
 #include "input/all.hpp"
+#include "json_archive.hpp"
 #include "misc/all.hpp"
 #include "presentation/all.hpp"
 #include "ui/all.hpp"
@@ -22,6 +22,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mouse.h>
 #include <boost/log/trivial.hpp>
+#include <fstream>
 #include <map>
 #include <ranges>
 
@@ -33,13 +34,18 @@ using misc::get;
 
 application::application(int argc, const char* argv[]) : base("ARCHV")
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cout << "usage: `./<exec> <path/to/graph.json>`\n";
+        std::cout
+            << "usage: `./<exec> <path/to/graph.json> <path/to/config.json>`\n";
         std::exit(EXIT_FAILURE);
     }
 
     m_graph_path = argv[1];
+    m_config_path = argv[2];
+
+    import(m_jsons, m_graph_path);
+    import(m_jsons, m_config_path);
 }
 
 application::~application() = default;
@@ -57,6 +63,53 @@ auto application::frameStarted(const Ogre::FrameEvent& e) -> bool
 auto application::go() -> void
 {
     getRoot()->startRendering();
+}
+
+// NOTE: Doesn't update the archive (no need).
+auto application::save(std::string_view path) -> void
+{
+    // Enabe ADL
+    using namespace clustering;
+    using namespace color_coding;
+    using namespace degrees;
+    using namespace gui;
+    using namespace layout;
+    using namespace rendering;
+    using namespace scaling;
+    using namespace ui;
+    using namespace weights;
+
+    auto cluster_cfg = export_configs(m_graph_iface->get_clustering_backend());
+    auto cc_cfg = export_configs(m_graph_iface->get_color_coding_backend());
+    auto degrees_cfg = export_configs(m_graph_iface->get_degrees_backend());
+    auto gui_cfg = export_configs(gui::ui_adaptor());
+    auto layout_cfg = export_configs(m_graph_iface->get_layout_backend());
+    auto background_cfg = export_configs(*m_background_renderer);
+    auto graph_cfg = export_configs(*m_graph_renderer);
+    auto minimap_cfg = export_configs(*m_minimap_renderer);
+    auto scale_cfg = export_configs(m_graph_iface->get_scaling_backend());
+    auto weights_cfg = export_configs(m_graph_iface->get_weights_backend());
+
+    if (m_jsons.archived(path))
+        m_jsons.get(path).clear();
+
+    Json::Value root;
+
+    serialize(root["clustering"], cluster_cfg);
+    serialize(root["color-coding"], cc_cfg);
+    serialize(root["degrees"], degrees_cfg);
+    serialize(root["layout"], layout_cfg);
+    serialize(root["scaling"], scale_cfg);
+    serialize(root["weights"], weights_cfg);
+    serialize(root["gui"], gui_cfg);
+    serialize_background(root["rendering"]["background"], background_cfg);
+    serialize_graph(root["rendering"]["graph"], graph_cfg);
+    serialize_minimap(root["rendering"]["minimap"], minimap_cfg);
+
+    if (!std::filesystem::exists(path))
+        std::ofstream { path.data() }; // Creates a new file at path.
+
+    dump(root, path);
 }
 
 /***********************************************************
@@ -101,25 +154,25 @@ auto application::setup() -> void
 
 auto application::setup_graph_interface() -> void
 {
-    const auto& jsons = archive::get();
+    auto&& [st, g, m] = architecture::deserialize(m_jsons.get(m_graph_path));
 
-    auto&& [st, g, m] = architecture::deserialize(jsons.at(m_graph_path));
-
-    const auto& weights_root = jsons.at(ARCHV_WEIGHTS_CONFIG_PATH);
-    const auto& layout_root = jsons.at(ARCHV_LAYOUT_CONFIG_PATH);
-    const auto& scaling_root = jsons.at(ARCHV_SCALING_CONFIG_PATH);
-    const auto& clustering_root = jsons.at(ARCHV_CLUSTERING_CONFIG_PATH);
-    const auto& colors_root = jsons.at(ARCHV_COLOR_CODING_CONFIG_PATH);
+    const auto& weights_root = get(m_jsons.get(m_config_path), "weights");
+    const auto& layout_root = get(m_jsons.get(m_config_path), "layout");
+    const auto& scaling_root = get(m_jsons.get(m_config_path), "scaling");
+    const auto& clustering_root = get(m_jsons.get(m_config_path), "clustering");
+    const auto& colors_root = get(m_jsons.get(m_config_path), "color-coding");
+    const auto& degrees_root = get(m_jsons.get(m_config_path), "degrees");
 
     m_graph_iface = std::make_unique< graph_interface_type >(
         std::move(st),
         std::move(g),
         std::move(m),
-        weights::deserialize(get(weights_root, "weights")),
-        layout::deserialize(get(layout_root, "layout")),
-        scaling::deserialize(get(scaling_root, "scaling")),
-        clustering::deserialize(get(clustering_root, "clustering")),
-        color_coding::deserialize(get(colors_root, "color-coding")));
+        weights::deserialize(weights_root),
+        layout::deserialize(layout_root),
+        scaling::deserialize(scaling_root),
+        clustering::deserialize(clustering_root),
+        color_coding::deserialize(colors_root),
+        degrees::deserialize(degrees_root));
 
     BOOST_LOG_TRIVIAL(debug) << "setup graph interface";
 }
@@ -133,13 +186,8 @@ auto application::setup_commands() -> void
 
 auto application::setup_rendering() -> void
 {
-    using degrees_evaluator = rendering::degrees_ranked_evaluator;
-    using degrees_backend = rendering::degrees_ranked_backend;
-    using cluster_color_coder = rendering::cluster_color_pool;
-
-    const auto& jsons = archive::get();
-    const auto& root = jsons.at(ARCHV_RENDERING_CONFIG_PATH);
-    const auto config = rendering::deserialize(get(root, "rendering"));
+    const auto& root = get(m_jsons.get(m_config_path), "rendering");
+    const auto config = rendering::deserialize(root);
 
     m_background_renderer = std::make_unique< background_renderer_type >(
         *getRenderWindow(), config.background);
@@ -151,8 +199,8 @@ auto application::setup_rendering() -> void
         pres::edge_dependency(*m_graph_iface),
         m_background_renderer->scene(),
         config.graph,
-        degrees_evaluator(degrees_backend(config.degrees)),
-        cluster_color_coder());
+        degrees::evaluator(m_graph_iface->get_degrees_backend()),
+        clustering::color_pool());
 
     m_graph_renderer->render_scaling(pres::vertex_scale(*m_graph_iface));
     m_graph_renderer->render_weights(pres::edge_weight(*m_graph_iface));
@@ -402,8 +450,8 @@ auto application::setup_gui() -> void
 
     ImGui::GetIO().WantCaptureMouse = true;
 
-    const auto& gui_root = archive::get().at(ARCHV_GUI_CONFIG_PATH);
-    gui::set_configs(gui::deserialize(get(gui_root, "gui")));
+    const auto& root = get(m_jsons.get(m_config_path), "gui");
+    gui::set_configs(gui::deserialize(root));
 
     m_gui = std::make_unique< gui_type >();
 
@@ -433,7 +481,7 @@ auto application::setup_input() -> void
     m_quit_handler = make_unique< quit_handler_type >(*getRoot());
 
     m_shortcut_input_handler
-        = make_unique< shortcut_input_handler_type >(*m_cmds);
+        = make_unique< shortcut_input_handler_type >(*m_gui);
 
     m_inspection_input_handler = make_unique< inspection_handler_type >(
         *m_graph_renderer,
@@ -621,64 +669,63 @@ auto application::prepare_degrees_editor() -> void
 {
     assert(m_graph_renderer);
 
-    auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& backend = m_graph_iface->get_degrees_backend();
     auto& frontend = m_gui->get_menu_bar().get_degrees_editor();
 
     frontend.set_in_light_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_light_threshold(backend); });
+        { return degrees::get_in_degrees_light_threshold(backend); });
 
     frontend.set_out_light_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_light_threshold(backend); });
+        { return degrees::get_out_degrees_light_threshold(backend); });
 
     frontend.set_in_medium_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_medium_threshold(backend); });
+        { return degrees::get_in_degrees_medium_threshold(backend); });
 
     frontend.set_out_medium_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_medium_threshold(backend); });
+        { return degrees::get_out_degrees_medium_threshold(backend); });
 
     frontend.set_in_heavy_threshold(
         [this, &backend]()
-        { return rendering::get_in_degrees_heavy_threshold(backend); });
+        { return degrees::get_in_degrees_heavy_threshold(backend); });
 
     frontend.set_out_heavy_threshold(
         [this, &backend]()
-        { return rendering::get_out_degrees_heavy_threshold(backend); });
+        { return degrees::get_out_degrees_heavy_threshold(backend); });
 
     frontend.set_in_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_light_particles(backend);
+        return degrees::get_in_degrees_light_particles(backend);
     });
 
     frontend.set_out_light_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_light_particles(backend);
+        return degrees::get_out_degrees_light_particles(backend);
     });
 
     frontend.set_in_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_medium_particles(backend);
+        return degrees::get_in_degrees_medium_particles(backend);
     });
 
     frontend.set_out_medium_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_medium_particles(backend);
+        return degrees::get_out_degrees_medium_particles(backend);
     });
 
     frontend.set_in_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_in_degrees_heavy_particles(backend);
+        return degrees::get_in_degrees_heavy_particles(backend);
     });
 
     frontend.set_out_heavy_particles([ this, &backend ]() -> const auto& {
-        return rendering::get_out_degrees_heavy_particles(backend);
+        return degrees::get_out_degrees_heavy_particles(backend);
     });
 
     frontend.set_in_applied(
-        [this, &backend]()
-        { return rendering::is_in_degrees_applied(backend); });
+        [this, &backend]() { return degrees::is_in_degrees_applied(backend); });
 
     frontend.set_out_applied(
         [this, &backend]()
-        { return rendering::is_out_degrees_applied(backend); });
+        { return degrees::is_out_degrees_applied(backend); });
 
     BOOST_LOG_TRIVIAL(debug) << "prepared degrees editor";
 }
@@ -1019,7 +1066,7 @@ auto application::connect_degrees_presentation() -> void
 {
     assert(m_graph_renderer);
 
-    auto& backend = m_graph_renderer->get_degrees_evaluator().backend();
+    auto& backend = m_graph_iface->get_degrees_backend();
     auto& editor = m_gui->get_menu_bar().get_degrees_editor();
 
     editor.connect_to_in_light_threshold(
@@ -1756,6 +1803,20 @@ auto application::connect_gui_presentation() -> void
 auto application::connect_menu_bar_presentation() -> void
 {
     auto& bar = m_gui->get_menu_bar();
+
+    bar.connect_to_save(
+        [this]()
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected save";
+            save(m_config_path);
+        });
+
+    bar.get_save_browser().connect(
+        [this](auto path)
+        {
+            BOOST_LOG_TRIVIAL(info) << "selected save to: " << path;
+            save(path);
+        });
 
     bar.connect_to_quit(
         [this]()

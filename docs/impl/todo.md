@@ -28,7 +28,19 @@
 
     + [x] Layout clusters as subgraphs
 
+<<<<<<< HEAD
+
     + [ ] Cluster colors adjust
+
+=======
+
+    + [ ] Cluster colors adjust
+
+    + [ ] Hide/Show specific clusters
+
+    + [ ] List/Count all clusters
+
+> > > > > > > save_load
 
 # Layout / Topology
 
@@ -70,7 +82,17 @@
 
     + [n] Blocked signals when running heavy algorithms
 
+<<<<<<< HEAD
+
     + [x] Interactive Configuration (deserialization/serialization/defaults)
+
+=======
+
+    + [x] Interactive Configuration (deserialization/serialization/defaults)
+
+    + [ ] Save/Load config files
+
+> > > > > > > save_load
 
 # Scaling
 
@@ -929,3 +951,37 @@
 # 20 / 12 / 2022
 
     + [x] Clustering undo/redo tidy
+
+# 1 / 02 / 2023
+
+    + [x] Refactor/Introduce degrees subsystem
+
+    	+ [x] Introduce degrees subsystem
+
+    	+ [x] Refactor graph_interface/app
+
+    + [x] Refactor clustering color coder
+
+    + [x] Refactor configuration process to utilize one config
+
+    + [x] Pick configs at runtime (cmd line args)
+
+    + [x] Archive config management subsystem
+
+    + [x] Remove Archv resource paths compilation flags
+
+# 5 / 02 / 2023
+
+    + [n] Import Configs
+
+    + [x] Export Configs
+
+    + [x] Sav/Load
+
+    + [x] Menu bar update
+
+        + [x] Save
+
+        + [x] Save As...
+
+    + [x] Update docs

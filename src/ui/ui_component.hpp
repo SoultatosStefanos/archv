@@ -6,8 +6,13 @@
 
 #include "ui_concepts.hpp" // for drawable, configurable, etc
 
+#include <concepts> // for move_assignable
+#include <utility>  // for move
+
 namespace ui
 {
+
+// clang-format off
 
 template < typename UIComponent >
 requires configurable< UIComponent > && drawable< UIComponent >
@@ -44,6 +49,16 @@ inline auto restore_defaults(UIComponent& c) -> void
     c.draw(c.config_data() = c.default_data());
     c.config_api().config_data() = c.default_data();
 }
+
+template < typename UIComponent >
+requires configurable< UIComponent >
+inline auto export_configs(const UIComponent& c) 
+{
+    // NOTE: UI components configs are always up to date.
+    return c.config_data();
+}
+
+// clang-format on
 
 } // namespace ui
 

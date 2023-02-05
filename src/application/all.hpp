@@ -5,6 +5,6 @@
 #define APPLICATION_ALL_HPP
 
 #include "application.hpp"
-#include "archive.hpp"
+#include "json_archive.hpp"
 
 #endif // APPLICATION_ALL_HPP

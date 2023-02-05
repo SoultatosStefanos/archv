@@ -71,6 +71,8 @@ inline auto update_weight(
 // O(n)
 auto restore_defaults(backend& b) -> void;
 
+auto export_configs(const backend& b) -> backend::config_data_type;
+
 } // namespace weights
 
 #endif // WEIGHTS_BACKEND_HPP

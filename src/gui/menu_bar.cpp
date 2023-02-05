@@ -38,6 +38,11 @@ auto menu_bar::set_can_redo(pred pred) -> void
     m_redo_enabled = std::move(pred);
 }
 
+auto menu_bar::connect_to_save(const save_slot& f) -> connection
+{
+    return m_save.connect(f);
+}
+
 auto menu_bar::connect_to_quit(const quit_slot& f) -> connection
 {
     return m_quit.connect(f);
@@ -56,6 +61,11 @@ auto menu_bar::connect_to_redo(const redo_slot& f) -> connection
 auto menu_bar::connect_to_search(const search_slot& f) -> connection
 {
     return m_search_sig.connect(f);
+}
+
+auto menu_bar::emit_save() const -> void
+{
+    m_save();
 }
 
 auto menu_bar::emit_quit() const -> void
@@ -78,6 +88,23 @@ auto menu_bar::emit_search() const -> void
     m_search_sig(m_query);
 }
 
+auto menu_bar::undo_shortcut() const -> void
+{
+    if (can_undo())
+        emit_undo();
+}
+
+auto menu_bar::redo_shortcut() const -> void
+{
+    if (can_redo())
+        emit_redo();
+}
+
+auto menu_bar::save_shortcut() const -> void
+{
+    emit_save();
+}
+
 auto menu_bar::render() const -> void
 {
     if (ImGui::BeginMainMenuBar())
@@ -95,8 +122,18 @@ auto menu_bar::render() const -> void
 
 auto menu_bar::render_file_editor() const -> void
 {
+    get_save_browser().render();
+
     if (ImGui::BeginMenu(ICON_FA_FILE " File"))
     {
+        if (ImGui::MenuItem(ICON_FA_SAVE " Save", "CTRL+S"))
+            emit_save();
+
+        if (ImGui::MenuItem(ICON_FA_SAVE " Save As..."))
+            m_save_browser.open();
+
+        ImGui::Separator();
+
         if (ImGui::MenuItem(ICON_FA_WINDOW_CLOSE " Quit", "Esc"))
             emit_quit();
 

@@ -10,6 +10,7 @@
 #include "config.hpp"
 #include "controls_hud.hpp"
 #include "degrees_editor.hpp"
+#include "file_browser.hpp"
 #include "frames_hud.hpp"
 #include "graph_configurator.hpp"
 #include "gui_config.hpp"

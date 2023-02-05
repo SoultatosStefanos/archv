@@ -347,6 +347,21 @@ inline auto restore_defaults(backend< Graph, WeightMap >& b)
         b.config_data().layout);
 }
 
+template < typename Graph, typename WeightMap >
+inline auto export_configs(const backend< Graph, WeightMap >& b)
+{
+    using backend_t = backend< Graph, WeightMap >;
+    using config_data_t = typename backend_t::config_data_type;
+
+    config_data_t cfg;
+    cfg.layouts = b.config_data().layouts;
+    cfg.topologies = b.config_data().topologies;
+    cfg.layout = get_layout_id(b);
+    cfg.topology = get_topology_id(b);
+    cfg.scale = get_scale(b);
+    return cfg;
+}
+
 } // namespace layout
 
 #endif // LAYOUT_BACKEND_HPP

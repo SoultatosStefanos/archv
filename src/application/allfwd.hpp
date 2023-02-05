@@ -8,7 +8,7 @@ namespace application
 {
 
 class application;
-class archive;
+class json_archive;
 
 } // namespace application
 

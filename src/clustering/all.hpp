@@ -8,6 +8,7 @@
 #include "cluster_map.hpp"
 #include "clusterer.hpp"
 #include "clusterer_builder.hpp"
+#include "color_pool.hpp"
 #include "config.hpp"
 #include "infomap_clusterer.hpp"
 #include "infomap_clustering.hpp"

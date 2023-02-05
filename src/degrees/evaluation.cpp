@@ -1,12 +1,11 @@
-#include "degrees_ranked_evaluation.hpp"
+#include "evaluation.hpp"
 
 #include <cassert>
 
-namespace rendering
+namespace degrees
 {
 
-auto evaluate(degree_t degree, const degrees_ranked_evaluation_data& data)
-    -> particle_system_t
+auto evaluate(degree_t degree, const evaluation_data& data) -> particle_system_t
 {
     assert(degree >= 0);
     assert(data.thresholds.light >= 0);
@@ -23,4 +22,4 @@ auto evaluate(degree_t degree, const degrees_ranked_evaluation_data& data)
         return data.particles.heavy;
 }
 
-} // namespace rendering
+} // namespace degrees

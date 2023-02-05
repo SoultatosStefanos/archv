@@ -4,7 +4,7 @@
 #ifndef INPUT_SHORTCUT_INPUT_LISTENER_HPP
 #define INPUT_SHORTCUT_INPUT_LISTENER_HPP
 
-#include "presentation/deffwd.hpp" // for command_history
+#include "presentation/deffwd.hpp" // for overlay_manager
 
 #include <OGRE/Bites/OgreInput.h> // for InputListener
 
@@ -20,13 +20,10 @@ class shortcut_handler : public OgreBites::InputListener
     using base = OgreBites::InputListener;
 
 public:
-    using commands_type = presentation::command_history;
+    using gui_type = presentation::overlay_manager;
 
-    explicit shortcut_handler(commands_type& cmds);
+    explicit shortcut_handler(gui_type& overlays);
     virtual ~shortcut_handler() override = default;
-
-    auto commands() const -> const auto& { return m_cmds; }
-    auto commands() -> auto& { return m_cmds; }
 
     auto keyPressed(const OgreBites::KeyboardEvent& e) -> bool override;
     auto keyReleased(const OgreBites::KeyboardEvent& e) -> bool override;
@@ -34,12 +31,14 @@ public:
 private:
     auto handle_undo_combination() -> void;
     auto handle_redo_combination() -> void;
+    auto handle_save_combination() -> void;
 
-    commands_type& m_cmds;
+    gui_type& m_gui;
 
     bool m_lctrl_pressed { false };
     bool m_z_pressed { false };
     bool m_y_pressed { false };
+    bool m_s_pressed { false };
 };
 
 } // namespace input

@@ -1,46 +1,40 @@
-#include "rendering/degrees_ranked_backend.hpp"
+#include "degrees/backend.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 
 using namespace testing;
-using namespace rendering;
+using namespace degrees;
 
 namespace
 {
 
 inline auto initial_data()
 {
-    return degrees_ranked_config {
-        .in_data = degrees_ranked_evaluation_data(
-            make_ranked(1, 3, 5),
-            make_ranked< std::string >("a", "b", "c"),
-            true),
-        .out_data = degrees_ranked_evaluation_data(
-            make_ranked(2, 4, 6),
-            make_ranked< std::string >("aa", "bb", "cc"),
-            true)
-    };
+    return backend_config { .in_data = evaluation_data(
+                                make_ranked(1, 3, 5),
+                                make_ranked< std::string >("a", "b", "c"),
+                                true),
+                            .out_data = evaluation_data(
+                                make_ranked(2, 4, 6),
+                                make_ranked< std::string >("aa", "bb", "cc"),
+                                true) };
 }
 
-class given_a_ranked_degrees_backend : public Test
+class given_a_degrees_backend : public Test
 {
 protected:
-    using mock_type = NiceMock<
-        MockFunction< void(const degrees_ranked_evaluation_data&) > >;
+    using mock_type = NiceMock< MockFunction< void(const evaluation_data&) > >;
 
-    void SetUp() override
-    {
-        b = std::make_unique< degrees_ranked_backend >(initial_data());
-    }
+    void SetUp() override { b = std::make_unique< backend >(initial_data()); }
 
-    std::unique_ptr< degrees_ranked_backend > b;
+    std::unique_ptr< backend > b;
     mock_type mock;
 };
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     in_degrees_is_applied_on_in_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_in_degree(*b, 0), null_particles);
@@ -53,7 +47,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     out_degrees_is_applied_on_out_data_evaluation_data)
 {
     EXPECT_EQ(evaluate_out_degree(*b, 0), null_particles);
@@ -66,7 +60,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     updates_with_negative_light_threshold_are_ignored)
 {
     b->connect_to_in_degrees(mock.AsStdFunction());
@@ -79,7 +73,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     updates_with_medium_threshold_which_is_not_greater_to_the_light_are_ignored)
 {
     b->connect_to_in_degrees(mock.AsStdFunction());
@@ -92,7 +86,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     updates_with_heavy_threshold_which_is_not_greater_to_the_medium_are_ignored)
 {
     b->connect_to_in_degrees(mock.AsStdFunction());
@@ -104,16 +98,16 @@ TEST_F(
     update_out_degrees_heavy_threshold(*b, 4);
 }
 
-TEST_F(given_a_ranked_degrees_backend, its_config_data_are_equal_to_the_initial)
+TEST_F(given_a_degrees_backend, its_config_data_are_equal_to_the_initial)
 {
     ASSERT_EQ(b->config_data(), initial_data());
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degrees_data_observers_are_notified)
 {
-    auto new_data = degrees_ranked_evaluation_data(
+    auto new_data = evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
     b->connect_to_in_degrees(mock.AsStdFunction());
 
@@ -123,10 +117,10 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degrees_data_access_to_them_yields_new_data)
 {
-    auto new_data = degrees_ranked_evaluation_data(
+    auto new_data = evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
 
     update_in_degrees(*b, new_data);
@@ -135,10 +129,10 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degrees_data_observers_are_notified)
 {
-    auto new_data = degrees_ranked_evaluation_data(
+    auto new_data = evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
     b->connect_to_out_degrees(mock.AsStdFunction());
 
@@ -148,10 +142,10 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degrees_data_access_to_them_yields_new_data)
 {
-    auto new_data = degrees_ranked_evaluation_data(
+    auto new_data = evaluation_data(
         make_ranked(1, 2, 3), make_ranked< std::string >("", "", ""), true);
 
     update_out_degrees(*b, new_data);
@@ -160,14 +154,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_light_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 2;
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data {
-        make_ranked(new_threshold, 3, 5), { "a", "b", "c" }, true
-    };
+    const evaluation_data new_data { make_ranked(new_threshold, 3, 5),
+                                     { "a", "b", "c" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -175,7 +169,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_light_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 2;
@@ -186,14 +180,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_light_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(3, 4, 6),
-                                                    { "aa", "bb", "cc" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(3, 4, 6),
+                                     { "aa", "bb", "cc" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -201,7 +195,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_light_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -212,14 +206,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_medium_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
-                                                    { "a", "b", "c" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(1, 3, 5),
+                                     { "a", "b", "c" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -227,7 +221,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_medium_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -238,14 +232,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_medium_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 3;
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(2, 3, 6),
-                                                    { "aa", "bb", "cc" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(2, 3, 6),
+                                     { "aa", "bb", "cc" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -253,7 +247,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_medium_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 3;
@@ -264,14 +258,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_heavy_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 100;
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data {
-        make_ranked(1, 3, new_threshold), { "a", "b", "c" }, true
-    };
+    const evaluation_data new_data { make_ranked(1, 3, new_threshold),
+                                     { "a", "b", "c" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -279,7 +273,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_heavy_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 100;
@@ -290,14 +284,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_heavy_threshold_observers_are_notified)
 {
     constexpr auto new_threshold = 200;
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data {
-        make_ranked(2, 4, new_threshold), { "aa", "bb", "cc" }, true
-    };
+    const evaluation_data new_data { make_ranked(2, 4, new_threshold),
+                                     { "aa", "bb", "cc" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -305,7 +299,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_heavy_threshold_access_it_yields_new_threshold)
 {
     constexpr auto new_threshold = 100;
@@ -316,14 +310,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_light_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
-                                                    { "bob", "b", "c" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(1, 3, 5),
+                                     { "bob", "b", "c" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -331,7 +325,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_light_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -342,14 +336,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_light_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
-                                                    { "bob", "bb", "cc" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(2, 4, 6),
+                                     { "bob", "bb", "cc" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -357,7 +351,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_light_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -368,14 +362,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_medium_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
-                                                    { "a", "bob", "c" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(1, 3, 5),
+                                     { "a", "bob", "c" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -383,7 +377,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_medium_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -394,14 +388,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_medium_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
-                                                    { "aa", "bob", "cc" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(2, 4, 6),
+                                     { "aa", "bob", "cc" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -409,7 +403,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_medium_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -420,14 +414,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_heavy_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
-                                                    { "a", "b", "bob" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(1, 3, 5),
+                                     { "a", "b", "bob" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -435,7 +429,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_heavy_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -446,14 +440,14 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_heavy_effect_observers_are_notified)
 {
     constexpr auto new_effect = "bob";
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
-                                                    { "aa", "bb", "bob" },
-                                                    true };
+    const evaluation_data new_data { make_ranked(2, 4, 6),
+                                     { "aa", "bb", "bob" },
+                                     true };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -461,7 +455,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_heavy_effect_access_it_yields_new_effect)
 {
     constexpr auto new_effect = "bob";
@@ -472,13 +466,13 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_in_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(1, 3, 5),
-                                                    { "a", "b", "c" },
-                                                    false };
+    const evaluation_data new_data { make_ranked(1, 3, 5),
+                                     { "a", "b", "c" },
+                                     false };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -486,7 +480,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_in_degree_applied_prop_access_it_yields_new_effect)
 {
     update_in_degrees_applied(*b, false);
@@ -495,13 +489,13 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_applied_prop_observers_are_notified)
 {
     b->connect_to_out_degrees(mock.AsStdFunction());
-    const degrees_ranked_evaluation_data new_data { make_ranked(2, 4, 6),
-                                                    { "aa", "bb", "cc" },
-                                                    false };
+    const evaluation_data new_data { make_ranked(2, 4, 6),
+                                     { "aa", "bb", "cc" },
+                                     false };
 
     EXPECT_CALL(mock, Call(new_data)).Times(1);
 
@@ -509,7 +503,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_updating_the_out_degree_applied_prop_access_it_yields_new_effect)
 {
     update_out_degrees_applied(*b, false);
@@ -518,7 +512,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_restoring_the_in_degrees_observers_are_notified)
 {
     b->connect_to_in_degrees(mock.AsStdFunction());
@@ -529,7 +523,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_restoring_the_in_degrees_access_to_it_yield_original)
 {
     update_in_degrees(*b, initial_data().out_data);
@@ -539,7 +533,7 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_restoring_the_out_degrees_observers_are_notified)
 {
     b->connect_to_out_degrees(mock.AsStdFunction());
@@ -550,13 +544,18 @@ TEST_F(
 }
 
 TEST_F(
-    given_a_ranked_degrees_backend,
+    given_a_degrees_backend,
     after_restoring_the_out_degrees_access_to_it_yield_original)
 {
     update_out_degrees(*b, initial_data().in_data);
     restore_out_degrees(*b);
 
     ASSERT_EQ(get_out_degrees_data(*b), initial_data().out_data);
+}
+
+TEST_F(given_a_degrees_backend, export_configs_returns_a_state_copy)
+{
+    EXPECT_EQ(initial_data(), export_configs(*b));
 }
 
 } // namespace

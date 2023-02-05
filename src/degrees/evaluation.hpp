@@ -2,13 +2,13 @@
 // given data and a vertex degree.
 // Soultatos Stefanos 2022
 
-#ifndef RENDERING_DEGREES_RANKED_EVALUATION_HPP
-#define RENDERING_DEGREES_RANKED_EVALUATION_HPP
+#ifndef DEGREES_EVALUATION_HPP
+#define DEGREES_EVALUATION_HPP
 
 #include <optional> // for optional
 #include <string>   // for string
 
-namespace rendering
+namespace degrees
 {
 
 /***********************************************************
@@ -36,7 +36,7 @@ constexpr auto make_ranked(T light, T medium, T heavy)
  * Evaluation data                                         *
  ***********************************************************/
 
-struct degrees_ranked_evaluation_data
+struct evaluation_data
 {
     using threshold_type = int;
     using particle_system_type = std::string;
@@ -48,10 +48,8 @@ struct degrees_ranked_evaluation_data
     particle_systems_type particles;
     applied_type applied;
 
-    auto operator==(const degrees_ranked_evaluation_data&) const -> bool
-        = default;
-    auto operator!=(const degrees_ranked_evaluation_data&) const -> bool
-        = default;
+    auto operator==(const evaluation_data&) const -> bool = default;
+    auto operator!=(const evaluation_data&) const -> bool = default;
 };
 
 /***********************************************************
@@ -60,14 +58,14 @@ struct degrees_ranked_evaluation_data
 
 using degree_t = int;
 using particle_system_t
-    = std::optional< degrees_ranked_evaluation_data::particle_system_type >;
+    = std::optional< evaluation_data::particle_system_type >;
 
 constexpr auto null_particles = std::nullopt;
 
 // Effect evaluation strategy, given a degree.
-auto evaluate(degree_t degree, const degrees_ranked_evaluation_data& data)
+auto evaluate(degree_t degree, const evaluation_data& data)
     -> particle_system_t;
 
-} // namespace rendering
+} // namespace degrees
 
-#endif // RENDERING_DEGREES_RANKED_EVALUATION_HPP
+#endif // DEGREES_EVALUATION_HPP

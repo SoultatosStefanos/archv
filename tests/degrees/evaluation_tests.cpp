@@ -1,9 +1,9 @@
-#include "rendering/degrees_ranked_evaluation.hpp"
+#include "degrees/evaluation.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-using namespace rendering;
+using namespace degrees;
 using namespace testing;
 
 namespace
@@ -15,10 +15,9 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 2, 3);
     const auto particles = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data
-        = degrees_ranked_evaluation_data(thresholds, particles, false);
+    const auto data = evaluation_data(thresholds, particles, false);
 
-    ASSERT_EQ(evaluate(2, evaluation_data), null_particles);
+    ASSERT_EQ(evaluate(2, data), null_particles);
 }
 
 TEST(
@@ -27,10 +26,9 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 2, 3);
     const auto particles = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data
-        = degrees_ranked_evaluation_data(thresholds, particles, true);
+    const auto data = evaluation_data(thresholds, particles, true);
 
-    ASSERT_EQ(evaluate(0, evaluation_data), null_particles);
+    ASSERT_EQ(evaluate(0, data), null_particles);
 }
 
 TEST(
@@ -39,11 +37,10 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 4);
     const auto particles = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data
-        = degrees_ranked_evaluation_data(thresholds, particles, true);
+    const auto data = evaluation_data(thresholds, particles, true);
 
-    ASSERT_EQ(evaluate(1, evaluation_data), particles.light);
-    ASSERT_EQ(evaluate(2, evaluation_data), particles.light);
+    ASSERT_EQ(evaluate(1, data), particles.light);
+    ASSERT_EQ(evaluate(2, data), particles.light);
 }
 
 TEST(
@@ -52,11 +49,10 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);
     const auto particles = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data
-        = degrees_ranked_evaluation_data(thresholds, particles, true);
+    const auto data = evaluation_data(thresholds, particles, true);
 
-    ASSERT_EQ(evaluate(3, evaluation_data), particles.medium);
-    ASSERT_EQ(evaluate(5, evaluation_data), particles.medium);
+    ASSERT_EQ(evaluate(3, data), particles.medium);
+    ASSERT_EQ(evaluate(5, data), particles.medium);
 }
 
 TEST(
@@ -65,12 +61,11 @@ TEST(
 {
     constexpr auto thresholds = make_ranked(1, 3, 7);
     const auto particles = make_ranked< std::string >("a", "n", "y");
-    const auto evaluation_data
-        = degrees_ranked_evaluation_data(thresholds, particles, true);
+    const auto data = evaluation_data(thresholds, particles, true);
 
-    ASSERT_EQ(evaluate(7, evaluation_data), particles.heavy);
+    ASSERT_EQ(evaluate(7, data), particles.heavy);
     ASSERT_EQ(
-        evaluate(std::numeric_limits< degree_t >::max(), evaluation_data),
+        evaluate(std::numeric_limits< degree_t >::max(), data),
         particles.heavy);
 }
 

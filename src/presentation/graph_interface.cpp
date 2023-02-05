@@ -11,7 +11,8 @@ graph_interface::graph_interface(
     layout_config l_cfg,
     scaling_config scaling_cfg,
     clustering_config clus_cfg,
-    color_coding_config col_cfg)
+    color_coding_config col_cfg,
+    degrees_config deg_cfg)
 : m_st { std::move(st) }
 , m_g { std::move(g) }
 , m_marker { std::move(m) }
@@ -20,6 +21,7 @@ graph_interface::graph_interface(
 , m_scaling { std::move(scaling_cfg) }
 , m_clustering { m_g, edge_weight(*this), std::move(clus_cfg) }
 , m_cols { std::move(col_cfg) }
+, m_degrees { std::move(deg_cfg) }
 {
 }
 

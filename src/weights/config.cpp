@@ -34,4 +34,16 @@ auto deserialize(const json_val& root) -> config_data
     return res;
 }
 
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    for (const auto& [dependency, weight] : cfg)
+    {
+        json_val val;
+
+        val[dependency] = weight;
+
+        root["dependencies"].append(std::move(val));
+    }
+}
+
 } // namespace weights

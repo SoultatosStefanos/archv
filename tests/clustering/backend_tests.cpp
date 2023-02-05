@@ -612,6 +612,11 @@ TEST_F(given_a_clustering_backend, updating_snn_clustering_details_use_case)
     EXPECT_EQ(downcasted.threshold(), thres);
 }
 
+TEST_F(given_a_clustering_backend, export_config_returns_current_state_copy)
+{
+    EXPECT_EQ(clustering::export_configs(*backend), cfg);
+}
+
 } // namespace clustering
 
 #pragma GCC diagnostic pop

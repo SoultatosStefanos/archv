@@ -1,0 +1,236 @@
+{
+  "clustering": {
+    "clusterers": [
+      "k-Spanning Tree",
+      "Shared Nearest Neighbour",
+      "Strong Components",
+      "Maximal Clique Enumeration",
+      "Louvain Method",
+      "Layered Label Propagation",
+      "Infomap"
+    ],
+    "min-spanning-tree-finders": ["Prim MST", "Kruskal MST"],
+    "clusterer": "Shared Nearest Neighbour",
+    "intensity": 5200,
+    "min-spanning-tree-finder": "Kruskal MST",
+    "k": 3,
+    "snn-threshold": 5,
+    "min-modularity": 0.2,
+    "llp-gamma": 0.1,
+    "llp-steps": 2
+  },
+  "color-coding": {
+    "dependencies": [
+      {
+        "dependency": "Inherit",
+        "color": [255, 0, 0, 1],
+        "active": false
+      },
+      {
+        "dependency": "Friend",
+        "color": [255, 255, 0, 1],
+        "active": false
+      },
+      {
+        "dependency": "NestedClass",
+        "color": [0, 0, 255, 1],
+        "active": false
+      },
+      {
+        "dependency": "ClassField",
+        "color": [0, 0, 0, 1],
+        "active": false
+      },
+      {
+        "dependency": "ClassTemplateParent",
+        "color": [255, 0, 0, 124],
+        "active": false
+      },
+      {
+        "dependency": "ClassTemplateArg",
+        "color": [1, 1, 0, 1],
+        "active": false
+      },
+      {
+        "dependency": "MethodReturn",
+        "color": [255, 0, 0, 89],
+        "active": false
+      },
+      {
+        "dependency": "MethodArg",
+        "color": [2, 0, 78, 1],
+        "active": false
+      },
+      {
+        "dependency": "MethodDefinition",
+        "color": [199, 20, 0, 1],
+        "active": false
+      },
+      {
+        "dependency": "MemberExpr",
+        "color": [255, 0, 90, 10],
+        "active": false
+      },
+      {
+        "dependency": "MethodTemplateArgs",
+        "color": [55, 50, 30, 1],
+        "active": false
+      }
+    ]
+  },
+  "degrees": {
+    "in-degree": {
+      "thresholds": {
+        "light": 1,
+        "medium": 4,
+        "heavy": 8
+      },
+      "particle-systems": {
+        "light": "Degrees/SwarmLight",
+        "medium": "Degrees/SwarmMedium",
+        "heavy": "Degrees/SwarmHeavy"
+      },
+      "applied": true
+    },
+    "out-degree": {
+      "thresholds": {
+        "light": 2,
+        "medium": 5,
+        "heavy": 10
+      },
+      "particle-systems": {
+        "light": "Degrees/BigRingWhite",
+        "medium": "Degrees/BigRingYellow",
+        "heavy": "Degrees/BigRingRed"
+      },
+      "applied": false
+    }
+  },
+  "gui": {
+    "color-theme": "Dark",
+    "frame-rounding": 0,
+    "window-bordered": true,
+    "frame-bordered": true,
+    "popup-bordered": true
+  },
+  "layout": {
+    "layouts": ["Gursoy Atun", "Random"],
+    "topologies": ["Cube", "Sphere"],
+    "layout": "Gursoy Atun",
+    "topology": "Sphere",
+    "scale": 1300
+  },
+  "rendering": {
+    "background": {
+      "skybox-material": "Gradient/Dark",
+      "skybox-distance": 5000,
+      "ambient-color": [0, 0, 0],
+      "diffuse-color": [0.4, 0.43, 0.42],
+      "specular-color": [0.337, 0.325, 0.325],
+      "cam-far-clip-distance": 0,
+      "cam-near-clip-distance": 5
+    },
+    "graph": {
+      "vertex-mesh": "Cube.001.mesh",
+      "vertex-material": "Shaded/StudioGold",
+      "vertex-scale": [5, 5, 5],
+      "vertex-id": {
+        "font-name": "Gecko-Personal",
+        "char-height": 6,
+        "color": [1, 1, 1],
+        "space-width": 0
+      },
+      "edge-material": "Shaded/LightBlue",
+      "edge-tip-mesh": "triangle.mesh",
+      "edge-tip-material": "Shaded/LightBlue",
+      "edge-tip-scale": [1.25, 1.25, 1.25],
+      "edge-type": {
+        "font-name": "Gecko-Personal",
+        "char-height": 2.5,
+        "color": [1, 1, 1],
+        "space-width": 0
+      }
+    },
+    "minimap": {
+      "left": 0.5,
+      "top": -0.5,
+      "right": 0.95,
+      "bottom": -0.95,
+      "background-color": [0.0, 0.0, 0.0],
+      "zoom-out": 300,
+      "render-shadows": false,
+      "render-sky": true,
+      "render-vertices": true,
+      "render-vertex-ids": false,
+      "render-edges": true,
+      "render-edge-types": false,
+      "render-edge-tips": false,
+      "render-particles": false
+    }
+  },
+  "scaling": {
+    "factors": [
+      {
+        "Fields": {
+          "enabled": true,
+          "dimensions": [true, true, true],
+          "baseline": 3,
+          "ratio": { "min": 0.5, "max": 2.5 }
+        }
+      },
+      {
+        "Methods": {
+          "enabled": false,
+          "dimensions": [true, true, true],
+          "baseline": 5,
+          "ratio": { "min": 1, "max": 2 }
+        }
+      },
+      {
+        "Nested": {
+          "enabled": false,
+          "dimensions": [true, true, true],
+          "baseline": 0.2,
+          "ratio": { "min": 1, "max": 1 }
+        }
+      }
+    ]
+  },
+  "weights": {
+    "dependencies": [
+      {
+        "Inherit": 1
+      },
+      {
+        "Friend": 1
+      },
+      {
+        "NestedClass": 1
+      },
+      {
+        "ClassField": 1
+      },
+      {
+        "ClassTemplateParent": 1
+      },
+      {
+        "ClassTemplateArg": 1
+      },
+      {
+        "MethodReturn": 1
+      },
+      {
+        "MethodArg": 1
+      },
+      {
+        "MethodDefinition": 1
+      },
+      {
+        "MemberExpr": 1
+      },
+      {
+        "MethodTemplateArgs": 1
+      }
+    ]
+  }
+}

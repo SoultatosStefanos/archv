@@ -17,13 +17,21 @@ auto deserialize(const json_val& root) -> config_data
     auto window_bordered = as< bool >(get(root, "window-bordered"));
     auto frame_bordered = as< bool >(get(root, "frame-bordered"));
     auto popup_bordered = as< bool >(get(root, "popup-bordered"));
-    ;
 
     return config_data { .color_theme = std::move(color_theme),
                          .frame_rounding = frame_rounding,
                          .window_bordered = window_bordered,
                          .frame_bordered = frame_bordered,
                          .popup_bordered = popup_bordered };
+}
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    root["color-theme"] = cfg.color_theme;
+    root["frame-rounding"] = cfg.frame_rounding;
+    root["window-bordered"] = cfg.window_bordered;
+    root["frame-bordered"] = cfg.frame_bordered;
+    root["popup-bordered"] = cfg.popup_bordered;
 }
 
 } // namespace gui

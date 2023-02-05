@@ -4,12 +4,14 @@
 #ifndef APPLICATION_APPLICATION_HPP
 #define APPLICATION_APPLICATION_HPP
 
-#include "input/allfwd.hpp"       // for the input modules
+#include "input/allfwd.hpp" // for the input modules
+#include "json_archive.hpp"
 #include "misc/ogre_bitesfwd.hpp" // for CameraMan, ImGuiInputListener, TrayManager
 #include "presentation/allfwd.hpp" // for the presentation modules
 
 #include <OGRE/Bites/OgreApplicationContext.h> // for ApplicationContext
 #include <memory>                              // for unique_ptr
+#include <string_view>                         // for string_view
 
 namespace application
 {
@@ -51,6 +53,8 @@ private:
     using inspection_handler_type = input::inspection_handler;
     using event_dispatcher_type = input::event_dispatcher;
 
+    auto save(std::string_view path) -> void;
+
     auto setup_graph_interface() -> void;
     auto setup_commands() -> void;
     auto setup_rendering() -> void;
@@ -87,7 +91,8 @@ private:
     auto connect_gui_presentation() -> void;
     auto connect_menu_bar_presentation() -> void;
 
-    const char* m_graph_path { nullptr };
+    std::string_view m_graph_path;
+    std::string_view m_config_path;
 
     std::unique_ptr< graph_interface_type > m_graph_iface;
     std::unique_ptr< command_history_type > m_cmds;
@@ -107,6 +112,8 @@ private:
     std::unique_ptr< shortcut_input_handler_type > m_shortcut_input_handler;
     std::unique_ptr< inspection_handler_type > m_inspection_input_handler;
     std::unique_ptr< event_dispatcher_type > m_input_chain;
+
+    json_archive m_jsons;
 };
 
 } // namespace application

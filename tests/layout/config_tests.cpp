@@ -35,4 +35,15 @@ TEST(layout_deserialization, sample_layout_0)
     ASSERT_EQ(expected, actual);
 }
 
+TEST(layout_serialization, sample_layout_0)
+{
+    auto root = json_val();
+    const auto cfg = make_sample_layout_0();
+
+    serialize(root, cfg);
+    auto deserialized = deserialize(root);
+
+    EXPECT_EQ(deserialized, cfg);
+}
+
 } // namespace

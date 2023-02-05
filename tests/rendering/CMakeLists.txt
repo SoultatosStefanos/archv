@@ -1,8 +1,5 @@
 set(FILES
-	cluster_color_pool_tests.cpp
 	config_tests.cpp
-	degrees_ranked_backend_tests.cpp
-	degrees_ranked_evaluation_tests.cpp
 )
 set(SUBDIRECTORIES)
 

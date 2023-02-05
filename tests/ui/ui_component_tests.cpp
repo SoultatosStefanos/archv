@@ -80,7 +80,8 @@ TEST_F(given_a_dummy_ui_component, end_preview_draws_current_data)
 }
 
 TEST_F(
-    given_a_dummy_ui_component, apply_config_draws_and_sets_intermediate_data)
+    given_a_dummy_ui_component,
+    apply_config_draws_and_sets_intermediate_data)
 {
     ui_comp->config_api().config_data().i = 30;
 

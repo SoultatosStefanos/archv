@@ -70,6 +70,8 @@ using config_data = backend_config;
 
 using id_t = std::string_view;
 
+class color_pool;
+
 } // namespace clustering
 
 #endif // CLUSTERING_ALLFWD_HPP

@@ -56,4 +56,29 @@ auto deserialize(const json_val& root) -> config_data
     return res;
 }
 
+namespace
+{
+
+    auto serialize_rgba(json_val& root, const color_code::rgba_type& col)
+    {
+        for (auto i = 0; i < 4; ++i)
+            root[i] = col[i];
+    }
+
+} // namespace
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    for (const auto& [dependency, code] : cfg)
+    {
+        json_val val;
+
+        val["dependency"] = dependency;
+        serialize_rgba(val["color"], code.rgba);
+        val["active"] = code.active;
+
+        root["dependencies"].append(std::move(val));
+    }
+}
+
 } // namespace color_coding

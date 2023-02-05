@@ -104,6 +104,8 @@ inline auto update_color_active(
 // O(n)
 auto restore_defaults(backend& b) -> void;
 
+auto export_configs(const backend& b) -> backend::config_data_type;
+
 } // namespace color_coding
 
 #endif // COLOR_CODING_BACKEND_HPP

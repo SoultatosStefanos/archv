@@ -1,6 +1,6 @@
 set(FILES
 	application.cpp
-	archive.cpp
+	json_archive.cpp
 )
 set(SUBDIRECTORIES)
 
