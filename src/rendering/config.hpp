@@ -29,6 +29,11 @@ auto deserialize_graph(const json_val& root) -> graph_config;
 auto deserialize_minimap(const json_val& root) -> minimap_config;
 auto deserialize(const json_val& root) -> config_data;
 
+auto serialize_background(json_val& root, const background_config& cfg) -> void;
+auto serialize_graph(json_val& root, const graph_config& cfg) -> void;
+auto serialize_minimap(json_val& root, const minimap_config& cfg) -> void;
+auto serialize(json_val& root, const config_data& cfg) -> void;
+
 } // namespace rendering
 
 #endif // RENDERING_CONFIG_HPP

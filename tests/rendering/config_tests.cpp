@@ -1,6 +1,7 @@
 #include "../utility/config.hpp"
 #include "rendering/config.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -72,6 +73,17 @@ TEST(rendering_deserialization, sample_rendering_0)
     const auto actual = deserialize(root);
 
     ASSERT_EQ(actual, expected);
+}
+
+TEST(rendering_serialization, sample_rendering_0)
+{
+    auto root = json_val();
+    const auto cfg = make_sample_rendering_0();
+
+    serialize(root, cfg);
+    auto deserialized = deserialize(root);
+
+    EXPECT_EQ(deserialized, cfg);
 }
 
 } // namespace

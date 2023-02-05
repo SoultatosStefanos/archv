@@ -75,6 +75,7 @@ auto deserialize_background(const json_val& val) -> background_config
     auto skybox_dist = as< real >(get(val, "skybox-distance"));
     auto&& ambient_color = deserialize_rgb(get(val, "ambient-color"));
     auto&& diffuse_color = deserialize_rgb(get(val, "diffuse-color"));
+
     auto&& specular_color = deserialize_rgb(get(val, "specular-color"));
     auto cam_near_clip_dist = as< real >(get(val, "cam-near-clip-distance"));
     auto cam_far_clip_dist = as< real >(get(val, "cam-far-clip-distance"));
@@ -183,6 +184,99 @@ auto deserialize(const json_val& root) -> config_data
     return config_data { .background = std::move(bkg),
                          .graph = std::move(g),
                          .minimap = minimap };
+}
+
+namespace
+{
+
+    template < typename Tuple >
+    inline auto serialize_triad(json_val& root, const Tuple& tuple)
+    {
+        static_assert(std::tuple_size_v< Tuple > == 3);
+
+        root[0] = std::get< 0 >(tuple);
+        root[1] = std::get< 1 >(tuple);
+        root[2] = std::get< 2 >(tuple);
+    }
+
+    inline auto serialize_rgb(json_val& root, const Ogre::ColourValue& col)
+    {
+        serialize_triad(root, std::make_tuple(col.r, col.g, col.b));
+    }
+
+    inline auto serialize_vec3(json_val& root, const Ogre::Vector3& vec)
+    {
+        serialize_triad(root, std::make_tuple(vec.x, vec.y, vec.z));
+    }
+
+} // namespace
+
+auto serialize_background(json_val& root, const background_config& cfg) -> void
+{
+    root["skybox-material"] = cfg.skybox_material;
+    root["skybox-distance"] = cfg.skybox_distance;
+    serialize_rgb(root["ambient-color"], cfg.ambient_color);
+    serialize_rgb(root["diffuse-color"], cfg.diffuse_color);
+    serialize_rgb(root["specular-color"], cfg.specular_color);
+    root["cam-near-clip-distance"] = cfg.cam_near_clip_distance;
+    root["cam-far-clip-distance"] = cfg.cam_far_clip_distance;
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized rendering background";
+}
+
+auto serialize_graph(json_val& root, const graph_config& cfg) -> void
+{
+    root["vertex-mesh"] = cfg.vertex_mesh;
+    root["vertex-material"] = cfg.vertex_material;
+    serialize_vec3(root["vertex-scale"], cfg.vertex_scale);
+
+    auto& vertex_id_val = root["vertex-id"];
+    vertex_id_val["font-name"] = cfg.vertex_id_font_name;
+    vertex_id_val["char-height"] = cfg.vertex_id_char_height;
+    serialize_rgb(vertex_id_val["color"], cfg.vertex_id_color);
+    vertex_id_val["space-width"] = cfg.vertex_id_space_width;
+
+    root["edge-material"] = cfg.edge_material;
+    root["edge-tip-mesh"] = cfg.edge_tip_mesh;
+    root["edge-tip-material"] = cfg.edge_tip_material;
+    serialize_vec3(root["edge-tip-scale"], cfg.edge_tip_scale);
+
+    auto& edge_type_val = root["edge-type"];
+    edge_type_val["font-name"] = cfg.edge_type_font_name;
+    edge_type_val["char-height"] = cfg.edge_type_char_height;
+    serialize_rgb(edge_type_val["color"], cfg.edge_type_color);
+    edge_type_val["space-width"] = cfg.edge_type_space_width;
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized rendering graph";
+}
+
+auto serialize_minimap(json_val& root, const minimap_config& cfg) -> void
+{
+    root["left"] = cfg.left;
+    root["top"] = cfg.top;
+    root["right"] = cfg.right;
+    root["bottom"] = cfg.bottom;
+    serialize_rgb(root["background-color"], cfg.background_col);
+    root["zoom-out"] = cfg.zoom_out;
+    root["render-shadows"] = cfg.render_shadows;
+    root["render-sky"] = cfg.render_sky;
+    root["render-vertices"] = cfg.render_vertices;
+    root["render-vertex-ids"] = cfg.render_vertex_ids;
+    root["render-edges"] = cfg.render_edges;
+    root["render-edge-types"] = cfg.render_edge_types;
+    root["render-edge-tips"] = cfg.render_edge_tips;
+    root["render-particles"] = cfg.render_particles;
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized rendering minimap";
+}
+
+auto serialize(json_val& root, const config_data& cfg) -> void
+{
+    serialize_background(root["background"], cfg.background);
+    serialize_graph(root["graph"], cfg.graph);
+    serialize_minimap(root["minimap"], cfg.minimap);
+
+    BOOST_LOG_TRIVIAL(debug) << "serialized rendering";
 }
 
 } // namespace rendering
