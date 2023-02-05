@@ -11,6 +11,7 @@
 
 #include <OGRE/Bites/OgreApplicationContext.h> // for ApplicationContext
 #include <memory>                              // for unique_ptr
+#include <string_view>                         // for string_view
 
 namespace application
 {
@@ -52,6 +53,8 @@ private:
     using inspection_handler_type = input::inspection_handler;
     using event_dispatcher_type = input::event_dispatcher;
 
+    auto save(std::string_view path) -> void;
+
     auto setup_graph_interface() -> void;
     auto setup_commands() -> void;
     auto setup_rendering() -> void;
@@ -88,8 +91,8 @@ private:
     auto connect_gui_presentation() -> void;
     auto connect_menu_bar_presentation() -> void;
 
-    const char* m_graph_path { nullptr };
-    const char* m_config_path { nullptr };
+    std::string_view m_graph_path;
+    std::string_view m_config_path;
 
     std::unique_ptr< graph_interface_type > m_graph_iface;
     std::unique_ptr< command_history_type > m_cmds;

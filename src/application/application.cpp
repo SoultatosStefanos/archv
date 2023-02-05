@@ -64,6 +64,44 @@ auto application::go() -> void
     getRoot()->startRendering();
 }
 
+auto application::save(std::string_view path) -> void
+{
+    // Enabe ADL
+    using namespace clustering;
+    using namespace color_coding;
+    using namespace degrees;
+    using namespace gui;
+    using namespace layout;
+    using namespace rendering;
+    using namespace scaling;
+    using namespace ui;
+    using namespace weights;
+
+    auto cluster_cfg = export_configs(m_graph_iface->get_clustering_backend());
+    auto cc_cfg = export_configs(m_graph_iface->get_color_coding_backend());
+    auto degrees_cfg = export_configs(m_graph_iface->get_degrees_backend());
+    auto gui_cfg = export_configs(gui::ui_adaptor());
+    auto layout_cfg = export_configs(m_graph_iface->get_layout_backend());
+    auto background_cfg = export_configs(*m_background_renderer);
+    auto graph_cfg = export_configs(*m_graph_renderer);
+    auto minimap_cfg = export_configs(*m_minimap_renderer);
+    auto scale_cfg = export_configs(m_graph_iface->get_scaling_backend());
+    auto weights_cfg = export_configs(m_graph_iface->get_weights_backend());
+
+    auto& root = m_jsons.get(path);
+
+    serialize(root["clustering"], cluster_cfg);
+    serialize(root["color-coding"], cc_cfg);
+    serialize(root["degrees"], degrees_cfg);
+    serialize_background(root["rendering"]["background"], background_cfg);
+    serialize_graph(root["rendering"]["graph"], graph_cfg);
+    serialize_minimap(root["rendering"]["minimap"], minimap_cfg);
+    serialize(root["scaling"], scale_cfg);
+    serialize(root["weights"], weights_cfg);
+
+    dump(root, path);
+}
+
 /***********************************************************
  * Setup                                                   *
  ***********************************************************/
